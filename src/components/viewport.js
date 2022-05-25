@@ -3,26 +3,16 @@ import {GeoTIFF} from 'ol/source.js'
 import {WebGLTile} from 'ol/layer.js'
 import OlMap from 'ol/Map.js'
 
-export class SkraaFotoWindow extends HTMLElement {
+export class SkraaFotoViewport extends HTMLElement {
 
-  styles = `#map { width: 100%; height: 40rem; }`
-
-  static properties = {
-    name: {type: String}
-  }
+  styles = `#map { width: 100%; height: 100%; }`
 
   constructor() {
-
     super()
-
-    this.self = this
-    this.name = 'Somebody'
-    console.log(this)
-
-    this.createDOM()
+    this.createShadowDOM()
   }
 
-  createDOM() {
+  createShadowDOM() {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
     // Create div element
@@ -68,4 +58,4 @@ export class SkraaFotoWindow extends HTMLElement {
 
 }
 
-customElements.define('skraafoto-window', SkraaFotoWindow)
+customElements.define('skraafoto-viewport', SkraaFotoViewport)

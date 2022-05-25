@@ -3,26 +3,38 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Skråfoto</title>
+    <title>Skråfoto prototype</title>
+    <link rel="stylesheet" href="dist/skraafoto.css">
   </head>
   <body>
 
     <header>
-      <h1>Skråfoto test</h1>
+
+      <h1>Skråfoto prototype</h1>
+
+      <skraafoto-slider aria-expanded="true">
+
+        <skraafoto-map></skraafoto-map>
+
+        <!-- <skraafoto-viewlist></skraafoto-viewlist> -->
+
+      </skraafoto-slider>
+
     </header>
 
     <main>
 
-      <skraafoto-window></skraafoto-window>
-      <div id="map" style="width: 100%; height: 800px;"></div>
+      <!-- <skraafoto-searchbar></skraafoto-searchbar> -->
 
+      <skraafoto-viewport></skraafoto-viewport>
+      
     </main>
 
     <footer>
-
+      Styrelsen for Dataforsyning
     </footer>
 
-    <script type="module" src="dist/js/skraafoto.js"></script>
+    <script type="module" src="dist/skraafoto.js"></script>
 
   </body>
 </html>
