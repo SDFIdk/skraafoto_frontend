@@ -69,4 +69,6 @@ export class SkraaFotoSlider extends HTMLElement {
 
 }
 
-customElements.define('skraafoto-slider', SkraaFotoSlider)
+
+// This is how to initialize the custom element
+// customElements.define('skraafoto-slider', SkraaFotoSlider)

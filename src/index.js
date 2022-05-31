@@ -14,6 +14,14 @@ console.log('environment', process.env)
 // Initialize
 EventBroker.init()
 
+// Initialize web components
+customElements.define('skraafoto-viewport', SkraaFotoViewport)
+customElements.define('skraafoto-map', SkraaFotoMap)
+customElements.define('skraafoto-slider', SkraaFotoSlider)
+
+// Initialize event broker
+EventBroker.init()
+
 // Experiment with API requests
 
 /*

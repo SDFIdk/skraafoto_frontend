@@ -68,4 +68,5 @@ export class SkraaFotoViewport extends HTMLElement {
 
 }
 
-customElements.define('skraafoto-viewport', SkraaFotoViewport)
+// This is how to initialize the custom element
+// customElements.define('skraafoto-viewport', SkraaFotoViewport)

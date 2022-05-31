@@ -6,6 +6,9 @@ import { OSM } from 'ol/source'
 
 export class SkraaFotoMap extends HTMLElement {
 
+  // public properties
+
+  map = null
   styles = `
     :root {
       height: 50rem;
@@ -22,18 +25,15 @@ export class SkraaFotoMap extends HTMLElement {
     return [
       'zoom', 
       'center'
-    ] 
+    ]
   }
-
-  map
 
   constructor() {
     super()
-    console.log(this)
-    this.zoom = this.getAttribute('zoom') ? Number(this.getAttribute('zoom')) : 3
-    this.center = this.getAttribute('center') ? Array(this.getAttribute('center')) : [55,11]
     this.createShadowDOM()
   }
+
+  // methods
 
   createShadowDOM() {
     // Create a shadow root
@@ -48,6 +48,8 @@ export class SkraaFotoMap extends HTMLElement {
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(style, div)
   }
+
+  // Lifecycle hooks
 
   connectedCallback() {
 
@@ -72,11 +74,11 @@ export class SkraaFotoMap extends HTMLElement {
 
     // Consider map.updateSize() when expanding slider containing map
   }
-
   attributeChangedCallback(name, oldValue, newValue) {
     // Do stuff is attributes change
   }  
 
 }
 
-customElements.define('skraafoto-map', SkraaFotoMap)
+// This is how to initialize the custom element
+// customElements.define('skraafoto-map', SkraaFotoMap)
