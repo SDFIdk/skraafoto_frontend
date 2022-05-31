@@ -18,12 +18,9 @@ export class SkraaFotoSlider extends HTMLElement {
     }
   `
 
-  self
-
   constructor() {
     super()
     this.createShadowDOM()
-    self = this
   }
 
   createShadowDOM() {
@@ -48,17 +45,21 @@ export class SkraaFotoSlider extends HTMLElement {
     this.shadowRoot.append(style,this.button_open, this.section)
   }
 
-  openSlider() {
-    self.section.style.transform = 'translate(0)'
-  }
-
-  closeSlider() {
-    self.section.style.transform = 'translate(35rem)'
-  }
-
   connectedCallback() {
-    this.button_open.addEventListener('click', this.openSlider)
-    this.button_close.addEventListener('click', this.closeSlider)
+
+    this.button_open.addEventListener('click', () => {
+      this.section.style.transform = 'translate(0)'
+      this.setAttribute('aria-expanded', 'true')
+      this.slider_status = 'expanded'
+      this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'expanded'}))
+    })
+
+    this.button_close.addEventListener('click', () =>{
+      this.section.style.transform = 'translate(35rem)'
+      this.setAttribute('aria-expanded', 'false')
+      this.slider_status = 'collapsed'
+      this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'collapsed'}))
+    })
   }
 
   disconnectedCallback() {

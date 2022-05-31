@@ -1,15 +1,37 @@
-import OlMap from 'ol/Map.js'
-import View from 'ol/View.js'
-import {Tile} from 'ol/layer.js'
-import {fromLonLat} from 'ol/proj.js'
-import {OSM} from 'ol/source.js'
+import OlMap from 'ol/Map'
+import OlView from 'ol/View'
+import TileLayer from 'ol/layer/Tile'
+
+import { OSM } from 'ol/source'
 
 export class SkraaFotoMap extends HTMLElement {
 
-  styles = `#map { width: 100%; height: 50rem; }`
+  styles = `
+    :root {
+      height: 50rem;
+      width: 100%;
+      display: block;
+    }
+    .geographic-map { 
+      width: 100%; 
+      height: 50rem;
+    }
+  `
+
+  static get observedAttributes() { 
+    return [
+      'zoom', 
+      'center'
+    ] 
+  }
+
+  map
 
   constructor() {
     super()
+    console.log(this)
+    this.zoom = this.getAttribute('zoom') ? Number(this.getAttribute('zoom')) : 3
+    this.center = this.getAttribute('center') ? Array(this.getAttribute('center')) : [55,11]
     this.createShadowDOM()
   }
 
@@ -18,7 +40,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
     // Create div element
     const div = document.createElement('div')
-    div.setAttribute('id','map')
+    div.className = "geographic-map"
     div.setAttribute('data-token','47dada7edade95277d7d0935ab20a593')
     // Create some CSS to apply to the shadow DOM
     const style = document.createElement('style')
@@ -28,21 +50,32 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   connectedCallback() {
-    const map_element = this.shadowRoot.querySelector('#map')
 
-    const map = new OlMap({
-      target: map_element,
+    const view = new OlView({
+      center: [1295112.66, 7606748.02],
+      zoom: 6,
+      minZoom: 4,
+      maxZoom: 20,
+      showFullExtent: true,
+      projection: 'EPSG:3857'
+    })
+
+    this.map = new OlMap({
+      target: this.shadowRoot.querySelector('.geographic-map'),
       layers: [
-        new Tile({
+        new TileLayer({
           source: new OSM()
         })
       ],
-      view: new View({
-        center: fromLonLat([37.41, 8.82]),
-        zoom: 4
-      })
+      view: view
     })
+
+    // Consider map.updateSize() when expanding slider containing map
   }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    // Do stuff is attributes change
+  }  
 
 }
 
