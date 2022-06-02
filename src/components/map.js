@@ -65,9 +65,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.geographic-map'),
       layers: [
-        new TileLayer({
-          source: new OSM()
-        })
+        new TileLayer({source: new OSM()})
       ],
       view: view
     })
