@@ -6,7 +6,7 @@ import EventBroker from './modules/eventbroker.js'
 import dotenv from 'dotenv'
 
 // TODO: Pull from npm package instead
-import { get, post } from '../../saul'
+import { get, post, world2image } from '../../../saul'
 
 // Initialize web components
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
@@ -35,9 +35,10 @@ EventBroker.init()
 
 const requestbody = {
   intersects: {
-    coordinates: [
-      '55.3951',
-      '10.4064'
+    type: "Point",
+    coordinates:[
+      10.4064,
+      55.3951
     ]
   }
 }
