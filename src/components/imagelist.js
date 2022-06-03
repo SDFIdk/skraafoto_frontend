@@ -19,7 +19,6 @@ export class SkraaFotoImgList extends HTMLElement {
 
   constructor() {
     super()
-    console.log('got images', this.getAttribute('images'))
     this.createShadowDOM()
     this.renderImgList()
   }
@@ -29,7 +28,7 @@ export class SkraaFotoImgList extends HTMLElement {
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
     // Create ul element
     const ul = document.createElement('ul')
-    div.className = "image-list"
+    ul.className = "image-list"
     // Create some CSS to apply to the shadow DOM
     const style = document.createElement('style')
     style.textContent = this.styles
@@ -42,7 +41,6 @@ export class SkraaFotoImgList extends HTMLElement {
     ul.innerHTML = ''
     const imgs = this.getAttribute('images').split(',')
     for (let img of imgs) {
-      console.log(img)
       const li = document.createElement('li')
       li.innerHTML = `<a href="${img}">${img}</a>`
       ul.append(li)

@@ -3,7 +3,6 @@ import { SkraaFotoMap } from './components/map.js'
 import { SkraaFotoSlider } from './components/slider.js'
 import { SkraaFotoImgList } from './components/imagelist.js'
 import EventBroker from './modules/eventbroker.js'
-import dotenv from 'dotenv'
 
 // TODO: Pull from npm package instead
 import { get, post, world2image } from '../../../saul'
@@ -15,8 +14,7 @@ customElements.define('skraafoto-slider', SkraaFotoSlider)
 customElements.define('skraafoto-imglist', SkraaFotoImgList)
 
 // Load config
-dotenv.config({path: '../.env.development'})
-console.log('environment', process.env)
+console.log('env', process.env.NODE_ENV)
 
 // Initialize
 EventBroker.init()
@@ -32,7 +30,6 @@ EventBroker.init()
 */
 
 // Experiment with API requests
-
 const requestbody = {
   intersects: {
     type: "Point",
