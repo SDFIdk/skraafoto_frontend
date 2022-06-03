@@ -11,13 +11,13 @@ export class SkraaFotoMap extends HTMLElement {
   map = null
   styles = `
     :root {
-      height: 50rem;
+      height: 100%;
       width: 100%;
       display: block;
     }
     .geographic-map { 
       width: 100%; 
-      height: 50rem;
+      height: 100%;
     }
   `
 

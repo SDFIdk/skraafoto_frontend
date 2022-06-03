@@ -61,13 +61,9 @@ export class SkraaFotoViewport extends HTMLElement {
 
   initMap(viewdata) {
 
-    let view = {
-      ...viewdata
-    }
-
     // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
     // when the view resolves view properties, the map view will be updated with the HACKish projection override
-    view.projection = new Projection({
+    viewdata.projection = new Projection({
       code: 'custom',
       units: 'pixels',
       metersPerUnit: 1
@@ -78,7 +74,7 @@ export class SkraaFotoViewport extends HTMLElement {
       layers: [
         new WebGLTile({source: this.source})
       ],
-      view: new View(view)
+      view: new View(viewdata)
     })
 
     map.addEventListener('click', (event) => {
@@ -86,7 +82,7 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     map.addControl(this.mousePosition)
-    this.mousePosition.setProjection(view.projection)
+    this.mousePosition.setProjection(viewdata.projection)
   }
 
 }
