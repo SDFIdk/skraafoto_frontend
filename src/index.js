@@ -2,8 +2,17 @@ import {SkraaFotoViewport} from './components/viewport.js'
 import {SkraaFotoMap} from './components/map.js'
 import {SkraaFotoSlider} from './components/slider.js'
 import EventBroker from './modules/eventbroker.js'
+import dotenv from 'dotenv'
+
 // TODO: Pull from npm package instead
-import {get, world2image} from '../../saul'
+import {get, world2image} from '../../../saul'
+
+// Load config
+dotenv.config({path: '../.env.development'})
+console.log('environment', process.env)
+
+// Initialize
+EventBroker.init()
 
 // Experiment with API requests
 
@@ -13,5 +22,3 @@ get('https://api.dataforsyningen.dk/skraafotoapi_test/collections/skraafotos2019
   console.log('got response', response)
 })
 */
-
-EventBroker.init()

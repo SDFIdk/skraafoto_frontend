@@ -4,8 +4,8 @@
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild skraafoto=src/index.js skraafoto=src/index.css --outdir=dist --bundle --watch",
-    "build": "esbuild skraafoto=src/index.js skraafoto=src/index.css --outdir=dist --bundle --minify",
+    "dev": "esbuild skraafoto=src/index.js skraafoto=src/index.css --outdir=dist --bundle --watch --platform=node",
+    "build": "esbuild skraafoto=src/index.js skraafoto=src/index.css --outdir=dist --bundle --minify --platform=node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,6 +24,7 @@
     "ol": "^6.14.1"
   },
   "devDependencies": {
+    "dotenv": "^16.0.1",
     "esbuild": "^0.14.39"
   }
 }
