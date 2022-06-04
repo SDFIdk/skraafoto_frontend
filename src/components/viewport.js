@@ -22,6 +22,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .ol-mouse-position {
       background-color: black;
+      position: absolute;
+      z-index: 99;
+      bottom: 1.5rem;
+      padding: .25rem;
     }
   `
 
