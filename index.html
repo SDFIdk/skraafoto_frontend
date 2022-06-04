@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Skråfoto prototype</title>
-    <link rel="stylesheet" href="dist/skraafoto.css">
+    <link rel="stylesheet" href="dist/skraafotostyle.css">
+    <script src="dist/config.js"></script>
   </head>
   <body>
 
@@ -18,15 +19,15 @@
 
       <!-- <skraafoto-searchbar></skraafoto-searchbar> -->
 
-      <skraafoto-viewport></skraafoto-viewport>
-
       <skraafoto-slider aria-expanded="false">
       
         <skraafoto-map style="height: 20rem; display: block;"></skraafoto-map>
 
-        <skraafoto-imglist style="height: auto; display: block;" images="img1.jpg, img2.jpg"></skraafoto-imglist>
+        <skraafoto-imglist style="height: auto; display: block;" images="img1.jpg,img2.jpg"></skraafoto-imglist>
       
       </skraafoto-slider>
+
+      <skraafoto-viewport></skraafoto-viewport>
 
     </main>
 

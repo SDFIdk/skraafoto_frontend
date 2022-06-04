@@ -1,7 +1,6 @@
 export class SkraaFotoImgList extends HTMLElement {
 
   // public properties
-
   styles = `
     :root {
       height: 100%;
@@ -9,19 +8,22 @@ export class SkraaFotoImgList extends HTMLElement {
       display: block;
       background-color: #aaa;
     }
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
   `
 
-  static get observedAttributes() { 
-    return [
-      'images'
-    ]
+  // setters
+  set images(image_array) {
+    console.log(image_array)
+    this.renderImgList(image_array)
   }
 
   constructor() {
     super()
-    console.log('got images', this.getAttribute('images'))
     this.createShadowDOM()
-    this.renderImgList()
   }
 
   createShadowDOM() {
@@ -29,7 +31,7 @@ export class SkraaFotoImgList extends HTMLElement {
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
     // Create ul element
     const ul = document.createElement('ul')
-    div.className = "image-list"
+    ul.className = "image-list"
     // Create some CSS to apply to the shadow DOM
     const style = document.createElement('style')
     style.textContent = this.styles
@@ -37,31 +39,17 @@ export class SkraaFotoImgList extends HTMLElement {
     this.shadowRoot.append(style,ul)
   }
 
-  renderImgList() {
+  renderImgList(imglist) {
     const ul = this.shadowRoot.querySelector('.image-list')
     ul.innerHTML = ''
-    const imgs = this.getAttribute('images').split(',')
-    for (let img of imgs) {
-      console.log(img)
+    for (let img of imglist) {
       const li = document.createElement('li')
-      li.innerHTML = `<a href="${img}">${img}</a>`
+      li.innerHTML = `<img src="${img}&token=${environment.API_TOKEN}" alt="">`
       ul.append(li)
-    }
-  }
-
-  connectedCallback() {
-    
-  }
-
-  attributeChangedCallback(name, old_value, new_value) {
-    if (old_value !== new_value) {
-      if (name === 'images') {
-        this.renderImgList()
-      }
     }
   }
 
 }
 
-// This is how to initialize the custom element
+// This is how to register the custom element:
 // customElements.define('skraafoto-imglist', SkraaFotoImgList)

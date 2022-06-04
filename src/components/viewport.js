@@ -1,8 +1,8 @@
 import {Projection} from 'ol/proj.js'
-import {GeoTIFF} from 'ol/source.js'
+import GeoTIFF from 'ol/source/GeoTIFF.js'
 import {WebGLTile} from 'ol/layer.js'
 import OlMap from 'ol/Map.js'
-import View from 'ol/View'
+import View from 'ol/View.js'
 import MousePosition from 'ol/control/MousePosition'
 
 export class SkraaFotoViewport extends HTMLElement {
@@ -22,6 +22,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .ol-mouse-position {
       background-color: black;
+      position: absolute;
+      z-index: 99;
+      bottom: 1.5rem;
+      padding: .25rem;
     }
   `
 

@@ -4,8 +4,8 @@
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild skraafoto=src/index.js skraafoto=src/index.css --outdir=dist --bundle --watch --platform=node",
-    "build": "esbuild skraafoto=src/index.js skraafoto=src/index.css --outdir=dist --bundle --minify --platform=node",
+    "dev": "export NODE_ENV=development && cp ../config.js dist/config.js && node esbuild.js",
+    "build": "export NODE_ENV=production && cp ../config.js dist/config.js && node esbuild.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Dataforsyningen/skraafoto_frontend/issues"
   },
@@ -24,7 +24,6 @@
     "ol": "^6.14.1"
   },
   "devDependencies": {
-    "dotenv": "^16.0.1",
     "esbuild": "^0.14.39"
   }
 }
