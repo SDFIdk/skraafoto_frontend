@@ -26,7 +26,7 @@ EventBroker.init()
   Pinpointing a new coordinate on map or via searchbar, updates all views and maps
 */
 
-// Experiment with API requests
+// Experiment with API requests and display a list of images
 const requestbody = {
   intersects: {
     type: "Point",
@@ -38,9 +38,11 @@ const requestbody = {
 }
 post(`${environment.API_BASEURL_STAC}/search`, requestbody, environment.API_TOKEN)
 .then((response) => {
-  console.log(response)
+  const images = response.features.map(function(feature) {
+    return feature.assets.thumbnail.href
+  })
+  document.querySelector('skraafoto-imglist').images = images
 })
-
 
 /*
 get('https://api.dataforsyningen.dk/skraafotoapi_test/collections/skraafotos2019/items/2019_83_37_2_0046_00001113', '47dada7edade95277d7d0935ab20a593')
