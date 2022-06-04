@@ -13,9 +13,6 @@ customElements.define('skraafoto-map', SkraaFotoMap)
 customElements.define('skraafoto-slider', SkraaFotoSlider)
 customElements.define('skraafoto-imglist', SkraaFotoImgList)
 
-// Load config
-console.log('env', process.env.NODE_ENV)
-
 // Initialize
 EventBroker.init()
 
@@ -39,7 +36,7 @@ const requestbody = {
     ]
   }
 }
-post('https://api.dataforsyningen.dk/skraafotoapi_test/search', requestbody,'47dada7edade95277d7d0935ab20a593')
+post(`${environment.API_BASEURL_STAC}/search`, requestbody, environment.API_TOKEN)
 .then((response) => {
   console.log(response)
 })
