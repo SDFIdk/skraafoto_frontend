@@ -17,7 +17,6 @@ export class SkraaFotoImgList extends HTMLElement {
 
   // setters
   set images(image_array) {
-    console.log(image_array)
     this.renderImgList(image_array)
   }
 
