@@ -44,7 +44,6 @@ export class SkraaFotoMap extends HTMLElement {
     proj4.defs('EPSG:25832', "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs")
     register(proj4)
     this.projection = getProjection('EPSG:25832')
-    this.size = getWidth(this.projectionExtent) / 256
 
     this.createShadowDOM()
   }
