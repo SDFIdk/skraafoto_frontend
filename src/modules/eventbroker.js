@@ -29,15 +29,13 @@ export default {
         },
         "filter-lang": "cql-json",
         "filter": { 
-          "and": [
-            {"eq": [ { "property": "direction" }, "west" ] }
-          ]
+          "eq": [ { "property": "direction" }, "west" ]
         }
       }
       post(`${environment.API_BASEURL_STAC}/search`, query, environment.API_TOKEN)
       .then((response) => {
         if (response.features[0]) {
-          document.querySelector('skraafoto-viewport').image = response.features[0]
+          document.querySelector('skraafoto-viewport').image = response.features[1]
         } else {
           console.error('There was no image feature for those coordinates')
         }

@@ -33,8 +33,8 @@ const requestbody = {
   intersects: {
     type: "Point",
     coordinates:[
-      10.4064,
-      55.3951
+      10.4,
+      55.4
     ]
   }
 }
@@ -45,10 +45,3 @@ post(`${environment.API_BASEURL_STAC}/search`, requestbody, environment.API_TOKE
   })
   document.querySelector('skraafoto-imglist').images = images
 })
-
-/*
-get('https://api.dataforsyningen.dk/skraafotoapi_test/collections/skraafotos2019/items/2019_83_37_2_0046_00001113', '47dada7edade95277d7d0935ab20a593')
-.then((response) => {
-  console.log('got response', response)
-})
-*/

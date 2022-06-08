@@ -1,13 +1,21 @@
-import OlMap from 'ol/Map'
-import OlView from 'ol/View'
+// OpenLayers map code lifted from this example:
+// https://openlayers.org/en/latest/examples/wmts-layer-from-capabilities.html
+import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
+import Map from 'ol/Map'
 import TileLayer from 'ol/layer/Tile'
-
-import { OSM } from 'ol/source'
+import View from 'ol/View'
+import {get as getProjection} from 'ol/proj'
+import {getWidth} from 'ol/extent'
+import {register} from 'ol/proj/proj4'
+import proj4 from 'proj4'
 
 export class SkraaFotoMap extends HTMLElement {
 
   // public properties
-
+  auth_token = environment.API_TOKEN
+  projection
+  parser = new WMTSCapabilities()
   map = null
   styles = `
     :root {
@@ -30,6 +38,13 @@ export class SkraaFotoMap extends HTMLElement {
 
   constructor() {
     super()
+
+    // Define and register EPSG:25832 projection
+    proj4.defs('EPSG:25832', "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs")
+    register(proj4)
+    this.projection = getProjection('EPSG:25832')
+    this.size = getWidth(this.projectionExtent) / 256
+
     this.createShadowDOM()
   }
 
@@ -49,29 +64,41 @@ export class SkraaFotoMap extends HTMLElement {
     this.shadowRoot.append(style, div)
   }
 
+  generateMap() {
+    fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.auth_token}`)
+    .then((response) => {
+      return response.text()
+    })
+    .then((xml) => {
+      const result = this.parser.read(xml)
+      const options = optionsFromCapabilities(result, {
+        layer: 'topo_skaermkort_daempet',
+        matrixSet: 'View1'
+      })
+
+      this.map = new Map({
+        layers: [
+          new TileLayer({
+            opacity: 1,
+            source: new WMTS(options)
+          }),
+        ],
+        target: this.shadowRoot.querySelector('.geographic-map'),
+        view: new View({
+          center: [1200000,7600000],
+          zoom: 7,
+        }),
+      })
+    })
+  }
+
   // Lifecycle hooks
 
   connectedCallback() {
 
-    const view = new OlView({
-      center: [1295112.66, 7606748.02],
-      zoom: 6,
-      minZoom: 4,
-      maxZoom: 20,
-      showFullExtent: true,
-      projection: 'EPSG:3857'
-    })
-
-    this.map = new OlMap({
-      target: this.shadowRoot.querySelector('.geographic-map'),
-      layers: [
-        new TileLayer({source: new OSM()})
-      ],
-      view: view
-    })
-
-    // Consider map.updateSize() when expanding slider containing map
+    this.generateMap()
   }
+
   attributeChangedCallback(name, oldValue, newValue) {
     // Do stuff is attributes change
   }  

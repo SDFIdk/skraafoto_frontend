@@ -50,7 +50,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   constructor() {
     super()
-    this.center = this.getAttribute('center') ? JSON.parse(this.getAttribute('center')) : [10.4,55.4] 
+    this.center = this.getAttribute('center') ? JSON.parse(this.getAttribute('center')) : [10.34,55.37] 
     this.zoom = this.getAttribute('zoom') ? Number(this.getAttribute('zoom')) : 0
     this.mousePosition = new MousePosition()
     this.createShadowDOM()
