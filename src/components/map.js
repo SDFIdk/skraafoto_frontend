@@ -39,7 +39,8 @@ export class SkraaFotoMap extends HTMLElement {
   constructor() {
     super()
 
-    // Define and register EPSG:25832 projection
+    // Define and register EPSG:25832 projection, since OpenLayers doesn't know about it (yet).
+    // See https://github.com/SDFIdk/Demo/blob/master/examples/openlayers/example1.js
     proj4.defs('EPSG:25832', "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs")
     register(proj4)
     this.projection = getProjection('EPSG:25832')
