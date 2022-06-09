@@ -29,7 +29,7 @@ export default {
         },
         "filter-lang": "cql-json",
         "filter": { 
-          "eq": [ { "property": "direction" }, "west" ]
+          "eq": [ { "property": "direction" }, "east" ]
         }
       }
       post(`${environment.API_BASEURL_STAC}/search`, query, environment.API_TOKEN)

@@ -2,9 +2,9 @@
   "name": "skraafoto_frontend",
   "version": "1.0.0",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
-  "main": "index.js",
+  "main": "./public/index.html",
   "scripts": {
-    "dev": "export NODE_ENV=development && cp ../config.js dist/config.js && node esbuild.js",
+    "dev": "export NODE_ENV=development && cp ../config.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && cp ../config.js dist/config.js && node esbuild.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

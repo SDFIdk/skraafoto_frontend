@@ -27,21 +27,3 @@ EventBroker.init()
   All views and maps are centered on this coordinate
   Pinpointing a new coordinate on map or via searchbar, updates all views and maps
 */
-
-// Experiment with API requests and display a list of images
-const requestbody = {
-  intersects: {
-    type: "Point",
-    coordinates:[
-      10.4,
-      55.4
-    ]
-  }
-}
-post(`${environment.API_BASEURL_STAC}/search`, requestbody, environment.API_TOKEN)
-.then((response) => {
-  const images = response.features.map(function(feature) {
-    return feature.assets.thumbnail.href
-  })
-  document.querySelector('skraafoto-imglist').images = images
-})

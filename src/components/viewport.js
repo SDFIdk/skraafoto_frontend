@@ -72,10 +72,11 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   generateSource(geotiff_href, token) {
+    console.log('anything up with this?', geotiff_href)
     return new GeoTIFF({
       convertToRGB: true,
-      sources: [{ url: geotiff_href }],
-      sourceOptions: {headers: {'token': token}}
+      sources: [{ url: `${geotiff_href}?token=${token}`}],
+      //sourceOptions: {headers: {'token': token}}
     })
   }
 
@@ -85,9 +86,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async generateMap() {
 
-    // Just testing
-    const cogUrl = "https://api.dataforsyningen.dk/skraafoto_server_test/COG_oblique_2021/10km_613_58/1km_6132_583/2021_83_37_2_0025_00001961.tif"
-    
     // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
     // when the view resolves view properties, the map view will be updated with the HACKish projection override
     const projection = new Projection({
@@ -100,7 +98,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
     let view = await source.getView()
     view.projection = projection
-    console.log('got view', view)
 
     const layer = this.generateLayer(source)
 
@@ -128,7 +125,6 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log('attr changed', newValue)
     if (oldValue !== newValue) {
       switch(name) {
         case "center":
