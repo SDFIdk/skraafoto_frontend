@@ -6,14 +6,13 @@ import Map from 'ol/Map'
 import TileLayer from 'ol/layer/Tile'
 import View from 'ol/View'
 import {get as getProjection} from 'ol/proj'
-import {getWidth} from 'ol/extent'
 import {register} from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
 export class SkraaFotoMap extends HTMLElement {
 
   // public properties
-  auth_token = environment.API_TOKEN
+  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   projection
   parser = new WMTSCapabilities()
   map = null
@@ -56,7 +55,6 @@ export class SkraaFotoMap extends HTMLElement {
     // Create div element
     const div = document.createElement('div')
     div.className = "geographic-map"
-    div.setAttribute('data-token','47dada7edade95277d7d0935ab20a593')
     // Create some CSS to apply to the shadow DOM
     const style = document.createElement('style')
     style.textContent = this.styles
@@ -65,7 +63,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   generateMap() {
-    fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.auth_token}`)
+    fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.api_stac_token}`)
     .then((response) => {
       return response.text()
     })

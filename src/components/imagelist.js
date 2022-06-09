@@ -1,6 +1,7 @@
 export class SkraaFotoImgList extends HTMLElement {
 
   // public properties
+  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   styles = `
     :root {
       height: 100%;
@@ -43,7 +44,7 @@ export class SkraaFotoImgList extends HTMLElement {
     ul.innerHTML = ''
     for (let img of imglist) {
       const li = document.createElement('li')
-      li.innerHTML = `<img src="${img}&token=${environment.API_TOKEN}" alt="">`
+      li.innerHTML = `<img src="${img}&token=${this.api_stac_token}" alt="">`
       ul.append(li)
     }
   }

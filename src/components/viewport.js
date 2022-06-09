@@ -11,8 +11,8 @@ export class SkraaFotoViewport extends HTMLElement {
   map_element
   map
   imagedata
-  auth_token = environment.API_TOKEN
-  api_baseurl_stac = environment.API_BASEURL_STAC
+  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
+  api_stac_baseurl = environment.API_STAC_BASEURL ? environment.API_STAC_BASEURL : ''
   center
   zoom
   styles = `
@@ -71,12 +71,11 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.append(style,div)
   }
 
-  generateSource(geotiff_href, token) {
-    console.log('anything up with this?', geotiff_href)
+  generateSource(geotiff_href) {
     return new GeoTIFF({
       convertToRGB: true,
-      sources: [{ url: `${geotiff_href}?token=${token}`}],
-      //sourceOptions: {headers: {'token': token}}
+      sources: [{ url: geotiff_href }],
+      sourceOptions: {headers: {'token': this.api_stac_token}}
     })
   }
 
@@ -94,7 +93,7 @@ export class SkraaFotoViewport extends HTMLElement {
       metersPerUnit: 1
     })
 
-    const source = this.generateSource(this.imagedata.assets.data.href, this.auth_token)
+    const source = this.generateSource(this.imagedata.assets.data.href)
 
     let view = await source.getView()
     view.projection = projection
@@ -112,7 +111,7 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updateMap() {
-    const source = this.generateSource(this.imagedata.assets.data.href, this.auth_token)
+    const source = this.generateSource(this.imagedata.assets.data.href)
     const layer = this.generateLayer(source)
     this.map.setLayers([layer])
     this.map.setView(source.getView())

@@ -5,9 +5,6 @@ import { SkraaFotoImgList } from './components/imagelist.js'
 import { SkraaFotoAddressSearch } from './components/address-search'
 import EventBroker from './modules/eventbroker.js'
 
-// TODO: Pull from npm package instead
-import { get, post, world2image } from '../../../saul'
-
 // Initialize web components
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
 customElements.define('skraafoto-map', SkraaFotoMap)
@@ -18,9 +15,7 @@ customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 // Initialize
 EventBroker.init()
 
-
-// Set up initial state notes
-
+// Notes
 /*
   Dataflow:
   Initial state has a single coordinate

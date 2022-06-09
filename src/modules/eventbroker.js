@@ -1,5 +1,5 @@
 // TODO: Import saul from npm package
-import {post} from '../../../../saul'
+import {postSTAC} from 'saul'
 
 export default {
   init: function() {
@@ -32,7 +32,7 @@ export default {
           "eq": [ { "property": "direction" }, "east" ]
         }
       }
-      post(`${environment.API_BASEURL_STAC}/search`, query, environment.API_TOKEN)
+      postSTAC('/search', query)
       .then((response) => {
         if (response.features[0]) {
           document.querySelector('skraafoto-viewport').image = response.features[1]

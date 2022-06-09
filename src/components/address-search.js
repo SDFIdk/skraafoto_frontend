@@ -1,9 +1,10 @@
 // TODO: Import this from NPM package
-import {get} from '../../../../saul'
+import {get} from 'saul'
 
 export class SkraaFotoAddressSearch extends HTMLElement {
 
   // public properties
+  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   styles = `
     :root {
       
@@ -36,7 +37,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
   connectedCallback() {
     this.shadowRoot.querySelector('input[type="search"]').addEventListener('input', (event) => {
-      get(`https://api.dataforsyningen.dk/adresser/autocomplete?q=${event.target.value}`, environment.API_TOKEN)
+      get(`https://api.dataforsyningen.dk/adresser/autocomplete?q=${event.target.value}`, this.api_stac_token)
       .then((response) => {
         console.log('got response', response)
       })
