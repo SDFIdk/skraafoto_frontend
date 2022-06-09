@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <title>Skråfoto prototype</title>
     <link rel="stylesheet" href="dist/skraafotostyle.css">
-    <script src="dist/config.js"></script>
+    <script src="config.js"></script>
   </head>
   <body>
 
@@ -13,20 +13,22 @@
 
       <h1>Skråfoto prototype</h1>
 
+      <!-- <skraafoto-address-search></skraafoto-address-search> -->
+
+      <input type="text" id="coord-inputs" value="10.34,55.37">
+
     </header>
 
     <main>
-
-      <!-- <skraafoto-searchbar></skraafoto-searchbar> -->
-
+      
       <skraafoto-slider aria-expanded="false">
       
         <skraafoto-map style="height: 20rem; display: block;"></skraafoto-map>
 
-        <skraafoto-imglist style="height: auto; display: block;" images="img1.jpg,img2.jpg"></skraafoto-imglist>
-      
-      </skraafoto-slider>
+        <!-- <skraafoto-imglist style="height: auto; display: block;"></skraafoto-imglist> -->
 
+      </skraafoto-slider>
+      
       <skraafoto-viewport></skraafoto-viewport>
 
     </main>
