@@ -1,5 +1,4 @@
-// TODO: Import saul from npm package
-import {postSTAC} from 'saul'
+import {postSTAC} from 'skraafoto-saul'
 
 export default {
   init: function() {

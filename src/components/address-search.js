@@ -1,5 +1,4 @@
-// TODO: Import this from NPM package
-import {get} from 'saul'
+import {get} from 'skraafoto-saul'
 
 export class SkraaFotoAddressSearch extends HTMLElement {
 
