@@ -1,5 +1,5 @@
 {
-  "name": "skraafoto_frontend",
+  "name": "skraafoto-frontend",
   "version": "1.0.0",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
