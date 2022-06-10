@@ -1,4 +1,4 @@
-import {postSTAC} from 'skraafoto-saul'
+import {postSTAC} from '@sdfidk/saul'
 
 export default {
   init: function() {

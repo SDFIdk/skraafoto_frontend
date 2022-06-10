@@ -1,4 +1,4 @@
-import {get} from 'skraafoto-saul'
+import {get} from '@sdfidk/saul'
 
 export class SkraaFotoAddressSearch extends HTMLElement {
 
