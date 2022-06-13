@@ -51,7 +51,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.imagedata = {
       assets: {
         data: {
-          href: 'https://api.dataforsyningen.dk/skraafoto_server_test/COG_oblique_2021/10km_613_58/1km_6133_582/2021_83_37_2_0024_00002105.tif'
+          href: 'https://api.dataforsyningen.dk/skraafoto_server_test/COG_oblique_2021/10km_613_58/1km_6133_582/2021_83_37_2_0024_00002105.tif' // Good
+          href: 'https://api.dataforsyningen.dk/skraafoto_server_test/COG_oblique_2021/10km_613_58/1km_6133_582/2021_83_36_4_0007_00004563.tif' // Bad
         }
       }
     }
