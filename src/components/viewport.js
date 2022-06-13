@@ -45,6 +45,17 @@ export class SkraaFotoViewport extends HTMLElement {
   // setters
   set image(imagedata) {
     this.imagedata = imagedata
+    
+    // Use this to check for last known useful testdata
+    /*
+    this.imagedata = {
+      assets: {
+        data: {
+          href: 'https://api.dataforsyningen.dk/skraafoto_server_test/COG_oblique_2021/10km_613_58/1km_6133_582/2021_83_37_2_0024_00002105.tif'
+        }
+      }
+    }
+    */
     this.generateMap()
   }
 
@@ -94,7 +105,6 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     const source = this.generateSource(this.imagedata.assets.data.href)
-
     let view = await source.getView()
     view.projection = projection
 
@@ -121,6 +131,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   connectedCallback() {
     this.map_element = this.shadowRoot.querySelector('.viewport-map')
+    //this.generateMap()
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
