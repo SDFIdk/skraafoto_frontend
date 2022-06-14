@@ -2,7 +2,7 @@ import {postSTAC, getSTAC} from '@sdfidk/saul'
 
 // Variables
 
-const collection = 'skraafotos2019'
+const collection = 'skraafotos2019' // TODO: This should not be hardcoded
 let items = []
 
 

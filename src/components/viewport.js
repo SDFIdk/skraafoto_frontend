@@ -8,9 +8,7 @@ import MousePosition from 'ol/control/MousePosition'
 export class SkraaFotoViewport extends HTMLElement {
 
   // properties
-  map_element
   map
-  imagedata
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   api_stac_baseurl = environment.API_STAC_BASEURL ? environment.API_STAC_BASEURL : ''
   center
@@ -53,7 +51,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // setters
   set image(imagedata) {
-    this.imagedata = imagedata
     this.updateMap(imagedata)
   }
 
@@ -92,10 +89,9 @@ export class SkraaFotoViewport extends HTMLElement {
     return new WebGLTile({source: src})
   }
 
-  generateMap() {
-
+  generateMap(map_element) {
     this.map = new OlMap({
-      target: this.map_element
+      target: map_element
     })
 
     this.map.addControl(this.mousePosition)
@@ -117,8 +113,7 @@ export class SkraaFotoViewport extends HTMLElement {
   // Lifecycle callbacks
 
   connectedCallback() {
-    this.map_element = this.shadowRoot.querySelector('.viewport-map')
-    this.generateMap()
+    this.generateMap(this.shadowRoot.querySelector('.viewport-map'))
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
