@@ -40,10 +40,14 @@ function init() {
       
       const coords = event.detail // CRS84 coordinates [easting, northing]
 
-      items = await findItemsAtCoordinate(event.detail, collection)
+      items = await findItemsAtCoordinate(coords, collection)
       console.log('got response', items)
-      if (items[0]) {
+      
+      if (items.length > 0) {
+        // Update viewport
         document.querySelector('skraafoto-viewport').image = items[0]
+        // Update map
+        document.querySelector('skraafoto-map').setAttribute('center', coords)
       } else {
         console.error('There was no image feature for those coordinates')
       }
