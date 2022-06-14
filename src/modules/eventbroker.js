@@ -13,10 +13,9 @@ export default {
     })
 
     // When a coordinate input is given, fetch image and update viewport
-    document.querySelector('#coord-inputs').addEventListener('change', function(event) {
-      const coords = event.target.value.split(',').map(function(coord) {
-        return parseFloat(coord)
-      })
+    document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
+      const coords = event.detail
+      console.log('changing address', event)
 
       const query = {
         "intersects": {
