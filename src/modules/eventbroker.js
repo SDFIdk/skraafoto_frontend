@@ -1,8 +1,8 @@
-import {postSTAC, getSTAC} from '@sdfidk/saul'
+import {getSTAC} from '@sdfidk/saul'
 
 // Variables
 
-const collection = 'skraafotos2019'
+const collection = 'skraafotos2019' // TODO: This should not be hardcoded
 let items = []
 
 
@@ -18,11 +18,28 @@ function calcBB(coordinates) {
   return bbox.join(',')
 }
 
-function findItemsAtCoordinate(coordinates, collection_id) {
-  return getSTAC(`/collections/${collection_id}/items?limit=20&bbox=${calcBB(coordinates)}&bbox-crs=http://www.opengis.net/def/crs/OGC/1.3/CRS84`)
-  .then((response) => {
-    return response.features
+function queryWithDirection(coords, direction) {
+  const search_query = encodeURI(JSON.stringify({ 
+    "eq": [ { "property": "direction" }, direction ]
+  }))
+  return getSTAC(`/collections/${collection}/items?limit=1&filter=${search_query}&filter-lang=cql-json&bbox=${calcBB(coords)}`)
+}
+
+function findItemsAtCoordinate(coordinates) {
+
+  let queries = [
+    queryWithDirection(coordinates, 'north'),
+    queryWithDirection(coordinates, 'south'),
+    queryWithDirection(coordinates, 'east'),
+    queryWithDirection(coordinates, 'west'),
+    queryWithDirection(coordinates, 'nadir')
+  ]
+  return Promise.all(queries).then((responses) => {
+    return responses.map(function(response) {
+      return response.features[0]
+    })
   })
+
 }
 
 function init() {
@@ -40,36 +57,25 @@ function init() {
       
       const coords = event.detail // CRS84 coordinates [easting, northing]
 
-      items = await findItemsAtCoordinate(event.detail, collection)
+      items = await findItemsAtCoordinate(coords)
       console.log('got response', items)
-      if (items[0]) {
-        document.querySelector('skraafoto-viewport').image = items[0]
+      
+      if (items.length > 0) {
+        
+        // Update viewports
+        document.getElementById('viewport-main').image = items[0]
+        document.getElementById('viewport-north').image = items[0]
+        document.getElementById('viewport-south').image = items[1]
+        document.getElementById('viewport-east').image = items[2]
+        document.getElementById('viewport-west').image = items[3]
+        document.getElementById('viewport-nadir').image = items[4]
+        
+        // Update map
+        document.querySelector('skraafoto-map').setAttribute('center', coords)
+      
       } else {
         console.error('There was no image feature for those coordinates')
       }
-
-      /*
-      const query = {
-        "intersects": {
-          "type": "Point",
-          "coordinates":[
-            coords[0],
-            coords[1]
-          ]
-        },
-        "filter-lang": "cql-json",
-        "filter": { 
-          "eq": [ { "property": "direction" }, "east" ]
-        }
-      }
-      postSTAC('/search', query)
-      .then((response) => {
-        if (response.features[0]) {
-          document.querySelector('skraafoto-viewport').image = response.features[1]
-        } else {
-          console.error('There was no image feature for those coordinates')
-        }
-      })*/
       
     })
 }

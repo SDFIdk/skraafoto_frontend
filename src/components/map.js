@@ -84,7 +84,7 @@ export class SkraaFotoMap extends HTMLElement {
         target: this.shadowRoot.querySelector('.geographic-map'),
         view: new View({
           center: [1200000,7600000],
-          zoom: 7,
+          zoom: 7
         }),
       })
     })
@@ -98,7 +98,10 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    // Do stuff is attributes change
+    if (name === "center") {
+      // Set map view center to newValue
+      console.log('try to set new map center', newValue)
+    }
   }  
 
 }
