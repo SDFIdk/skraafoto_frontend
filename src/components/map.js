@@ -40,7 +40,9 @@ export class SkraaFotoMap extends HTMLElement {
 
     // Define and register EPSG:25832 projection, since OpenLayers doesn't know about it (yet).
     // See https://github.com/SDFIdk/Demo/blob/master/examples/openlayers/example1.js
-    proj4.defs('EPSG:25832', "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs")
+    // More on EPSG:25832: https://epsg.io/25832
+    // Definition can be requested from https://epsg.io/?format=json&q=25832
+    proj4.defs('EPSG:25832', "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
     register(proj4)
     this.projection = getProjection('EPSG:25832')
 
@@ -74,6 +76,8 @@ export class SkraaFotoMap extends HTMLElement {
         matrixSet: 'View1'
       })
 
+      // HINT: Use setRenderReprojectionEdges(true) on WMTS tillayer for debugging
+
       this.map = new Map({
         layers: [
           new TileLayer({
@@ -83,7 +87,7 @@ export class SkraaFotoMap extends HTMLElement {
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
         view: new View({
-          center: [1200000,7600000],
+          center: [1200000,7600000], // Why not 638955.18, 6209259.68 ?
           zoom: 7
         }),
       })
@@ -100,7 +104,7 @@ export class SkraaFotoMap extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "center") {
       // Set map view center to newValue
-      console.log('try to set new map center', newValue)
+      
     }
   }  
 

@@ -1,8 +1,10 @@
 import {dawaAutocomplete} from 'dawa-autocomplete2'
+import {createTranslator} from 'skraafoto-saul'
 
 export class SkraaFotoAddressSearch extends HTMLElement {
 
   // public properties
+  coorTranslator = createTranslator()
   styles = `
     :root {
       
@@ -86,7 +88,9 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   connectedCallback() {
     dawaAutocomplete( this.shadowRoot.getElementById("adresse"), {
       select: (selected) => {
-        this.dispatchEvent(new CustomEvent('addresschange', { detail: [selected.data.x, selected.data.y] }))
+        // Convert WGS84 coords to EPSG:25832 
+        const coords = this.coorTranslator.forward([selected.data.x, selected.data.y])
+        this.dispatchEvent(new CustomEvent('addresschange', { detail: coords }))
       }
     })
   }
