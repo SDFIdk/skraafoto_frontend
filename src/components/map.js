@@ -8,6 +8,7 @@ import View from 'ol/View'
 import {get as getProjection} from 'ol/proj'
 import {register} from 'ol/proj/proj4'
 import proj4 from 'proj4'
+import {epsg25832proj} from 'skraafoto-saul'
 
 export class SkraaFotoMap extends HTMLElement {
 
@@ -16,6 +17,7 @@ export class SkraaFotoMap extends HTMLElement {
   projection
   parser = new WMTSCapabilities()
   map = null
+  view
   styles = `
     :root {
       height: 100%;
@@ -28,6 +30,7 @@ export class SkraaFotoMap extends HTMLElement {
     }
   `
 
+  // getters
   static get observedAttributes() { 
     return [
       'zoom', 
@@ -35,14 +38,16 @@ export class SkraaFotoMap extends HTMLElement {
     ]
   }
 
+  // setters
+  set setView(options) {
+    this.updateMap(options.center)
+  }
+
   constructor() {
     super()
 
     // Define and register EPSG:25832 projection, since OpenLayers doesn't know about it (yet).
-    // See https://github.com/SDFIdk/Demo/blob/master/examples/openlayers/example1.js
-    // More on EPSG:25832: https://epsg.io/25832
-    // Definition can be requested from https://epsg.io/?format=json&q=25832
-    proj4.defs('EPSG:25832', "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
+    epsg25832proj(proj4)
     register(proj4)
     this.projection = getProjection('EPSG:25832')
 
@@ -76,6 +81,12 @@ export class SkraaFotoMap extends HTMLElement {
         matrixSet: 'View1'
       })
 
+      this.view = new View({
+        projection: this.projection,
+        center: [638955,6209259],
+        zoom: 7
+      })
+
       // HINT: Use setRenderReprojectionEdges(true) on WMTS tillayer for debugging
 
       this.map = new Map({
@@ -86,13 +97,20 @@ export class SkraaFotoMap extends HTMLElement {
           }),
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
-        view: new View({
-          center: [1200000,7600000], // Why not 638955.18, 6209259.68 ?
-          zoom: 7
-        }),
+        view: this.view
       })
     })
   }
+
+  updateMap(center) {
+    const new_view = new View({
+      projection: this.projection,
+      center: center,
+      zoom: 20
+    })
+    this.map.setView(new_view)
+  }
+
 
   // Lifecycle hooks
 
@@ -100,13 +118,6 @@ export class SkraaFotoMap extends HTMLElement {
 
     this.generateMap()
   }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === "center") {
-      // Set map view center to newValue
-      
-    }
-  }  
 
 }
 
