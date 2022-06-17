@@ -21,10 +21,11 @@
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
     "@picocss/pico": "^1.5.2",
-    "@sdfidk/saul": "github:SDFIdk/saul",
     "dawa-autocomplete2": "^1.0.2",
     "ol": "^6.14.1",
-    "proj4": "^2.8.0"
+    "proj4": "^2.8.0",
+    "skraafoto-saul": "github:SDFIdk/saul",
+    "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "esbuild": "^0.14.39"
