@@ -95,7 +95,9 @@ function init() {
         }
 
         // Update map
-        document.querySelector('skraafoto-map').setAttribute('center', JSON.stringify(coords))
+        document.querySelector('skraafoto-map').setView = {
+          center: coords
+        }
       
       } else {
         console.error('There was no image feature for those coordinates')
