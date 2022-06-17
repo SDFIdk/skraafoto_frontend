@@ -4,7 +4,7 @@ import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
 import MousePosition from 'ol/control/MousePosition'
-import { world2image } from 'skraafoto-saul'
+import { getZ, world2image } from 'skraafoto-saul'
 
 export class SkraaFotoViewport extends HTMLElement {
 
@@ -61,8 +61,7 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     this.image_data = options.image
-    this.center = world2image(options.image, options.center[0], options.center[1])
-    this.updateMap()
+    this.setCenter(options, this)
   }
   
   set image(imagedata) {
@@ -102,13 +101,19 @@ export class SkraaFotoViewport extends HTMLElement {
     return new WebGLTile({source: src})
   }
 
+  async setCenter(options, self) {
+    const elevation = await getZ(options.center[0], options.center[1], environment)
+    this.center = world2image(options.image, options.center[0], options.center[1], elevation)
+    self.updateMap()
+  }
+
   async updateMap() {
     const source = this.generateSource(this.image_data.assets.data.href)
+    const layer = this.generateLayer(source)
     this.view = await source.getView()
     this.view.projection = this.projection
     this.view.zoom = this.zoom
     this.view.center = this.center
-    const layer = this.generateLayer(source)
     this.map.setLayers([layer])
     this.map.setView(new View(this.view))
   }
