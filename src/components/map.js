@@ -9,6 +9,11 @@ import {get as getProjection} from 'ol/proj'
 import {register} from 'ol/proj/proj4'
 import proj4 from 'proj4'
 import {epsg25832proj} from 'skraafoto-saul'
+import VectorSource from 'ol/source/Vector'
+import VectorLayer from 'ol/layer/Vector'
+import Feature from 'ol/Feature'
+import Point from 'ol/geom/Point'
+import {Icon, Style} from 'ol/style'
 
 export class SkraaFotoMap extends HTMLElement {
 
@@ -17,6 +22,7 @@ export class SkraaFotoMap extends HTMLElement {
   projection
   parser = new WMTSCapabilities()
   map = null
+  icon_layer
   view
   styles = `
     :root {
@@ -87,6 +93,8 @@ export class SkraaFotoMap extends HTMLElement {
         zoom: 7
       })
 
+      this.icon_layer = this.generateIconLayer([0,0])
+
       // HINT: Use setRenderReprojectionEdges(true) on WMTS tillayer for debugging
 
       this.map = new Map({
@@ -95,9 +103,28 @@ export class SkraaFotoMap extends HTMLElement {
             opacity: 1,
             source: new WMTS(options)
           }),
+          this.icon_layer
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
         view: this.view
+      })
+    })
+  }
+
+  generateIconLayer(center) {
+    let icon_feature = new Feature({
+      geometry: new Point([center[0], center[1]])
+    })
+    const icon_style = new Style({
+      image: new Icon({
+        src: './img/crosshairs.svg',
+        scale: 2.5
+      })
+    })
+    icon_feature.setStyle(icon_style)
+    return new VectorLayer({
+      source: new VectorSource({
+        features: [icon_feature]
       })
     })
   }
@@ -109,6 +136,9 @@ export class SkraaFotoMap extends HTMLElement {
       zoom: 20
     })
     this.map.setView(new_view)
+    this.map.removeLayer(this.icon_layer)
+    this.icon_layer = this.generateIconLayer(center)
+    this.map.addLayer(this.icon_layer)
   }
 
 

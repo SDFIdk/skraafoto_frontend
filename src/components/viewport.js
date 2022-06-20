@@ -4,7 +4,12 @@ import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
 import MousePosition from 'ol/control/MousePosition'
-import { world2image } from 'skraafoto-saul'
+import { getZ, world2image } from 'skraafoto-saul'
+import VectorSource from 'ol/source/Vector'
+import VectorLayer from 'ol/layer/Vector'
+import Feature from 'ol/Feature'
+import Point from 'ol/geom/Point'
+import {Icon, Style} from 'ol/style'
 
 export class SkraaFotoViewport extends HTMLElement {
 
@@ -20,6 +25,7 @@ export class SkraaFotoViewport extends HTMLElement {
   source
   view
   mousePosition = new MousePosition()
+
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
   // when the view resolves view properties, the map view will be updated with the HACKish projection override
   projection = new Projection({
@@ -61,8 +67,7 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     this.image_data = options.image
-    this.center = world2image(options.image, options.center[0], options.center[1])
-    this.updateMap()
+    this.setCenter(options, this)
   }
   
   set image(imagedata) {
@@ -102,14 +107,41 @@ export class SkraaFotoViewport extends HTMLElement {
     return new WebGLTile({source: src})
   }
 
+  generateIconLayer(center) {
+    let icon_feature = new Feature({
+      geometry: new Point([center[0], center[1]])
+    })
+    const icon_style = new Style({
+      image: new Icon({
+        src: './img/crosshairs.svg',
+        scale: 2.5
+      })
+    })
+    icon_feature.setStyle(icon_style)
+    return new VectorLayer({
+      source: new VectorSource({
+        features: [icon_feature]
+      })
+    })
+  }
+
+  async setCenter(options, self) {
+    const elevation = await getZ(options.center[0], options.center[1], environment)
+    this.center = world2image(options.image, options.center[0], options.center[1], elevation)
+    self.updateMap()
+  }
+
   async updateMap() {
     const source = this.generateSource(this.image_data.assets.data.href)
+    const layer = this.generateLayer(source)
     this.view = await source.getView()
     this.view.projection = this.projection
     this.view.zoom = this.zoom
     this.view.center = this.center
-    const layer = this.generateLayer(source)
-    this.map.setLayers([layer])
+    this.map.setLayers([
+      layer, 
+      this.generateIconLayer(this.center)
+    ])
     this.map.setView(new View(this.view))
   }
 
