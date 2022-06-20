@@ -49,19 +49,43 @@ export class SkraaFotoViewport extends HTMLElement {
       width: 100%; 
       height: 100%; 
     }
-    .north-indicator {
+    .direction-indicator {
       position: absolute;
       top: .5rem;
       right: .5rem;
-      width: 2rem;
+      width: auto
       height: 2rem;
-      background-color: #fff;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .direction-indicator img {
+      display: none;
+    }
+    .direction-indicator img.north {
+      transform: rotate(0deg);
+      display: inline-block;
+    }
+    .direction-indicator img.south {
+      transform: rotate(180deg);
+      display: inline-block;
+    }
+    .direction-indicator img.east {
+      transform: rotate(90deg);
+      display: inline-block;
+    }
+    .direction-indicator img.west {
+      transform: rotate(270deg);
+      display: inline-block;
     }
   `
 
   template = `
     <div class="viewport-map"></div>
-    <img src="./img/compass.svg" alt="" class="north-indicator" title="Nord">
+    <p class="direction-indicator">
+      <span></span>
+      <img src="./img/compass.svg" alt="">
+    </p>
   `
 
   // getters
@@ -79,11 +103,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     this.image_data = options.image
     this.setCenter(options, this)
-  }
-  
-  set image(imagedata) {
-    this.image_data = imagedata
-    this.updateMap()
+    this.updateDirection(options.image)
   }
 
   constructor() {
@@ -91,6 +111,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.createShadowDOM()
   }
 
+  
   // Methods
 
   createShadowDOM() {
@@ -156,6 +177,13 @@ export class SkraaFotoViewport extends HTMLElement {
     ])
     this.map.setView(new View(this.view))
   }
+
+  updateDirection(imagedata) {
+    const direction_element = this.shadowRoot.querySelector('.direction-indicator')
+    direction_element.querySelector('span').innerText = imagedata.properties.direction
+    direction_element.querySelector('img').className = imagedata.properties.direction 
+  }
+
 
   // Lifecycle callbacks
 
