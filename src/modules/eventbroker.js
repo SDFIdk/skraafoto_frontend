@@ -109,7 +109,6 @@ function init() {
 
   // When a viewport is clicked in the selector, update the main viewport
   document.querySelector('skraafoto-slider').addEventListener('click', function(event) {
-    console.log(event.target)
     if (event.target.className !== 'viewport-pick-option') {
       return
     }

@@ -78,6 +78,12 @@ export class SkraaFotoViewport extends HTMLElement {
       transform: rotate(270deg);
       display: inline-block;
     }
+    .image-date {
+      position: absolute;
+      bottom: .5rem;
+      left: .5rem;
+      color: #fff;
+    }
   `
 
   template = `
@@ -86,13 +92,14 @@ export class SkraaFotoViewport extends HTMLElement {
       <span></span>
       <img src="./img/compass.svg" alt="">
     </p>
+    <p class="image-date"></p>
   `
 
   // getters
   static get observedAttributes() { 
     return [
       'center',
-      'zoom'
+      'zoom',
     ]
   }
 
@@ -104,6 +111,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.image_data = options.image
     this.setCenter(options)
     this.updateDirection(options.image)
+    this.updateDate(options.image)
   }
 
   constructor() {
@@ -184,13 +192,18 @@ export class SkraaFotoViewport extends HTMLElement {
     direction_element.querySelector('img').className = imagedata.properties.direction 
   }
 
+  updateDate(imagedata) {
+    const datetime = new Date(imagedata.properties.datetime).toLocaleDateString()
+    this.shadowRoot.querySelector('.image-date').innerText = datetime
+  }
+
 
   // Lifecycle callbacks
 
   connectedCallback() {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false})
+      controls: defaultControls({rotate: false, attribution: false})
     })
     //this.map.addControl(this.mousePosition)
     //this.mousePosition.setProjection(this.projection)

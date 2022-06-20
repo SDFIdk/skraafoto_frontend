@@ -32,6 +32,7 @@ export class SkraaFotoSlider extends HTMLElement {
     this.section.setAttribute('class','sf-slider')
     this.button_open = document.createElement('button')
     this.button_open.innerText = "Open"
+    this.button_open.className = 'sf-slider-open'
     this.button_close = document.createElement('button')
     this.button_close.innerText = "Close"
     this.the_slot = document.createElement('slot')
@@ -45,20 +46,36 @@ export class SkraaFotoSlider extends HTMLElement {
     this.shadowRoot.append(style,this.button_open, this.section)
   }
 
+  sliderOpen() {
+    this.section.style.transform = 'translate(0)'
+    this.setAttribute('aria-expanded', 'true')
+    this.slider_status = 'expanded'
+    this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'expanded'}))
+  }
+
+  sliderClose() {
+    this.section.style.transform = 'translate(35rem)'
+    this.setAttribute('aria-expanded', 'false')
+    this.slider_status = 'collapsed'
+    this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'collapsed'}))
+  }
+
   connectedCallback() {
 
     this.button_open.addEventListener('click', () => {
-      this.section.style.transform = 'translate(0)'
-      this.setAttribute('aria-expanded', 'true')
-      this.slider_status = 'expanded'
-      this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'expanded'}))
+      this.sliderOpen()
     })
 
     this.button_close.addEventListener('click', () =>{
-      this.section.style.transform = 'translate(35rem)'
-      this.setAttribute('aria-expanded', 'false')
-      this.slider_status = 'collapsed'
-      this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'collapsed'}))
+      this.sliderClose()
+    })
+
+    // Closes the slider whenever user clicks outside it
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('skraafoto-slider') && event.target.className !== 'sf-slider-open' && this.slider_status === 'expanded') {
+        console.log('close it')
+        this.sliderClose()
+      }
     })
   }
 
@@ -68,7 +85,6 @@ export class SkraaFotoSlider extends HTMLElement {
   }
 
 }
-
 
 // This is how to initialize the custom element
 // customElements.define('skraafoto-slider', SkraaFotoSlider)
