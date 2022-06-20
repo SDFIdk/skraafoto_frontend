@@ -110,7 +110,7 @@ export class SkraaFotoViewport extends HTMLElement {
   generateSource(geotiff_href) {
     return new GeoTIFF({
       convertToRGB: true,
-      sources: [{ url: geotiff_href }],
+      sources: [{ url: geotiff_href, bands: [1,2,3] }],
       sourceOptions: {headers: {'token': this.api_stac_token}}
     })
   }
