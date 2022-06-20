@@ -37,6 +37,10 @@ export class SkraaFotoViewport extends HTMLElement {
 
   styles = `
     :root {
+      
+    }
+    .viewport-wrapper {
+      position: relative;
       height: 100%;
       width: 100%;
       display: block;
@@ -51,8 +55,13 @@ export class SkraaFotoViewport extends HTMLElement {
       right: .5rem;
       width: 2rem;
       height: 2rem;
-      border: solid 1px red;
+      background-color: #fff;
     }
+  `
+
+  template = `
+    <div class="viewport-map"></div>
+    <img src="./img/compass.svg" alt="" class="north-indicator" title="Nord">
   `
 
   // getters
@@ -88,18 +97,14 @@ export class SkraaFotoViewport extends HTMLElement {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
     // Create div element
-    const div = document.createElement('div')
-    div.className = "viewport-map"
-    // Create compass element
-    const compass = document.createElement('img')
-    compass.className = 'north-indicator'
-    compass.src = './img/compass.cvg'
-    compass.alt = ''
+    const wrapper = document.createElement('article')
+    wrapper.className = 'viewport-wrapper'
+    wrapper.innerHTML = this.template
     // Create some CSS to apply to the shadow DOM
     const style = document.createElement('style')
     style.textContent = this.styles
     // attach the created elements to the shadow DOM
-    this.shadowRoot.append(style,div,compass)
+    this.shadowRoot.append(style,wrapper)
   }
 
   generateSource(geotiff_href) {
