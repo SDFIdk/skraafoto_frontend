@@ -102,7 +102,7 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     this.image_data = options.image
-    this.setCenter(options, this)
+    this.setCenter(options)
     this.updateDirection(options.image)
   }
 
@@ -131,7 +131,7 @@ export class SkraaFotoViewport extends HTMLElement {
   generateSource(geotiff_href) {
     return new GeoTIFF({
       convertToRGB: true,
-      sources: [{ url: geotiff_href, bands: [1,2,3] }],
+      sources: [{ url: geotiff_href, bands: [1,2,3] }], // Ignores band 4. See https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF.html#~SourceInfo
       sourceOptions: {headers: {'token': this.api_stac_token}}
     })
   }
@@ -158,10 +158,10 @@ export class SkraaFotoViewport extends HTMLElement {
     })
   }
 
-  async setCenter(options, self) {
+  async setCenter(options) {
     const elevation = await getZ(options.center[0], options.center[1], environment)
     this.center = world2image(options.image, options.center[0], options.center[1], elevation)
-    self.updateMap()
+    this.updateMap()
   }
 
   async updateMap() {
