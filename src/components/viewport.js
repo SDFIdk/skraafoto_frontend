@@ -3,13 +3,14 @@ import GeoTIFF from 'ol/source/GeoTIFF.js'
 import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
-import MousePosition from 'ol/control/MousePosition'
-import { getZ, world2image } from 'skraafoto-saul'
+//import MousePosition from 'ol/control/MousePosition'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
+import {defaults as defaultControls} from 'ol/control'
+import { getZ, world2image } from 'skraafoto-saul'
 
 export class SkraaFotoViewport extends HTMLElement {
 
@@ -24,7 +25,7 @@ export class SkraaFotoViewport extends HTMLElement {
   layer
   source
   view
-  mousePosition = new MousePosition()
+  // mousePosition = new MousePosition()
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
   // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -44,12 +45,13 @@ export class SkraaFotoViewport extends HTMLElement {
       width: 100%; 
       height: 100%; 
     }
-    .ol-mouse-position {
-      background-color: black;
+    .north-indicator {
       position: absolute;
-      z-index: 99;
-      bottom: 1.5rem;
-      padding: .25rem;
+      top: .5rem;
+      right: .5rem;
+      width: 2rem;
+      height: 2rem;
+      border: solid 1px red;
     }
   `
 
@@ -88,11 +90,16 @@ export class SkraaFotoViewport extends HTMLElement {
     // Create div element
     const div = document.createElement('div')
     div.className = "viewport-map"
+    // Create compass element
+    const compass = document.createElement('img')
+    compass.className = 'north-indicator'
+    compass.src = './img/compass.cvg'
+    compass.alt = ''
     // Create some CSS to apply to the shadow DOM
     const style = document.createElement('style')
     style.textContent = this.styles
     // attach the created elements to the shadow DOM
-    this.shadowRoot.append(style,div)
+    this.shadowRoot.append(style,div,compass)
   }
 
   generateSource(geotiff_href) {
@@ -149,10 +156,11 @@ export class SkraaFotoViewport extends HTMLElement {
 
   connectedCallback() {
     this.map = new OlMap({
-      target: this.shadowRoot.querySelector('.viewport-map')
+      target: this.shadowRoot.querySelector('.viewport-map'),
+      controls: defaultControls({rotate: false})
     })
-    this.map.addControl(this.mousePosition)
-    this.mousePosition.setProjection(this.projection)
+    //this.map.addControl(this.mousePosition)
+    //this.mousePosition.setProjection(this.projection)
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
