@@ -1,4 +1,4 @@
-import {getSTAC} from 'skraafoto-saul'
+import {getSTAC, createTranslator} from 'skraafoto-saul'
 
 // Variables
 
@@ -7,6 +7,7 @@ const auth = environment // We assume a global `enviroment` variable has been de
 
 let items = []
 let coordinates = null
+const translator = createTranslator()
 
 
 // Methods
@@ -44,77 +45,45 @@ function findItemsAtCoordinate(coordinates) {
 
 }
 
+async function updateViews(coords) {
+  
+  items = await findItemsAtCoordinate(coords)  
+  if (items.length > 0) {
+    
+    // Update viewports
+    document.getElementById('viewport-main').setView = {
+      image: items[0],
+      center: coords
+    }
+
+    document.querySelector('skraafoto-direction-picker').setView = {
+      images: items,
+      center: coords
+    }
+  
+  } else {
+    console.error('There was no image feature for those coordinates')
+  }
+}
+
 function init() {
 
+  // Load initial images
+  coordinates = translator.forward([10.3904185, 55.3947438]) 
+  updateViews(coordinates)
+
   // Set up event listeners
-    
-  // When slider opens, resize the map and viewports within
-  document.querySelector('skraafoto-slider').addEventListener('sliderchange', function() {
-    
-    // Update openlayers map size after slider was expanded
-    document.querySelector('skraafoto-map').map.updateSize()
-    document.querySelectorAll('skraafoto-slider skraafoto-viewport').forEach(function(element) {element.map.updateSize()})
-  })
 
   // When a coordinate input is given, fetch images and update viewports
-  document.querySelector('skraafoto-address-search').addEventListener('addresschange', async function(event) {
-    
+  document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
     coordinates = event.detail // EPSG:25832 coordinates
-
-    items = await findItemsAtCoordinate(coordinates)
-    
-    if (items.length > 0) {
-      
-      // Update viewports
-      const main_viewport = document.getElementById('viewport-main')
-      main_viewport.setView = {
-        image: items[0],
-        center: coordinates
-      }
-
-      document.getElementById('viewport-north').setView = {
-        image: items[0],
-        center: coordinates
-      }
-
-      document.getElementById('viewport-south').setView = {
-        image: items[1],
-        center: coordinates
-      }
-
-      document.getElementById('viewport-east').setView = {
-        image: items[2],
-        center: coordinates
-      }
-
-      document.getElementById('viewport-west').setView = {
-        image: items[3],
-        center: coordinates
-      }
-
-      document.getElementById('viewport-nadir').setView = {
-        image: items[4],
-        center: coordinates
-      }
-
-      // Update map
-      document.querySelector('skraafoto-map').setView = {
-        center: coordinates
-      }
-    
-    } else {
-      console.error('There was no image feature for those coordinates')
-    }
-    
+    updateViews(coordinates)
   })
 
-  // When a viewport is clicked in the selector, update the main viewport
-  document.querySelector('skraafoto-slider').addEventListener('click', function(event) {
-    if (event.target.className !== 'viewport-pick-option') {
-      return
-    }
+  // When a viewport is clicked in the direction picker, update the main viewport
+  document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', function(event) {
     document.getElementById('viewport-main').setView = {
-      image: event.target.image_data,
+      image: event.detail,
       center: coordinates
     }
   })

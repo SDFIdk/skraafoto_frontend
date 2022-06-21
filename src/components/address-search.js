@@ -9,11 +9,15 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     :root {
       
     }
+    
     label {
       height: 0;
       width: 0;
       overflow: hidden;
       display: block;
+    }
+    input {
+      background-color: #fff;
     }
     .autocomplete-container {
       /* relative position for at de absolut positionerede forslag får korrekt placering.*/
@@ -64,6 +68,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
   `
   template = `
+    <link rel="stylesheet" href="./dist/skraafotostyle.css">
+    <style>
+      ${ this.styles }
+    </style>
     <label for="adresse">Find adresse:</label>
     <input type="text" id="adresse" placeholder="F.eks. Rentemestervej 8">
   `
@@ -76,13 +84,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   createShadowDOM() {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    const fieldset = document.createElement('fieldset')
-    fieldset.innerHTML = this.template
-    // Create some CSS to apply to the shadow DOM
-    const style = document.createElement('style')
-    style.textContent = this.styles
+    const container = document.createElement('article')
+    container.innerHTML = this.template
     // Attach the elements to the shadow DOM
-    this.shadowRoot.append(style, fieldset)
+    this.shadowRoot.append(container)
   }
 
   connectedCallback() {

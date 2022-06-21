@@ -1,5 +1,11 @@
 export class SkraaFotoSlider extends HTMLElement {
 
+  
+  // Properties
+
+  slider_element
+  btn_open_element
+  btn_close_element
   styles = `
     .sf-slider { 
       width: 35rem;
@@ -17,71 +23,80 @@ export class SkraaFotoSlider extends HTMLElement {
       transform: translate(35rem);
     }
   `
+  // Template adds link so that this component can use shared CSS
+  template = `
+    <link rel="stylesheet" href="./dist/skraafotostyle.css">
+    <style>
+      ${ this.styles }
+    </style>
+    <button class="sf-slider-open">Open</button>
+    <section class="sf-slider">
+      <button class="sf-slider-close">Close</button>
+      <slot></slot>
+    </section>
+  `
 
   constructor() {
     super()
     this.createShadowDOM()
   }
 
+
+  // Methods
+
   createShadowDOM() {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    
     // Create elements
-    this.section = document.createElement('section')
-    this.section.setAttribute('class','sf-slider')
-    this.button_open = document.createElement('button')
-    this.button_open.innerText = "Open"
-    this.button_open.className = 'sf-slider-open'
-    this.button_close = document.createElement('button')
-    this.button_close.innerText = "Close"
-    this.the_slot = document.createElement('slot')
-    
-    // Create some CSS to apply to the shadow DOM
-    const style = document.createElement('style')
-    style.textContent = this.styles
-
+    this.markup = document.createElement('div')
+    this.markup.innerHTML = this.template
     // attach the created elements to the shadow DOM
-    this.section.append(this.button_close, this.the_slot)
-    this.shadowRoot.append(style,this.button_open, this.section)
+    this.shadowRoot.append(this.markup)
+
+    // Save element references for later use
+    this.slider_element = this.shadowRoot.querySelector('.sf-slider')
+    this.btn_open_element = this.shadowRoot.querySelector('.sf-slider-open')
+    this.btn_close_element = this.shadowRoot.querySelector('.sf-slider-close')
   }
 
   sliderOpen() {
-    this.section.style.transform = 'translate(0)'
+    this.slider_element.style.transform = 'translate(0)'
     this.setAttribute('aria-expanded', 'true')
     this.slider_status = 'expanded'
     this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'expanded'}))
   }
 
   sliderClose() {
-    this.section.style.transform = 'translate(35rem)'
+    this.slider_element.style.transform = 'translate(35rem)'
     this.setAttribute('aria-expanded', 'false')
     this.slider_status = 'collapsed'
     this.dispatchEvent(new CustomEvent('sliderchange', {detail: 'collapsed'}))
   }
 
+
+  // Lifecycle
+
   connectedCallback() {
 
-    this.button_open.addEventListener('click', () => {
+    this.btn_open_element.addEventListener('click', () => {
       this.sliderOpen()
     })
 
-    this.button_close.addEventListener('click', () =>{
+    this.btn_close_element.addEventListener('click', () =>{
       this.sliderClose()
     })
 
     // Closes the slider whenever user clicks outside it
     document.addEventListener('click', (event) => {
       if (!event.target.closest('skraafoto-slider') && event.target.className !== 'sf-slider-open' && this.slider_status === 'expanded') {
-        console.log('close it')
         this.sliderClose()
       }
     })
   }
 
   disconnectedCallback() {
-    this.button_open.removeEventListener('click', this.openSlider)
-    this.button_close.removeEventListener('click', this.closeSlider)
+    this.btn_open_element.removeEventListener('click', this.openSlider)
+    this.btn_close_element.removeEventListener('click', this.closeSlider)
   }
 
 }
