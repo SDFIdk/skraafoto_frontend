@@ -48,11 +48,12 @@ function init() {
 
   // Set up event listeners
     
-  // When slider opens, resize the tiny map
+  // When slider opens, resize the map and viewports within
   document.querySelector('skraafoto-slider').addEventListener('sliderchange', function() {
     
     // Update openlayers map size after slider was expanded
     document.querySelector('skraafoto-map').map.updateSize()
+    document.querySelectorAll('skraafoto-slider skraafoto-viewport').forEach(function(element) {element.map.updateSize()})
   })
 
   // When a coordinate input is given, fetch images and update viewports
