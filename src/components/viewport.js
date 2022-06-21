@@ -84,6 +84,11 @@ export class SkraaFotoViewport extends HTMLElement {
       left: .5rem;
       color: #fff;
     }
+    .ol-zoom {
+      bottom: 1rem;
+      right: 1rem;
+      position: absolute;
+    }
   `
 
   template = `
@@ -105,7 +110,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // setters
   set setView(options) {
-    if (!options.image) {
+    if (!options.image || !options.center) {
       return
     }
     this.image_data = options.image

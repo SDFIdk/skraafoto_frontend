@@ -1,0 +1,9 @@
+/* Color style overrides */
+
+/**
+ * Picocss theme overrides to match SDFI design guide
+ */
+
+ :root {
+  accent-color: var(--primary-hover);
+}

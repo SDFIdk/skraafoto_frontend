@@ -1,61 +1,29 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="da" data-theme="light">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Skråfoto prototype</title>
     <link rel="stylesheet" href="dist/skraafotostyle.css">
     <script src="config.js"></script>
-
-    <style>
-
-      skraafoto-map,
-      skraafoto-viewport {
-        display: block;
-        height: 100%;
-        width: 100%;
-      }
-
-      skraafoto-slider .slider-grid {
-        display: grid;
-        grid-template-columns: auto auto;
-        grid-template-rows: auto auto auto;
-        height: 100%;
-        width: 100%;
-      }
-
-    </style>
   </head>
   <body>
 
-    <header>
-
-      <h1>Skråfoto prototype</h1>
-
-      <skraafoto-address-search></skraafoto-address-search>
-
+    <header class="sf-header">
+      <h1 style="background-color: var(--primary); color: #fff; padding: 1rem 2rem; display: inline-block; margin: 0;">Skråfoto-klient x</h1>
     </header>
 
     <main>
-      
-      <skraafoto-slider aria-expanded="false">    
-        <div class="slider-grid">
-          <skraafoto-map id="skraafoto-map"></skraafoto-map>
-          <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
-          <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
-          <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
-          <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
-          <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
-        </div>
-      </skraafoto-slider>
-      
+
+      <div class="address-search-container">
+        <skraafoto-address-search></skraafoto-address-search>
+      </div>
+
       <skraafoto-viewport id="viewport-main"></skraafoto-viewport>
 
+      <skraafoto-direction-picker></skraafoto-direction-picker>
+    
     </main>
-
-    <footer>
-      Styrelsen for Dataforsyning
-    </footer>
 
     <script type="module" src="dist/skraafoto.js"></script>
 

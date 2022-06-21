@@ -1,7 +1,14 @@
 /* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
 
 /* CSS imports*/
 @import '../node_modules/@picocss/pico/css/pico.slim.css';
 @import './styles/variables.css';
 @import './styles/layout.css';
+@import './styles/colors.css';
+@import './styles/buttons.css';
+@import './styles/typography.css';
+
+
+/* Global custom styles */

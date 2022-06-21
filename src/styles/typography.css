@@ -1,0 +1,19 @@
+/**
+ * Typography style overrides
+ */
+
+small {
+  line-height: 1rem;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+h4 {
+  text-transform: uppercase;
+  letter-spacing: 4%;
+}
+
+h5 {
+  text-transform: uppercase;
+  letter-spacing: 8%;
+}
