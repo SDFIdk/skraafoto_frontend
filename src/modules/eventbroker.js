@@ -73,6 +73,8 @@ function init() {
   // When a coordinate input is given, fetch images and update viewports
   document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
     document.querySelector('.sf-hero').style.display = 'none'
+    document.querySelector('.sf-header').classList.add('sf-header-short')
+    
     coordinates = event.detail // EPSG:25832 coordinates
     updateViews(coordinates)
   })

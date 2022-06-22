@@ -7,7 +7,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3;
   padding: 1rem;
   margin: 0;
 }
@@ -35,5 +35,8 @@ a.sf-header-help:focus {
 
 @media screen and (min-width: 80rem) {
 
+  .sf-header-short {
+    width: calc(100vw - 40rem);
+  }
 
 }
