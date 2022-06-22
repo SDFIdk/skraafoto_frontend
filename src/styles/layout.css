@@ -13,15 +13,6 @@ body > main {
   padding: 0;
 }
 
-.sf-header {
-  position: fixed;
-  top: 1rem;
-  left: 0;
-  z-index: 2;
-  padding: 0;
-  margin: 0;
-}
-
 #viewport-main {
   display: fixed;
   top: 0;

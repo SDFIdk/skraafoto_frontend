@@ -13,7 +13,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   btn_open_element
   btn_close_element
   styles = `
-
     .sf-slider,
     .sf-slider-content,
     .sf-slider-grid {
@@ -90,11 +89,11 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       <h2>Vælg retning</h2>
       <div class="sf-slider-grid">
         <skraafoto-map id="skraafoto-map"></skraafoto-map>
+        <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
         <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
-        <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
         <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
         <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
-        <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
+        <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
       </div>
     </section>
   `
@@ -121,7 +120,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
     this.nadir_element.setView = {
       image: options.images[4],
-      center: options.center
+      center: options.center,
+      zoom: 4
     }
     // Update map
     this.map_element.setView = {
@@ -172,14 +172,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     this.btn_close_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,100vh)'
-    })
-
-     // When slider opens, resize the map and viewports within
-    this.shadowRoot.addEventListener('sliderchange', function() {
-      
-      // Update openlayers map size after slider was expanded
-      this.shadowRoot.querySelector('skraafoto-map').map.updateSize()
-      this.shadowRoot.querySelectorAll('skraafoto-slider skraafoto-viewport').forEach(function(element) {element.map.updateSize()})
     })
 
     // When a viewport is clicked in the selector, send a signal to update the main viewport
