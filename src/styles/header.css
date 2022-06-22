@@ -8,8 +8,29 @@
   top: 0;
   left: 0;
   z-index: 2;
-  padding: 0;
+  padding: 1rem;
   margin: 0;
+}
+
+a.sf-header-help,
+a.sf-header-help:link,
+a.sf-header-help:visited {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  color: #fff;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+a.sf-header-help:hover,
+a.sf-header-help:active,
+a.sf-header-help:focus {
+  background-color: var(--primary);
 }
 
 @media screen and (min-width: 80rem) {
