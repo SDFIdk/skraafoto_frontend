@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   z-index: 3;
-  padding: 1rem;
+  padding: .5rem 1rem;
   margin: 0;
 }
 
@@ -33,7 +33,20 @@ a.sf-header-help:focus {
   background-color: var(--primary);
 }
 
+@media screen and (max-width: 79.99rem) {
+
+  .sf-header-home > img {
+    width: 3rem;
+    height: auto;
+  }
+
+}
+
 @media screen and (min-width: 80rem) {
+
+  .sf-header {
+    padding: 1rem;
+  }
 
   .sf-header-short {
     width: calc(100vw - 40rem);
