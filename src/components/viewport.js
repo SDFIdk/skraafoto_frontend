@@ -114,6 +114,9 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     this.image_data = options.image
+    if (options.zoom) {
+      this.zoom = options.zoom
+    }
     this.setCenter(options)
     this.updateDirection(options.image)
     this.updateDate(options.image)

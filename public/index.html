@@ -1,28 +1,32 @@
 <!DOCTYPE html>
-<html lang="da" data-theme="light">
+<html lang="da">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>Skråfoto prototype</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes">
+    <title>Skråfoto</title>
     <link rel="stylesheet" href="dist/skraafotostyle.css">
+    <link rel="icon" href="img/favicon.svg">
     <script src="config.js"></script>
   </head>
-  <body>
+  <body class="sf-app">
 
     <header class="sf-header">
-      <h1 style="background-color: var(--primary); color: #fff; padding: 1rem 2rem; display: inline-block; margin: 0;">Skråfoto-klient x</h1>
+      <a href="/" class="sf-header-home"><img src="img/logo.svg" alt="Styrelsen for Dataforsyning og Infrastruktur"></a>
+      <skraafoto-address-search></skraafoto-address-search>
+      <a href="info.html" class="sf-header-help" title="Information om Skråfoto">?</a>
     </header>
 
     <main>
 
-      <div class="address-search-container">
-        <skraafoto-address-search></skraafoto-address-search>
-      </div>
+      <article class="sf-hero" style="background-image: url(img/skraafoto.png);" data-theme="dark">
+        <h1>Velkommen til Skråfoto</h1>
+        <p>Skråfoto giver dig mulighed for at finde luftfotos taget fra forskellige retninger.</p>
+        <p>Søg efter en adresse for at finde skråfotos i dit område</p>
+      </article>
 
       <skraafoto-viewport id="viewport-main"></skraafoto-viewport>
-
       <skraafoto-direction-picker></skraafoto-direction-picker>
-    
+
     </main>
 
     <script type="module" src="dist/skraafoto.js"></script>

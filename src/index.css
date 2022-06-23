@@ -9,6 +9,5 @@
 @import './styles/colors.css';
 @import './styles/buttons.css';
 @import './styles/typography.css';
-
-
-/* Global custom styles */
+@import './styles/header.css';
+@import './styles/hero.css';
