@@ -1,13 +1,57 @@
-/* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
 
 /* CSS imports*/
-@import '../node_modules/@picocss/pico/css/pico.slim.css';
-@import './styles/variables.css';
+@import 'design-system-css/assets/designsystem.css';
 @import './styles/layout.css';
-@import './styles/colors.css';
-@import './styles/buttons.css';
-@import './styles/typography.css';
 @import './styles/header.css';
 @import './styles/hero.css';
+
+
+/* Font imports */
+
+/* Light */
+@font-face {
+  font-family: "Roboto";
+  src: url("design-system-css/assets/fonts/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* Regular */
+@font-face {
+  font-family: "Roboto";
+  src: url("design-system-css/assets/fonts/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Regular Italic */
+@font-face {
+  font-family: "Roboto";
+  src: url("design-system-css/assets/fonts/Roboto-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Medium */
+@font-face {
+  font-family: "Roboto";
+  src: url("design-system-css/assets/fonts/Roboto-Medium.ttf") format("truetype");
+  font-weight: 500, 600;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: "Roboto";
+  src: url("design-system-css/assets/fonts/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Monospaced */
+@font-face {
+  font-family: "Source Code Pro";
+  src: url("design-system-css/assets/fonts/SourceCodePro-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
