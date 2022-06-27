@@ -8,6 +8,9 @@ if (process.env.NODE_ENV === 'development') {
       skraafoto: 'src/index.js', 
       skraafotostyle: 'src/index.css'
     },
+    loader: {
+      '.ttf': 'file'
+    },
     outdir: 'public/dist',
     bundle: true
   }).then(server => {
@@ -15,26 +18,6 @@ if (process.env.NODE_ENV === 'development') {
     // Call "stop" on the web server to stop serving
     //server.stop()
   })
-/*
-  require('esbuild').build({
-    entryPoints: {
-      skraafoto: 'src/index.js', 
-      skraafotostyle: 'src/index.css'
-    },
-    outdir: 'dist',
-    bundle: true,
-    watch: {
-      onRebuild(error, result) {
-        if (error) console.error('watch build failed:', error)
-        else console.log('watch build succeeded:', result)
-      },
-    }
-  })
-  .then((response) => {
-    console.log('watching...')
-  })
-  .catch(() => process.exit(1))
-*/
 
 } else {
   // Production build
@@ -46,7 +29,10 @@ if (process.env.NODE_ENV === 'development') {
     outdir: 'dist',
     bundle: true,
     minify: true,
-    sourcemap:true
+    sourcemap:true,
+    loader: {
+      '.ttf': 'file'
+    }
   })
   .then((response) => {
     console.log('build finished')

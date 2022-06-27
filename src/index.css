@@ -1,13 +1,5 @@
-/* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
 
 /* CSS imports*/
-@import '../node_modules/@picocss/pico/css/pico.slim.css';
-@import './styles/variables.css';
+@import 'design-system-css/assets/designsystem.css';
 @import './styles/layout.css';
-@import './styles/colors.css';
-@import './styles/buttons.css';
-@import './styles/typography.css';
 @import './styles/header.css';
-@import './styles/hero.css';

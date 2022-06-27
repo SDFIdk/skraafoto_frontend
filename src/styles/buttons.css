@@ -1,7 +1,0 @@
-/* Button style overrides */
-
-button,
-input[type="submit"],
-input[type="button"] {
-  width: auto;
-}
