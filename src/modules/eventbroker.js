@@ -68,13 +68,19 @@ async function updateViews(coords) {
 
 function init() {
 
+  // Parse params from URL
+  let params = (new URL(document.location)).searchParams;
+  coordinates = params.get('center').split(',').map(function(coord) {
+    return Number(coord)
+  })
+  if (coordinates) {
+    updateViews(coordinates)
+  }
+
   // Set up event listeners
 
   // When a coordinate input is given, fetch images and update viewports
   document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
-    document.querySelector('.sf-hero').style.display = 'none'
-    document.querySelector('.sf-header').classList.add('sf-header-short')
-    
     coordinates = event.detail // EPSG:25832 coordinates
     updateViews(coordinates)
   })

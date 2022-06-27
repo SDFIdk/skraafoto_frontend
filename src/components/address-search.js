@@ -9,15 +9,14 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     :root {
       
     }
-    
+    article {
+      background-color: transparent;
+    }
     label {
       height: 0;
       width: 0;
       overflow: hidden;
       display: block;
-    }
-    input {
-      background-color: #fff;
     }
     .autocomplete-container {
       /* relative position for at de absolut positionerede forslag får korrekt placering.*/
