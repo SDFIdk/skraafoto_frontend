@@ -8,11 +8,40 @@
     <link rel="icon" href="img/favicon.svg">
     <script src="config.js"></script>
     <style>
-      .sf-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 3;
+
+      main {
+        height: 100%;
+        flex: 0 1 auto;
+      }
+
+      skraafoto-direction-picker {
+        display: block;
+        height: 0;
+        width: 0;
+      }
+
+      @media screen and (min-width: 80rem) {
+        
+        body > main {
+          display: flex;
+          flex-flow: row nowrap;
+        }
+
+        .sf-header {
+          padding: 1rem;
+        }
+
+        #viewport-main {
+          width: 70%;
+          flex: 1 1 70%;
+        }
+
+        skraafoto-direction-picker {
+          height: 100%;
+          width: 40rem;
+          flex: 0 0 40rem;
+        }
+
       }
     </style>
   </head>

@@ -36,15 +36,3 @@ a.sf-header-help:focus {
   }
 
 }
-
-@media screen and (min-width: 80rem) {
-
-  .sf-header {
-    padding: 1rem;
-  }
-
-  .sf-header-short {
-    width: calc(100vw - 40rem);
-  }
-
-}
