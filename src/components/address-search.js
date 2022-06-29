@@ -6,9 +6,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   // public properties
   coorTranslator = createTranslator()
   styles = `
-    :root {
-      
-    }
     article {
       background-color: transparent;
     }
@@ -18,16 +15,14 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       overflow: hidden;
       display: block;
     }
+    input#adresse {
+      margin: 0;
+    }
     .autocomplete-container {
       /* relative position for at de absolut positionerede forslag får korrekt placering.*/
       position: relative;
       width: 100%;
       max-width: 30em;
-    }
-    .autocomplete-container input {
-      /* Både input og forslag får samme bredde som omkringliggende DIV */
-      width: 100%;
-      box-sizing: border-box;
     }
     .dawa-autocomplete-suggestions {
       margin: 0.3em 0 0 0;
