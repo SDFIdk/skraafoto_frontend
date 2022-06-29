@@ -5,14 +5,39 @@
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes">
     <title>Skråfoto</title>
     <link rel="stylesheet" href="dist/skraafotostyle.css">
-    <link rel="icon" href="img/favicon.svg">
+    <link rel="icon" href="img/logos/logo-simple-micro.svg">
     <script src="config.js"></script>
     <style>
-      .sf-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 3;
+
+      main {
+        height: 100%;
+        flex: 0 1 auto;
+      }
+
+      skraafoto-direction-picker {
+        display: block;
+        height: 0;
+        width: 0;
+      }
+
+      @media screen and (min-width: 80rem) {
+        
+        body > main {
+          display: flex;
+          flex-flow: row nowrap;
+        }
+
+        #viewport-main {
+          width: 70%;
+          flex: 1 1 70%;
+        }
+
+        skraafoto-direction-picker {
+          height: 100%;
+          width: 40rem;
+          flex: 0 0 40rem;
+        }
+
       }
     </style>
   </head>
@@ -20,10 +45,16 @@
 
     <header class="sf-header">
       <a href="/" class="sf-header-home">
-        <svg viewBox="0 0 24 25" strokeWidth="0.3" width="80" height="80" style="width: 80px; height: 80px;" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" fill="none" class="brand-logo" data-v-687163ef="" data-v-7cb0f1d0=""><path fill="#000" d="M11.937 4.497c1.005 0 1.82-.813 1.82-1.816a1.818 1.818 0 00-1.82-1.816c-1.006 0-1.82.813-1.82 1.816 0 1.003.814 1.816 1.82 1.816zM11.937 24.135c1.005 0 1.82-.813 1.82-1.816a1.818 1.818 0 00-1.82-1.816c-1.006 0-1.82.813-1.82 1.816 0 1.003.814 1.816 1.82 1.816zM21.841 14.253c1.005 0 1.82-.813 1.82-1.816a1.818 1.818 0 00-1.82-1.816c-1.005 0-1.82.813-1.82 1.816 0 1.003.815 1.816 1.82 1.816zM2.159 14.253c1.005 0 1.82-.813 1.82-1.816a1.818 1.818 0 00-1.82-1.816c-1.005 0-1.82.813-1.82 1.816 0 1.003.815 1.816 1.82 1.816zM18.92 7.284c.982 0 1.778-.794 1.778-1.773 0-.98-.796-1.774-1.777-1.774-.982 0-1.778.794-1.778 1.774s.796 1.773 1.778 1.773zM4.995 21.179c.982 0 1.777-.794 1.777-1.774s-.795-1.774-1.777-1.774c-.982 0-1.778.794-1.778 1.774s.796 1.774 1.778 1.774zM19.005 21.137c.982 0 1.778-.795 1.778-1.774 0-.98-.796-1.774-1.778-1.774s-1.777.794-1.777 1.774.795 1.774 1.777 1.774zM5.08 7.242c.981 0 1.777-.794 1.777-1.774S6.061 3.695 5.08 3.695c-.981 0-1.777.794-1.777 1.773 0 .98.796 1.774 1.777 1.774zM15.111 11c-.127-.76-.72-1.055-1.481-1.055-.381 0-.72.127-1.016.253.042-.38-.212-.675-.508-.718v-.422c0-.084-.043-.127-.127-.127-.085 0-.127.043-.127.127v.422c-.296.043-.593.338-.508.718a2.24 2.24 0 00-1.016-.253c-.762 0-1.354.338-1.481 1.056-.72.084-1.143.507-1.101 1.267.042.59.762 1.478 1.185 2.027h.339C8.72 13.66 8 12.732 8 12.268c0-.338.042-.592.212-.718.127-.127.338-.211.592-.254v.212c.043.337.212.718.424 1.14.084.169.465.802 1.1 1.647h.339s-1.524-1.858-1.609-2.83c0 0-.211-1.267 1.228-1.267.93 0 1.524.676 1.524.676v3.42h.253v-3.42s.593-.676 1.524-.676c1.482 0 1.228 1.267 1.228 1.267-.085.972-1.609 2.83-1.609 2.83h.339c.677-.845 1.016-1.478 1.1-1.647.212-.422.382-.803.424-1.14v-.212c.254.043.465.127.592.254.17.169.212.422.212.718-.042.464-.72 1.436-1.27 2.027h.339c.465-.507 1.185-1.436 1.185-2.027.127-.76-.254-1.183-1.016-1.267zm-3.132-.506a.424.424 0 01-.423-.422.424.424 0 01.846 0 .424.424 0 01-.423.422zM11.979 8.34c.085 0 .127-.042.127-.127v-.506c0-.085-.043-.127-.127-.127-.085 0-.127.042-.127.127v.506c0 .085.042.127.127.127zM11.048 8.762h.55c.084 0 .127-.042.127-.126 0-.085-.043-.127-.127-.127h-.55c-.085 0-.127.042-.127.127 0 .042.042.126.127.126zM12.36 8.762h.55c.085 0 .127-.042.127-.126 0-.085-.042-.127-.127-.127h-.55c-.085 0-.127.042-.127.127 0 .042.085.126.127.126zM15.027 15.224H8.93v.253h6.096v-.253zM15.027 15.73H8.93v.254h6.096v-.253zM8.931 14.675v.253h6.096v-.253H8.93z"></path></svg>
+        <img src="img/logos/logo.svg" alt="Styrelsen for Dataforsyning og Infrastruktur">
+        <p>
+          <span>Skråfoto</span>
+          <span>Styrelsen for Dataforsyning og Infrastruktur</span>
+        </p>
       </a>
       <skraafoto-address-search></skraafoto-address-search>
-      <a href="info.html" class="sf-header-help" title="Information om Skråfoto">?</a>
+      <a href="info.html" class="sf-header-help" title="Information om Skråfoto">
+        <img src="img/icons/icon_info.svg" alt="Information om Skråfoto">
+      </a>
     </header>
 
     <main>

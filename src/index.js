@@ -12,11 +12,3 @@ customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 
 // Initialize
 EventBroker.init()
-
-// Notes
-/*
-  Dataflow:
-  Initial state has a single coordinate
-  All views and maps are centered on this coordinate
-  Pinpointing a new coordinate on map or via searchbar, updates all views and maps
-*/

@@ -52,7 +52,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       top: .5rem;
       right: .5rem;
       z-index: 2;
-      background: url(./img/cross.svg) no-repeat center center #fff;
+      background: url(./img/icons/icon_close.svg) no-repeat center center #fff;
       width: 2rem;
       height: 2rem;
       border-radius: 50%;

@@ -95,7 +95,7 @@ export class SkraaFotoViewport extends HTMLElement {
     <div class="viewport-map"></div>
     <p class="direction-indicator">
       <span></span>
-      <img src="./img/compass.svg" alt="">
+      <img src="./img/icons/map_icon_nordpil.svg" alt="">
     </p>
     <p class="image-date"></p>
   `
@@ -162,7 +162,7 @@ export class SkraaFotoViewport extends HTMLElement {
     })
     const icon_style = new Style({
       image: new Icon({
-        src: './img/crosshairs.svg',
+        src: './img/icons/icon_crosshair.svg',
         scale: 2.5
       })
     })
