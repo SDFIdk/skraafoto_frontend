@@ -4,6 +4,8 @@ import { SkraaFotoAddressSearch } from './components/address-search.js'
 import { SkraaFotoDirectionPicker } from './components/direction-picker.js'
 import EventBroker from './modules/eventbroker.js'
 
+// Import logo and image assets
+
 // Initialize web components
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
 customElements.define('skraafoto-map', SkraaFotoMap)
