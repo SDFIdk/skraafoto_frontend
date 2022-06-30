@@ -117,7 +117,7 @@ export class SkraaFotoMap extends HTMLElement {
     })
     const icon_style = new Style({
       image: new Icon({
-        src: './img/crosshairs.svg',
+        src: './img/icons/icon_crosshair.svg',
         scale: 2.5
       })
     })
@@ -133,7 +133,7 @@ export class SkraaFotoMap extends HTMLElement {
     const new_view = new View({
       projection: this.projection,
       center: center,
-      zoom: 20
+      zoom: 18
     })
     this.map.setView(new_view)
     this.map.removeLayer(this.icon_layer)
