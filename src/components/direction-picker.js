@@ -35,13 +35,17 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       display: grid;
       grid-template-columns: auto auto;
       grid-template-rows: auto auto auto;
+      gap: 2px;
+      border-left: solid 2px var(--background-color);
     }
 
     .sf-slider-open-wrapper {
-      z-index: 2;
+      z-index: 1;
       position: fixed;
       bottom: 1rem;
-      width: 100%;
+      left: 50%;
+      margin: 0 0 0 -5rem;
+      width: 10rem;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -160,7 +164,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.btn_close_element = this.shadowRoot.querySelector('.sf-slider-close')
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
   }
-
 
 
   // Lifecycle

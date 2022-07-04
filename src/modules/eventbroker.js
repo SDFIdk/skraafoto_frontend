@@ -42,7 +42,6 @@ function findItemsAtCoordinate(coordinates) {
       return response.features[0]
     })
   })
-
 }
 
 async function updateViews(coords) {
