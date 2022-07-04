@@ -14,6 +14,7 @@ import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
+import {defaults as defaultControls} from 'ol/control'
 
 export class SkraaFotoMap extends HTMLElement {
 
@@ -106,7 +107,8 @@ export class SkraaFotoMap extends HTMLElement {
           this.icon_layer
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
-        view: this.view
+        view: this.view,
+        controls: defaultControls({rotate: false, attribution: false})
       })
     })
   }

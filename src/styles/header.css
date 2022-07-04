@@ -56,3 +56,11 @@ a.sf-header-help img {
   width: auto;
   height: 2.25rem;
 }
+
+@media screen and (max-width: 79.999rem) {
+  
+  .sf-header-home p span:last-child {
+    display: none;
+  }
+
+}

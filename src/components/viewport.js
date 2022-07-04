@@ -3,7 +3,6 @@ import GeoTIFF from 'ol/source/GeoTIFF.js'
 import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
-//import MousePosition from 'ol/control/MousePosition'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
@@ -25,7 +24,6 @@ export class SkraaFotoViewport extends HTMLElement {
   layer
   source
   view
-  // mousePosition = new MousePosition()
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
   // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -36,9 +34,6 @@ export class SkraaFotoViewport extends HTMLElement {
   })
 
   styles = `
-    :root {
-      
-    }
     .viewport-wrapper {
       position: relative;
       height: 100%;
@@ -90,7 +85,6 @@ export class SkraaFotoViewport extends HTMLElement {
       position: absolute;
     }
   `
-
   template = `
     <div class="viewport-map"></div>
     <p class="direction-indicator">
@@ -100,6 +94,7 @@ export class SkraaFotoViewport extends HTMLElement {
     <p class="image-date"></p>
   `
 
+
   // getters
   static get observedAttributes() { 
     return [
@@ -107,6 +102,7 @@ export class SkraaFotoViewport extends HTMLElement {
       'zoom',
     ]
   }
+
 
   // setters
   set setView(options) {
@@ -121,6 +117,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.updateDirection(options.image)
     this.updateDate(options.image)
   }
+
 
   constructor() {
     super()
@@ -183,14 +180,14 @@ export class SkraaFotoViewport extends HTMLElement {
   async updateMap() {
     const source = this.generateSource(this.image_data.assets.data.href)
     const layer = this.generateLayer(source)
-    this.view = await source.getView()
-    this.view.projection = this.projection
-    this.view.zoom = this.zoom
-    this.view.center = this.center
     this.map.setLayers([
       layer, 
       this.generateIconLayer(this.center)
     ])
+    this.view = await source.getView()
+    this.view.projection = this.projection
+    this.view.zoom = this.zoom
+    this.view.center = this.center
     this.map.setView(new View(this.view))
   }
 
@@ -213,21 +210,6 @@ export class SkraaFotoViewport extends HTMLElement {
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false})
     })
-    //this.map.addControl(this.mousePosition)
-    //this.mousePosition.setProjection(this.projection)
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    switch(name) {
-      case "center":
-   
-        break
-      case "zoom":
-   
-        break
-      default:
-        break
-    }
   }
 
 }
