@@ -54,22 +54,22 @@ export class SkraaFotoViewport extends HTMLElement {
       margin: 0;
       padding: 0;
     }
-    .direction-indicator img {
-      display: none;
+    .direction-indicator .direction-title {
+      
     }
-    .direction-indicator img.north {
+    .direction-indicator .ds-icon-map_icon_nordpil.north {
       transform: rotate(0deg);
       display: inline-block;
     }
-    .direction-indicator img.south {
+    .direction-indicator .ds-icon-map_icon_nordpil.south {
       transform: rotate(180deg);
       display: inline-block;
     }
-    .direction-indicator img.east {
+    .direction-indicator .ds-icon-map_icon_nordpil.east {
       transform: rotate(90deg);
       display: inline-block;
     }
-    .direction-indicator img.west {
+    .direction-indicator .ds-icon-map_icon_nordpil.west {
       transform: rotate(270deg);
       display: inline-block;
     }
@@ -88,8 +88,8 @@ export class SkraaFotoViewport extends HTMLElement {
   template = `
     <div class="viewport-map"></div>
     <p class="direction-indicator">
-      <span></span>
-      <img src="./img/icons/map_icon_nordpil.svg" alt="">
+      <span class="direction-title"></span>
+      <span class="ds-icon-map_icon_nordpil"></span>
     </p>
     <p class="image-date"></p>
   `
@@ -193,8 +193,8 @@ export class SkraaFotoViewport extends HTMLElement {
 
   updateDirection(imagedata) {
     const direction_element = this.shadowRoot.querySelector('.direction-indicator')
-    direction_element.querySelector('span').innerText = imagedata.properties.direction
-    direction_element.querySelector('img').className = imagedata.properties.direction 
+    direction_element.querySelector('.direction-title').innerText = imagedata.properties.direction
+    direction_element.querySelector('.ds-icon-map_icon_nordpil').className = 'ds-icon-map_icon_nordpil ' + imagedata.properties.direction 
   }
 
   updateDate(imagedata) {

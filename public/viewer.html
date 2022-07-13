@@ -8,16 +8,39 @@
     <link rel="icon" href="img/logos/logo-simple-micro.svg">
     <script src="config.js"></script>
     <style>
+      body {
+        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+      }
+
+      header {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        width: 100%;
+      }
 
       main {
+        width: 100%;
         height: 100%;
-        flex: 0 1 auto;
+        flex: 1 1 auto;
       }
 
       skraafoto-direction-picker {
         display: block;
         height: 0;
         width: 0;
+      }
+
+      @media screen and (max-width: 40rem) {
+        
+        .ds-logo-micro > span {
+          display: none;
+        }
       }
 
       @media screen and (min-width: 80rem) {
@@ -43,18 +66,15 @@
   </head>
   <body class="sf-app">
 
-    <header class="sf-header">
-      <a href="/" class="sf-header-home">
-        <img src="img/logos/logo.svg" alt="Styrelsen for Dataforsyning og Infrastruktur">
-        <p>
-          <span>Skråfoto</span>
-          <span>Styrelsen for Dataforsyning og Infrastruktur</span>
-        </p>
-      </a>
-      <skraafoto-address-search></skraafoto-address-search>
-      <a href="info.html" class="sf-header-help" title="Information om Skråfoto">
-        <img src="img/icons/icon_info.svg" alt="Information om Skråfoto">
-      </a>
+    <header data-theme="dark">
+      <h1 class="ds-logo-micro">
+        <strong>Skråfoto</strong>
+        <span>Styrelsen for Dataforsyning og Infrastruktur</span>
+      </h1>
+      <div style="display: flex; flex-flow: row nowrap; align-items: center;">
+        <skraafoto-address-search></skraafoto-address-search>
+        <a href="info.html" class="ds-icon-icon_info" title="Information om Skråfoto" role="button" style="margin-left: 1rem;"></a>
+      </div>
     </header>
 
     <main>

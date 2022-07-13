@@ -53,13 +53,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     .sf-slider-close {
       position: absolute;
-      top: .5rem;
-      right: .5rem;
+      top: 1rem;
+      right: 1rem;
       z-index: 2;
-      background: url(./img/icons/icon_close.svg) no-repeat center center #fff;
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
     }
 
     .sf-slider-content h2 {
@@ -91,7 +87,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       <button class="sf-slider-open">Vælg retning</button>
     </nav>
     <section class="sf-slider-content">
-      <button class="sf-slider-close" title="Luk"></button>
+      <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
       <div class="sf-slider-grid">
         <skraafoto-map id="skraafoto-map"></skraafoto-map>
         <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
