@@ -1,4 +1,5 @@
 import {getSTAC} from 'skraafoto-saul'
+import {toDanish} from '../modules/translater.js'
 
 /**
  * Fetches a list of items covering a specific coordinate and direction.
@@ -65,7 +66,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
     let option_elements = ''
     for (let o in options) {
       const datetime = new Date(options[o].properties.datetime).toLocaleString()
-      option_elements += `<option value="${ options[o].id }">${ datetime }</option>`
+      option_elements += `<option value="${ options[o].id }">${ datetime } ${ toDanish(options[o].properties.direction) }</option>`
     }
     this.selector_element.innerHTML = option_elements
     this.selector_element.value = this.selected

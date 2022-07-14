@@ -10,6 +10,7 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import { getZ, world2image } from 'skraafoto-saul'
+import {toDanish} from '../modules/translater.js'
 
 export class SkraaFotoViewport extends HTMLElement {
 
@@ -188,8 +189,8 @@ export class SkraaFotoViewport extends HTMLElement {
 
   updateDirection(imagedata) {
     const direction_element = this.shadowRoot.querySelector('.direction-indicator')
-    direction_element.setAttribute('title', imagedata.properties.direction)
-    direction_element.className = 'direction-indicator ds-icon-map_icon_nordpil ' + imagedata.properties.direction 
+    direction_element.setAttribute('title', toDanish(imagedata.properties.direction))
+    direction_element.className = 'direction-indicator ds-icon-map_icon_nordpil ' + imagedata.properties.direction
   }
 
   updateDate(imagedata) {
