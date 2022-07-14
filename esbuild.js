@@ -1,13 +1,18 @@
+
+const entry_points = {
+  skraafoto: 'src/index.js',
+  skraafotoviewer: 'src/views/viewer.js',
+  skraafotolist: 'src/views/list.js',
+  skraafotostyle: 'src/index.css'
+}
+
 if (process.env.NODE_ENV === 'development') {
   // Development mode watches for file changes and rebuilds
 
   require('esbuild').serve({
     servedir: 'public',
   }, {
-    entryPoints: {
-      skraafoto: 'src/index.js', 
-      skraafotostyle: 'src/index.css'
-    },
+    entryPoints: entry_points,
     loader: {
       '.ttf': 'file'
     },
@@ -22,10 +27,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   // Production build
   require('esbuild').build({
-    entryPoints: {
-      skraafoto: 'src/index.js', 
-      skraafotostyle: 'src/index.css'
-    },
+    entryPoints: entry_points,
     outdir: 'dist',
     bundle: true,
     minify: true,
