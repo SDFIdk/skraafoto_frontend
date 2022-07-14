@@ -81,24 +81,6 @@ export class SkraaFotoViewport extends HTMLElement {
       color: #fff;
       margin: 0;
     }
-    .ol-zoom {
-      bottom: 2rem;
-      right: 1rem;
-      position: absolute;
-    }
-    .ol-zoom-in,
-    .ol-zoom-out {
-      margin: .25rem 0 0;
-      display: block;
-      height: 3rem;
-      width: 3rem;
-      font-size: 2.3rem;
-      font-weight: 300;
-      border-radius: 2.3rem;
-      padding: 0;
-      line-height: 1;
-      box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
-    }
   `
   template = `
     <link rel="stylesheet" href="./dist/skraafotostyle.css">
@@ -221,7 +203,7 @@ export class SkraaFotoViewport extends HTMLElement {
   connectedCallback() {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false})
+      controls: defaultControls({rotate: false, attribution: false, zoom: false})
     })
   }
 
