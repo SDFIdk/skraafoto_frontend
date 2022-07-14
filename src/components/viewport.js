@@ -55,6 +55,9 @@ export class SkraaFotoViewport extends HTMLElement {
       opacity: 0.66;
       border-radius: 2.3rem;
     }
+    .direction-indicator.ds-icon-map_icon_nordpil.nadir {
+      display: none;
+    }
     .direction-indicator.ds-icon-map_icon_nordpil.north {
       transform: rotate(0deg);
       display: inline-block;
@@ -73,9 +76,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .image-date {
       position: absolute;
-      bottom: .5rem;
-      left: .5rem;
+      bottom: 2rem;
+      left: 1rem;
       color: #fff;
+      margin: 0;
     }
     .ol-zoom {
       bottom: 2rem;

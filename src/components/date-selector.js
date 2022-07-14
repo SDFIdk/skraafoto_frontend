@@ -14,10 +14,13 @@ export class SkraaFotoDateSelector extends HTMLElement {
   center
   selected
   styles = `
-    :root {
+    select {
+      background-color: var(--hvid);
+      padding: 0.25rem 2.5rem 0.25rem 0.5rem !important;
     }
   `
   template = `
+    <link rel="stylesheet" href="./dist/skraafotostyle.css">
     <style>
       ${this.styles}
     </style>
