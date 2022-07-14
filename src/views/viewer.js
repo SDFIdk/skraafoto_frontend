@@ -1,4 +1,4 @@
-import {getSTAC, createTranslator} from 'skraafoto-saul'
+import { getSTAC } from 'skraafoto-saul'
 
 
 // Variables
@@ -6,9 +6,9 @@ import {getSTAC, createTranslator} from 'skraafoto-saul'
 const collection = 'skraafotos2019' // TODO: This should not be hardcoded
 const auth = environment // We assume a global `enviroment` variable has been declared
 
-let items = []
 let coordinates = null
-const translator = createTranslator()
+let params = (new URL(document.location)).searchParams;
+let current_item
 
 
 // Methods
@@ -21,6 +21,13 @@ function calcBB(coordinates) {
     coordinates[1] + 1
   ]
   return bbox.join(',')
+}
+
+function queryItem(item_id) {
+  return getSTAC(`/search?limit=1&ids=${item_id}&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
+  .then((data) => {
+    return data.features[0]
+  })
 }
 
 function queryWithDirection(coords, direction) {
@@ -45,37 +52,62 @@ function findItemsAtCoordinate(coordinates) {
   })
 }
 
-async function updateViews(coords) {
-  
-  items = await findItemsAtCoordinate(coords)  
-  if (items.length > 0) {
-    
-    // Update viewports
-    document.getElementById('viewport-main').setView = {
-      image: items[0],
-      center: coords
-    }
-
-    document.querySelector('skraafoto-direction-picker').setView = {
-      images: items,
-      center: coords
-    }
-  
-  } else {
-    console.error('There was no image feature for those coordinates')
+function updateMainViewport(item, coords) {
+  document.getElementById('viewport-main').setView = {
+    image: item,
+    center: coords
   }
+}
+
+async function updateViews(options) {
+
+  let item
+
+  if (options.item_id) {
+    item = await queryItem(options.item_id)
+    updateMainViewport(item, options.coords)
+  }
+
+  let items = await findItemsAtCoordinate(options.coords)
+
+  if (items.length < 1) {
+    console.error('No items found for the given coordinates')
+    return
+  }
+
+  if (!item) {
+    item = items[0]
+    updateMainViewport(item, options.coords)
+    // Update URL
+    updateUrlItem(items[0].id)
+  }
+  
+  // Update the other viewports
+  document.querySelector('skraafoto-direction-picker').setView = {
+    images: items,
+    center: options.coords
+  }
+}
+
+function updateUrlItem(item_id) {
+    const url = new URL(window.location)
+    url.searchParams.set('item', item_id)
+    window.history.pushState({}, '', url);
 }
 
 
 // Initialize
 
 // Parse params from URL
-let params = (new URL(document.location)).searchParams;
 coordinates = params.get('center').split(',').map(function(coord) {
   return Number(coord)
 })
+current_item = params.get('item')
 if (coordinates) {
-  updateViews(coordinates)
+  updateViews({
+    coords: coordinates,
+    item_id: current_item
+  })
 }
 
 // Set up event listeners
@@ -86,10 +118,16 @@ document.querySelector('skraafoto-address-search').addEventListener('addresschan
   updateViews(coordinates)
 })
 
-// When a viewport is clicked in the direction picker, update the main viewport
+// When a viewport is clicked in the direction picker, update the main viewport and the URL
 document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', function(event) {
   document.getElementById('viewport-main').setView = {
     image: event.detail,
     center: coordinates
   }
+  updateUrlItem(event.detail.id)
+})
+
+// When a differently dated image is selected, update the URL
+document.querySelector('skraafoto-advanced-viewport').shadowRoot.addEventListener('imagechange', function(event) {
+  updateUrlItem(event.detail.id)
 })
