@@ -1,5 +1,5 @@
 import {getSTAC} from 'skraafoto-saul'
-import {toDanish} from '../modules/translater.js'
+import {toDanish} from '../modules/i18n.js'
 
 /**
  * Fetches a list of items covering a specific coordinate and direction.

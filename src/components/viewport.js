@@ -10,7 +10,7 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import { getZ, world2image } from 'skraafoto-saul'
-import {toDanish} from '../modules/translater.js'
+import {toDanish} from '../modules/i18n.js'
 
 export class SkraaFotoViewport extends HTMLElement {
 
