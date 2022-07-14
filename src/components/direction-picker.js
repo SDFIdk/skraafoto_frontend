@@ -42,7 +42,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-slider-open-wrapper {
       z-index: 1;
       position: fixed;
-      bottom: 1rem;
+      bottom: 2rem;
       left: 50%;
       margin: 0 0 0 -5rem;
       width: 10rem;
@@ -51,9 +51,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       align-items: center;
     }
 
+    .sf-slider-open,
+    .sf-slider-close {
+      box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
+    }
+
     .sf-slider-close {
       position: absolute;
-      top: 1rem;
+      top: 1.5rem;
       right: 1rem;
       z-index: 2;
     }

@@ -6,9 +6,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   // public properties
   coorTranslator = createTranslator()
   styles = `
-    article {
-      background-color: transparent;
-    }
     label {
       height: 0;
       width: 0;
@@ -18,18 +15,18 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     input#adresse {
       margin: 0;
     }
-    .autocomplete-container {
+    input#adresse + div {
       /* relative position for at de absolut positionerede forslag får korrekt placering.*/
       position: relative;
       width: 100%;
-      max-width: 30em;
+      max-width: 44rem;
     }
     .dawa-autocomplete-suggestions {
-      margin: 0.3em 0 0 0;
+      margin: 0.3rem 0 0 0;
       padding: 0;
       text-align: left;
-      border-radius: 0.3125em;
-      background: #fcfcfc;
+      border-radius: 0.75rem;
+      background: var(--lys-steel);
       box-shadow: 0 0.0625em 0.15625em rgba(0,0,0,.15);
       position: absolute;
       left: 0;
@@ -37,28 +34,29 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       z-index: 9999;
       overflow-y: auto;
       box-sizing: border-box;
+      border: solid 1px var(--dark-steel);
+      font-weight: 300;
     }
     .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion {
       margin: 0;
       list-style: none;
       cursor: pointer;
-      padding: 0.4em 0.6em;
-      color: #333;
-      border: 0.0625em solid #ddd;
-      border-bottom-width: 0;
+      padding: 0.5rem 1.5rem;
+      color: var(--sort);
+      border-top: solid 1px var(--hvid);
     }
     .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion:first-child {
+      border-top: none;
       border-top-left-radius: inherit;
       border-top-right-radius: inherit;
     }
     .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion:last-child {
       border-bottom-left-radius: inherit;
       border-bottom-right-radius: inherit;
-      border-bottom-width: 0.0625em;
     }
     .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion.dawa-selected,
     .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion:hover {
-      background: #f0f0f0;
+      background: var(--medium-steel);
     }
   `
   template = `

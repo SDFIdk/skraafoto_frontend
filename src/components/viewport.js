@@ -46,30 +46,28 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .direction-indicator {
       position: absolute;
-      top: .5rem;
-      right: .5rem;
+      top: 1.5rem;
+      right: 1rem;
       width: auto
-      height: 2rem;
-      color: #fff;
       margin: 0;
       padding: 0;
+      background-color: var(--lys-steel);
+      opacity: 0.66;
+      border-radius: 2.3rem;
     }
-    .direction-indicator .direction-title {
-      
-    }
-    .direction-indicator .ds-icon-map_icon_nordpil.north {
+    .direction-indicator.ds-icon-map_icon_nordpil.north {
       transform: rotate(0deg);
       display: inline-block;
     }
-    .direction-indicator .ds-icon-map_icon_nordpil.south {
+    .direction-indicator.ds-icon-map_icon_nordpil.south {
       transform: rotate(180deg);
       display: inline-block;
     }
-    .direction-indicator .ds-icon-map_icon_nordpil.east {
+    .direction-indicator.ds-icon-map_icon_nordpil.east {
       transform: rotate(90deg);
       display: inline-block;
     }
-    .direction-indicator .ds-icon-map_icon_nordpil.west {
+    .direction-indicator.ds-icon-map_icon_nordpil.west {
       transform: rotate(270deg);
       display: inline-block;
     }
@@ -80,17 +78,31 @@ export class SkraaFotoViewport extends HTMLElement {
       color: #fff;
     }
     .ol-zoom {
-      bottom: 1rem;
+      bottom: 2rem;
       right: 1rem;
       position: absolute;
     }
+    .ol-zoom-in,
+    .ol-zoom-out {
+      margin: .25rem 0 0;
+      display: block;
+      height: 3rem;
+      width: 3rem;
+      font-size: 2.3rem;
+      font-weight: 300;
+      border-radius: 2.3rem;
+      padding: 0;
+      line-height: 1;
+      box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
+    }
   `
   template = `
+    <link rel="stylesheet" href="./dist/skraafotostyle.css">
+    <style>
+      ${ this.styles }
+    </style>
     <div class="viewport-map"></div>
-    <p class="direction-indicator">
-      <span class="direction-title"></span>
-      <span class="ds-icon-map_icon_nordpil"></span>
-    </p>
+    <span class="direction-indicator ds-icon-map_icon_nordpil"></span>
     <p class="image-date"></p>
   `
 
@@ -134,11 +146,8 @@ export class SkraaFotoViewport extends HTMLElement {
     const wrapper = document.createElement('article')
     wrapper.className = 'viewport-wrapper'
     wrapper.innerHTML = this.template
-    // Create some CSS to apply to the shadow DOM
-    const style = document.createElement('style')
-    style.textContent = this.styles
     // attach the created elements to the shadow DOM
-    this.shadowRoot.append(style,wrapper)
+    this.shadowRoot.append(wrapper)
   }
 
   generateSource(geotiff_href) {
@@ -193,8 +202,8 @@ export class SkraaFotoViewport extends HTMLElement {
 
   updateDirection(imagedata) {
     const direction_element = this.shadowRoot.querySelector('.direction-indicator')
-    direction_element.querySelector('.direction-title').innerText = imagedata.properties.direction
-    direction_element.querySelector('.ds-icon-map_icon_nordpil').className = 'ds-icon-map_icon_nordpil ' + imagedata.properties.direction 
+    direction_element.setAttribute('title', imagedata.properties.direction)
+    direction_element.className = 'direction-indicator ds-icon-map_icon_nordpil ' + imagedata.properties.direction 
   }
 
   updateDate(imagedata) {
