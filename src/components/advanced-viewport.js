@@ -11,12 +11,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   date_selector_element
   // styles
   adv_styles = `
-    skraafoto-date-selector {
-      position: fixed;
-      bottom: 1rem;
-      left: 1rem;
-      z-index: 2;
-    }
     .image-date {
       display: none;
     }
@@ -38,6 +32,27 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       line-height: 1;
       box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
     }
+    .ds-nav-tools {
+      position: fixed;
+      z-index: 2;
+      top: 6.75rem;
+      left: 1rem;
+    }
+    .ds-button-group {
+      min-width: 14rem;
+      min-height: 3rem;
+    }
+  `
+  adv_template = `
+    <style>
+      ${ this.adv_styles }
+    </style>
+    
+    <nav class="ds-nav-tools">
+      <div class="ds-button-group">
+        <skraafoto-date-selector></skraafoto-date-selector>
+      </div>
+    </nav>
   `
 
   // setters
@@ -67,10 +82,12 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   addToDOM() {
     // Add date selector to shadow DOM
-    this.date_selector_element = document.createElement('skraafoto-date-selector')
-    const style = document.createElement('style')
-    style.textContent = this.adv_styles
-    this.shadowRoot.append(style, this.date_selector_element)
+    const div = document.createElement('div')
+    div.innerHTML = this.adv_template
+    this.shadowRoot.append(div)
+
+    // Refer DOM elements for later use
+    this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
   }
 
   updateDateSelector(center, image_id, direction) {
