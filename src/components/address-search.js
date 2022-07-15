@@ -32,7 +32,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       left: 0;
       right: 0;
       z-index: 9999;
-      overflow-y: auto;
+      overflow: auto;
+      max-height: 80vh;
       box-sizing: border-box;
       border: solid 1px var(--dark-steel);
       font-weight: 300;
