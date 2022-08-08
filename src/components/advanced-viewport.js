@@ -111,7 +111,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.mousePosition.setProjection(this.projection)
 
     // Give measure tool access to map
-    this.shadowRoot.querySelector('skraafoto-measure-tool').setMap = this.map
+    this.shadowRoot.querySelector('skraafoto-measure-tool').map = this.map
 
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {
