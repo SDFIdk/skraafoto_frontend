@@ -51,6 +51,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     <nav class="ds-nav-tools">
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
+        <skraafoto-measure-tool></skraafoto-measure-tool>
       </div>
     </nav>
   `
@@ -107,6 +108,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     
     this.map.addControl(this.mousePosition)
     this.mousePosition.setProjection(this.projection)
+
+    // Give measure tool access to map
+    this.shadowRoot.querySelector('skraafoto-measure-tool').setMap = this.map
 
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {
