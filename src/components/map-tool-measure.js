@@ -29,12 +29,10 @@ export class SkraaFotoMeasureTool extends HTMLElement {
   // Methods
 
   createShadowDOM() {
-    // Create a shadow root
-    this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    // Add tool button to shadow DOM
+    // Add tool button to DOM
     const div = document.createElement('div')
     div.innerHTML = this.template
-    this.shadowRoot.append(div)
+    this.append(div)
   }
 
   

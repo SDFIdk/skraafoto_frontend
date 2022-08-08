@@ -51,6 +51,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     <nav class="ds-nav-tools">
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
+        <hr>
         <skraafoto-measure-tool></skraafoto-measure-tool>
       </div>
     </nav>
