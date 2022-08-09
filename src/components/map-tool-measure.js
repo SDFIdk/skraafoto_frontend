@@ -32,6 +32,7 @@ export class SkraaFotoMeasureTool extends HTMLElement {
       ${ this.styles }
     </style>
     <button class="btn-measure ds-icon-map_icon_vej" title="Mål afstand"></button>
+    <div class="sf-tooltip-measure" style="display: none;"></div>
   `
 
   // setters
@@ -58,9 +59,10 @@ export class SkraaFotoMeasureTool extends HTMLElement {
 
     // Save element reference for later use
     this.btn = this.querySelector('button')
+    this.measureTooltipElement = this.querySelector('.sf-tooltip-measure')
   }
 
-  formatLength(line) {
+  calculateDistance(line) {
     let coords = []
     let distance = 0
     for (let n = 0; line.flatCoordinates.length > n; n = n + 2) {
@@ -76,11 +78,7 @@ export class SkraaFotoMeasureTool extends HTMLElement {
   }
 
   createMeasureTooltip() {
-    if (this.measureTooltipElement) {
-      this.measureTooltipElement.remove()
-    }
-    this.measureTooltipElement = document.createElement('div')
-    this.measureTooltipElement.className = 'sf-tooltip-measure'
+    this.measureTooltipElement.style.display = 'block'
     this.measureTooltip = new Overlay({
       element: this.measureTooltipElement,
       offset: [0, -15],
@@ -125,10 +123,8 @@ export class SkraaFotoMeasureTool extends HTMLElement {
 
       this.listener = this.sketch.getGeometry().on('change', (ev) => {
         const geom = ev.target
-        let output = this.formatLength(geom)
         tooltipCoord = geom.getLastCoordinate()
-        // TODO: Outputs pixel distance. We'll need a proper distance calculated between world coordinates.
-        this.measureTooltipElement.innerHTML = output
+        this.measureTooltipElement.innerHTML = this.calculateDistance(geom)
         this.measureTooltip.setPosition(tooltipCoord)
       });
     });
@@ -145,8 +141,7 @@ export class SkraaFotoMeasureTool extends HTMLElement {
     // unset sketch
     this.sketch = null
     // unset tooltip so that a new one can be created
-    this.measureTooltipElement = null
-    this.createMeasureTooltip()
+    this.measureTooltipElement.style.display = 'none'
     
     //measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
     //measureTooltip.setOffset([0, -7]);
@@ -170,7 +165,6 @@ export class SkraaFotoMeasureTool extends HTMLElement {
       this.map.removeInteraction(this.draw)
       // Add new interaction
       this.addInteraction(this.map)
-      
     })
   }
 }
