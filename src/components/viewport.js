@@ -5,11 +5,12 @@ import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
+import LayerGroup from 'ol/layer/Group'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
-import { getZ, world2image } from 'skraafoto-saul'
+import {getZ, world2image} from 'skraafoto-saul'
 import {toDanish} from '../modules/i18n.js'
 
 export class SkraaFotoViewport extends HTMLElement {
@@ -175,11 +176,14 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateMap() {
     const source = this.generateSource(this.image_data.assets.data.href)
-    const layer = this.generateLayer(source)
-    this.map.setLayers([
-      layer, 
-      this.generateIconLayer(this.center)
-    ])
+    const img_layer = this.generateLayer(source)
+    const layer_group = new LayerGroup({
+      layers: [
+        img_layer,
+        this.generateIconLayer(this.center)
+      ]
+    })
+    this.map.setLayerGroup(layer_group)
     this.view = await source.getView()
     this.view.projection = this.projection
     this.view.zoom = this.zoom
@@ -202,12 +206,12 @@ export class SkraaFotoViewport extends HTMLElement {
   // Lifecycle callbacks
 
   connectedCallback() {
+    
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: false})
     })
   }
-
 }
 
 // This is how to initialize the custom element

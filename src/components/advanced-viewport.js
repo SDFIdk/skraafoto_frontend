@@ -9,6 +9,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   real_world_coords
   mousePosition = new MousePosition()
   date_selector_element
+  measure_tool_element
   // styles
   adv_styles = `
     .image-date {
@@ -51,6 +52,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     <nav class="ds-nav-tools">
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
+        <hr>
+        <skraafoto-measure-tool></skraafoto-measure-tool>
       </div>
     </nav>
   `
@@ -69,6 +72,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.updateDirection(options.image)
     this.updateDate(options.image)
     this.updateDateSelector(options.center, options.image.id, options.image.properties.direction)
+    this.updateMeasureTool(this.map, this.image_data)
   }
   
 
@@ -88,12 +92,21 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // Refer DOM elements for later use
     this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
+    this.measure_tool_element = this.shadowRoot.querySelector('skraafoto-measure-tool')
   }
 
   updateDateSelector(center, image_id, direction) {
     this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
     this.date_selector_element.setAttribute('data-direction', direction)
     this.date_selector_element.setAttribute('data-selected', image_id)
+  }
+
+  updateMeasureTool(map, image) {
+    // Give measure tool access to map and image data
+    this.measure_tool_element.setData = {
+      map: map, 
+      img: image
+    }
   }
 
 
