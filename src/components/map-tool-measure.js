@@ -44,7 +44,7 @@ export class SkraaFotoMeasureTool extends HTMLElement {
   
 
   constructor() {
-    super() // Inherit stuff from SkraaFotoViewport
+    super()
     this.createDOM()
   }
   
@@ -134,18 +134,13 @@ export class SkraaFotoMeasureTool extends HTMLElement {
     })
 
     this.createMeasureTooltip()
-    //createHelpTooltip()
   }
 
   clearInteraction() {
     // unset sketch
     this.sketch = null
     // unset tooltip so that a new one can be created
-    this.measureTooltipElement.style.display = 'none'
-    
-    //measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
-    //measureTooltip.setOffset([0, -7]);
-    
+    this.measureTooltipElement.style.display = 'none'    
     unByKey(this.listener)
 
     this.map.removeInteraction(this.draw)
