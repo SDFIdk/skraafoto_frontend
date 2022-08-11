@@ -1,13 +1,11 @@
 import { SkraaFotoViewport } from './viewport.js' 
 import OlMap from 'ol/Map.js'
-import MousePosition from 'ol/control/MousePosition'
 import {defaults as defaultControls} from 'ol/control'
 
 export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   // properties
   real_world_coords
-  mousePosition = new MousePosition()
   date_selector_element
   measure_tool_element
   // styles
@@ -117,9 +115,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false})
     })
-    
-    this.map.addControl(this.mousePosition)
-    this.mousePosition.setProjection(this.projection)
 
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {

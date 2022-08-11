@@ -60,7 +60,6 @@ function updateMainViewport(item, coords) {
 }
 
 async function updateViews(options) {
-
   let item
 
   if (options.item_id) {
@@ -115,7 +114,9 @@ if (coordinates) {
 // When a coordinate input is given, fetch images and update viewports
 document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
   coordinates = event.detail // EPSG:25832 coordinates
-  updateViews(coordinates)
+  updateViews({
+    coords: coordinates
+  })
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
