@@ -126,10 +126,10 @@ document.querySelector('skraafoto-direction-picker').addEventListener('direction
     image: event.detail,
     center: coordinates
   }
-  updateUrlItem(event.detail.id)
+  updateUrl(coordinates, event.detail.id)
 })
 
 // When a differently dated image is selected, update the URL
 document.querySelector('skraafoto-advanced-viewport').shadowRoot.addEventListener('imagechange', function(event) {
-  updateUrlItem(event.detail.id)
+  updateUrl(coordinates, event.detail.id)
 })
