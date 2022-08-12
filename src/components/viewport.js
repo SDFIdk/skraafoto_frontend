@@ -116,6 +116,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.setCenter(options)
     this.updateDirection(options.image)
     this.updateDate(options.image)
+    this.updateTextContent(options.image)
   }
 
 
@@ -200,6 +201,15 @@ export class SkraaFotoViewport extends HTMLElement {
   updateDate(imagedata) {
     const datetime = new Date(imagedata.properties.datetime).toLocaleDateString()
     this.shadowRoot.querySelector('.image-date').innerText = datetime
+  }
+
+  updateTextContent(imagedata) {
+
+    const area_x = ((imagedata.bbox[0] + imagedata.bbox[2]) / 2).toFixed(0)
+    const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
+
+    console.log(imagedata)
+    this.innerText = `Billede af området omkring koordinat ${area_x},${area_y} set fra ${toDanish(imagedata.properties.direction)}.`
   }
 
 

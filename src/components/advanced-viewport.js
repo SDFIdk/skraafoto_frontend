@@ -68,7 +68,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.real_world_coords = options.center
     this.setCenter(options)
     this.updateDirection(options.image)
-    this.updateDate(options.image)
+    this.updateTextContent(options.image)
     this.updateDateSelector(options.center, options.image.id, options.image.properties.direction)
     this.updateMeasureTool(this.map, this.image_data)
   }
