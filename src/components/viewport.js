@@ -78,7 +78,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .image-date {
       position: absolute;
-      bottom: 2rem;
+      bottom: 1.25rem;
       left: 1rem;
       color: #fff;
       margin: 0;
