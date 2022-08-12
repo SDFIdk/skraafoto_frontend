@@ -67,7 +67,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       margin: 1rem;
     }
 
-    .sf-direction-picker-btn {
+    .sf-direction-picker-btn,
+    .sf-map-picker-btn {
       border: none;
       padding: 0;
       margin: 0;
@@ -75,7 +76,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       border-radius: 0;
     }
     .sf-direction-picker-btn:hover,
-    .sf-direction-picker-btn:focus {
+    .sf-direction-picker-btn:focus,
+    .sf-map-picker-btn:hover,
+    .sf-map-picker-btn:focus {
       opacity: 0.75;
     }
 
@@ -106,7 +109,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     <section class="sf-slider-content">
       <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
       <div class="sf-slider-grid">
-        <skraafoto-map id="skraafoto-map"></skraafoto-map>
+        <button class="sf-map-picker-btn">
+          <skraafoto-map id="skraafoto-map" class="pick-map"></skraafoto-map>
+        </button>
         <button class="sf-direction-picker-btn">
           <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
         </button>
@@ -207,15 +212,19 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       switch(event.target.className) {
         case 'viewport-pick-option':
           target_img = event.target.image_data
+          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
           break
         case 'sf-direction-picker-btn':
-          console.log(event.target)
           target_img = event.target.querySelector('.viewport-pick-option').image_data
+          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
+          break
+        case 'pick-map':
+          this.dispatchEvent(new CustomEvent('mapchange'))
           break
         default:
+          console.log(event.target)
           return
       }
-      this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
   }
