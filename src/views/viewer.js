@@ -122,11 +122,23 @@ document.querySelector('skraafoto-address-search').addEventListener('addresschan
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
 document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', function(event) {
+  document.getElementById('map-main').setAttribute('hidden', true)
+  document.getElementById('viewport-main').removeAttribute('hidden')
   document.getElementById('viewport-main').setView = {
     image: event.detail,
     center: coordinates
   }
   updateUrl(coordinates, event.detail.id)
+})
+
+// When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
+document.querySelector('skraafoto-direction-picker').addEventListener('mapchange', function(event) {
+  document.getElementById('viewport-main').setAttribute('hidden', true)
+  document.getElementById('map-main').removeAttribute('hidden')
+  document.getElementById('map-main').setView = {
+    center: coordinates
+  }
+  updateUrl(coordinates, '')
 })
 
 // When a differently dated image is selected, update the URL

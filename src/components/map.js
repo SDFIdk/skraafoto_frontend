@@ -121,7 +121,7 @@ export class SkraaFotoMap extends HTMLElement {
 
       this.icon_layer = this.generateIconLayer([0,0])
 
-      // HINT: Use setRenderReprojectionEdges(true) on WMTS tillayer for debugging
+      // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
 
       this.map = new Map({
         layers: [
@@ -156,7 +156,18 @@ export class SkraaFotoMap extends HTMLElement {
     })
   }
 
+  ping(condition, callback) {
+    console.log(callback, typeof callback)
+    if (condition) {
+      callback()
+      return
+    } else {
+      setTimeout(this.ping(condition, callback), 300)
+    }
+  }
+
   updateMap(center) {
+    console.log('is there map', this.map)
     const new_view = new View({
       projection: this.projection,
       center: center,
@@ -166,6 +177,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
+    this.map.updateSize()
   }
 
 
