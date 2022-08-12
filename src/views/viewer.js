@@ -78,7 +78,7 @@ async function updateViews(options) {
     item = items[0]
     updateMainViewport(item, options.coords)
     // Update URL
-    updateUrlItem(items[0].id)
+    updateUrl(options.coords, items[0].id)
   }
   
   // Update the other viewports
@@ -88,10 +88,11 @@ async function updateViews(options) {
   }
 }
 
-function updateUrlItem(item_id) {
+function updateUrl(coords, item_id) {
     const url = new URL(window.location)
     url.searchParams.set('item', item_id)
-    window.history.pushState({}, '', url);
+    url.searchParams.set('center', coords[0] + ',' + coords[1])
+    window.history.pushState({}, '', url)
 }
 
 
@@ -125,10 +126,10 @@ document.querySelector('skraafoto-direction-picker').addEventListener('direction
     image: event.detail,
     center: coordinates
   }
-  updateUrlItem(event.detail.id)
+  updateUrl(coordinates, event.detail.id)
 })
 
 // When a differently dated image is selected, update the URL
 document.querySelector('skraafoto-advanced-viewport').shadowRoot.addEventListener('imagechange', function(event) {
-  updateUrlItem(event.detail.id)
+  updateUrl(coordinates, event.detail.id)
 })

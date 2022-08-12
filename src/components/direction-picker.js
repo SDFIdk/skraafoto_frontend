@@ -67,6 +67,18 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       margin: 1rem;
     }
 
+    .sf-direction-picker-btn {
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: block;
+      border-radius: 0;
+    }
+    .sf-direction-picker-btn:hover,
+    .sf-direction-picker-btn:focus {
+      opacity: 0.75;
+    }
+
     @media screen and (min-width: 80rem) {
 
       .sf-slider-content {
@@ -95,11 +107,21 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
       <div class="sf-slider-grid">
         <skraafoto-map id="skraafoto-map"></skraafoto-map>
-        <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
-        <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
-        <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
-        <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
-        <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
+        <button class="sf-direction-picker-btn">
+          <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
+        </button>
+        <button class="sf-direction-picker-btn">
+          <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
+        </button>
+        <button class="sf-direction-picker-btn">
+          <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
+        </button>
+        <button class="sf-direction-picker-btn">
+          <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
+        </button>
+        <button class="sf-direction-picker-btn">
+          <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
+        </button>
       </div>
     </section>
   `
@@ -181,10 +203,19 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
-      if (event.target.className !== 'viewport-pick-option') {
-        return
+      let target_img
+      switch(event.target.className) {
+        case 'viewport-pick-option':
+          target_img = event.target.image_data
+          break
+        case 'sf-direction-picker-btn':
+          console.log(event.target)
+          target_img = event.target.querySelector('.viewport-pick-option').image_data
+          break
+        default:
+          return
       }
-      this.dispatchEvent(new CustomEvent('directionchange', {detail: event.target.image_data}))
+      this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
   }
