@@ -1,6 +1,7 @@
 
 const entry_points = {
   skraafoto: 'src/index.js',
+  skraafotosplash: 'src/views/splash.js',
   skraafotoviewer: 'src/views/viewer.js',
   skraafotolist: 'src/views/list.js',
   skraafotostyle: 'src/index.css'
