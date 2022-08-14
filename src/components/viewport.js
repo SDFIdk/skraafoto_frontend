@@ -18,7 +18,7 @@ export class SkraaFotoViewport extends HTMLElement {
   // properties
   image_data
   center
-  zoom = 5
+  zoom = 4
   
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
 
