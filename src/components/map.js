@@ -1,5 +1,7 @@
 // OpenLayers map code inspired by this example:
 // https://openlayers.org/en/latest/examples/wmts-layer-from-capabilities.html
+// HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
+
 import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import Map from 'ol/Map'
@@ -67,7 +69,8 @@ export class SkraaFotoMap extends HTMLElement {
   static get observedAttributes() { 
     return [
       'zoom', 
-      'center'
+      'center',
+      'minimal'
     ]
   }
 
@@ -101,7 +104,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.shadowRoot.append(div)
   }
 
-  generateMap() {
+  generateMap(is_minimal) {
     fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.api_stac_token}`)
     .then((response) => {
       return response.text()
@@ -121,7 +124,7 @@ export class SkraaFotoMap extends HTMLElement {
 
       this.icon_layer = this.generateIconLayer([0,0])
 
-      // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
+      const controls = is_minimal ? defaultControls({rotate: false, attribution: false, zoom: false}) : defaultControls({rotate: false, attribution: false})
 
       this.map = new Map({
         layers: [
@@ -133,7 +136,7 @@ export class SkraaFotoMap extends HTMLElement {
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
         view: this.view,
-        controls: defaultControls({rotate: false, attribution: false})
+        controls: controls
       })
     })
   }
@@ -174,7 +177,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   connectedCallback() {
 
-    this.generateMap()
+    this.generateMap(this.getAttribute('minimal'))
   }
 
 }
