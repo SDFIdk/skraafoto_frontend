@@ -10,6 +10,7 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
+import {defaults as defaultInteractions} from 'ol/interaction'
 import {getZ, world2image} from 'skraafoto-saul'
 import {toDanish} from '../modules/i18n.js'
 
@@ -18,7 +19,7 @@ export class SkraaFotoViewport extends HTMLElement {
   // properties
   image_data
   center
-  zoom = 5
+  zoom = 4
   
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
 
@@ -189,6 +190,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.view.projection = this.projection
     this.view.zoom = this.zoom
     this.view.center = this.center
+    this.view.resolutions.push(0.5, 0.25) // Set extra resolutions so we can zoom in further than the resolutions permit normally
     this.map.setView(new View(this.view))
   }
 
@@ -208,7 +210,6 @@ export class SkraaFotoViewport extends HTMLElement {
     const area_x = ((imagedata.bbox[0] + imagedata.bbox[2]) / 2).toFixed(0)
     const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
 
-    console.log(imagedata)
     this.innerText = `Billede af området omkring koordinat ${area_x},${area_y} set fra ${toDanish(imagedata.properties.direction)}.`
   }
 
@@ -219,7 +220,8 @@ export class SkraaFotoViewport extends HTMLElement {
     
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false, zoom: false})
+      controls: defaultControls({rotate: false, attribution: false, zoom: false}),
+      interactions: defaultInteractions({dragPan: false})
     })
   }
 }

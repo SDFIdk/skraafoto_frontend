@@ -127,6 +127,12 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.setCenter(options)
       this.updateDate(options.image)
     })
+
+    // Do something when the map is justed clicked
+    this.map.addEventListener('singleclick', (event) => {
+      console.log(event)
+    })
+
   }
 }
 
