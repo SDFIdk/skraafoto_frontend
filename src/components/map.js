@@ -156,18 +156,7 @@ export class SkraaFotoMap extends HTMLElement {
     })
   }
 
-  ping(condition, callback) {
-    console.log(callback, typeof callback)
-    if (condition) {
-      callback()
-      return
-    } else {
-      setTimeout(this.ping(condition, callback), 300)
-    }
-  }
-
   updateMap(center) {
-    console.log('is there map', this.map)
     const new_view = new View({
       projection: this.projection,
       center: center,

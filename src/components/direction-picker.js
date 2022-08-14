@@ -222,7 +222,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           this.dispatchEvent(new CustomEvent('mapchange'))
           break
         default:
-          console.log(event.target)
           return
       }
       this.slider_element.style.transform = 'translate(0,100vh)'
