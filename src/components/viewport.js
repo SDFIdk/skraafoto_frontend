@@ -20,9 +20,8 @@ export class SkraaFotoViewport extends HTMLElement {
   image_data
   center
   zoom = 4
-  
+  cached_elevation
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
-
   map
   layer
   source
@@ -100,7 +99,7 @@ export class SkraaFotoViewport extends HTMLElement {
   static get observedAttributes() { 
     return [
       'center',
-      'zoom',
+      'zoom'
     ]
   }
 
@@ -170,9 +169,18 @@ export class SkraaFotoViewport extends HTMLElement {
     })
   }
 
+  /** Add extra resolutions to enable deep zoom */
+  addResolutions(resolutions) {
+    let new_resolutions = Array.from(resolutions)
+    const tiniest_res = new_resolutions[new_resolutions.length - 1]
+    new_resolutions.push(tiniest_res / 2)
+    new_resolutions.push(tiniest_res / 4)
+    return new_resolutions
+  }
+
   async setCenter(options) {
-    const elevation = await getZ(options.center[0], options.center[1], environment)
-    this.center = world2image(options.image, options.center[0], options.center[1], elevation)
+    this.cached_elevation = await getZ(options.center[0], options.center[1], environment)
+    this.center = world2image(options.image, options.center[0], options.center[1], this.cached_elevation)
     this.updateMap()
   }
 
@@ -190,7 +198,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.view.projection = this.projection
     this.view.zoom = this.zoom
     this.view.center = this.center
-    this.view.resolutions.push(0.5, 0.25) // Set extra resolutions so we can zoom in further than the resolutions permit normally
+    // Set extra resolutions so we can zoom in further than the resolutions permit normally
+    this.view.resolutions = this.addResolutions(this.view.resolutions) 
     this.map.setView(new View(this.view))
   }
 

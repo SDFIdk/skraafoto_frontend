@@ -1,10 +1,16 @@
+import { iterate } from 'skraafoto-saul'
 import { SkraaFotoViewport } from './viewport.js' 
 import OlMap from 'ol/Map.js'
 import {defaults as defaultControls} from 'ol/control'
+// import MousePosition from 'ol/control/MousePosition' // For debugging
 
 export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
+
   // properties
+  
+  // mousepos = new MousePosition() // For debugging
+  auth = environment // Assumes existence of global variable `environment`
   real_world_coords
   date_selector_element
   measure_tool_element
@@ -107,13 +113,19 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
   }
 
+  singleClickHandler(event) {
+    const world_coords = iterate(this.image_data, event.coordinate[0], event.coordinate[1], environment).then((response) => {
+      this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
+    })
+  }
+
 
   // Lifecycle callbacks
 
   connectedCallback() {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false})
+      controls: defaultControls({rotate: false, attribution: false}) //.extend([this.mousepos]) // For debugging
     })
 
     // When an image is selected via the date-selector, update this viewport
@@ -128,9 +140,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.updateDate(options.image)
     })
 
-    // Do something when the map is justed clicked
-    this.map.addEventListener('singleclick', (event) => {
-      console.log(event)
+    // Do something when the map is clicked
+    this.map.on('singleclick', (event) => {
+      this.singleClickHandler(event)
     })
 
   }

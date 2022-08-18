@@ -110,7 +110,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn">
-          <skraafoto-map id="skraafoto-map" class="pick-map" minimal="true"></skraafoto-map>
+          <skraafoto-map id="skraafoto-map" class="pick-map"></skraafoto-map>
         </button>
         <button class="sf-direction-picker-btn">
           <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
@@ -222,6 +222,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           this.dispatchEvent(new CustomEvent('mapchange'))
           break
         default:
+          console.log(event.target)
           return
       }
       this.slider_element.style.transform = 'translate(0,100vh)'

@@ -25,8 +25,8 @@ const collection = 'skraafotos2019' // TODO: This should not be hardcoded
 const auth = environment // We assume a global `enviroment` variable has been declared
 
 let coordinates = null
-let params = (new URL(document.location)).searchParams;
 let current_item
+let params = (new URL(document.location)).searchParams
 
 
 // Methods
@@ -50,9 +50,12 @@ function queryItem(item_id) {
 
 function queryWithDirection(coords, direction) {
   const search_query = encodeURI(JSON.stringify({ 
-    "eq": [ { "property": "direction" }, direction ]
+    "and": [
+      {"eq": [ { "property": "direction" }, direction ]},
+      {"eq": [ { "property": "collection" }, 'skraafotos2019' ]} // TODO: Remove once other collections work
+    ]
   }))
-  return getSTAC(`/collections/${collection}/items?limit=1&filter=${search_query}&filter-lang=cql-json&bbox=${calcBB(coords)}&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
+  return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&bbox=${calcBB(coords)}&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
 }
 
 function findItemsAtCoordinate(coordinates) {
@@ -121,20 +124,20 @@ coordinates = params.get('center').split(',').map(function(coord) {
   return Number(coord)
 })
 current_item = params.get('item')
-if (coordinates) {
-  updateViews({
-    coords: coordinates,
-    item_id: current_item
-  })
-}
+updateViews({
+  coords: coordinates,
+  item_id: current_item
+})
+
 
 // Set up event listeners
 
 // When a coordinate input is given, fetch images and update viewports
-document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
+document.addEventListener('coordinatechange', function(event) {
   coordinates = event.detail // EPSG:25832 coordinates
   updateViews({
-    coords: coordinates
+    coords: coordinates,
+    item_id: params.get('item') ? params.get('item') : null
   })
 })
 
