@@ -24,7 +24,8 @@ export class SkraaFotoViewport extends HTMLElement {
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   map
   layer
-  source
+  img_layer
+  img_source
   view
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -106,17 +107,29 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // setters
   set setView(options) {
-    if (!options.image || !options.center) {
-      return
+
+    if (options.image) {
+      // Only update photo layer if we got a new image
+      if (!this.image_data || this.image_data.id !== options.image.id) {
+        this.image_data = options.image
+        this.img_source = this.generateSource(options.image.assets.data.href)
+        this.img_layer = this.generateLayer(this.img_source)
+      }
     }
-    this.image_data = options.image
+    
     if (options.zoom) {
       this.zoom = options.zoom
     }
-    this.setCenter(options)
-    this.updateDirection(options.image)
-    this.updateDate(options.image)
-    this.updateTextContent(options.image)
+
+    if (options.center) {
+      this.center = options.center
+    }
+
+    this.setCenter(this.center)
+    this.updateDirection(this.image_data)
+    this.updateDate(this.image_data)
+    this.updateTextContent(this.image_data)
+    this.updatePlugins()
   }
 
 
@@ -178,23 +191,22 @@ export class SkraaFotoViewport extends HTMLElement {
     return new_resolutions
   }
 
-  async setCenter(options) {
-    this.cached_elevation = await getZ(options.center[0], options.center[1], environment)
-    this.center = world2image(options.image, options.center[0], options.center[1], this.cached_elevation)
+  async setCenter(coordinate) { 
+    this.cached_elevation = coordinate[2] ? coordinate[2] : await getZ(coordinate[0], coordinate[1], environment)
+    this.center = world2image(this.image_data, coordinate[0], coordinate[1], this.cached_elevation)
     this.updateMap()
   }
 
   async updateMap() {
-    const source = this.generateSource(this.image_data.assets.data.href)
-    const img_layer = this.generateLayer(source)
+    const icon_layer = this.generateIconLayer(this.center)
     const layer_group = new LayerGroup({
       layers: [
-        img_layer,
-        this.generateIconLayer(this.center)
+        this.img_layer,
+        icon_layer
       ]
     })
     this.map.setLayerGroup(layer_group)
-    this.view = await source.getView()
+    this.view = await this.img_source.getView()
     this.view.projection = this.projection
     this.view.zoom = this.zoom
     this.view.center = this.center
@@ -220,6 +232,11 @@ export class SkraaFotoViewport extends HTMLElement {
     const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
 
     this.innerText = `Billede af området omkring koordinat ${area_x},${area_y} set fra ${toDanish(imagedata.properties.direction)}.`
+  }
+
+  updatePlugins() {
+    // No plugins
+    // Meant to be overwritten by extended classes like "SkraaFotoAdvancedViewport"
   }
 
 

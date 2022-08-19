@@ -61,23 +61,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       </div>
     </nav>
   `
-
-  // setters
-  set setView(options) {
-    if (!options.image || !options.center) {
-      return
-    }
-    this.image_data = options.image
-    if (options.zoom) {
-      this.zoom = options.zoom
-    }
-    this.real_world_coords = options.center
-    this.setCenter(options)
-    this.updateDirection(options.image)
-    this.updateTextContent(options.image)
-    this.updateDateSelector(options.center, options.image.id, options.image.properties.direction)
-    this.updateMeasureTool(this.map, this.image_data)
-  }
   
 
   constructor() {
@@ -97,6 +80,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     // Refer DOM elements for later use
     this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
     this.measure_tool_element = this.shadowRoot.querySelector('skraafoto-measure-tool')
+  }
+
+  updatePlugins() {
+    this.updateDateSelector(this.center, this.image_data.id, this.image_data.properties.direction)
+    this.updateMeasureTool(this.map, this.image_data)
   }
 
   updateDateSelector(center, image_id, direction) {

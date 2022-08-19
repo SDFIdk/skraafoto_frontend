@@ -19,24 +19,26 @@ customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-measure-tool', SkraaFotoMeasureTool)
 
 
-// Variables
+// Variables and state
 
-const collection = 'skraafotos2019' // TODO: This should not be hardcoded
 const auth = environment // We assume a global `enviroment` variable has been declared
-
-let coordinates = null
-let current_item
-let params = (new URL(document.location)).searchParams
+const state = {
+  coordinate: null, // EPSG:25832 coordinate + elevation (m)
+  item_id: null,
+  item: null,
+  items: []
+}
+let url_params = (new URL(document.location)).searchParams
 
 
 // Methods
 
-function calcBB(coordinates) {
+function calcBB(coordinate) {
   let bbox = [
-    coordinates[0] - 1,
-    coordinates[1] - 1,
-    coordinates[0] + 1,
-    coordinates[1] + 1
+    coordinate[0] - 1,
+    coordinate[1] - 1,
+    coordinate[0] + 1,
+    coordinate[1] + 1
   ]
   return bbox.join(',')
 }
@@ -58,13 +60,13 @@ function queryWithDirection(coords, direction) {
   return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&bbox=${calcBB(coords)}&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
 }
 
-function findItemsAtCoordinate(coordinates) {
+function findItemsAtCoordinate(coordinate) {
   let queries = [
-    queryWithDirection(coordinates, 'north'),
-    queryWithDirection(coordinates, 'south'),
-    queryWithDirection(coordinates, 'east'),
-    queryWithDirection(coordinates, 'west'),
-    queryWithDirection(coordinates, 'nadir')
+    queryWithDirection(coordinate, 'north'),
+    queryWithDirection(coordinate, 'south'),
+    queryWithDirection(coordinate, 'east'),
+    queryWithDirection(coordinate, 'west'),
+    queryWithDirection(coordinate, 'nadir')
   ]
   return Promise.all(queries).then((responses) => {
     return responses.map(function(response) {
@@ -73,72 +75,94 @@ function findItemsAtCoordinate(coordinates) {
   })
 }
 
-function updateMainViewport(item, coords) {
+function updateMainViewport(state) {
   document.getElementById('viewport-main').setView = {
-    image: item,
-    center: coords
+    image: state.item,
+    center: state.coordinate
   }
 }
 
-async function updateViews(options) {
-  let item
+function updateMainMap(state) {
+  document.getElementById('map-main').setView = {
+    center: state.coordinate
+  }
+}
 
-  if (options.item_id) {
-    item = await queryItem(options.item_id)
-    updateMainViewport(item, options.coords)
+async function updateViews(state) {
+  console.log(state)
+  if (state.items.length < 1) {
+    state.items = await findItemsAtCoordinate(state.coordinate) 
+    if (state.items.length < 1) {
+      console.error('No items found i STAC database')
+      return
+    }
+  }
+  if (!state.item_id) {
+    state.item = state.items[0]
+    state.item_id = state.items[0].id
+  }
+  if (!state.item) {
+    let item = state.items.find((item) => {
+      return item.id === state.item_id
+    })
+    state.item = item ? item : await queryItem(state.item_id)
+
+    /* Does this ever apply?
+    if (!state.item_id && state.item) {
+      // If we have an item, update the id property
+      state.item_id = state.item.id
+    }
+    */
   }
 
-  let items = await findItemsAtCoordinate(options.coords)
+  updateMainViewport(state)
+  updateMainMap(state)
+  updateUrl(state)
 
-  if (items.length < 1) {
-    console.error('No items found for the given coordinates')
-    return
-  }
-
-  if (!item) {
-    item = items[0]
-    updateMainViewport(item, options.coords)
-    // Update URL
-    updateUrl(options.coords, items[0].id)
-  }
-  
   // Update the other viewports
   document.querySelector('skraafoto-direction-picker').setView = {
-    images: items,
-    center: options.coords
+    images: state.items,
+    center: state.coordinate
   }
 }
 
-function updateUrl(coords, item_id) {
+function parseUrlState(params) {
+  // Parse params from URL
+  state.coordinate = params.get('center').split(',').map(function(coord) {
+    return Number(coord)
+  })
+  state.item_id = params.get('item')
+}
+
+function updateUrl(state) {
     const url = new URL(window.location)
-    url.searchParams.set('item', item_id)
-    url.searchParams.set('center', coords[0] + ',' + coords[1])
+    url.searchParams.set('item', state.item_id)
+    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
     window.history.pushState({}, '', url)
 }
 
 
 // Initialize
 
-// Parse params from URL
-coordinates = params.get('center').split(',').map(function(coord) {
-  return Number(coord)
-})
-current_item = params.get('item')
-updateViews({
-  coords: coordinates,
-  item_id: current_item
-})
+parseUrlState(url_params)
+updateViews(state)
 
 
 // Set up event listeners
 
-// When a coordinate input is given, fetch images and update viewports
+// When a coordinate input is given, update viewports
 document.addEventListener('coordinatechange', function(event) {
-  coordinates = event.detail // EPSG:25832 coordinates
-  updateViews({
-    coords: coordinates,
-    item_id: params.get('item') ? params.get('item') : null
-  })
+  state.coordinate = event.detail
+  updateViews(state)
+})
+
+// On a new address input, update viewports
+document.addEventListener('addresschange', function(event) {
+  state.coordinate = event.detail
+  state.items = []
+  state.item = null
+  state.item_id = null
+  updateViews(state)
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
@@ -147,9 +171,11 @@ document.querySelector('skraafoto-direction-picker').addEventListener('direction
   document.getElementById('viewport-main').removeAttribute('hidden')
   document.getElementById('viewport-main').setView = {
     image: event.detail,
-    center: coordinates
+    center: state.coordinate
   }
-  updateUrl(coordinates, event.detail.id)
+  state.item_id = event.detail.id
+  state.item = event.detail
+  updateUrl(state)
 })
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
@@ -157,12 +183,14 @@ document.querySelector('skraafoto-direction-picker').addEventListener('mapchange
   document.getElementById('viewport-main').setAttribute('hidden', true)
   document.getElementById('map-main').removeAttribute('hidden')
   document.getElementById('map-main').setView = {
-    center: coordinates
+    center: state.coordinate
   }
-  updateUrl(coordinates, '')
+  updateUrl(state)
 })
 
 // When a differently dated image is selected, update the URL
 document.querySelector('skraafoto-advanced-viewport').shadowRoot.addEventListener('imagechange', function(event) {
-  updateUrl(coordinates, event.detail.id)
+  state.item_id = event.detail.id
+  state.item = event.detail
+  updateUrl(state)
 })
