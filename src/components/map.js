@@ -124,7 +124,12 @@ export class SkraaFotoMap extends HTMLElement {
 
       this.icon_layer = this.generateIconLayer([0,0])
 
-      const controls = is_minimal ? defaultControls({rotate: false, attribution: false, zoom: false}) : defaultControls({rotate: false, attribution: false})
+      let controls
+      if (is_minimal !== null) {
+        controls = defaultControls({rotate: false, attribution: false, zoom: false})
+      } else {
+        controls = defaultControls({rotate: false, attribution: false})
+      }
 
       this.map = new Map({
         layers: [
@@ -138,6 +143,13 @@ export class SkraaFotoMap extends HTMLElement {
         view: this.view,
         controls: controls
       })
+
+      if (is_minimal === null) {
+        // Do something when the big map is clicked
+        this.map.on('singleclick', (event) => {
+          this.singleClickHandler(event)
+        })
+      }
     })
   }
 
@@ -157,6 +169,11 @@ export class SkraaFotoMap extends HTMLElement {
         features: [icon_feature]
       })
     })
+  }
+
+  singleClickHandler(event) {
+    // Do something to move the X
+    this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
   }
 
   updateMap(center) {
@@ -179,7 +196,6 @@ export class SkraaFotoMap extends HTMLElement {
 
     this.generateMap(this.getAttribute('minimal'))
   }
-
 }
 
 // This is how to initialize the custom element
