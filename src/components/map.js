@@ -76,6 +76,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   // setters
   set setView(options) {
+    console.log('map view set')
     this.updateMap(options.center)
   }
 
@@ -172,7 +173,6 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    // Do something to move the X
     this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
   }
 
