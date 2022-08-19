@@ -30,6 +30,8 @@ const state = {
 }
 let url_params = (new URL(document.location)).searchParams
 
+const big_map_element = document.getElementById('map-main')
+const main_viewport_element = document.getElementById('viewport-main')
 
 // Methods
 
@@ -76,20 +78,22 @@ function findItemsAtCoordinate(coordinate) {
 }
 
 function updateMainViewport(state) {
-  document.getElementById('viewport-main').setView = {
-    image: state.item,
-    center: state.coordinate
+  if (state.item_id !== 'map') {
+    document.getElementById('viewport-main').setView = {
+      image: state.item,
+      center: state.coordinate
+    }
   }
 }
 
 function updateMainMap(state) {
-  document.getElementById('map-main').setView = {
-    center: state.coordinate
+  if (state.item_id === 'map') {
+    openMap()
   }
 }
 
 async function updateViews(state) {
-  console.log(state)
+
   if (state.items.length < 1) {
     state.items = await findItemsAtCoordinate(state.coordinate) 
     if (state.items.length < 1) {
@@ -97,10 +101,12 @@ async function updateViews(state) {
       return
     }
   }
+  
   if (!state.item_id) {
     state.item = state.items[0]
     state.item_id = state.items[0].id
   }
+  
   if (!state.item) {
     let item = state.items.find((item) => {
       return item.id === state.item_id
@@ -115,9 +121,9 @@ async function updateViews(state) {
     */
   }
 
+  updateUrl(state)
   updateMainViewport(state)
   updateMainMap(state)
-  updateUrl(state)
 
   // Update the other viewports
   document.querySelector('skraafoto-direction-picker').setView = {
@@ -135,10 +141,18 @@ function parseUrlState(params) {
 }
 
 function updateUrl(state) {
-    const url = new URL(window.location)
-    url.searchParams.set('item', state.item_id)
-    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
-    window.history.pushState({}, '', url)
+  const url = new URL(window.location)
+  url.searchParams.set('item', state.item_id)
+  url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
+  window.history.pushState({}, '', url)
+}
+
+function openMap() {
+  main_viewport_element.setAttribute('hidden', true)
+  big_map_element.removeAttribute('hidden')
+  big_map_element.setView = {
+    center: state.coordinate
+  }
 }
 
 
@@ -167,9 +181,9 @@ document.addEventListener('addresschange', function(event) {
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
 document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', function(event) {
-  document.getElementById('map-main').setAttribute('hidden', true)
-  document.getElementById('viewport-main').removeAttribute('hidden')
-  document.getElementById('viewport-main').setView = {
+  big_map_element.setAttribute('hidden', true)
+  main_viewport_element.removeAttribute('hidden')
+  main_viewport_element.setView = {
     image: event.detail,
     center: state.coordinate
   }
@@ -180,12 +194,10 @@ document.querySelector('skraafoto-direction-picker').addEventListener('direction
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
 document.querySelector('skraafoto-direction-picker').addEventListener('mapchange', function(event) {
-  document.getElementById('viewport-main').setAttribute('hidden', true)
-  document.getElementById('map-main').removeAttribute('hidden')
-  document.getElementById('map-main').setView = {
-    center: state.coordinate
-  }
+  state.item_id = 'map'
+  state.item = null
   updateUrl(state)
+  openMap()
 })
 
 // When a differently dated image is selected, update the URL
