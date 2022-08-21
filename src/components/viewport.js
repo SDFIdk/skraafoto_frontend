@@ -11,7 +11,7 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import {defaults as defaultInteractions} from 'ol/interaction'
-import {getZ, world2image} from 'skraafoto-saul'
+import {getZ, world2image, getSTAC} from 'skraafoto-saul'
 import {toDanish} from '../modules/i18n.js'
 
 export class SkraaFotoViewport extends HTMLElement {
@@ -108,7 +108,21 @@ export class SkraaFotoViewport extends HTMLElement {
   // setters
   set setView(options) {
 
+    if (options.center) {
+      this.center = options.center
+    }
+
     if (options.image) {
+
+      if (!this.compareCenterBbox(this.center, options.image.bbox)) {
+        console.log('something is out of bounds')
+        // fetch a new image
+        this.fetchItem(this.center, options.image.properties.direction)
+        .then((item) => {
+          console.log('got item',item)
+        })
+      }
+
       // Only update photo layer if we got a new image
       if (!this.image_data || this.image_data.id !== options.image.id) {
         this.image_data = options.image
@@ -119,10 +133,6 @@ export class SkraaFotoViewport extends HTMLElement {
     
     if (options.zoom) {
       this.zoom = options.zoom
-    }
-
-    if (options.center) {
-      this.center = options.center
     }
 
     this.setCenter(this.center)
@@ -150,6 +160,21 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
+  }
+
+  fetchItem(center, direction) {
+    const search_query = encodeURI(JSON.stringify({ 
+      "and": [
+        {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ center[0], center[1] ]} ]},
+        {"eq": [ { "property": "direction" }, direction ]},
+        {"eq": [ { "property": "collection" }, 'skraafotos2019' ]} // TODO: Remove once other collections work
+      ]
+    }))
+    return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, environment)
+    .then((response) => {
+      console.log(response)
+      return response
+    })
   }
 
   generateSource(geotiff_href) {
@@ -195,6 +220,17 @@ export class SkraaFotoViewport extends HTMLElement {
     this.cached_elevation = coordinate[2] ? coordinate[2] : await getZ(coordinate[0], coordinate[1], environment)
     this.center = world2image(this.image_data, coordinate[0], coordinate[1], this.cached_elevation)
     this.updateMap()
+  }
+
+  compareCenterBbox(center, bbox) {
+    if (center[0] < bbox[0] || center[0] > bbox[2]) {
+      // x coordinate is out of bounds
+      return false
+    } else if (center[1] < bbox[1] || center[1] > bbox[3]) {
+      //y coordinate is out of bounds
+      return false
+    }
+    return true
   }
 
   async updateMap() {

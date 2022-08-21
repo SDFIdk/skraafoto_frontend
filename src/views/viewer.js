@@ -52,14 +52,15 @@ function queryItem(item_id) {
   })
 }
 
-function queryWithDirection(coords, direction) {
+function queryWithDirection(coord, direction) {
   const search_query = encodeURI(JSON.stringify({ 
     "and": [
+      {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ coord[0], coord[1] ]} ]},
       {"eq": [ { "property": "direction" }, direction ]},
       {"eq": [ { "property": "collection" }, 'skraafotos2019' ]} // TODO: Remove once other collections work
     ]
   }))
-  return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&bbox=${calcBB(coords)}&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
+  return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
 }
 
 function findItemsAtCoordinate(coordinate) {
