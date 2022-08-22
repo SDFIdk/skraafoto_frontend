@@ -76,7 +76,6 @@ export class SkraaFotoMap extends HTMLElement {
 
   // setters
   set setView(options) {
-    console.log('map view set')
     this.updateMap(options.center)
   }
 

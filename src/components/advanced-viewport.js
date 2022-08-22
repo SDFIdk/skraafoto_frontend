@@ -83,12 +83,14 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
-    this.updateDateSelector(this.center, this.image_data.id, this.image_data.properties.direction)
-    this.updateMeasureTool(this.map, this.image_data)
+    this.updateDateSelector(this.center, this.item.id, this.item.properties.direction)
+    this.updateMeasureTool(this.map, this.item)
   }
 
   updateDateSelector(center, image_id, direction) {
-    this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
+    if (center) {
+      this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
+    }
     this.date_selector_element.setAttribute('data-direction', direction)
     this.date_selector_element.setAttribute('data-selected', image_id)
   }
@@ -102,7 +104,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   singleClickHandler(event) {
-    const world_coords = iterate(this.image_data, event.coordinate[0], event.coordinate[1], environment).then((response) => {
+    const world_coords = iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
       this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
     })
   }
@@ -118,13 +120,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {
-      this.image_data = event.detail
-      let options = {
-        image: this.image_data,
-        center: this.real_world_coords,
-        zoom: this.zoom
-      }
-      this.setCenter(options)
+      this.item = event.detail
+      this.setCenter(this.real_world_coords)
       this.updateDate(options.image)
     })
 
