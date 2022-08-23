@@ -1,3 +1,45 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 5V19M5 12H19" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg44"
+   sodipodi:docname="icon_crosshair.svg"
+   inkscape:version="1.2.1 (9c6d41e, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs48" />
+  <sodipodi:namedview
+     id="namedview46"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="35.160254"
+     inkscape:cx="9.6700097"
+     inkscape:cy="12.585233"
+     inkscape:window-width="2541"
+     inkscape:window-height="1369"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg44" />
+  <path
+     style="color:#000000;fill:#808080;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none;fill-opacity:0.50259066"
+     d="m 12,4 c -0.546362,0 -1,0.4536381 -1,1 v 6 H 5 c -0.5463619,0 -1,0.453638 -1,1 0,0.546362 0.4536381,1 1,1 h 6 v 6 c 0,0.546362 0.453638,1 1,1 0.546362,0 1,-0.453638 1,-1 v -6 h 6 c 0.546362,0 1,-0.453638 1,-1 0,-0.546362 -0.453638,-1 -1,-1 H 13 V 5 C 13,4.4536381 12.546362,4 12,4 Z"
+     id="path939"
+     sodipodi:nodetypes="sscssscssscssscss" />
+  <path
+     style="color:#000000;fill:#ffffff;fill-opacity:1;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+     d="M 12,4.5 A 0.5,0.5 0 0 0 11.5,5 v 6.5 H 5 A 0.5,0.5 0 0 0 4.5,12 0.5,0.5 0 0 0 5,12.5 h 6.5 V 19 A 0.5,0.5 0 0 0 12,19.5 0.5,0.5 0 0 0 12.5,19 V 12.5 H 19 A 0.5,0.5 0 0 0 19.5,12 0.5,0.5 0 0 0 19,11.5 H 12.5 V 5 A 0.5,0.5 0 0 0 12,4.5 Z"
+     id="path42" />
 </svg>
