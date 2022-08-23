@@ -23,7 +23,6 @@ export class SkraaFotoViewport extends HTMLElement {
   cached_elevation
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   map
-  layer
   layer_image
   layer_icon
   source_image
@@ -80,7 +79,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .image-date {
       position: absolute;
-      bottom: 1.25rem;
+      bottom: 1rem;
       left: 1rem;
       color: #fff;
       margin: 0;
@@ -110,30 +109,13 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // Set image item and updates image layer
   set setItem(item) {
-    if (this.item?.id !== item.id) {
-      this.item = item
-      this.source_image = this.generateSource(item.assets.data.href)
-      this.map.removeLayer(this.layer_image)
-      this.layer_image = this.generateLayer(this.source_image)
-      this.map.addLayer(this.layer_image)
-      this.updateView()
-      this.updateNonMap()
-    }
+    this.updateItem(item)
   }
 
   // Set center coordinate and update view
   set setCenter(coordinate) {
     this.coord_world = coordinate
-    getZ(coordinate[0], coordinate[1], environment)
-    .then((z) => {
-      this.cached_elevation = z
-      this.coord_image = world2image(this.item, coordinate[0], coordinate[1], z)
-      this.map.removeLayer(this.layer_icon)
-      this.layer_icon = this.generateIconLayer(this.coord_image)
-      this.map.addLayer(this.layer_icon)
-      this.updateView()
-      this.updateNonMap()
-    })
+    this.updateCenter(coordinate)
   }
 
   // Set zoom level and update view
@@ -229,6 +211,31 @@ export class SkraaFotoViewport extends HTMLElement {
       return false
     }
     return true
+  }
+
+  updateItem(item) {
+    if (this.item?.id !== item.id) {
+      this.item = item
+      this.source_image = this.generateSource(item.assets.data.href)
+      this.map.removeLayer(this.layer_image)
+      this.layer_image = this.generateLayer(this.source_image)
+      this.map.addLayer(this.layer_image)
+      this.updateView()
+      this.updateNonMap()
+    }
+  }
+
+  updateCenter(coordinate) {
+    getZ(coordinate[0], coordinate[1], environment)
+    .then((z) => {
+      this.cached_elevation = z
+      this.coord_image = world2image(this.item, coordinate[0], coordinate[1], z)
+      this.map.removeLayer(this.layer_icon)
+      this.layer_icon = this.generateIconLayer(this.coord_image)
+      this.map.addLayer(this.layer_icon)
+      this.updateView()
+      this.updateNonMap()
+    })
   }
 
   updateNonMap() {

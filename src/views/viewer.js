@@ -32,6 +32,7 @@ let url_params = (new URL(document.location)).searchParams
 
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
+const direction_picker_element = document.querySelector('skraafoto-direction-picker')
 
 // Methods
 
@@ -42,12 +43,16 @@ function queryItem(item_id) {
   })
 }
 
-function queryWithDirection(coord, direction) {
+function queryItems(coord, direction, collection) {
+  let default_collection = 'skraafotos2019'
+  if (collection) {
+    default_collection = collection
+  }
   const search_query = encodeURI(JSON.stringify({ 
     "and": [
       {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ coord[0], coord[1] ]} ]},
       {"eq": [ { "property": "direction" }, direction ]},
-      {"eq": [ { "property": "collection" }, 'skraafotos2019' ]} // TODO: Remove once other collections work
+      {"eq": [ { "property": "collection" }, default_collection ]}
     ]
   }))
   return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
@@ -55,11 +60,11 @@ function queryWithDirection(coord, direction) {
 
 function findItemsAtCoordinate(coordinate) {
   let queries = [
-    queryWithDirection(coordinate, 'north'),
-    queryWithDirection(coordinate, 'south'),
-    queryWithDirection(coordinate, 'east'),
-    queryWithDirection(coordinate, 'west'),
-    queryWithDirection(coordinate, 'nadir')
+    queryItems(coordinate, 'north'),
+    queryItems(coordinate, 'south'),
+    queryItems(coordinate, 'east'),
+    queryItems(coordinate, 'west'),
+    queryItems(coordinate, 'nadir')
   ]
   return Promise.all(queries).then((responses) => {
     return responses.map(function(response) {
@@ -115,7 +120,7 @@ async function updateViews(state) {
   updateMainMap(state)
 
   // Update the other viewports
-  document.querySelector('skraafoto-direction-picker').setView = {
+  direction_picker_element.setView = {
     images: state.items,
     center: state.coordinate
   }
@@ -144,6 +149,25 @@ function openMap() {
   }
 }
 
+function updateDirectionPickerImages(collection) {
+  let queries = [
+    queryItems(state.coordinate, 'north', collection),
+    queryItems(state.coordinate, 'south', collection),
+    queryItems(state.coordinate, 'east', collection),
+    queryItems(state.coordinate, 'west', collection),
+    queryItems(state.coordinate, 'nadir', collection)
+  ]
+  Promise.all(queries).then((responses) => {
+    let items = responses.map(function(response) {
+      return response.features[0]
+    })
+    direction_picker_element.setView = {
+      images: items,
+      center: state.coordinate
+    }
+  })
+}
+
 
 // Initialize
 
@@ -169,7 +193,7 @@ document.addEventListener('addresschange', function(event) {
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
-document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', function(event) {
+direction_picker_element.addEventListener('directionchange', function(event) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   main_viewport_element.setItem = event.detail
@@ -180,15 +204,20 @@ document.querySelector('skraafoto-direction-picker').addEventListener('direction
 })
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
-document.querySelector('skraafoto-direction-picker').addEventListener('mapchange', function(event) {
+direction_picker_element.addEventListener('mapchange', function(event) {
   state.item_id = 'map'
   state.item = null
   updateUrl(state)
   openMap()
 })
 
-// When a differently dated image is selected, update the URL
-document.querySelector('skraafoto-advanced-viewport').shadowRoot.addEventListener('imagechange', function(event) {
+// When a differently dated image is selected, update the URL and check to see if direction picker needs an update
+main_viewport_element.shadowRoot.addEventListener('imagechange', function(event) {
+
+  if (event.detail.collection !== state.item.collection) {
+    updateDirectionPickerImages(event.detail.collection)
+  }
+
   state.item_id = event.detail.id
   state.item = event.detail
   updateUrl(state)

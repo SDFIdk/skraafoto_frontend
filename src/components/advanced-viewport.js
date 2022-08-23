@@ -116,9 +116,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {
-      this.item = event.detail
-      this.setCenter(this.coord_world)
-      this.updateDate(this.item)
+      this.updateItem(event.detail)
+      this.updateCenter(this.coord_world)
     })
 
     // Do something when the map is clicked
