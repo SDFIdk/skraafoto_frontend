@@ -71,11 +71,11 @@ export class SkraaFotoViewport extends HTMLElement {
       display: inline-block;
     }
     .direction-indicator.ds-icon-map_icon_nordpil.east {
-      transform: rotate(90deg);
+      transform: rotate(270deg);
       display: inline-block;
     }
     .direction-indicator.ds-icon-map_icon_nordpil.west {
-      transform: rotate(270deg);
+      transform: rotate(90deg);
       display: inline-block;
     }
     .image-date {
