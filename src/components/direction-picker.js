@@ -135,27 +135,22 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   // setters
 
   set setView(options) {
-    this.north_element.setView = {
-      image: options.images[0],
-      center: options.center
-    }
-    this.south_element.setView = {
-      image: options.images[1],
-      center: options.center
-    }
-    this.east_element.setView = {
-      image: options.images[2],
-      center: options.center
-    }
-    this.west_element.setView = {
-      image: options.images[3],
-      center: options.center
-    }
-    this.nadir_element.setView = {
-      image: options.images[4],
-      center: options.center,
-      zoom: 4
-    }
+    this.north_element.setItem = options.images[0]
+    this.north_element.setCenter = options.center
+
+    this.south_element.setItem = options.images[1]
+    this.south_element.setCenter = options.center
+
+    this.east_element.setItem = options.images[2]
+    this.east_element.setCenter = options.center
+
+    this.west_element.setItem = options.images[3]
+    this.west_element.setCenter = options.center
+
+    this.nadir_element.setItem = options.images[4]
+    this.nadir_element.setCenter = options.center
+    this.nadir_element.setZoom = 4
+
     // Update map
     this.map_element.setView = {
       center: options.center
@@ -211,11 +206,11 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       let target_img
       switch(event.target.className) {
         case 'viewport-pick-option':
-          target_img = event.target.image_data
+          target_img = event.target.item
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
           break
         case 'sf-direction-picker-btn':
-          target_img = event.target.querySelector('.viewport-pick-option').image_data
+          target_img = event.target.querySelector('.viewport-pick-option').item
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
           break
         case 'pick-map':

@@ -35,16 +35,6 @@ const main_viewport_element = document.getElementById('viewport-main')
 
 // Methods
 
-function calcBB(coordinate) {
-  let bbox = [
-    coordinate[0] - 1,
-    coordinate[1] - 1,
-    coordinate[0] + 1,
-    coordinate[1] + 1
-  ]
-  return bbox.join(',')
-}
-
 function queryItem(item_id) {
   return getSTAC(`/search?limit=1&ids=${item_id}&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
   .then((data) => {
@@ -52,14 +42,15 @@ function queryItem(item_id) {
   })
 }
 
-function queryWithDirection(coords, direction) {
+function queryWithDirection(coord, direction) {
   const search_query = encodeURI(JSON.stringify({ 
     "and": [
+      {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ coord[0], coord[1] ]} ]},
       {"eq": [ { "property": "direction" }, direction ]},
       {"eq": [ { "property": "collection" }, 'skraafotos2019' ]} // TODO: Remove once other collections work
     ]
   }))
-  return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&bbox=${calcBB(coords)}&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
+  return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
 }
 
 function findItemsAtCoordinate(coordinate) {
@@ -79,10 +70,8 @@ function findItemsAtCoordinate(coordinate) {
 
 function updateMainViewport(state) {
   if (state.item_id !== 'map') {
-    document.getElementById('viewport-main').setView = {
-      image: state.item,
-      center: state.coordinate
-    }
+    document.getElementById('viewport-main').setItem = state.item
+    document.getElementById('viewport-main').setCenter = state.coordinate
   }
 }
 
@@ -183,10 +172,8 @@ document.addEventListener('addresschange', function(event) {
 document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', function(event) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
-  main_viewport_element.setView = {
-    image: event.detail,
-    center: state.coordinate
-  }
+  main_viewport_element.setItem = event.detail
+  main_viewport_element.setCenter = state.coordinate
   state.item_id = event.detail.id
   state.item = event.detail
   updateUrl(state)

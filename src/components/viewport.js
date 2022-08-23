@@ -5,27 +5,28 @@ import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
-import LayerGroup from 'ol/layer/Group'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import {defaults as defaultInteractions} from 'ol/interaction'
-import {getZ, world2image} from 'skraafoto-saul'
+import {getZ, world2image, getSTAC} from 'skraafoto-saul'
 import {toDanish} from '../modules/i18n.js'
 
 export class SkraaFotoViewport extends HTMLElement {
 
   // properties
-  image_data
-  center
+  item
+  coord_image
+  coord_world
   zoom = 4
   cached_elevation
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   map
   layer
-  img_layer
-  img_source
+  layer_image
+  layer_icon
+  source_image
   view
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -106,30 +107,40 @@ export class SkraaFotoViewport extends HTMLElement {
 
 
   // setters
-  set setView(options) {
 
-    if (options.image) {
-      // Only update photo layer if we got a new image
-      if (!this.image_data || this.image_data.id !== options.image.id) {
-        this.image_data = options.image
-        this.img_source = this.generateSource(options.image.assets.data.href)
-        this.img_layer = this.generateLayer(this.img_source)
-      }
+  // Set image item and updates image layer
+  set setItem(item) {
+    if (this.item?.id !== item.id) {
+      this.item = item
+      this.source_image = this.generateSource(item.assets.data.href)
+      this.map.removeLayer(this.layer_image)
+      this.layer_image = this.generateLayer(this.source_image)
+      this.map.addLayer(this.layer_image)
+      this.updateView()
+      this.updateNonMap()
     }
-    
-    if (options.zoom) {
-      this.zoom = options.zoom
-    }
+  }
 
-    if (options.center) {
-      this.center = options.center
-    }
+  // Set center coordinate and update view
+  set setCenter(coordinate) {
+    this.coord_world = coordinate
+    getZ(coordinate[0], coordinate[1], environment)
+    .then((z) => {
+      this.cached_elevation = z
+      this.coord_image = world2image(this.item, coordinate[0], coordinate[1], z)
+      this.map.removeLayer(this.layer_icon)
+      this.layer_icon = this.generateIconLayer(this.coord_image)
+      this.map.addLayer(this.layer_icon)
+      this.updateView()
+      this.updateNonMap()
+    })
+  }
 
-    this.setCenter(this.center)
-    this.updateDirection(this.image_data)
-    this.updateDate(this.image_data)
-    this.updateTextContent(this.image_data)
-    this.updatePlugins()
+  // Set zoom level and update view
+  set setZoom(zoom_level) {
+    this.zoom = zoom_level
+    this.updateView()
+    this.updateNonMap()
   }
 
 
@@ -152,6 +163,21 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.append(wrapper)
   }
 
+  updateView() {
+    this.source_image.getView()
+    .then((view) => {
+      this.view = view
+      this.view.projection = this.projection
+
+      // Set extra resolutions so we can zoom in further than the resolutions permit normally
+      this.view.resolutions = this.addResolutions(this.view.resolutions)
+
+      this.view.center = this.coord_image
+      this.view.zoom = this.zoom
+      this.map.setView(new View(this.view))
+    })
+  }
+
   generateSource(geotiff_href) {
     return new GeoTIFF({
       convertToRGB: true,
@@ -165,24 +191,26 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   generateIconLayer(center) {
-    let icon_feature = new Feature({
-      geometry: new Point([center[0], center[1]])
-    })
-    const icon_style = new Style({
-      image: new Icon({
-        src: './img/icons/icon_crosshair.svg',
-        scale: 2.5
+    if (center) {
+      let icon_feature = new Feature({
+        geometry: new Point([center[0], center[1]])
       })
-    })
-    icon_feature.setStyle(icon_style)
-    return new VectorLayer({
-      source: new VectorSource({
-        features: [icon_feature]
+      const icon_style = new Style({
+        image: new Icon({
+          src: './img/icons/icon_crosshair.svg',
+          scale: 2.5
+        })
       })
-    })
+      icon_feature.setStyle(icon_style)
+      return new VectorLayer({
+        source: new VectorSource({
+          features: [icon_feature]
+        })
+      })  
+    }
   }
 
-  /** Add extra resolutions to enable deep zoom */
+  /** Adds extra resolutions to enable deep zoom */
   addResolutions(resolutions) {
     let new_resolutions = Array.from(resolutions)
     const tiniest_res = new_resolutions[new_resolutions.length - 1]
@@ -191,28 +219,23 @@ export class SkraaFotoViewport extends HTMLElement {
     return new_resolutions
   }
 
-  async setCenter(coordinate) { 
-    this.cached_elevation = coordinate[2] ? coordinate[2] : await getZ(coordinate[0], coordinate[1], environment)
-    this.center = world2image(this.image_data, coordinate[0], coordinate[1], this.cached_elevation)
-    this.updateMap()
+  // TODO: Move this to viewer.js
+  compareCenterBbox(center, bbox) {
+    if (center[0] < bbox[0] || center[0] > bbox[2]) {
+      // x coordinate is out of bounds
+      return false
+    } else if (center[1] < bbox[1] || center[1] > bbox[3]) {
+      //y coordinate is out of bounds
+      return false
+    }
+    return true
   }
 
-  async updateMap() {
-    const icon_layer = this.generateIconLayer(this.center)
-    const layer_group = new LayerGroup({
-      layers: [
-        this.img_layer,
-        icon_layer
-      ]
-    })
-    this.map.setLayerGroup(layer_group)
-    this.view = await this.img_source.getView()
-    this.view.projection = this.projection
-    this.view.zoom = this.zoom
-    this.view.center = this.center
-    // Set extra resolutions so we can zoom in further than the resolutions permit normally
-    this.view.resolutions = this.addResolutions(this.view.resolutions) 
-    this.map.setView(new View(this.view))
+  updateNonMap() {
+    this.updateDirection(this.item)
+    this.updateDate(this.item)
+    this.updateTextContent(this.item)
+    this.updatePlugins()
   }
 
   updateDirection(imagedata) {
@@ -227,10 +250,8 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updateTextContent(imagedata) {
-
     const area_x = ((imagedata.bbox[0] + imagedata.bbox[2]) / 2).toFixed(0)
     const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
-
     this.innerText = `Billede af området omkring koordinat ${area_x},${area_y} set fra ${toDanish(imagedata.properties.direction)}.`
   }
 
@@ -249,6 +270,16 @@ export class SkraaFotoViewport extends HTMLElement {
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: defaultInteractions({dragPan: false})
     })
+  }
+
+  attributeChangeCallback(name, old_value, new_value) {
+
+    if (name === 'center' && old_value !== new_value) {
+      this.setCenter(JSON.parse(new_value))
+    }
+    if (name === 'zoom' && old_value !== new_value) {
+      this.setZoom(JSON.parse(new_value))
+    }
   }
 }
 
