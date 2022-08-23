@@ -75,8 +75,12 @@ function findItemsAtCoordinate(coordinate) {
 
 function updateMainViewport(state) {
   if (state.item_id !== 'map') {
-    document.getElementById('viewport-main').setItem = state.item
-    document.getElementById('viewport-main').setCenter = state.coordinate
+    if (state.item) {
+      document.getElementById('viewport-main').setItem = state.item
+    }
+    if (state.coordinate) {
+      document.getElementById('viewport-main').setCenter = state.coordinate
+    }    
   }
 }
 
@@ -87,6 +91,13 @@ function updateMainMap(state) {
 }
 
 async function updateViews(state) {
+
+  if (!state.coordinate && state.item_id) {
+    state.item = await queryItem(state.item_id)
+    const x = (state.item.bbox[0] + state.item.bbox[2]) / 2
+    const y = (state.item.bbox[1] + state.item.bbox[3]) / 2
+    state.coordinate = [x,y]
+  }
 
   if (state.items.length < 1) {
     state.items = await findItemsAtCoordinate(state.coordinate) 
@@ -106,13 +117,6 @@ async function updateViews(state) {
       return item.id === state.item_id
     })
     state.item = item ? item : await queryItem(state.item_id)
-
-    /* Does this ever apply?
-    if (!state.item_id && state.item) {
-      // If we have an item, update the id property
-      state.item_id = state.item.id
-    }
-    */
   }
 
   updateUrl(state)
@@ -124,20 +128,31 @@ async function updateViews(state) {
     images: state.items,
     center: state.coordinate
   }
+
 }
 
 function parseUrlState(params) {
   // Parse params from URL
-  state.coordinate = params.get('center').split(',').map(function(coord) {
-    return Number(coord)
-  })
-  state.item_id = params.get('item')
+  const param_center = params.get('center')
+  const param_item = params.get('item')
+  if (param_center) {
+    state.coordinate = param_center.split(',').map(function(coord) {
+      return Number(coord)
+    })
+  }
+  if (param_item) {
+    state.item_id = param_item
+  }
 }
 
 function updateUrl(state) {
   const url = new URL(window.location)
-  url.searchParams.set('item', state.item_id)
-  url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
+  if (state.item_id) {
+    url.searchParams.set('item', state.item_id)
+  }
+  if (state.coordinate) {
+    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
+  }
   window.history.pushState({}, '', url)
 }
 
