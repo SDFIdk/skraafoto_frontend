@@ -10,8 +10,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   // properties
   
   // mousepos = new MousePosition() // For debugging
-  auth = environment // Assumes existence of global variable `environment`
-  real_world_coords
   date_selector_element
   measure_tool_element
   // styles
@@ -83,14 +81,12 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
-    this.updateDateSelector(this.center, this.item.id, this.item.properties.direction)
+    this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     this.updateMeasureTool(this.map, this.item)
   }
 
   updateDateSelector(center, image_id, direction) {
-    if (center) {
-      this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
-    }
+    this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
     this.date_selector_element.setAttribute('data-direction', direction)
     this.date_selector_element.setAttribute('data-selected', image_id)
   }
@@ -104,7 +100,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   singleClickHandler(event) {
-    const world_coords = iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
+    this.coord_world = iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
       this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
     })
   }
@@ -121,8 +117,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {
       this.item = event.detail
-      this.setCenter(this.real_world_coords)
-      this.updateDate(options.image)
+      this.setCenter(this.coord_world)
+      this.updateDate(this.item)
     })
 
     // Do something when the map is clicked

@@ -5,7 +5,6 @@ import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
-import LayerGroup from 'ol/layer/Group'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
@@ -18,7 +17,8 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // properties
   item
-  center
+  coord_image
+  coord_world
   zoom = 4
   cached_elevation
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
@@ -117,21 +117,22 @@ export class SkraaFotoViewport extends HTMLElement {
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
       this.updateView()
-      this.updateExtras()
+      this.updateNonMap()
     }
   }
 
   // Set center coordinate and update view
   set setCenter(coordinate) {
+    this.coord_world = coordinate
     getZ(coordinate[0], coordinate[1], environment)
     .then((z) => {
       this.cached_elevation = z
-      this.center = world2image(this.item, coordinate[0], coordinate[1], z)
+      this.coord_image = world2image(this.item, coordinate[0], coordinate[1], z)
       this.map.removeLayer(this.layer_icon)
-      this.layer_icon = this.generateIconLayer(this.center)
+      this.layer_icon = this.generateIconLayer(this.coord_image)
       this.map.addLayer(this.layer_icon)
       this.updateView()
-      this.updateExtras()
+      this.updateNonMap()
     })
   }
 
@@ -139,7 +140,7 @@ export class SkraaFotoViewport extends HTMLElement {
   set setZoom(zoom_level) {
     this.zoom = zoom_level
     this.updateView()
-    this.updateExtras()
+    this.updateNonMap()
   }
 
 
@@ -171,16 +172,9 @@ export class SkraaFotoViewport extends HTMLElement {
       // Set extra resolutions so we can zoom in further than the resolutions permit normally
       this.view.resolutions = this.addResolutions(this.view.resolutions)
 
-      this.view.center = this.center
+      this.view.center = this.coord_image
       this.view.zoom = this.zoom
       this.map.setView(new View(this.view))
-    })
-  }
-
-  async fetchItem(query, auth) {
-    getSTAC(`/search?limit=1&filter=${query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
-    .then((response) => {
-      return response.features[0]
     })
   }
 
@@ -237,7 +231,7 @@ export class SkraaFotoViewport extends HTMLElement {
     return true
   }
 
-  updateExtras() {
+  updateNonMap() {
     this.updateDirection(this.item)
     this.updateDate(this.item)
     this.updateTextContent(this.item)
@@ -279,7 +273,7 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   attributeChangeCallback(name, old_value, new_value) {
-    
+
     if (name === 'center' && old_value !== new_value) {
       this.setCenter(JSON.parse(new_value))
     }

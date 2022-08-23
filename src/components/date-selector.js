@@ -73,21 +73,14 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selector_element.value = this.selected
   }
 
-  calcBB(coordinates) {
-    let bbox = [
-      coordinates[0] - 1,
-      coordinates[1] - 1,
-      coordinates[0] + 1,
-      coordinates[1] + 1
-    ]
-    return bbox.join(',')
-  }
-
-  fetchItems(coords, direction) {
+  fetchItems(coord, direction) {
     const search_query = encodeURI(JSON.stringify({ 
-      "eq": [ { "property": "direction" }, direction ]
+      "and": [
+        {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ coord[0], coord[1] ]} ]},
+        {"eq": [ { "property": "direction" }, direction ]},
+      ]
     }))
-    return getSTAC(`/search?filter=${search_query}&filter-lang=cql-json&bbox=${this.calcBB(coords)}&limit=1000&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, this.auth)
+    return getSTAC(`/search?filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, this.auth)
   }
 
 
@@ -111,7 +104,9 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
     switch(name) {
       case 'data-center':
-        this.center = JSON.parse(new_value)
+        if (new_value !== 'undefined') {
+          this.center = JSON.parse(new_value)
+        }
         break
       case 'data-direction':
         this.direction = new_value
