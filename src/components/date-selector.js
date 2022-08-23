@@ -64,12 +64,24 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   updateOptions(options) {
-    let option_elements = ''
-    for (let o in options) {
-      const datetime = new Date(options[o].properties.datetime).toLocaleString()
-      option_elements += `<option value="${ options[o].id }">${ datetime }</option>`
+    this.selector_element.innerHTML = ''
+    let current_collection
+    let i = 1
+    for (let o = 0; o < options.length; o++) {
+      if (options[o].collection !== current_collection) {
+        current_collection = options[o].collection
+        i = 1
+        let option_group_el = document.createElement('optgroup')
+        option_group_el.label = current_collection
+        this.selector_element.appendChild(option_group_el)
+      }
+      const datetime = new Date(options[o].properties.datetime)
+      let option_el = document.createElement('option')
+      option_el.value = options[o].id
+      option_el.innerText = `(${i}) ${ datetime.toLocaleString('default', { month: 'long', year: 'numeric' }) }`
+      this.selector_element.querySelector(`[label="${ options[o].collection }"]`).appendChild(option_el)
+      i++
     }
-    this.selector_element.innerHTML = option_elements
     this.selector_element.value = this.selected
   }
 
@@ -90,10 +102,10 @@ export class SkraaFotoDateSelector extends HTMLElement {
     
     // When a date is selected, send an event with the corresponding image data
     this.shadowRoot.querySelector('select').addEventListener('input', (event) => {
-      const image = this.items.find(function(item) {
+      const item = this.items.find(function(item) {
         return item.id === event.target.value
       })
-      this.dispatchEvent(new CustomEvent('imagechange', {detail: image, bubbles: true}))
+      this.dispatchEvent(new CustomEvent('imagechange', {detail: item, bubbles: true}))
     })
   }
 
