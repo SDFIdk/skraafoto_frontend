@@ -110,6 +110,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   async attributeChangedCallback(name, old_value, new_value) {
+    
     if (old_value === new_value) {
       return
     }

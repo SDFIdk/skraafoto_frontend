@@ -13,6 +13,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   date_selector_element
   // styles
   adv_styles = `
+    .ol-viewport canvas {
+      cursor: crosshair;
+    }
     .image-date {
       display: none;
     }

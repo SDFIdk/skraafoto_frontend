@@ -34,7 +34,6 @@ let url_params = (new URL(document.location)).searchParams
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
 const direction_picker_element = document.querySelector('skraafoto-direction-picker')
-const info_a_element = document.querySelector('.skraafoto-info-link')
 
 // Methods
 
