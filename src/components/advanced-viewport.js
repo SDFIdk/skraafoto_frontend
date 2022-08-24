@@ -44,7 +44,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       left: 1.5rem;
     }
     .ds-button-group {
-      min-width: 14rem;
+      min-width: 10rem;
       min-height: 3rem;
       padding: 0 0.5rem;
     }
