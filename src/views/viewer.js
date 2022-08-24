@@ -6,6 +6,7 @@ import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDirectionPicker } from '../components/direction-picker.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
+import { SkraaFotoInfoBox } from '../components/info-box.js'
 // import { SkraaFotoMeasureTool } from '../components/map-tool-measure.js'
 
 
@@ -19,6 +20,7 @@ customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 // customElements.define('skraafoto-measure-tool', SkraaFotoMeasureTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
+customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 
 
 // Variables and state

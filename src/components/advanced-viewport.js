@@ -40,8 +40,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ds-nav-tools {
       position: fixed;
       z-index: 2;
-      top: 6.75rem;
-      left: 1rem;
+      top: 6rem;
+      left: 1.5rem;
     }
     .ds-button-group {
       min-width: 14rem;
@@ -60,6 +60,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <hr>
         <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
         <skraafoto-download-tool></skraafoto-download-tool>
+        <skraafoto-info-box></skraafoto-info-box>
       </div>
     </nav>
   `
@@ -87,6 +88,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     //this.updateMeasureTool(this.map, this.item)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
+    console.log(this.shadowRoot.querySelector('skraafoto-info-box'))
+    this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
 
   updateDateSelector(center, image_id, direction) {
