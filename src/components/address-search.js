@@ -66,7 +66,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       ${ this.styles }
     </style>
     <label for="adresse">Søg efter adresse:</label>
-    <input type="text" id="adresse" placeholder="Søg adresse">
+    <input type="text" id="adresse" placeholder="Indtast en adresse">
   `
 
   constructor() {
