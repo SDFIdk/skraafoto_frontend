@@ -1,12 +1,12 @@
-import { getSTAC } from 'skraafoto-saul'
+import { queryItems, queryItem } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDirectionPicker } from '../components/direction-picker.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
-import { SkraaFotoMeasureTool } from '../components/map-tool-measure.js'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
+// import { SkraaFotoMeasureTool } from '../components/map-tool-measure.js'
 
 
 // Initialize web components
@@ -17,13 +17,12 @@ customElements.define('skraafoto-map', SkraaFotoMap)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
-customElements.define('skraafoto-measure-tool', SkraaFotoMeasureTool)
+// customElements.define('skraafoto-measure-tool', SkraaFotoMeasureTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
 
 // Variables and state
 
-const auth = environment // We assume a global `enviroment` variable has been declared
 const state = {
   coordinate: null, // EPSG:25832 coordinate + elevation (m)
   item_id: null,
@@ -38,28 +37,6 @@ const direction_picker_element = document.querySelector('skraafoto-direction-pic
 const info_a_element = document.querySelector('.skraafoto-info-link')
 
 // Methods
-
-function queryItem(item_id) {
-  return getSTAC(`/search?limit=1&ids=${item_id}&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
-  .then((data) => {
-    return data.features[0]
-  })
-}
-
-function queryItems(coord, direction, collection) {
-  let default_collection = 'skraafotos2019'
-  if (collection) {
-    default_collection = collection
-  }
-  const search_query = encodeURI(JSON.stringify({ 
-    "and": [
-      {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ coord[0], coord[1] ]} ]},
-      {"eq": [ { "property": "direction" }, direction ]},
-      {"eq": [ { "property": "collection" }, default_collection ]}
-    ]
-  }))
-  return getSTAC(`/search?limit=1&filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
-}
 
 function findItemsAtCoordinate(coordinate) {
   let queries = [
@@ -231,7 +208,7 @@ direction_picker_element.addEventListener('mapchange', function(event) {
 
 // When a differently dated image is selected, update the URL and check to see if direction picker needs an update
 main_viewport_element.shadowRoot.addEventListener('imagechange', function(event) {
-
+  
   if (event.detail.collection !== state.item.collection) {
     updateDirectionPickerImages(event.detail.collection)
   }

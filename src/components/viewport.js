@@ -201,18 +201,6 @@ export class SkraaFotoViewport extends HTMLElement {
     return new_resolutions
   }
 
-  // TODO: Move this to viewer.js
-  compareCenterBbox(center, bbox) {
-    if (center[0] < bbox[0] || center[0] > bbox[2]) {
-      // x coordinate is out of bounds
-      return false
-    } else if (center[1] < bbox[1] || center[1] > bbox[3]) {
-      //y coordinate is out of bounds
-      return false
-    }
-    return true
-  }
-
   updateItem(item) {
     if (this.item?.id !== item.id) {
       this.item = item
