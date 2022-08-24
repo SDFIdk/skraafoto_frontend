@@ -48,6 +48,17 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       min-height: 3rem;
       padding: 0 0.5rem;
     }
+
+    @media screen and (max-width: 50rem) {
+    
+      .image-date {
+        display: block;
+        bottom: auto;
+        top: 5.5rem;
+        left: 2.75rem;
+      }
+
+    }
   `
   adv_template = `
     <style>
