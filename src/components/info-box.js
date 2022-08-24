@@ -30,10 +30,6 @@ export class SkraaFotoInfoBox extends HTMLElement {
     }
 
     .sf-slider-close {
-      box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
-    }
-
-    .sf-slider-close {
       position: absolute;
       top: 1rem;
       right: 1rem;
@@ -89,7 +85,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
 
   updateInfo(item) {
     this.slider_content.innerHTML = `
-      <h2>Information om skråfoto</h2>
+      <h2>Om billedet</h2>
       <dl>
         <dt>ID</dt>
         <dd>${ item.id }</dd>
