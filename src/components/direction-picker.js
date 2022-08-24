@@ -1,3 +1,5 @@
+import { queryItems } from '../modules/api.js'
+
 export class SkraaFotoDirectionPicker extends HTMLElement {
 
   
@@ -135,21 +137,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   // setters
 
   set setView(options) {
-    this.north_element.setItem = options.images[0]
-    this.north_element.setCenter = options.center
 
-    this.south_element.setItem = options.images[1]
-    this.south_element.setCenter = options.center
+    // Set zoom level of nadir viewport
 
-    this.east_element.setItem = options.images[2]
-    this.east_element.setCenter = options.center
-
-    this.west_element.setItem = options.images[3]
-    this.west_element.setCenter = options.center
-
-    this.nadir_element.setItem = options.images[4]
-    this.nadir_element.setCenter = options.center
-    this.nadir_element.setZoom = 4
+    this.checkImage(options.center, options.images[0])
+    this.checkImage(options.center, options.images[1])
+    this.checkImage(options.center, options.images[2])
+    this.checkImage(options.center, options.images[3])
+    this.checkImage(options.center, options.images[4])
 
     // Update map
     this.map_element.setView = {
@@ -186,6 +181,30 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.btn_open_element = this.shadowRoot.querySelector('.sf-slider-open')
     this.btn_close_element = this.shadowRoot.querySelector('.sf-slider-close')
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
+  }
+
+  /** Checks whether center coordinate is outside image area */
+  checkImage(coordinate, item) {
+  
+    if (coordinate[0] < item.bbox[0] || coordinate[0] > item.bbox[2] || coordinate[1] < item.bbox[1] || coordinate[1] > item.bbox[3]) {
+      // coordinate is out of bounds
+      queryItems(coordinate, item.properties.direction, item.collection)
+      .then((response) => {
+        this.updateViewport(coordinate, response.features[0])
+      })
+    } else {
+      this.updateViewport(coordinate, item)
+    }
+  }
+
+  updateViewport(coordinate, item) {
+    const element = this[`${item.properties.direction}_element`]
+    element.setItem = item
+    element.setCenter = coordinate
+    // Update zoom level of nadir viewport
+    if (item.properties.direction === 'nadir') {
+      element.setZoom = 4
+    }
   }
 
 

@@ -11,7 +11,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   
   // mousepos = new MousePosition() // For debugging
   date_selector_element
-  measure_tool_element
   // styles
   adv_styles = `
     .image-date {
@@ -56,7 +55,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
-        <skraafoto-measure-tool></skraafoto-measure-tool>
+        <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
     </nav>
@@ -79,12 +78,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // Refer DOM elements for later use
     this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
-    this.measure_tool_element = this.shadowRoot.querySelector('skraafoto-measure-tool')
   }
 
   updatePlugins() {
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    this.updateMeasureTool(this.map, this.item)
+    //this.updateMeasureTool(this.map, this.item)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
   }
 
@@ -94,6 +92,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.date_selector_element.setAttribute('data-selected', image_id)
   }
 
+  /*
   updateMeasureTool(map, image) {
     // Give measure tool access to map and image data
     this.measure_tool_element.setData = {
@@ -101,6 +100,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       img: image
     }
   }
+  */
 
   singleClickHandler(event) {
     this.coord_world = iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
