@@ -6,21 +6,38 @@
     <title>Information om Skråfoto</title>
     <meta name="description" content="Skråfoto er en tjeneste, hvor du kan finde skrå luftfotos fra forskellige vinkler af steder i hele Danmark. Udviklet af Styrelsen for Dataforsyning og Infrastruktur.">
     <link rel="stylesheet" href="dist/skraafotostyle.css">
-    <link rel="icon" href="img/logos/logo-simple-micro.svg">
+    <link rel="shortcut icon" href="img/logos/logo-simple-micro.svg">
     <style>
+      header > .ds-container {
+        display: flex;
+        align-items: center;
+        flex-flow: row nowrap;
+        padding: 1rem 0;
+      }
+      header .ds-logo-micro {
+        margin-left: -1.25rem;
+      }
       main,
       article {
         background-color: var(--lys-steel);
+      }
+      .skraafoto-link-back.ds-icon-hentdata_icon_get {
+        margin-left: -0.33rem;
+      }
+      .skraafoto-link-back.ds-icon-hentdata_icon_get::before {
+        transform: rotate(90deg);
       }
     </style>
   </head>
   <body>
 
-    <header class="ds-container ds-padding">
-      <a href="/" class="ds-logo-responsive ds-logo-pull-left">
-        <strong>Skråfoto</strong>
-        <span>Styrelsen for Dataforsyning og Infrastruktur</span>
-      </a>
+    <header data-theme="dark">
+      <div class="ds-container">
+        <a href="/" class="skraafoto-link-back ds-logo-micro">
+          <strong>Skråfoto</strong>
+          <span>Styrelsen for Dataforsyning og Infrastruktur</span>
+        </a>
+      </div>
     </header>
 
     <main style="padding: 4rem 0;">
@@ -46,14 +63,16 @@
         <h2>Open source</h2>
         <p>Skråfoto webapplikationens kode er open source og stilles til rådighed under en <a href="https://github.com/SDFIdk/skraafoto_frontend/blob/main/LICENSE">MIT licens, som er beskrevet i kildekoden.</a></p>
 
-        <p><a href="/">Tilbage til Skråfoto</a></p>
+        <p style="margin-top: 2rem;">
+          <a href="/" class="skraafoto-link-back ds-icon-hentdata_icon_get" role="button">Tilbage til Skråfoto</a>
+        </p>
       </article>
 
     </main>
 
     <footer style="background-color: var(--medium-steel);">
       <div class="ds-container ds-padding" style="margin-bottom: 0; background-color: transparent;">
-        <h2 class="ds-logo-micro ds-logo-pull-left" style="margin-bottom: var(--typography-spacing-vertical);">
+        <h2 class="ds-logo-micro" style="margin-bottom: var(--typography-spacing-vertical); margin-left: -2.25rem;">
           <strong>SDFI</strong>
           <span>Styrelsen for Dataforsyning og Infrastruktur</span>
         </h2>
@@ -69,6 +88,17 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      if (window.location.search === '?from-viewer=1') {
+        document.querySelectorAll('.skraafoto-link-back').forEach(function(link) {
+          link.addEventListener('click', function(event) {
+            event.preventDefault()
+            history.back()
+          })
+        })
+      }
+    </script>
       
   </body>
 </html>

@@ -6,7 +6,7 @@
     <title>Skråfoto</title>
     <meta name="description" content="Skråfoto er en tjeneste, hvor du kan finde skrå luftfotos fra forskellige vinkler af steder i hele Danmark. Udviklet af Styrelsen for Dataforsyning og Infrastruktur.">
     <link rel="stylesheet" href="dist/skraafotostyle.css">
-    <link rel="icon" href="img/logos/logo-simple-micro.svg">
+    <link rel="shortcut icon" href="img/logos/logo-simple-micro.svg">
     <script src="config.js"></script>
     <style>
       body {
@@ -21,7 +21,7 @@
         flex-flow: row nowrap;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem;
+        padding: 0.75rem 1rem;
         width: 100%;
       }
 
@@ -69,13 +69,13 @@
   <body class="sf-app">
 
     <header data-theme="dark">
-      <h1 class="ds-logo-micro">
+      <a href="/" class="ds-logo-micro">
         <strong>Skråfoto</strong>
         <span>Styrelsen for Dataforsyning og Infrastruktur</span>
-      </h1>
+      </a>
       <div style="display: flex; flex-flow: row nowrap; align-items: center;">
         <skraafoto-address-search></skraafoto-address-search>
-        <a href="info.html" class="ds-icon-icon_info" title="Information om Skråfoto" role="button" style="margin-left: 1rem;"></a>
+        <a href="info.html?from-viewer=1" class="skraafoto-info-link ds-icon-icon_info" title="Information om Skråfoto" role="button" style="margin-left: 1rem;"></a>
       </div>
     </header>
 
