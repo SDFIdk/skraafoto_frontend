@@ -19,6 +19,32 @@ export class SkraaFotoDateSelector extends HTMLElement {
       padding: 0.25rem 1.75rem 0.25rem 0 !important;
       margin: 0 0 0 0.5rem;
       border: none;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 50rem) {
+
+      select {
+        text-indent: -10000em;
+        width: 3rem;
+        height: 3rem;
+        border: none;
+        padding: 0 !important;
+        border-radius: 50%;
+        position: relative;
+        background: var(--hentdata_icon_pending) no-repeat center center transparent !important;
+        background-size: 2rem auto !important;
+        margin: 0;
+      }
+      select:hover {
+        background-color: transparent !important; 
+        outline: solid 3px var(--aktion);
+      }
+      select:focus {
+        background-color: transparent !important; 
+        border-color: var(--highlight);
+      }
+
     }
   `
   template = `
@@ -26,7 +52,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
     <style>
       ${this.styles}
     </style>
-    <select class="sf-date-selector">
+    <select class="sf-date-selector" title="Vælg foto fra anden årgang">
     </select>
   `
 
