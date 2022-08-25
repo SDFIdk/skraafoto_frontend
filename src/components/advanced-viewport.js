@@ -41,12 +41,23 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       position: fixed;
       z-index: 2;
       top: 6rem;
-      left: 1.5rem;
+      left: 1rem;
     }
     .ds-button-group {
       min-width: 10rem;
       min-height: 3rem;
       padding: 0 0.5rem;
+    }
+
+    @media screen and (max-width: 50rem) {
+    
+      .image-date {
+        display: block;
+        bottom: auto;
+        top: 5.5rem;
+        left: 2.25rem;
+      }
+
     }
   `
   adv_template = `
@@ -59,8 +70,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
         <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
-        <skraafoto-download-tool></skraafoto-download-tool>
         <skraafoto-info-box></skraafoto-info-box>
+        <skraafoto-download-tool></skraafoto-download-tool>
       </div>
     </nav>
   `

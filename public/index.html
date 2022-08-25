@@ -16,6 +16,10 @@
         align-items: center;
       }
       header,
+      footer {
+        --padding: 1.5rem 3rem 2rem;
+      }
+      header,
       footer,
       main {
         width: 100%;
@@ -27,14 +31,14 @@
         justify-content: center;
         align-items: center;
         padding: 3rem 0;
-      }
+      } 
     </style>
   </head>
   <body class="sf-app">
 
     <header data-theme="dark">
       <div class="ds-container ds-padding">
-        <div class="skraafoto-link-back ds-logo-micro" style="margin-left: -2.25rem;">
+        <div class="skraafoto-link-back ds-logo-micro ds-logo-pull-left">
           <strong>Skråfoto</strong>
           <span>Styrelsen for Dataforsyning og Infrastruktur</span>
         </div>
@@ -59,7 +63,7 @@
 
     <footer style="background-color: var(--medium-steel);">
       <div class="ds-container ds-padding" style="margin-bottom: 0; background-color: transparent;">
-        <h2 class="ds-logo-micro" style="margin-bottom: var(--typography-spacing-vertical); margin-left: -2.25rem;">
+        <h2 class="ds-logo-micro ds-logo-pull-left" style="margin-bottom: var(--typography-spacing-vertical);">
           <strong>SDFI</strong>
           <span>Styrelsen for Dataforsyning og Infrastruktur</span>
         </h2>
