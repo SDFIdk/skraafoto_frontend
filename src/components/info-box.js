@@ -89,8 +89,8 @@ export class SkraaFotoInfoBox extends HTMLElement {
       <dl>
         <dt>ID</dt>
         <dd>${ item.id }</dd>
-        <dt>Dato</dt>
-        <dd>${ new Date(item.properties.datetime).toLocaleDateString() }</dd>
+        <dt>Optagetidspunkt</dt>
+        <dd>${ new Date(item.properties.datetime).toLocaleString() }</dd>
         <dt>Samling</dt>
         <dd>${ item.collection }</dd>
         <dt>Retning</dt>

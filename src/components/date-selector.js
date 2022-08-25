@@ -104,7 +104,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
       const datetime = new Date(options[o].properties.datetime)
       let option_el = document.createElement('option')
       option_el.value = options[o].id
-      option_el.innerText = `(${i}) ${ datetime.toLocaleString('default', { month: 'long', year: 'numeric' }) }`
+      option_el.innerText = `${ datetime.toLocaleDateString() } (${i})`
       this.selector_element.querySelector(`[label="${ options[o].collection }"]`).appendChild(option_el)
       i++
     }
