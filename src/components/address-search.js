@@ -6,6 +6,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   // public properties
   coorTranslator = createTranslator()
   search_element
+  input_container
   input_element
   btn_open
   is_collapsible = false
@@ -25,13 +26,11 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       margin: 0 !important;
     }
     input.sf-search-input + div {
-      /* relative position for at de absolut positionerede forslag får korrekt placering.*/
-      position: fixed;
-      width: auto;
-      max-width: calc(100vw - 2rem);
-      min-width: 22rem;
+      position: absolute;
       top: 2.5rem;
-      right: 1rem;
+      left: 0;
+      right: 0;
+      max-width: 100%;
       z-index: 9999;
     }
     .sf-search-btn-open {
@@ -80,7 +79,13 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         display: block;
       }
 
-      .sf-search-collapsible input.sf-search-input {
+      .sf-search-collapsible .sf-input-container {
+        position: absolute;
+        top: 2.5rem;
+        right: 1rem;
+      }
+
+      .sf-search-collapsible .sf-input-container {
         height: auto;
         width: auto;
         max-width: 30rem;
@@ -98,6 +103,11 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         transform: translate(0,0) !important;
       }
 
+      .sf-search-collapsible input.sf-search-input + div {
+        left: auto;
+        right: 0;
+        max-width: calc(100vw - 2rem);
+      }
     }
   `
   template = `
@@ -107,8 +117,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     </style>
     
     <button class="sf-search-btn-open ds-icon-icon_search" title="Søg efter adresse"></button>
-    <label for="sf-search-${ this.random_id }">Søg efter adresse</label>
-    <input id="sf-search-${ this.random_id }" type="text" class="sf-search-input" placeholder="Indtast en adresse">
+    <div class=sf-input-container>
+      <label for="sf-search-${ this.random_id }">Søg efter adresse</label>
+      <input id="sf-search-${ this.random_id }" type="text" class="sf-search-input" placeholder="Indtast en adresse">
+    </div>
   
   `
 
@@ -136,6 +148,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     // Register elements for later use
     this.search_element = container
     this.btn_open = this.shadowRoot.querySelector('.sf-search-btn-open')
+    this.input_container = this.shadowRoot.querySelector('.sf-input-container')
     this.input_element = this.shadowRoot.querySelector('.sf-search-input')
   }
 
@@ -157,16 +170,16 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       this.search_element.classList.add('sf-search-collapsible')
 
       this.btn_open.addEventListener('click', () => {
-        this.input_element.classList.add('open')
+        this.input_container.classList.add('open')
         this.input_element.focus()
       })
 
       this.input_element.addEventListener('change', () => {
-        this.input_element.classList.remove('open')
+        this.input_container.classList.remove('open')
       })
   
       this.input_element.addEventListener('blur', () => {
-        this.input_element.classList.remove('open')
+        this.input_container.classList.remove('open')
       })
     }
   }
