@@ -26,12 +26,12 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
     input.sf-search-input + div {
       /* relative position for at de absolut positionerede forslag får korrekt placering.*/
-      position: absolute;
+      position: fixed;
       width: auto;
-      max-width: 44rem;
+      max-width: calc(100vw - 2rem);
       min-width: 22rem;
       top: 2.5rem;
-      right: 0;
+      right: 1rem;
       z-index: 9999;
     }
     .sf-search-btn-open {

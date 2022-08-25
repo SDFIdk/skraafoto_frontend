@@ -70,8 +70,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
         <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
-        <skraafoto-download-tool></skraafoto-download-tool>
         <skraafoto-info-box></skraafoto-info-box>
+        <skraafoto-download-tool></skraafoto-download-tool>
       </div>
     </nav>
   `

@@ -12,10 +12,6 @@
         display: flex;
         align-items: center;
         flex-flow: row nowrap;
-        padding: 1rem 0;
-      }
-      header .ds-logo-micro {
-        margin-left: -1.25rem;
       }
       main,
       article {
@@ -27,13 +23,19 @@
       .skraafoto-link-back.ds-icon-hentdata_icon_get::before {
         transform: rotate(90deg);
       }
+      @media screen and (max-width: 576px) {
+        header,
+        footer {
+          --padding: 1.5rem 3rem 2rem;
+        }
+      }
     </style>
   </head>
   <body>
 
     <header data-theme="dark">
-      <div class="ds-container">
-        <a href="/" class="skraafoto-link-back ds-logo-micro">
+      <div class="ds-container ds-padding">
+        <a href="/" class="skraafoto-link-back ds-logo-micro ds-logo-pull-left">
           <strong>Skråfoto</strong>
           <span>Styrelsen for Dataforsyning og Infrastruktur</span>
         </a>
@@ -72,7 +74,7 @@
 
     <footer style="background-color: var(--medium-steel);">
       <div class="ds-container ds-padding" style="margin-bottom: 0; background-color: transparent;">
-        <h2 class="ds-logo-micro" style="margin-bottom: var(--typography-spacing-vertical); margin-left: -2.25rem;">
+        <h2 class="ds-logo-micro ds-logo-pull-left" style="margin-bottom: var(--typography-spacing-vertical);">
           <strong>SDFI</strong>
           <span>Styrelsen for Dataforsyning og Infrastruktur</span>
         </h2>
