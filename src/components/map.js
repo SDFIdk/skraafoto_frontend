@@ -36,6 +36,7 @@ export class SkraaFotoMap extends HTMLElement {
     .geographic-map { 
       width: 100%; 
       height: 100%;
+      background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
     }
     .ol-zoom {
       top: auto;

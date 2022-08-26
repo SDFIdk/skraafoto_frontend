@@ -10,7 +10,7 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import {defaults as defaultInteractions} from 'ol/interaction'
-import {getZ, world2image, getSTAC} from 'skraafoto-saul'
+import {getZ, world2image} from 'skraafoto-saul'
 import {toDanish} from '../modules/i18n.js'
 
 export class SkraaFotoViewport extends HTMLElement {
@@ -45,7 +45,8 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .viewport-map { 
       width: 100%; 
-      height: 100%; 
+      height: 100%;
+      background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
     }
     .direction-indicator {
       position: absolute;
@@ -172,14 +173,14 @@ export class SkraaFotoViewport extends HTMLElement {
     return new WebGLTile({source: src})
   }
 
-  generateIconLayer(center) {
+  generateIconLayer(center, icon_image) {
     if (center) {
       let icon_feature = new Feature({
         geometry: new Point([center[0], center[1]])
       })
       const icon_style = new Style({
         image: new Icon({
-          src: './img/icons/icon_crosshair.svg',
+          src: icon_image,
           scale: 2.5
         })
       })
@@ -219,7 +220,7 @@ export class SkraaFotoViewport extends HTMLElement {
       this.cached_elevation = z
       this.coord_image = world2image(this.item, coordinate[0], coordinate[1], z)
       this.map.removeLayer(this.layer_icon)
-      this.layer_icon = this.generateIconLayer(this.coord_image)
+      this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
       this.map.addLayer(this.layer_icon)
       this.updateView()
       this.updateNonMap()

@@ -165,12 +165,6 @@ function updateDirectionPickerImages(collection) {
 }
 
 
-// Initialize
-
-parseUrlState(url_params)
-updateViews(state)
-
-
 // Set up event listeners
 
 // When a coordinate input is given, update viewports
@@ -218,3 +212,18 @@ main_viewport_element.shadowRoot.addEventListener('imagechange', function(event)
   state.item = event.detail
   updateUrl(state)
 })
+
+// Catch load errors and display to user
+window.addEventListener('offline', function() {
+  alert('Du er ikke længere online. Prøv igen senere.')
+})
+document.addEventListener('loaderror', function(event) {
+  console.error('Network error: ', event.details)
+  alert('Der var et problem med at hente data fra serveren: ' + event.details)
+})
+
+
+// Initialize
+
+parseUrlState(url_params)
+updateViews(state)
