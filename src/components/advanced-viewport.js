@@ -99,7 +99,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     //this.updateMeasureTool(this.map, this.item)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
-    console.log(this.shadowRoot.querySelector('skraafoto-info-box'))
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
 
@@ -119,7 +118,13 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
   */
 
+  displaySpinner() {
+    this.shadowRoot.querySelector('.ol-viewport canvas').style.cursor = 'progress'
+    this.map.removeLayer(this.layer_icon)
+  }
+
   singleClickHandler(event) {
+    this.displaySpinner()
     this.coord_world = iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
       this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
     })
@@ -136,6 +141,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // When an image is selected via the date-selector, update this viewport
     this.date_selector_element.addEventListener('imagechange', (event) => {
+      this.map.removeLayer(this.layer_image)
       this.updateItem(event.detail)
       this.updateCenter(this.coord_world)
     })
