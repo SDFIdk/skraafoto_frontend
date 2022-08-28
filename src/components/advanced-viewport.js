@@ -9,6 +9,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   // properties
   
+  mode
   // mousepos = new MousePosition() // For debugging
   date_selector_element
   // styles
@@ -70,6 +71,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
         <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
+        <skraafoto-height-measure-tool></skraafoto-height-measure-tool>
         <skraafoto-info-box></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
@@ -97,7 +99,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   updatePlugins() {
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    //this.updateMeasureTool(this.map, this.item)
+    // this.shadowRoot.querySelector('skraafoto-measure-tool').setData({map: this.map, img: this.item})
+    this.shadowRoot.querySelector('skraafoto-height-measure-tool').setData = {map: this.map, img: this.item}
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
@@ -107,16 +110,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.date_selector_element.setAttribute('data-direction', direction)
     this.date_selector_element.setAttribute('data-selected', image_id)
   }
-
-  /*
-  updateMeasureTool(map, image) {
-    // Give measure tool access to map and image data
-    this.measure_tool_element.setData = {
-      map: map, 
-      img: image
-    }
-  }
-  */
 
   displaySpinner() {
     this.shadowRoot.querySelector('.ol-viewport canvas').style.cursor = 'progress'
@@ -149,7 +142,15 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // Do something when the map is clicked
     this.map.on('singleclick', (event) => {
-      this.singleClickHandler(event)
+      if (!this.mode) {
+        this.singleClickHandler(event)
+      }
+    })
+
+    // Change mode when various tools are activated
+    this.shadowRoot.querySelector('skraafoto-height-measure-tool').addEventListener('modechange', (event) => {
+      this.mode = event.detail
+      console.log('new mode', this.mode)
     })
 
   }
