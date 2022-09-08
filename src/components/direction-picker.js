@@ -82,6 +82,12 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-map-picker-btn:focus {
       opacity: 0.75;
     }
+    skraafoto-map,
+    skraafoto-viewport {
+      height: 100%;
+      width: 100%;
+      display: block;
+    }
 
     @media screen and (min-width: 80rem) {
 
