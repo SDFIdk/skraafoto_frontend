@@ -125,7 +125,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   singleClickHandler(event) {
     this.displaySpinner()
-    this.coord_world = iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
+    iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
+      this.coord_world = response[0]
       this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
     })
   }
