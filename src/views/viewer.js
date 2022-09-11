@@ -25,11 +25,10 @@ customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 
 // Variables and state
 
-const state = {
-  coordinate: null, // EPSG:25832 coordinate + elevation (m)
-  item_id: null,
+let state = {
+  coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
   item: null,
-  items: []
+  map: false
 }
 let url_params = (new URL(document.location)).searchParams
 
@@ -37,102 +36,90 @@ const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
 const direction_picker_element = document.querySelector('skraafoto-direction-picker')
 
+
 // Methods
 
-function findItemsAtCoordinate(coordinate) {
-  let queries = [
-    queryItems(coordinate, 'north'),
-    queryItems(coordinate, 'south'),
-    queryItems(coordinate, 'east'),
-    queryItems(coordinate, 'west'),
-    queryItems(coordinate, 'nadir')
-  ]
-  return Promise.all(queries).then((responses) => {
-    return responses.map(function(response) {
-      return response.features[0]
-    })
-  })
-}
-
 function updateMainViewport(state) {
-  if (state.item_id !== 'map') {
-    if (state.item) {
-      document.getElementById('viewport-main').setItem = state.item
-    }
-    if (state.coordinate) {
-      document.getElementById('viewport-main').setCenter = state.coordinate
-    }    
+  if (state.item) {
+    main_viewport_element.setItem = state.item
   }
+  if (state.coordinate) {
+    main_viewport_element.setCenter = state.coordinate
+  }    
 }
 
-function updateMainMap(state) {
-  if (state.item_id === 'map') {
+function updateViews(state) {
+
+  // If no coordinate is given, center mid-image
+  if (!state.coordinate && state.item) {
+    state.coordinate = [
+      (state.item.bbox[0] + state.item.bbox[2]) / 2,
+      (state.item.bbox[1] + state.item.bbox[3]) / 2
+    ]
+  }
+
+  console.log('current state', state)
+
+  if (state.map) {
     openMap()
-  }
-}
-
-async function updateViews(state) {
-
-  if (!state.coordinate && state.item_id) {
-    state.item = await queryItem(state.item_id)
-    const x = (state.item.bbox[0] + state.item.bbox[2]) / 2
-    const y = (state.item.bbox[1] + state.item.bbox[3]) / 2
-    state.coordinate = [x,y]
-  }
-
-  if (state.items.length < 1) {
-    state.items = await findItemsAtCoordinate(state.coordinate) 
-    if (state.items.length < 1) {
-      console.error('No items found i STAC database')
-      return
-    }
+  } else {
+    updateMainViewport(state)
   }
   
-  if (!state.item_id) {
-    state.item = state.items[0]
-    state.item_id = state.items[0].id
-  }
-  
-  if (!state.item) {
-    let item = state.items.find((item) => {
-      return item.id === state.item_id
-    })
-    state.item = item ? item : await queryItem(state.item_id)
-  }
-
-  updateUrl(state)
-  updateMainViewport(state)
-  updateMainMap(state)
-
   // Update the other viewports
   direction_picker_element.setView = {
-    images: state.items,
+    collection: state.item.collection,
     center: state.coordinate
   }
 
+  updateUrl(state)
 }
 
-function parseUrlState(params) {
-  // Parse params from URL
+function parseUrlState(params, state) {
+  let new_state = Object.assign({}, state)
+  
+  // Parse center param from URL
   const param_center = params.get('center')
-  const param_item = params.get('item')
   if (param_center) {
-    state.coordinate = param_center.split(',').map(function(coord) {
+    new_state.coordinate = param_center.split(',').map(function(coord) {
       return Number(coord)
     })
   }
+
+  // Parse map status from URL
+  const param_map = params.get('map')
+  if (param_map === '1') {
+    new_state.map = true
+  } else {
+    new_state.map = false
+  }
+
+  // Parse item param from URL
+  const param_item = params.get('item')
   if (param_item) {
-    state.item_id = param_item
+    return queryItem(param_item).then((item) => {
+
+      new_state.item = item
+      return new_state
+    })
+  } else { 
+    return queryItems(new_state.coordinate, 'north').then((response) => {
+      new_state.item = response.features[0]
+      return new_state
+    })
   }
 }
 
 function updateUrl(state) {
   const url = new URL(window.location)
-  if (state.item_id) {
-    url.searchParams.set('item', state.item_id)
+  if (state.item) {
+    url.searchParams.set('item', state.item.id)
   }
   if (state.coordinate) {
     url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
+  }
+  if (state.map) {
+    url.searchParams.set('map', 1)
   }
   window.history.pushState({}, '', url)
 }
@@ -145,70 +132,51 @@ function openMap() {
   }
 }
 
-function updateDirectionPickerImages(collection) {
-  let queries = [
-    queryItems(state.coordinate, 'north', collection),
-    queryItems(state.coordinate, 'south', collection),
-    queryItems(state.coordinate, 'east', collection),
-    queryItems(state.coordinate, 'west', collection),
-    queryItems(state.coordinate, 'nadir', collection)
-  ]
-  Promise.all(queries).then((responses) => {
-    let items = responses.map(function(response) {
-      return response.features[0]
-    })
-    direction_picker_element.setView = {
-      images: items,
-      center: state.coordinate
-    }
-  })
-}
-
 
 // Set up event listeners
 
 // When a coordinate input is given, update viewports
-document.addEventListener('coordinatechange', function(event) {
+document.addEventListener('coordinatechange', async function(event) {
+  console.log('changed coordinate', event.detail)
   state.coordinate = event.detail
   updateViews(state)
 })
 
 // On a new address input, update viewports
 document.addEventListener('addresschange', function(event) {
+  console.log('changed address')
   state.coordinate = event.detail
-  state.items = []
   state.item = null
-  state.item_id = null
   updateViews(state)
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
 direction_picker_element.addEventListener('directionchange', function(event) {
+  console.log('changed direction')
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   main_viewport_element.setItem = event.detail
   main_viewport_element.setCenter = state.coordinate
-  state.item_id = event.detail.id
   state.item = event.detail
   updateUrl(state)
 })
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
 direction_picker_element.addEventListener('mapchange', function(event) {
-  state.item_id = 'map'
-  state.item = null
+  console.log('changed map', state)
+  state.map = true
   updateUrl(state)
   openMap()
 })
 
 // When a differently dated image is selected, update the URL and check to see if direction picker needs an update
 main_viewport_element.shadowRoot.addEventListener('imagechange', function(event) {
-  
   if (event.detail.collection !== state.item.collection) {
-    updateDirectionPickerImages(event.detail.collection)
+    direction_picker_element.setView = {
+      collection: event.detail.collection,
+      center: state.coordinate
+    }
   }
-
-  state.item_id = event.detail.id
   state.item = event.detail
   updateUrl(state)
 })
@@ -219,11 +187,12 @@ window.addEventListener('offline', function() {
 })
 document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
-  alert('Der var et problem med at hente data fra serveren: ' + event.details)
+  alert('Der var et problem med at hente data fra serveren')
 })
 
 
 // Initialize
-
-parseUrlState(url_params)
-updateViews(state)
+parseUrlState(url_params, state).then((new_state) => {
+  state = new_state
+  updateViews(state)
+})

@@ -146,14 +146,22 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   // setters
 
   set setView(options) {
-
-    // Set zoom level of nadir viewport
-
-    this.checkImage(options.center, options.images[0])
-    this.checkImage(options.center, options.images[1])
-    this.checkImage(options.center, options.images[2])
-    this.checkImage(options.center, options.images[3])
-    this.checkImage(options.center, options.images[4])
+    // Update mini viewports
+    let queries = [
+      queryItems(options.center, 'north', options.collection),
+      queryItems(options.center, 'south', options.collection),
+      queryItems(options.center, 'east', options.collection),
+      queryItems(options.center, 'west', options.collection),
+      queryItems(options.center, 'nadir', options.collection)
+    ]
+    Promise.all(queries).then((responses) => {
+      let items = responses.map(function(response) {
+        return response.features[0]
+      })
+      for (let i in items) {
+        this.updateViewport(options.center, items[i])
+      }
+    })
 
     // Update map
     this.map_element.setView = {
@@ -194,7 +202,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
   /** Checks whether center coordinate is outside image area */
   checkImage(coordinate, item) {
-  
     if (coordinate[0] < item.bbox[0] || coordinate[0] > item.bbox[2] || coordinate[1] < item.bbox[1] || coordinate[1] > item.bbox[3]) {
       // coordinate is out of bounds
       queryItems(coordinate, item.properties.direction, item.collection)
