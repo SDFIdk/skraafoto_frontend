@@ -14,10 +14,25 @@ export class MeasureWidthTool {
   viewport
   source
   layer
-  sketch
   draw
   listener
   coorTranslator = createTranslator()
+  style = new Style({
+    fill: new Fill({
+      color: 'hsl(26,80%,56%)'
+    }),
+    stroke: new Stroke({
+      color: 'hsl(26,80%,56%)',
+      width: 3
+    }),
+    image: new CircleStyle({
+      radius: 4,
+      stroke: new Stroke({
+        color: 'hsl(26,80%,56%)',
+        width: 1
+      })
+    })
+  })
   
 
   constructor(viewport) {
@@ -65,34 +80,15 @@ export class MeasureWidthTool {
       type: 'LineString',
       stopClick: true,
       maxPoints: 2,
-      minPoints: 2
-      /*
-      style: new Style({
-        fill: new Fill({
-          color: 'rgba(255, 255, 255, 0.2)',
-        }),
-        stroke: new Stroke({
-          color: 'rgba(0, 0, 0, 0.5)',
-          lineDash: [10, 10],
-          width: 2,
-        }),
-        image: new CircleStyle({
-          radius: 5,
-          stroke: new Stroke({
-            color: 'rgba(0, 0, 0, 0.7)',
-          }),
-          fill: new Fill({
-            color: 'rgba(255, 255, 255, 0.2)',
-          }),
-        }),
-      }),
-      */
+      minPoints: 2,
+      style: this.style
     })
     
     this.viewport.map.addInteraction(this.draw)
 
     this.draw.on('drawend', (event) => {
-      console.log(event.target)
+      event.feature.setStyle(this.style)
+
       const coords = event.target.sketchCoords_
       const position = [
         (coords[0][0] + coords[1][0]) / 2,
@@ -117,13 +113,6 @@ export class MeasureWidthTool {
   }
 
   clearInteraction() {
-    /*
-    // unset sketch
-    this.sketch = null
-    // unset tooltip so that a new one can be created
-    this.measureTooltipElement.style.display = 'none' 
-    unByKey(this.listener)
-    */
     this.viewport.map.removeInteraction(this.draw)
   }
 }

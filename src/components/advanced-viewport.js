@@ -138,7 +138,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.map.removeLayer(this.layer_icon)
   }
 
-  toggleMode(mode, button_element) {
+  toggleMode(mode, button_element = this.shadowRoot.querySelector('.btn-center')) {
     this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
       btn.classList.remove('active')
     })
@@ -165,6 +165,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.map.removeLayer(this.layer_image)
       this.updateItem(event.detail)
       this.updateCenter(this.coord_world)
+      this.toggleMode('center')
     })
 
     // Change mode when clicking toolbar buttons
@@ -174,8 +175,16 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       } else if (event.target.classList.contains('btn-width-measure')) {
         this.toggleMode('measurewidth', event.target)  
       } else {
-        this.toggleMode('center', event.target)  
+        this.toggleMode('center', event.target)
       }
+    })
+
+    // Reset mode when chaning the image
+    document.addEventListener('addresschange', () => {
+      this.toggleMode('center')
+    })
+    document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', () => {
+      this.toggleMode('center')
     })
   }
 }
