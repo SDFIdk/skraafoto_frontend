@@ -58,8 +58,6 @@ function updateViews(state) {
     ]
   }
 
-  console.log('current state', state)
-
   if (state.map) {
     openMap()
   } else {
@@ -137,22 +135,21 @@ function openMap() {
 
 // When a coordinate input is given, update viewports
 document.addEventListener('coordinatechange', async function(event) {
-  console.log('changed coordinate', event.detail)
   state.coordinate = event.detail
   updateViews(state)
 })
 
 // On a new address input, update viewports
 document.addEventListener('addresschange', function(event) {
-  console.log('changed address')
   state.coordinate = event.detail
-  state.item = null
-  updateViews(state)
+  queryItems(event.detail, 'north').then((response) => {
+    state.item = response.features[0]
+    updateViews(state)
+  })
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
 direction_picker_element.addEventListener('directionchange', function(event) {
-  console.log('changed direction')
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   main_viewport_element.setItem = event.detail
@@ -163,7 +160,6 @@ direction_picker_element.addEventListener('directionchange', function(event) {
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
 direction_picker_element.addEventListener('mapchange', function(event) {
-  console.log('changed map', state)
   state.map = true
   updateUrl(state)
   openMap()
