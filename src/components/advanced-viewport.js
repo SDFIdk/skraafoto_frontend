@@ -1,15 +1,25 @@
-import { iterate } from 'skraafoto-saul'
 import { SkraaFotoViewport } from './viewport.js' 
 import OlMap from 'ol/Map.js'
 import {defaults as defaultControls} from 'ol/control'
+import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
+import { CenterTool } from './map-tool-center.js'
+import { MeasureWidthTool } from './map-tool-measure-width.js'
+import { MeasureHeightTool } from './map-tool-measure-height.js'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
+
+
+customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
 export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
 
   // properties
   
-  mode = 'default'
+  mode = 'center'
+  modechange = new CustomEvent('modechange', {detail: () => this.mode })
+  tool_center
+  tool_measure_width
+  tool_measure_height
   // mousepos = new MousePosition() // For debugging
   date_selector_element
   // styles
@@ -74,8 +84,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
         <button class="btn-center ds-icon-map_icon_adresse active" title="Flyt center"></button>
-        <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
-        <button class="btn-height-measure ds-icon-map_icon_vej" title="Mål afstand"></button>
+        <button class="btn-width-measure ds-icon-map_icon_vej" title="Mål afstand"></button>
+        <button class="btn-height-measure ds-icon-map_icon_vej" title="Mål højde"></button>
         <skraafoto-info-box></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
@@ -102,6 +112,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
+    this.tool_center = new CenterTool(this, environment)
+    this.tool_measure_width = new MeasureWidthTool(this)
+    this.tool_measure_height = new MeasureHeightTool(this)
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
@@ -118,14 +131,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.map.removeLayer(this.layer_icon)
   }
 
-  centerToolHandler(event) {
-    this.displaySpinner()
-    iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
-      this.coord_world = response[0]
-      this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
-    })
-  }
-
   toggleMode(mode, button_element) {
     this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
       btn.classList.remove('active')
@@ -136,6 +141,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     } else {
       this.mode = 'default'
     }
+    this.dispatchEvent(this.modechange)
   }
 
 
@@ -154,23 +160,14 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.updateCenter(this.coord_world)
     })
 
-    // Do something when the map is clicked
-    this.map.on('singleclick', (event) => {
-      switch(this.mode) {
-        case 'measureheight':
-          console.log('let us do some measuring now')
-          break
-        default:
-          this.centerToolHandler(event)
-      } 
-    })
-
-    // Handle tool clicks
+    // Change mode when clicking toolbar buttons
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
-      if (event.target.classList.contains('btn-center')) {
-        this.toggleMode('default', event.target)
-      } else if (event.target.classList.contains('btn-height-measure')) {
-        this.toggleMode('measureheight', event.target)  
+      if (event.target.classList.contains('btn-height-measure')) {
+        this.toggleMode('measureheight', event.target)
+      } else if (event.target.classList.contains('btn-width-measure')) {
+        this.toggleMode('measurewidth', event.target)  
+      } else {
+        this.toggleMode('center', event.target)  
       }
     })
   }
