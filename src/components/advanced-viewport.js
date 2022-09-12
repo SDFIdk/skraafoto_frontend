@@ -63,6 +63,13 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       background-color: var(--mork-tyrkis) !important;
     }
 
+    /* Measure width tool */
+    .sf-tooltip-measure {
+      background-color: var(--mork-tyrkis);
+      color: var(--hvid);
+      padding: 0.25rem 0.5rem;
+    }
+
     @media screen and (max-width: 50rem) {
     
       .image-date {

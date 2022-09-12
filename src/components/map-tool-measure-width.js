@@ -18,23 +18,11 @@ export class MeasureWidthTool {
   draw
   listener
   coorTranslator = createTranslator()
-  measureTooltipElement
-  measureTooltip
-  styles = `
-    <style>
-      .sf-tooltip-measure {
-        background-color: var(--mork-tyrkis);
-        color: var(--hvid);
-        padding: 0.25rem 0.5rem;
-      }
-    </style>
-  `
   
 
   constructor(viewport) {
 
     this.viewport = viewport
-    this.createDOM()
 
     this.source = new VectorSource()
     this.layer = new VectorLayer({ source: this.source })
@@ -55,14 +43,6 @@ export class MeasureWidthTool {
 
   // Methods
 
-  createDOM() {
-    // Add tool button to DOM
-    this.measureTooltipElement = document.createElement('div')
-    this.measureTooltipElement.className = 'sf-tooltip-measure'
-    this.measureTooltipElement.style.display = 'none'
-    this.viewport.append(this.measureTooltipElement)
-  }
-
   calculateDistance(coords) {
     const world_coords = []
     let distance = 0
@@ -76,18 +56,6 @@ export class MeasureWidthTool {
       distance = distance + getDistance(world_coords[c], world_coords[c + 1])
     }
     return distance.toFixed(0) + 'm'
-  }
-
-  createMeasureTooltip() {
-    this.measureTooltipElement.style.display = 'block'
-    this.measureTooltip = new Overlay({
-      element: this.measureTooltipElement,
-      offset: [0, -15],
-      positioning: 'bottom-center',
-      stopEvent: false,
-      insertFirst: false
-    })
-    this.viewport.map.addOverlay(this.measureTooltip)
   }
 
   addInteraction() {
@@ -123,31 +91,29 @@ export class MeasureWidthTool {
     
     this.viewport.map.addInteraction(this.draw)
 
-    this.draw.on('drawstart', (event) => {
-      // set sketch
-      //this.sketch = event.feature
-      //let tooltipCoord = event.coordinate
-
-      /*
-      this.listener = this.sketch.getGeometry().on('change', (ev) => {
-        const geom = ev.target
-        tooltipCoord = geom.getLastCoordinate()
-        this.measureTooltipElement.innerHTML = this.calculateDistance(geom)
-        this.measureTooltip.setPosition(tooltipCoord)
-      })
-      */
-    })
-
     this.draw.on('drawend', (event) => {
-      console.log(this.calculateDistance(event.target.sketchCoords_))
-      //const geom = event.target
-      //console.log(geom.getCoordinates())
-      
-      this.measureTooltipElement.innerHTML = this.calculateDistance(event.target.sketchCoords_)
-      //this.measureTooltip.setPosition(geom.getLastCoordinate())
-    })
+      console.log(event.target)
+      const coords = event.target.sketchCoords_
+      const position = [
+        (coords[0][0] + coords[1][0]) / 2,
+        (coords[0][1] + coords[1][1]) / 2
+      ]
+      const measureTooltipElement = document.createElement('div')
+      measureTooltipElement.className = 'sf-tooltip-measure'
+      measureTooltipElement.innerHTML = this.calculateDistance(coords)
+      this.viewport.append(measureTooltipElement)
 
-    //this.createMeasureTooltip()
+      const measureTooltip = new Overlay({
+        element: measureTooltipElement,
+        offset: [0, -15],
+        positioning: 'bottom-center',
+        position: position,
+        stopEvent: false,
+        insertFirst: false
+      })
+      
+      this.viewport.map.addOverlay(measureTooltip)
+    })
   }
 
   clearInteraction() {
