@@ -114,6 +114,8 @@ function updateUrl(state) {
   }
   if (state.map) {
     url.searchParams.set('map', 1)
+  } else {
+    url.searchParams.set('map', 0)
   }
   window.history.pushState({}, '', url)
 }
@@ -151,6 +153,7 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   main_viewport_element.setItem = event.detail
   main_viewport_element.setCenter = state.coordinate
   state.item = event.detail
+  state.map = false
   updateUrl(state)
 })
 
