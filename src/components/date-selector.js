@@ -1,4 +1,4 @@
-import {getSTAC} from 'skraafoto-saul'
+import { queryItems } from '../modules/api.js'
 
 /**
  * Fetches a list of items covering a specific coordinate and direction.
@@ -111,16 +111,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selector_element.value = this.selected
   }
 
-  fetchItems(coord, direction) {
-    const search_query = encodeURI(JSON.stringify({ 
-      "and": [
-        {"intersects": [ { "property": "geometry"}, {"type": "Point", "coordinates": [ coord[0], coord[1] ]} ]},
-        {"eq": [ { "property": "direction" }, direction ]},
-      ]
-    }))
-    return getSTAC(`/search?filter=${search_query}&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, this.auth)
-  }
-
 
   // Lifecycle
 
@@ -158,8 +148,8 @@ export class SkraaFotoDateSelector extends HTMLElement {
     if (!this.selected || !this.direction || !this.center) {
       return
     }
-
-    this.fetchItems(this.center, this.direction).then((items) => {
+    
+    queryItems(this.center, this.direction, false, 50).then((items) => {
       this.items = items.features
       this.updateOptions(this.items)
     })
