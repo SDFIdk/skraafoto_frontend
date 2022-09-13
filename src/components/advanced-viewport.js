@@ -151,7 +151,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       button_element.classList.add('active')
       this.mode = mode
     } else {
-      this.mode = 'default'
+      button_element.classList.add('active')
+      this.mode = 'center'
     }
     this.dispatchEvent(this.modechange)
   }
