@@ -70,7 +70,7 @@ export class MeasureWidthTool {
     for (let c = 0; coords.length > c + 1; c++) {
       distance = distance + getDistance(world_coords[c], world_coords[c + 1])
     }
-    return distance.toFixed(0) + 'm'
+    return 'ca ' + distance.toFixed(0) + 'm'
   }
 
   addInteraction() {
