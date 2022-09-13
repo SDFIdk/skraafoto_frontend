@@ -5,9 +5,7 @@ import { SkraaFotoMap } from '../components/map.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDirectionPicker } from '../components/direction-picker.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
-import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
-// import { SkraaFotoMeasureTool } from '../components/map-tool-measure.js'
 
 
 // Initialize web components
@@ -18,8 +16,6 @@ customElements.define('skraafoto-map', SkraaFotoMap)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
-// customElements.define('skraafoto-measure-tool', SkraaFotoMeasureTool)
-customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 
 
@@ -118,6 +114,8 @@ function updateUrl(state) {
   }
   if (state.map) {
     url.searchParams.set('map', 1)
+  } else {
+    url.searchParams.set('map', 0)
   }
   window.history.pushState({}, '', url)
 }
@@ -155,6 +153,7 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   main_viewport_element.setItem = event.detail
   main_viewport_element.setCenter = state.coordinate
   state.item = event.detail
+  state.map = false
   updateUrl(state)
 })
 

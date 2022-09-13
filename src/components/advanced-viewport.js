@@ -1,14 +1,25 @@
-import { iterate } from 'skraafoto-saul'
 import { SkraaFotoViewport } from './viewport.js' 
 import OlMap from 'ol/Map.js'
 import {defaults as defaultControls} from 'ol/control'
+import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
+import { CenterTool } from './map-tool-center.js'
+import { MeasureWidthTool } from './map-tool-measure-width.js'
+import { MeasureHeightTool } from './map-tool-measure-height.js'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
+
+
+customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
 export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
 
   // properties
   
+  mode = 'center'
+  modechange = new CustomEvent('modechange', {detail: () => this.mode })
+  tool_center
+  tool_measure_width
+  tool_measure_height
   // mousepos = new MousePosition() // For debugging
   date_selector_element
   // styles
@@ -48,6 +59,21 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       min-height: 3rem;
       padding: 0 0.5rem;
     }
+    .ds-nav-tools button.active {
+      background-color: var(--mork-tyrkis) !important;
+    }
+
+    /* Measure width tool */
+    .sf-tooltip-measure {
+      background-color: var(--mork-tyrkis);
+      color: var(--hvid);
+      padding: 0.25rem 0.5rem;
+    }
+
+    /* Measure height tool */
+    .btn-height-measure::before {
+      transform: rotate(90deg);
+    }
 
     @media screen and (max-width: 50rem) {
     
@@ -69,7 +95,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
-        <!-- <skraafoto-measure-tool></skraafoto-measure-tool> -->
+        <button class="btn-center ds-icon-map_icon_adresse active" title="Flyt center"></button>
+        <button class="btn-width-measure ds-icon-map_icon_vej" title="Mål afstand"></button>
+        <!-- <button class="btn-height-measure ds-icon-map_icon_vej" title="Mål højde"></button> -->
         <skraafoto-info-box></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
@@ -96,8 +124,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
+    this.tool_center = new CenterTool(this, environment)
+    this.tool_measure_width = new MeasureWidthTool(this)
+    this.tool_measure_height = new MeasureHeightTool(this)
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    //this.updateMeasureTool(this.map, this.item)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
@@ -108,27 +138,22 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.date_selector_element.setAttribute('data-selected', image_id)
   }
 
-  /*
-  updateMeasureTool(map, image) {
-    // Give measure tool access to map and image data
-    this.measure_tool_element.setData = {
-      map: map, 
-      img: image
-    }
-  }
-  */
-
   displaySpinner() {
     this.shadowRoot.querySelector('.ol-viewport canvas').style.cursor = 'progress'
     this.map.removeLayer(this.layer_icon)
   }
 
-  singleClickHandler(event) {
-    this.displaySpinner()
-    iterate(this.item, event.coordinate[0], event.coordinate[1], environment).then((response) => {
-      this.coord_world = response[0]
-      this.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
+  toggleMode(mode, button_element = this.shadowRoot.querySelector('.btn-center')) {
+    this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
+      btn.classList.remove('active')
     })
+    if (mode !== this.mode) {
+      button_element.classList.add('active')
+      this.mode = mode
+    } else {
+      this.mode = 'default'
+    }
+    this.dispatchEvent(this.modechange)
   }
 
 
@@ -145,13 +170,27 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.map.removeLayer(this.layer_image)
       this.updateItem(event.detail)
       this.updateCenter(this.coord_world)
+      this.toggleMode('center')
     })
 
-    // Do something when the map is clicked
-    this.map.on('singleclick', (event) => {
-      this.singleClickHandler(event)
+    // Change mode when clicking toolbar buttons
+    this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
+      if (event.target.classList.contains('btn-height-measure')) {
+        this.toggleMode('measureheight', event.target)
+      } else if (event.target.classList.contains('btn-width-measure')) {
+        this.toggleMode('measurewidth', event.target)  
+      } else {
+        this.toggleMode('center', event.target)
+      }
     })
 
+    // Reset mode when chaning the image
+    document.addEventListener('addresschange', () => {
+      this.toggleMode('center')
+    })
+    document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', () => {
+      this.toggleMode('center')
+    })
   }
 }
 
