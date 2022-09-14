@@ -121,7 +121,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
       const item = this.items.find(function(item) {
         return item.id === event.target.value
       })
-      this.dispatchEvent(new CustomEvent('imagechange', {detail: item, bubbles: true}))
+      this.dispatchEvent(new CustomEvent('imagechange', {detail: item, bubbles: true, composed: true}))
     })
   }
 

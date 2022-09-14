@@ -242,14 +242,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       switch(event.target.className) {
         case 'viewport-pick-option':
           target_img = event.target.item
-          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
+          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'sf-direction-picker-btn':
           target_img = event.target.querySelector('.viewport-pick-option').item
-          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img}))
+          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'pick-map':
-          this.dispatchEvent(new CustomEvent('mapchange'))
+          this.dispatchEvent(new CustomEvent('mapchange', {bubbles: true, composed: true}))
           break
         default:
           return
