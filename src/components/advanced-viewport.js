@@ -124,9 +124,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
-    this.tool_center = new CenterTool(this, environment)
-    this.tool_measure_width = new MeasureWidthTool(this)
-    this.tool_measure_height = new MeasureHeightTool(this)
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
@@ -147,13 +144,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
       btn.classList.remove('active')
     })
-    if (mode !== this.mode) {
-      button_element.classList.add('active')
-      this.mode = mode
-    } else {
-      button_element.classList.add('active')
-      this.mode = 'center'
-    }
+    button_element.classList.add('active')
+    this.mode = mode
     this.dispatchEvent(this.modechange)
   }
 
@@ -185,13 +177,17 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       }
     })
 
-    // Reset mode when chaning the image
+    // Reset mode when changing the image
     document.addEventListener('addresschange', () => {
       this.toggleMode('center')
     })
-    document.querySelector('skraafoto-direction-picker').addEventListener('directionchange', () => {
+    document.addEventListener('directionchange', () => {
       this.toggleMode('center')
     })
+
+    this.tool_center = new CenterTool(this, environment)
+    this.tool_measure_width = new MeasureWidthTool(this)
+    this.tool_measure_height = new MeasureHeightTool(this)
   }
 }
 
