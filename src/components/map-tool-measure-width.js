@@ -109,6 +109,7 @@ export class MeasureWidthTool {
   }
 
   modeChangeHandler(event) {
+    console.log('mode change', event.detail())
     // Clear previous interaction and measure drawings
     this.clearInteraction()
     // Remove previous event listeners
