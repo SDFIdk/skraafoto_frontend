@@ -95,7 +95,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
-        <button class="btn-center ds-icon-map_icon_adresse active" title="Flyt center"></button>
         <button class="btn-width-measure ds-icon-map_icon_vej" title="Mål afstand"></button>
         <!-- <button class="btn-height-measure ds-icon-map_icon_vej" title="Mål højde"></button> -->
         <skraafoto-info-box></skraafoto-info-box>
@@ -140,12 +139,21 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.map.removeLayer(this.layer_icon)
   }
 
-  toggleMode(mode, button_element = this.shadowRoot.querySelector('.btn-center')) {
+  toggleMode(mode, button_element) {
     this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
       btn.classList.remove('active')
     })
-    button_element.classList.add('active')
-    this.mode = mode
+    if (mode !== this.mode) {
+      // if prior mode was different, toggle on
+      if (button_element) {
+        button_element.classList.add('active')
+      }
+      this.mode = mode
+    } else {
+      // else set default mode
+      button_element.blur()
+      this.mode = 'center'
+    }
     this.dispatchEvent(this.modechange)
   }
 
@@ -171,9 +179,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       if (event.target.classList.contains('btn-height-measure')) {
         this.toggleMode('measureheight', event.target)
       } else if (event.target.classList.contains('btn-width-measure')) {
-        this.toggleMode('measurewidth', event.target)  
+        this.toggleMode('measurewidth', event.target)
       } else {
-        this.toggleMode('center', event.target)
+        this.toggleMode('center')
       }
     })
 
