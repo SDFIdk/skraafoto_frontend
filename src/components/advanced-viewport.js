@@ -151,6 +151,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.mode = mode
     } else {
       // else set default mode
+      button_element.blur()
       this.mode = 'center'
     }
     this.dispatchEvent(this.modechange)
