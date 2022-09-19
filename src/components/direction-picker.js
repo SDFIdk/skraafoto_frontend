@@ -76,11 +76,13 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       display: block;
       border-radius: 0;
     }
+    .sf-direction-picker-btn.active,
+    .sf-map-picker-btn.active,
     .sf-direction-picker-btn:hover,
     .sf-direction-picker-btn:focus,
     .sf-map-picker-btn:hover,
     .sf-map-picker-btn:focus {
-      opacity: 0.75;
+      opacity: 0.66;
     }
     skraafoto-map,
     skraafoto-viewport {
@@ -239,12 +241,17 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
       let target_img
+      this.shadowRoot.querySelectorAll('button').forEach(function(button) {
+        button.classList.remove('active')
+      })
       switch(event.target.className) {
         case 'viewport-pick-option':
+          event.target.parentNode.classList.add('active')
           target_img = event.target.item
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'sf-direction-picker-btn':
+          event.target.classList.add('active')
           target_img = event.target.querySelector('.viewport-pick-option').item
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
