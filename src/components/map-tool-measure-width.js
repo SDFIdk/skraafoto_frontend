@@ -14,21 +14,15 @@ export class MeasureWidthTool {
   coorTranslator = createTranslator()
   viewport
   style = new Style({
-    fill: new Fill({
-      color: 'hsl(26,80%,56%)'
-    }),
     stroke: new Stroke({
-      color: 'hsl(26,80%,56%)',
+      color: '#3EDDC6',
       width: 3
     }),
     image: new CircleStyle({
       radius: 4,
       stroke: new Stroke({
-        color: 'hsl(26,80%,56%)',
+        color: '#3EDDC6',
         width: 1
-      }),
-      fill: new Fill({
-        color: '#ffcc33'
       })
     })
   })
@@ -55,7 +49,6 @@ export class MeasureWidthTool {
       font-size: 0.8rem;
       cursor: default;
       user-select: none;
-      opacity: 0.75;
     }
     .ol-tooltip-static {
       background-color: var(--mork-tyrkis);
