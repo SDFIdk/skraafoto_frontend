@@ -47,38 +47,30 @@ export class MeasureWidthTool {
   css = `
     .ol-tooltip {
       position: relative;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 4px;
-      color: white;
-      padding: 4px 8px;
-      opacity: 0.7;
+      background: var(--mork-tyrkis);
+      border-radius: 0.5rem;
+      color: var(--hvid);
+      padding: 0.25rem 0.5rem;
       white-space: nowrap;
-      font-size: 12px;
+      font-size: 0.8rem;
       cursor: default;
       user-select: none;
-    }
-    .ol-tooltip-measure {
-      opacity: 1;
-      font-weight: bold;
+      opacity: 0.75;
     }
     .ol-tooltip-static {
-      background-color: #ffcc33;
-      color: black;
-      border: 1px solid white;
+      background-color: var(--mork-tyrkis);
+      color: var(--hvid);
     }
-    .ol-tooltip-measure:before,
-    .ol-tooltip-static:before {
-      border-top: 6px solid rgba(0, 0, 0, 0.5);
-      border-right: 6px solid transparent;
-      border-left: 6px solid transparent;
+    .ol-tooltip-measure::before,
+    .ol-tooltip-static::before {
+      border-top: 0.5rem solid var(--mork-tyrkis);
+      border-right: 0.5rem solid transparent;
+      border-left: 0.5rem solid transparent;
       content: "";
       position: absolute;
-      bottom: -6px;
-      margin-left: -7px;
+      bottom: -0.4rem;
+      margin-left: -0.5rem;
       left: 50%;
-    }
-    .ol-tooltip-static:before {
-      border-top-color: #ffcc33;
     }
   `
   
@@ -179,7 +171,7 @@ export class MeasureWidthTool {
       this.measureTooltipElement.innerHTML = this.calculateDistance(geom.flatCoordinates)
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
       this.measureTooltip.setOffset([0, -7])
-      this.measureTooltip.setPosition(geom.getLastCoordinate())
+      this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
       // unset sketch
       this.sketch = null
       // unset tooltip so that a new one can be created
@@ -224,6 +216,10 @@ export class MeasureWidthTool {
       insertFirst: false
     })
     this.viewport.map.addOverlay(this.measureTooltip)
+  }
+
+  calcTooltipPosition(geometry) {
+    return geometry.getFlatMidpoint()
   }
   
   imageChangeHandler(event) {
