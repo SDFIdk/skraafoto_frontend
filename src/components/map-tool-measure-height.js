@@ -4,7 +4,7 @@ import {Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
 import { getDistance, getLength } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
-import { image2world } from 'skraafoto-saul'
+import { image2world, world2image } from 'skraafoto-saul'
 import { createTranslator } from 'skraafoto-saul'
 import {unByKey} from 'ol/Observable'
 
@@ -149,7 +149,6 @@ export class MeasureHeightTool {
   
     this.draw.on('drawend', () => {
 
-      console.log('end', this.sketch.getGeometry().getCoordinates())
       const geom = this.sketch.getGeometry()
 
       // Snap to height axis
@@ -212,7 +211,7 @@ export class MeasureHeightTool {
     return geometry.getFlatMidpoint()
   }
   
-  imageChangeHandler(event) {
+  imageChangeHandler() {
     this.clearInteraction()
     this.clearDrawings()
   }
@@ -231,12 +230,28 @@ export class MeasureHeightTool {
   }
 
   calculateHeight(coords) {
-    console.log('calc height', coords)
-    return 'Xm'
+    let height
+    // magic saul module math goes here:
+    // height = getHeightFromImage(coords[0], coords[1])
+    height = 'Xm'
+    return height
   }
 
   calculateVerticalAxis(coords) {
-    console.log('calc vert axis', coords)
+    console.log(coords)
+    console.log('calc vert axis', image2world(this.viewport.item, coords[0][0], coords[0][1], 0), image2world(this.viewport.item, coords[0][0], coords[0][1], 1))
+    const world0 = image2world(this.viewport.item, coords[0][0], coords[0][1], 0)
+    const world1 = image2world(this.viewport.item, coords[0][0], coords[0][1], 1)
+    const image0 = world2image(this.viewport.item, world0[0], world0[1])
+    const image1 = world2image(this.viewport.item, world1[0], world1[1])
+    console.log(image0,image1)
+    // create a function that takes two image coordinates and spit out an approximate height
+    this.axisFunc = function(x,y) {
+      let height
+
+      return height
+    }
+
     return coords
   }
 
