@@ -96,6 +96,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
         <button class="btn-width-measure ds-icon-map_icon_vej" title="Mål afstand"></button>
+        <button class="btn-height-measure ds-icon-map_icon_vej" title="Mål højde"></button>
         <!-- <button class="btn-height-measure ds-icon-map_icon_vej" title="Mål højde"></button> -->
         <skraafoto-info-box></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
