@@ -38,6 +38,7 @@ export class MeasureHeightTool {
   measureTooltipElement
   measureTooltip
   draw
+  axisFunction
   css = `
     .ol-tooltip {
       position: relative;
@@ -144,20 +145,22 @@ export class MeasureHeightTool {
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
-      this.calculateVerticalAxis(this.sketch.getGeometry().getCoordinates())
+      this.axisFunc = this.generateVerticalAxisFunction(this.sketch.getGeometry().getCoordinates())
     })
   
     this.draw.on('drawend', () => {
 
       const geom = this.sketch.getGeometry()
-
-      // Snap to height axis
       const new_coords = geom.getCoordinates()
-      new_coords[1][0] = new_coords[0][0]
+
+      // Calculate new xy in order to constrain to image height axis
+      const adjusted_final_coordinate = this.axisFunc(new_coords[0], new_coords[1])
+      new_coords[1] = adjusted_final_coordinate[0]
+      // Snap to height axis
       geom.setCoordinates(new_coords)
       this.sketch.setGeometry(geom)
 
-      this.measureTooltipElement.innerHTML = this.calculateHeight(geom.flatCoordinates)
+      this.measureTooltipElement.innerHTML = adjusted_final_coordinate[1] + 'm'
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
       this.measureTooltip.setOffset([0, -7])
       this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
@@ -237,22 +240,27 @@ export class MeasureHeightTool {
     return height
   }
 
-  calculateVerticalAxis(coords) {
-    console.log(coords)
+  generateVerticalAxisFunction(coords) {
+    console.log('coords', coords)
     console.log('calc vert axis', image2world(this.viewport.item, coords[0][0], coords[0][1], 0), image2world(this.viewport.item, coords[0][0], coords[0][1], 1))
-    const world0 = image2world(this.viewport.item, coords[0][0], coords[0][1], 0)
     const world1 = image2world(this.viewport.item, coords[0][0], coords[0][1], 1)
-    const image0 = world2image(this.viewport.item, world0[0], world0[1])
     const image1 = world2image(this.viewport.item, world1[0], world1[1])
-    console.log(image0,image1)
-    // create a function that takes two image coordinates and spit out an approximate height
-    this.axisFunc = function(x,y) {
-      let height
+    console.log('img coords', image1)
+    const skew_factor = [image1[0] - coords[0][0], image1[1] - coords[0][1]]
+    
+    // Return a function that takes two image coordinates and returns the second coordinate with Y axis skew adjusted
+    return function(image_coor_1, image_coor_2) {
+      const s = skew_factor
+      const delta_y = image_coor_2[1] - image_coor_1[1]
+      const y_dist = delta_y / s[1]
+      const x_dist = y_dist // We assume relative distance must be equal
+      const delta_x = x_dist * s[0]
+      const x = image_coor_1[0] + delta_x
 
-      return height
+      console.log('adjusted coordinate', [x, image_coor_2[1]])
+
+      return [[x, image_coor_2[1]], Math.abs(delta_x).toFixed(1)]
     }
-
-    return coords
   }
 
 }
