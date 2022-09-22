@@ -145,7 +145,7 @@ export class MeasureHeightTool {
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
-      this.axisFunc = this.generateVerticalAxisFunction(this.sketch.getGeometry().getCoordinates())
+      this.axisFunc = this.generateVerticalAxisFunction(this.sketch.getGeometry().getCoordinates()[0], this.viewport.item)
     })
   
     this.draw.on('drawend', () => {
@@ -154,13 +154,12 @@ export class MeasureHeightTool {
       const new_coords = geom.getCoordinates()
 
       // Calculate new xy in order to constrain to image height axis
-      const adjusted_final_coordinate = this.axisFunc(new_coords[0], new_coords[1])
-      new_coords[1] = adjusted_final_coordinate[0]
+      new_coords[1] = this.axisFunc(new_coords[0], new_coords[1])
       // Snap to height axis
       geom.setCoordinates(new_coords)
       this.sketch.setGeometry(geom)
 
-      this.measureTooltipElement.innerHTML = adjusted_final_coordinate[1] + 'm'
+      this.measureTooltipElement.innerHTML = 'Xm'
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
       this.measureTooltip.setOffset([0, -7])
       this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
@@ -232,34 +231,21 @@ export class MeasureHeightTool {
     this.viewport.map.getOverlays().clear()
   }
 
-  calculateHeight(coords) {
-    let height
-    // magic saul module math goes here:
-    // height = getHeightFromImage(coords[0], coords[1])
-    height = 'Xm'
-    return height
-  }
-
-  generateVerticalAxisFunction(coords) {
-    console.log('coords', coords)
-    console.log('calc vert axis', image2world(this.viewport.item, coords[0][0], coords[0][1], 0), image2world(this.viewport.item, coords[0][0], coords[0][1], 1))
-    const world1 = image2world(this.viewport.item, coords[0][0], coords[0][1], 1)
-    const image1 = world2image(this.viewport.item, world1[0], world1[1])
-    console.log('img coords', image1)
-    const skew_factor = [image1[0] - coords[0][0], image1[1] - coords[0][1]]
+  generateVerticalAxisFunction(coord, image_item) {
+    const world0 = image2world(image_item, coord[0], coord[1], 0)
+    const world1 = image2world(image_item, coord[0], coord[1], 10)
+    const image0 = world2image(image_item, world0[0], world0[1])
+    const image1 = world2image(image_item, world1[0], world1[1])
+    const skew_factor = [(image1[0] - image0[0])/10, (image1[1] - image0[1])/10]
     
     // Return a function that takes two image coordinates and returns the second coordinate with Y axis skew adjusted
     return function(image_coor_1, image_coor_2) {
       const s = skew_factor
       const delta_y = image_coor_2[1] - image_coor_1[1]
-      const y_dist = delta_y / s[1]
-      const x_dist = y_dist // We assume relative distance must be equal
-      const delta_x = x_dist * s[0]
+      const ratio_y = delta_y / s[1]
+      const delta_x = ratio_y * s[0] // We assume x and y ratios are equal
       const x = image_coor_1[0] + delta_x
-
-      console.log('adjusted coordinate', [x, image_coor_2[1]])
-
-      return [[x, image_coor_2[1]], Math.abs(delta_x).toFixed(1)]
+      return [x, image_coor_2[1]]
     }
   }
 
