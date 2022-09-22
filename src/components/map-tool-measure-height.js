@@ -154,12 +154,13 @@ export class MeasureHeightTool {
       const new_coords = geom.getCoordinates()
 
       // Calculate new xy in order to constrain to image height axis
-      new_coords[1] = this.axisFunc(new_coords[0], new_coords[1])
+      const corrected_coord = this.axisFunc(new_coords[0], new_coords[1])
+      new_coords[1] = [corrected_coord[0], corrected_coord[1]]
       // Snap to height axis
       geom.setCoordinates(new_coords)
       this.sketch.setGeometry(geom)
 
-      this.measureTooltipElement.innerHTML = 'Xm'
+      this.measureTooltipElement.innerHTML = `${corrected_coord[2]}m`
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
       this.measureTooltip.setOffset([0, -7])
       this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
@@ -245,7 +246,7 @@ export class MeasureHeightTool {
       const ratio_y = delta_y / s[1]
       const delta_x = ratio_y * s[0] // We assume x and y ratios are equal
       const x = image_coor_1[0] + delta_x
-      return [x, image_coor_2[1]]
+      return [x, image_coor_2[1], Math.abs(ratio_y).toFixed(1)]
     }
   }
 
