@@ -17,6 +17,7 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
+import { throttle } from '../modules/throttle.js'
 
 export class SkraaFotoMap extends HTMLElement {
 
@@ -77,7 +78,18 @@ export class SkraaFotoMap extends HTMLElement {
 
   // setters
   set setView(options) {
-    this.updateMap(options.center)  
+    // Make sure a map exists before we try to update it
+    const throttle = () => { 
+      setTimeout(() => {
+        if (this.map === null) {
+          throttle()
+        } else {
+          this.updateMap(options.center)
+          return true
+        }
+      }, 200)
+    }
+    throttle()
   }
 
   constructor() {
@@ -131,7 +143,7 @@ export class SkraaFotoMap extends HTMLElement {
       } else {
         controls = defaultControls({rotate: false, attribution: false})
       }
-
+      
       this.map = new Map({
         layers: [
           new TileLayer({
@@ -144,6 +156,7 @@ export class SkraaFotoMap extends HTMLElement {
         view: this.view,
         controls: controls
       })
+      console.log('mapking a map', this.map)
 
       if (is_minimal === null) {
         // Do something when the big map is clicked
@@ -151,6 +164,9 @@ export class SkraaFotoMap extends HTMLElement {
           this.singleClickHandler(event)
         })
       }
+    })
+    .catch(err => {
+      console.log(err)
     })
   }
 
