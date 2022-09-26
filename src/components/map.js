@@ -17,7 +17,6 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
-import { throttle } from '../modules/throttle.js'
 
 export class SkraaFotoMap extends HTMLElement {
 
@@ -156,7 +155,6 @@ export class SkraaFotoMap extends HTMLElement {
         view: this.view,
         controls: controls
       })
-      console.log('mapking a map', this.map)
 
       if (is_minimal === null) {
         // Do something when the big map is clicked
@@ -164,9 +162,6 @@ export class SkraaFotoMap extends HTMLElement {
           this.singleClickHandler(event)
         })
       }
-    })
-    .catch(err => {
-      console.log(err)
     })
   }
 
