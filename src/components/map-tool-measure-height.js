@@ -1,12 +1,12 @@
 import { Vector as VectorSource } from 'ol/source'
 import { Vector as VectorLayer } from 'ol/layer'
-import {Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
-import { getDistance, getLength } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
 import { image2world, world2image } from 'skraafoto-saul'
 import { createTranslator } from 'skraafoto-saul'
-import {unByKey} from 'ol/Observable'
+import { unByKey } from 'ol/Observable'
+import LineString from 'ol/geom/LineString'
 
 export class MeasureHeightTool {
 
@@ -38,7 +38,7 @@ export class MeasureHeightTool {
   measureTooltipElement
   measureTooltip
   draw
-  axisFunction
+  axisFunc
   css = `
     .ol-tooltip {
       position: relative;
@@ -135,7 +135,25 @@ export class MeasureHeightTool {
       type: 'LineString',
       style: this.style,
       maxPoints: 2,
-      minPoints: 2
+      minPoints: 2,
+      geometryFunction: (coords, geom) => {
+        if (!geom) {
+          geom = new LineString([])
+        }
+        if (this.axisFunc) {
+          const adjusted_coordinate = this.axisFunc(coords[0], coords[1])
+          geom.setCoordinates([
+            coords[0],
+            [
+              adjusted_coordinate[0],
+              adjusted_coordinate[1]
+            ]
+          ])
+        } else {
+          geom.setCoordinates(coords)
+        }
+        return geom
+      }
     })
     this.viewport.map.addInteraction(this.draw)
   
@@ -145,25 +163,13 @@ export class MeasureHeightTool {
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
-      this.axisFunc = this.generateVerticalAxisFunction(this.sketch.getGeometry().getCoordinates()[0], this.viewport.item)
+      this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], this.viewport.item)
     })
   
     this.draw.on('drawend', () => {
 
-      const geom = this.sketch.getGeometry()
-      const new_coords = geom.getCoordinates()
-
-      // Calculate new xy in order to constrain to image height axis
-      const corrected_coord = this.axisFunc(new_coords[0], new_coords[1])
-      new_coords[1] = [corrected_coord[0], corrected_coord[1]]
-      // Snap to height axis
-      geom.setCoordinates(new_coords)
-      this.sketch.setGeometry(geom)
-
-      this.measureTooltipElement.innerHTML = `${corrected_coord[2]}m`
-      this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
-      this.measureTooltip.setOffset([0, -7])
-      this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
+      this.drawAdjustedLine(this.axisFunc, this.calcTooltipPosition, this.measureTooltipElement, this.measureTooltip)
+      
       // unset sketch
       this.sketch = null
       // unset tooltip so that a new one can be created
@@ -171,6 +177,23 @@ export class MeasureHeightTool {
       this.createMeasureTooltip()
       unByKey(listener)
     })
+  }
+
+  drawAdjustedLine(axisFunction, tooltipPositionFunction, tooltipElement, tooltip) {
+    const geom = this.sketch.getGeometry()
+    const new_coords = geom.getCoordinates()
+
+    // Calculate new xy in order to constrain to image height axis
+    const corrected_coord = axisFunction(new_coords[0], new_coords[1])
+    new_coords[1] = [corrected_coord[0], corrected_coord[1]]
+    // Snap to height axis
+    geom.setCoordinates(new_coords)
+    this.sketch.setGeometry(geom)
+
+    tooltipElement.innerHTML = `${corrected_coord[2]}m`
+    tooltipElement.className = 'ol-tooltip ol-tooltip-static'
+    tooltip.setOffset([0, -7])
+    tooltip.setPosition(tooltipPositionFunction(geom))
   }
 
   /**
