@@ -38,7 +38,7 @@ export class MeasureHeightTool {
   measureTooltipElement
   measureTooltip
   draw
-  axisFunction
+  axisFunc
   css = `
     .ol-tooltip {
       position: relative;
@@ -136,15 +136,24 @@ export class MeasureHeightTool {
       style: this.style,
       maxPoints: 2,
       minPoints: 2,
-      geometryFunction: this.modifyGeometry /*function(coords, geometry) {
-        console.log('hmm', geometry)
-        if (!geometry) {
-          geometry = new LineString(coords)
+      geometryFunction: (coords, geom) => {
+        if (!geom) {
+          geom = new LineString([])
         }
-        geometry.setCoordinates(coords)
-        console.log('we can modify geom', geometry)
-        return geometry
-      }*/
+        if (this.axisFunc) {
+          const adjusted_coordinate = this.axisFunc(coords[0], coords[1])
+          geom.setCoordinates([
+            coords[0],
+            [
+              adjusted_coordinate[0],
+              adjusted_coordinate[1]
+            ]
+          ])
+        } else {
+          geom.setCoordinates(coords)
+        }
+        return geom
+      }
     })
     this.viewport.map.addInteraction(this.draw)
   
@@ -154,7 +163,7 @@ export class MeasureHeightTool {
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
-      this.axisFunc = this.generateVerticalAxisFunction(this.sketch.getGeometry().getCoordinates()[0], this.viewport.item)
+      this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], this.viewport.item)
     })
   
     this.draw.on('drawend', () => {
@@ -168,17 +177,6 @@ export class MeasureHeightTool {
       this.createMeasureTooltip()
       unByKey(listener)
     })
-  }
-
-  modifyGeometry(coords, geometry) {
-    const aligned_coord = this.axisFunc(coords[0], coords[1])
-    if (!geometry) {
-      geometry = new LineString(coords)
-    }
-    coords[1][0] = aligned_coord[0]
-    geometry.setCoordinates(coords)
-    console.log('we have modified geom', geometry)
-    return geometry
   }
 
   drawAdjustedLine(axisFunction, tooltipPositionFunction, tooltipElement, tooltip) {
