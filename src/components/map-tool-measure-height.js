@@ -1,12 +1,12 @@
 import { Vector as VectorSource } from 'ol/source'
 import { Vector as VectorLayer } from 'ol/layer'
-import {Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
-import { getDistance, getLength } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
 import { image2world, world2image } from 'skraafoto-saul'
 import { createTranslator } from 'skraafoto-saul'
-import {unByKey} from 'ol/Observable'
+import { unByKey } from 'ol/Observable'
+import LineString from 'ol/geom/LineString'
 
 export class MeasureHeightTool {
 
@@ -135,7 +135,16 @@ export class MeasureHeightTool {
       type: 'LineString',
       style: this.style,
       maxPoints: 2,
-      minPoints: 2
+      minPoints: 2,
+      geometryFunction: this.modifyGeometry /*function(coords, geometry) {
+        console.log('hmm', geometry)
+        if (!geometry) {
+          geometry = new LineString(coords)
+        }
+        geometry.setCoordinates(coords)
+        console.log('we can modify geom', geometry)
+        return geometry
+      }*/
     })
     this.viewport.map.addInteraction(this.draw)
   
@@ -150,20 +159,8 @@ export class MeasureHeightTool {
   
     this.draw.on('drawend', () => {
 
-      const geom = this.sketch.getGeometry()
-      const new_coords = geom.getCoordinates()
-
-      // Calculate new xy in order to constrain to image height axis
-      const corrected_coord = this.axisFunc(new_coords[0], new_coords[1])
-      new_coords[1] = [corrected_coord[0], corrected_coord[1]]
-      // Snap to height axis
-      geom.setCoordinates(new_coords)
-      this.sketch.setGeometry(geom)
-
-      this.measureTooltipElement.innerHTML = `${corrected_coord[2]}m`
-      this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
-      this.measureTooltip.setOffset([0, -7])
-      this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
+      this.drawAdjustedLine(this.axisFunc, this.calcTooltipPosition, this.measureTooltipElement, this.measureTooltip)
+      
       // unset sketch
       this.sketch = null
       // unset tooltip so that a new one can be created
@@ -171,6 +168,34 @@ export class MeasureHeightTool {
       this.createMeasureTooltip()
       unByKey(listener)
     })
+  }
+
+  modifyGeometry(coords, geometry) {
+    const aligned_coord = this.axisFunc(coords[0], coords[1])
+    if (!geometry) {
+      geometry = new LineString(coords)
+    }
+    coords[1][0] = aligned_coord[0]
+    geometry.setCoordinates(coords)
+    console.log('we have modified geom', geometry)
+    return geometry
+  }
+
+  drawAdjustedLine(axisFunction, tooltipPositionFunction, tooltipElement, tooltip) {
+    const geom = this.sketch.getGeometry()
+    const new_coords = geom.getCoordinates()
+
+    // Calculate new xy in order to constrain to image height axis
+    const corrected_coord = axisFunction(new_coords[0], new_coords[1])
+    new_coords[1] = [corrected_coord[0], corrected_coord[1]]
+    // Snap to height axis
+    geom.setCoordinates(new_coords)
+    this.sketch.setGeometry(geom)
+
+    tooltipElement.innerHTML = `${corrected_coord[2]}m`
+    tooltipElement.className = 'ol-tooltip ol-tooltip-static'
+    tooltip.setOffset([0, -7])
+    tooltip.setPosition(tooltipPositionFunction(geom))
   }
 
   /**
