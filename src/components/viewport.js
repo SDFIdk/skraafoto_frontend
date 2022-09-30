@@ -12,6 +12,9 @@ import {defaults as defaultControls} from 'ol/control'
 import {defaults as defaultInteractions} from 'ol/interaction'
 import {getZ, world2image} from 'skraafoto-saul'
 import {toDanish} from '../modules/i18n.js'
+import {SkraaFotoCompass} from './compass.js'
+
+customElements.define('skraafoto-compass', SkraaFotoCompass)
 
 export class SkraaFotoViewport extends HTMLElement {
 
@@ -27,6 +30,7 @@ export class SkraaFotoViewport extends HTMLElement {
   layer_icon
   source_image
   view
+  compass_element
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
   // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -48,35 +52,10 @@ export class SkraaFotoViewport extends HTMLElement {
       height: 100%;
       background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
     }
-    .direction-indicator {
+    skraafoto-compass {
       position: absolute;
       top: 1.5rem;
       right: 1rem;
-      width: auto
-      margin: 0;
-      padding: 0;
-      background-color: var(--lys-steel);
-      opacity: 0.66;
-      border-radius: 2.3rem;
-    }
-    .direction-indicator.ds-icon-map_icon_nordpil.nadir {
-      display: none;
-    }
-    .direction-indicator.ds-icon-map_icon_nordpil.north {
-      transform: rotate(0deg);
-      display: inline-block;
-    }
-    .direction-indicator.ds-icon-map_icon_nordpil.south {
-      transform: rotate(180deg);
-      display: inline-block;
-    }
-    .direction-indicator.ds-icon-map_icon_nordpil.east {
-      transform: rotate(270deg);
-      display: inline-block;
-    }
-    .direction-indicator.ds-icon-map_icon_nordpil.west {
-      transform: rotate(90deg);
-      display: inline-block;
     }
     .image-date {
       position: absolute;
@@ -92,7 +71,7 @@ export class SkraaFotoViewport extends HTMLElement {
       ${ this.styles }
     </style>
     <div class="viewport-map"></div>
-    <span class="direction-indicator ds-icon-map_icon_nordpil"></span>
+    <skraafoto-compass direction="north"></skraafoto-compass>
     <p class="image-date"></p>
   `
 
@@ -144,6 +123,8 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
+
+    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
   }
 
   updateView() {
@@ -235,9 +216,7 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updateDirection(imagedata) {
-    const direction_element = this.shadowRoot.querySelector('.direction-indicator')
-    direction_element.setAttribute('title', toDanish(imagedata.properties.direction))
-    direction_element.className = 'direction-indicator ds-icon-map_icon_nordpil ' + imagedata.properties.direction
+    this.compass_element.setAttribute('direction', imagedata.properties.direction)
   }
 
   updateDate(imagedata) {
