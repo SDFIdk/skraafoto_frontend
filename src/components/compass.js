@@ -16,7 +16,7 @@ export class SkraaFotoCompass extends HTMLElement {
     }
     .sf-compass::before {
       z-index: 1;
-      opacity: 0.75;
+      opacity: 0.66;
       position: absolute;
       top: 0;
       left: 0;
@@ -40,7 +40,7 @@ export class SkraaFotoCompass extends HTMLElement {
       height: 100%;
       color: var(--medium-steel);
       font-weight: 300;
-      transition: transform 0.3s;
+      transition: transform 0.3s, opacity 0.3s;
     }
     .direction {
       z-index: 2;
@@ -80,6 +80,9 @@ export class SkraaFotoCompass extends HTMLElement {
     }
     .arrow path {
       fill: var(--advarsel);
+    }
+    .nadir {
+      opacity: 0.66;
     }
     .nadir::before {
       border-color: var(--mork-tyrkis);
