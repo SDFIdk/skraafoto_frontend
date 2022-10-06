@@ -51,11 +51,13 @@ export class SkraaFotoViewport extends HTMLElement {
       width: 100%; 
       height: 100%;
       background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
+      position: relative;
     }
     skraafoto-compass {
       position: absolute;
       top: 1.5rem;
       right: 1rem;
+      -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
     }
     .image-date {
       position: absolute;
@@ -63,6 +65,21 @@ export class SkraaFotoViewport extends HTMLElement {
       left: 1rem;
       color: #fff;
       margin: 0;
+      -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+    }
+
+    @media screen and (max-width: 35rem) {
+
+      skraafoto-compass {
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+
+      .image-date {
+        bottom: 0.5rem;
+        left: 0.5rem;
+      }
+
     }
   `
   template = `

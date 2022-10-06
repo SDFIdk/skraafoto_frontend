@@ -75,6 +75,15 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       transform: rotate(90deg);
     }
 
+    @media screen and (max-width: 35rem) {
+
+      skraafoto-compass {
+        top: 1.75rem;
+        right: 1rem;
+      }
+
+    }
+
     @media screen and (max-width: 50rem) {
     
       .image-date {
