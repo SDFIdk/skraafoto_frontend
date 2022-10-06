@@ -1,6 +1,7 @@
 import { SkraaFotoViewport } from './viewport.js' 
 import OlMap from 'ol/Map.js'
-import {defaults as defaultControls} from 'ol/control'
+import { defaults as defaultControls } from 'ol/control'
+import { defaults as defaultInteractions } from 'ol/interaction'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
@@ -175,7 +176,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   connectedCallback() {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false}) //.extend([this.mousepos]) // For debugging
+      controls: defaultControls({rotate: false, attribution: false}), //.extend([this.mousepos]) // For debugging
+      interactions: defaultInteractions({pinchRotate: false})
     })
 
     // When an image is selected via the date-selector, update this viewport
