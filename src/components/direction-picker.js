@@ -75,15 +75,31 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       margin: 0;
       display: block;
       border-radius: 0;
+      position: relative;
     }
-    .sf-direction-picker-btn.active,
-    .sf-map-picker-btn.active,
-    .sf-direction-picker-btn:hover,
-    .sf-direction-picker-btn:focus,
-    .sf-map-picker-btn:hover,
-    .sf-map-picker-btn:focus {
-      opacity: 0.66;
+
+    .sf-direction-picker-btn.active::after,
+    .sf-map-picker-btn.active::after,
+    .sf-direction-picker-btn:hover::after,
+    .sf-direction-picker-btn:focus::after,
+    .sf-map-picker-btn:hover::after,
+    .sf-map-picker-btn:focus::after {
+      content: '';
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      height: 3rem;
+      width: 3rem;
+      background-color: var(--aktion);
+      clip-path: polygon(0 0, 100% 0, 0 100%);
     }
+
+    .sf-direction-picker-btn:hover::after,
+    .sf-map-picker-btn:hover::after {
+      background-color: var(--highlight);
+    }
+
     skraafoto-map,
     skraafoto-viewport {
       height: 100%;
@@ -122,22 +138,22 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     <section class="sf-slider-content">
       <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
       <div class="sf-slider-grid">
-        <button class="sf-map-picker-btn">
+        <button class="sf-map-picker-btn sf-btn-map">
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
         </button>
-        <button class="sf-direction-picker-btn">
+        <button class="sf-direction-picker-btn sf-btn-nadir">
           <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
         </button>
-        <button class="sf-direction-picker-btn">
+        <button class="sf-direction-picker-btn sf-btn-north">
           <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
         </button>
-        <button class="sf-direction-picker-btn">
+        <button class="sf-direction-picker-btn sf-btn-west">
           <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
         </button>
-        <button class="sf-direction-picker-btn">
+        <button class="sf-direction-picker-btn sf-btn-east">
           <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
         </button>
-        <button class="sf-direction-picker-btn">
+        <button class="sf-direction-picker-btn sf-btn-south">
           <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
         </button>
       </div>
@@ -147,7 +163,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
   // setters
 
-  set setView(options) {
+  set setView(options) {    
+    
     // Update mini viewports
     let queries = [
       queryItems(options.center, 'north', options.collection),
@@ -163,6 +180,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       for (let i in items) {
         this.updateViewport(options.center, items[i])
       }
+      this.highlightCurrent(items)
     })
 
     // Update map
@@ -225,6 +243,31 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
   }
 
+  highlightCurrent(items = []) {
+    console.log('highligting')
+    let url_param_item = (new URL(document.location)).searchParams.get('item')
+    let url_params_map = (new URL(document.location)).searchParams.get('map')
+
+    this.shadowRoot.querySelectorAll('button').forEach(function(button) {
+      button.classList.remove('active')
+    })
+    
+    if (url_params_map === '1') {
+      this.map_element.parentNode.classList.add('active')
+    } else {
+      this.map_element.parentNode.classList.remove('active')
+    }
+    
+    if (url_param_item === '' && items.length < 1) {
+      this.north_element.parentNode.classList.add('active')
+    } else {
+      const i = items.find(function(item) {
+        return item.id === url_param_item
+      })
+      this[`${ i.properties.direction }_element`].parentNode.classList.add('active')
+    }
+  }
+
 
   // Lifecycle
 
@@ -238,20 +281,19 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
+    window.addEventListener('locationchange', (event) => {
+      console.log('listen for changes to url', event)
+    })
+
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
       let target_img
-      this.shadowRoot.querySelectorAll('button').forEach(function(button) {
-        button.classList.remove('active')
-      })
       switch(event.target.className) {
         case 'viewport-pick-option':
-          event.target.parentNode.classList.add('active')
           target_img = event.target.item
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'sf-direction-picker-btn':
-          event.target.classList.add('active')
           target_img = event.target.querySelector('.viewport-pick-option').item
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
@@ -262,6 +304,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           return
       }
       this.slider_element.style.transform = 'translate(0,100vh)'
+      this.highlightCurrent()
     })
   }
 
