@@ -244,7 +244,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   }
 
   highlightCurrent(items = []) {
-    console.log('highligting')
     let url_param_item = (new URL(document.location)).searchParams.get('item')
     let url_params_map = (new URL(document.location)).searchParams.get('map')
 
@@ -258,7 +257,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.map_element.parentNode.classList.remove('active')
     }
     
-    if (url_param_item === '' && items.length < 1) {
+    if (!items || url_param_item === '' && items?.length < 1) {
       this.north_element.parentNode.classList.add('active')
     } else {
       const i = items.find(function(item) {
