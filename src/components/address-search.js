@@ -87,7 +87,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
       .sf-search-collapsible .sf-input-container {
         height: auto;
-        width: auto;
+        width: calc(100vw - 4.25rem);
         max-width: 30rem;
         background-color: var(--background-color);
         position: fixed;
@@ -108,6 +108,22 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         right: 0;
         max-width: calc(100vw - 2rem);
       }
+    }
+
+    @media screen and (min-width: 34rem) {
+
+      .sf-search-collapsible .sf-input-container {
+        width: 25rem;
+      }
+
+    }
+
+    @media screen and (min-width: 60rem) {
+
+      .sf-search-collapsible .sf-input-container {
+        width: 35rem;
+      }
+
     }
   `
   template = `
