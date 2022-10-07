@@ -145,6 +145,9 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updateView() {
+    // Record current zoom level to reinitialize view laver
+    const current_zoom = this.map.getView().getZoom()
+    
     this.source_image.getView()
     .then((view) => {
       this.view = view
@@ -154,7 +157,7 @@ export class SkraaFotoViewport extends HTMLElement {
       this.view.resolutions = this.addResolutions(this.view.resolutions)
 
       this.view.center = this.coord_image
-      this.view.zoom = this.zoom
+      this.view.zoom = current_zoom ? current_zoom : this.zoom
       this.map.setView(new View(this.view))
     })
   }
