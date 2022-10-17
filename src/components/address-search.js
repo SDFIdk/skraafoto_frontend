@@ -132,7 +132,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button class="sf-search-btn-open ds-icon-icon_search" title="Søg efter adresse"></button>
+    <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse"></button>
     <div class=sf-input-container>
       <label for="sf-search-${ this.random_id }">Søg efter adresse</label>
       <input id="sf-search-${ this.random_id }" type="text" class="sf-search-input" placeholder="Indtast en adresse">

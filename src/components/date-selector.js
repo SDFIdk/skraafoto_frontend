@@ -32,7 +32,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
         padding: 0 !important;
         border-radius: 50%;
         position: relative;
-        background: var(--hentdata_icon_pending) no-repeat center center transparent !important;
+        background: var(--ds-hentdata-icon-pending) no-repeat center center transparent !important;
         background-size: 2rem auto !important;
         margin: 0;
       }
