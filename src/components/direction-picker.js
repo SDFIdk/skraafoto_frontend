@@ -145,7 +145,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       <button class="sf-slider-open">Vælg retning</button>
     </nav>
     <section class="sf-slider-content">
-      <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
+      <button class="sf-slider-close ds-icon-icon-close" title="Luk"></button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn sf-btn-map">
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>

@@ -41,10 +41,10 @@ export class SkraaFotoInfoBox extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button class="sf-slider-open ds-icon-icon_info" title="Information om billede"></button>
+    <button class="sf-slider-open ds-icon-icon-info" title="Information om billede"></button>
     
     <section class="sf-slider-content">
-      <button class="sf-slider-close ds-icon-icon_close" title="Luk"></button>
+      <button class="sf-slider-close ds-icon-icon-close" title="Luk"></button>
       <div class="sf-slider-grid ds-padding">
         <p>Ingen information tilgængelig.</p>
       </div>
