@@ -1,6 +1,6 @@
 
 /* CSS imports*/
-@import 'design-system-css/assets/designsystem.css';
+@import "@dataforsyningen/css/assets/designsystem.css";
 @import "@dataforsyningen/icons/css/logo-big.css";
 @import "@dataforsyningen/icons/css/logo-micro.css";
 @import "@dataforsyningen/icons/css/hentdata-icon-get.css";
@@ -12,5 +12,5 @@
 @import "@dataforsyningen/icons/css/icon-dropdown.css";
 @import "@dataforsyningen/icons/css/hentdata-icon-pending.css";
 @import "@dataforsyningen/icons/css/icon-search.css";
-@import './styles/layout.css';
-@import './styles/header.css';
+@import "./styles/layout.css";
+@import "./styles/header.css";
