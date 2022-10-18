@@ -1,4 +1,4 @@
-import { getSTAC } from 'skraafoto-saul'
+import { getSTAC } from '@dataforsyningen/saul'
 
 const auth = environment // We assume a global `enviroment` variable has been declared
 

@@ -1,16 +1,16 @@
 
 /* CSS imports*/
-@import 'design-system-css/assets/designsystem.css';
-@import "design-system-icons/css/logo-big.css";
-@import "design-system-icons/css/logo-micro.css";
-@import "design-system-icons/css/hentdata-icon-get.css";
-@import "design-system-icons/css/icon-burgerbar.css";
-@import "design-system-icons/css/hentdata-icon-download.css";
-@import "design-system-icons/css/icon-info.css";
-@import "design-system-icons/css/map-icon-ruler.css";
-@import "design-system-icons/css/icon-close.css";
-@import "design-system-icons/css/icon-dropdown.css";
-@import "design-system-icons/css/hentdata-icon-pending.css";
-@import "design-system-icons/css/icon-search.css";
-@import './styles/layout.css';
-@import './styles/header.css';
+@import "@dataforsyningen/css/assets/designsystem.css";
+@import "@dataforsyningen/icons/css/logo-big.css";
+@import "@dataforsyningen/icons/css/logo-micro.css";
+@import "@dataforsyningen/icons/css/hentdata-icon-get.css";
+@import "@dataforsyningen/icons/css/icon-burgerbar.css";
+@import "@dataforsyningen/icons/css/hentdata-icon-download.css";
+@import "@dataforsyningen/icons/css/icon-info.css";
+@import "@dataforsyningen/icons/css/map-icon-ruler.css";
+@import "@dataforsyningen/icons/css/icon-close.css";
+@import "@dataforsyningen/icons/css/icon-dropdown.css";
+@import "@dataforsyningen/icons/css/hentdata-icon-pending.css";
+@import "@dataforsyningen/icons/css/icon-search.css";
+@import "./styles/layout.css";
+@import "./styles/header.css";

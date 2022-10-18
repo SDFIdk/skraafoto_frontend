@@ -10,7 +10,7 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import {defaults as defaultInteractions} from 'ol/interaction'
-import {getZ, world2image} from 'skraafoto-saul'
+import {getZ, world2image} from '@dataforsyningen/saul'
 import {toDanish} from '../modules/i18n.js'
 import {SkraaFotoCompass} from './compass.js'
 

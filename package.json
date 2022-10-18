@@ -1,6 +1,6 @@
 {
   "name": "skraafoto-frontend",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
+    "@dataforsyningen/css": "^0.1.2",
+    "@dataforsyningen/icons": "^0.1.31",
+    "@dataforsyningen/saul": "^3.0.2",
     "dawa-autocomplete2": "^1.0.2",
-    "design-system-css": "github:SDFIdk/design-system-css",
-    "design-system-icons": "github:SDFIdk/design-system-icons",
     "ol": "6.14.1",
-    "proj4": "^2.8.0",
-    "skraafoto-saul": "github:SDFIdk/saul"
+    "proj4": "^2.8.0"
   },
   "devDependencies": {
     "esbuild": "^0.14.39"
