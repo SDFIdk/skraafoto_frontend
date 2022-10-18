@@ -156,14 +156,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         <button class="sf-direction-picker-btn sf-btn-north">
           <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
         </button>
-        <button class="sf-direction-picker-btn sf-btn-west">
-          <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
-        </button>
         <button class="sf-direction-picker-btn sf-btn-east">
           <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
         </button>
         <button class="sf-direction-picker-btn sf-btn-south">
           <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
+        </button>
+        <button class="sf-direction-picker-btn sf-btn-west">
+          <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
         </button>
       </div>
     </section>
