@@ -91,24 +91,40 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
   updateOptions(options) {
     this.selector_element.innerHTML = ''
-    let current_collection
-    let i = 1
-    for (let o = 0; o < options.length; o++) {
-      if (options[o].collection !== current_collection) {
-        current_collection = options[o].collection
-        i = 1
-        let option_group_el = document.createElement('optgroup')
-        option_group_el.label = current_collection
-        this.selector_element.appendChild(option_group_el)
+    const sorted_collections = this.sortOptions(options)
+    for (let c in sorted_collections) {
+      this.buildOptionGroupHTML(c)
+      for (let i = 0; i < sorted_collections[c].length; i++) {
+        this.buildOptionHTML(sorted_collections[c][i], i, sorted_collections[c].length)
       }
-      const datetime = new Date(options[o].properties.datetime)
-      let option_el = document.createElement('option')
-      option_el.value = options[o].id
-      option_el.innerText = `${ datetime.toLocaleDateString() } (${i})`
-      this.selector_element.querySelector(`[label="${ options[o].collection }"]`).appendChild(option_el)
-      i++
     }
     this.selector_element.value = this.selected
+  }
+
+  sortOptions(items) {
+    let collections = {}
+    items.forEach(function(item) {
+      if (collections[item.collection]) {
+        collections[item.collection].push(item)
+      } else {
+        collections[item.collection] = [item]
+      }
+    })
+    return collections
+  }
+
+  buildOptionGroupHTML(collection) {
+    let option_group_el = document.createElement('optgroup')
+    option_group_el.label = collection
+    this.selector_element.appendChild(option_group_el)
+  }
+
+  buildOptionHTML(option, idx, collection_length) {
+    const datetime = new Date(option.properties.datetime)
+    let option_el = document.createElement('option')
+    option_el.value = option.id
+    option_el.innerText = `${ datetime.toLocaleDateString() } ${ idx + 1 }/${ collection_length }`
+    this.selector_element.querySelector(`[label="${ option.collection }"]`).appendChild(option_el)
   }
 
 
