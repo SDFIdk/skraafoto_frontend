@@ -1,4 +1,4 @@
-import { iterate } from 'skraafoto-saul'
+import { iterate } from '@dataforsyningen/saul'
 
 export class CenterTool {
 

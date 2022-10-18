@@ -1,5 +1,5 @@
 import {dawaAutocomplete} from 'dawa-autocomplete2'
-import {createTranslator} from 'skraafoto-saul'
+import {createTranslator} from '@dataforsyningen/saul'
 
 export class SkraaFotoAddressSearch extends HTMLElement {
 
