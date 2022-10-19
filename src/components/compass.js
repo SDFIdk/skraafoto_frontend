@@ -79,7 +79,7 @@ export class SkraaFotoCompass extends HTMLElement {
       width: 2.5rem;
     }
     .arrow path {
-      fill: var(--advarsel);
+      fill: var(--medium-steel);
     }
     .nadir {
       opacity: 0.66;
