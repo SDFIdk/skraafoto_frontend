@@ -1,4 +1,5 @@
 import { toDanish } from '../modules/i18n.js'
+import { get } from '@dataforsyningen/saul'
 
 export class SkraaFotoInfoBox extends HTMLElement {
 
@@ -91,14 +92,38 @@ export class SkraaFotoInfoBox extends HTMLElement {
         <dd>${ item.id }</dd>
         <dt>Optagetidspunkt</dt>
         <dd>${ new Date(item.properties.datetime).toLocaleString() }</dd>
+        <dt>Opløsning</dt>
+        <dd>${ item.properties.gsd.toLocaleString() }m</dd>
         <dt>Samling</dt>
         <dd>${ item.collection }</dd>
         <dt>Retning</dt>
         <dd>${ toDanish(item.properties.direction) }</dd>
-        <dt>Område-koordinater</dt>
-        <dd>${ item.bbox[0].toFixed(2) }, ${ item.bbox[1].toFixed(2) }<br>${ item.bbox[2].toFixed(2) }, ${ item.bbox[3].toFixed(2) }</dd>
+        <dt>Område</dt>
+        <dd>
+          <span class="area-position"></span><br>
+          <span class="area-name"></span>
+        </dd>
       </dl>
     `
+  }
+
+  async getLocalAreaInfo() {
+    const area_element = this.slider_content.querySelector('.area-name')
+    const url = new URL(window.location)
+    let center =  url.searchParams.get('center').split(',').map(function(coord) {
+      return Number(coord).toFixed(0)
+    })
+    this.slider_content.querySelector('.area-position').innerText = `${ center[0] }ø ${ center[1] }n`
+    area_element.innerText = 'søger ...'
+    get(`https://api.dataforsyningen.dk/steder?x=${ center[0] }&y=${ center[1] }&per_side=1&srid=25832&nærmeste`)
+    .then(response => {
+      console.log('got res', response[0].primærtnavn)
+      if (response && response.length === 1) {
+        area_element.innerText = response[0].primærtnavn
+      } else {
+        area_element.innerText = 'Ikke-identificeret sted'
+      }
+    })
   }
 
 
@@ -107,6 +132,9 @@ export class SkraaFotoInfoBox extends HTMLElement {
   connectedCallback() {
 
     this.btn_open_element.addEventListener('click', () => {
+      // Update area information
+      this.getLocalAreaInfo()
+      // Move infobox into view
       this.slider_element.style.transform = 'translate(0,0)'
     })
 
