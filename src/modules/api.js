@@ -12,13 +12,7 @@ function queryItem(item_id) {
 function queryItems(coord, direction, collection, limit = 1) {
   let search_query = { 
     "and": [
-      {"contains": [ { "property": "geometry"}, {"type": "Polygon", "coordinates": [
-        [ coord[0] - 10, coord[1] + 10 ],
-        [ coord[0] + 10, coord[1] + 10 ],
-        [ coord[0] + 10, coord[1] - 10 ],
-        [ coord[0] - 10, coord[1] - 10 ],
-        [ coord[0] - 10, coord[1] + 10 ]
-      ]} ]},
+      {"contains": [ { "property": "geometry"}, {"type": "Point", "coordinates": [coord[0], coord[1]]} ]},
       {"eq": [ { "property": "direction" }, direction ]}
     ]
   }
