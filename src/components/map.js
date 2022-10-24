@@ -60,7 +60,7 @@ export class SkraaFotoMap extends HTMLElement {
     }
   `
   template = `
-    <link rel="stylesheet" href="./dist/skraafotostyle.css">
+    <link rel="stylesheet" href="./skraafotostyle.css">
     <style>
       ${ this.styles }
     </style>
