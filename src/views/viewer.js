@@ -151,7 +151,6 @@ document.addEventListener('coordinatechange', async function(event) {
 document.addEventListener('addresschange', function(event) {
   state.coordinate = event.detail
   queryItemsForDifferentCollections(state, collections, 0).then((response) => {
-    console.log('response', response)
     state.item = response.item
     updateViews(state)
   })
