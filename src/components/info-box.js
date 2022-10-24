@@ -117,7 +117,6 @@ export class SkraaFotoInfoBox extends HTMLElement {
     area_element.innerText = 'søger ...'
     get(`https://api.dataforsyningen.dk/steder?x=${ center[0] }&y=${ center[1] }&per_side=1&srid=25832&nærmeste`)
     .then(response => {
-      console.log('got res', response[0].primærtnavn)
       if (response && response.length === 1) {
         area_element.innerText = response[0].primærtnavn
       } else {

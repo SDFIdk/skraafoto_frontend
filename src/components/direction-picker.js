@@ -291,10 +291,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
-    window.addEventListener('locationchange', (event) => {
-      console.log('listen for changes to url', event)
-    })
-
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
       let target_img
