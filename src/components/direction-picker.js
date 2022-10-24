@@ -189,7 +189,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       for (let i in items) {
         this.updateViewport(options.center, items[i])
       }
-      this.highlightCurrent(items)
+      this.highlightCurrentDirection(items)
     })
 
     // Update map
@@ -252,7 +252,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
   }
 
-  highlightCurrent(items = []) {
+  highlightCurrentDirection(items = []) {
     let url_param_item = (new URL(document.location)).searchParams.get('item')
     let url_params_map = (new URL(document.location)).searchParams.get('map')
 
@@ -272,7 +272,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       const i = items.find(function(item) {
         return item.id === url_param_item
       })
-      this[`${ i.properties.direction }_element`].parentNode.classList.add('active')
+      if (i) {
+        this[`${ i.properties.direction }_element`].parentNode.classList.add('active')
+      }
     }
   }
 
@@ -312,7 +314,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           return
       }
       this.slider_element.style.transform = 'translate(0,100vh)'
-      this.highlightCurrent()
+      this.highlightCurrentDirection()
     })
   }
 
