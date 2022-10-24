@@ -93,21 +93,38 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selector_element.innerHTML = ''
     const sorted_collections = this.sortOptions(options)
     for (let c in sorted_collections) {
-      this.buildOptionGroupHTML(c)
-      for (let i = 0; i < sorted_collections[c].length; i++) {
-        this.buildOptionHTML(sorted_collections[c][i], i, sorted_collections[c].length)
+      this.buildOptionGroupHTML(sorted_collections[c])
+      for (let i = 0; i < sorted_collections[c].items.length; i++) {
+        this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
       }
     }
     this.selector_element.value = this.selected
   }
 
   sortOptions(items) {
-    let collections = {}
+    let collections = []
     items.forEach(function(item) {
-      if (collections[item.collection]) {
-        collections[item.collection].push(item)
+      let coll = collections.find(function(c) {
+        return c.collection === item.collection
+      })
+      if (coll) {
+        coll.items.push(item)
       } else {
-        collections[item.collection] = [item]
+        collections.push({
+          collection: item.collection,
+          items: [item]
+        })
+      }
+    })
+    collections.sort(function(a,b) {
+      if (a.collection > b.collection) {
+        return -1
+      }
+      if (a.collection < b.collection) {
+        return 1
+      }
+      if (a.collection === b.collection) {
+        return 0
       }
     })
     return collections
@@ -115,16 +132,16 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
   buildOptionGroupHTML(collection) {
     let option_group_el = document.createElement('optgroup')
-    option_group_el.label = collection
+    option_group_el.label = collection.collection
     this.selector_element.appendChild(option_group_el)
   }
 
-  buildOptionHTML(option, idx, collection_length) {
-    const datetime = new Date(option.properties.datetime)
+  buildOptionHTML(item, idx, collection_length) {
+    const datetime = new Date(item.properties.datetime)
     let option_el = document.createElement('option')
-    option_el.value = option.id
+    option_el.value = item.id
     option_el.innerText = `${ datetime.toLocaleDateString() } ${ idx + 1 }/${ collection_length }`
-    this.selector_element.querySelector(`[label="${ option.collection }"]`).appendChild(option_el)
+    this.selector_element.querySelector(`[label="${ item.collection }"]`).appendChild(option_el)
   }
 
 
