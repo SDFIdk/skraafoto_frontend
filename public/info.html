@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="dist/skraafotostyle.css">
     <link rel="shortcut icon" href="img/logos/logo-simple-micro.svg">
     <style>
+      body {
+        display: flex;
+        flex-flow: column nowrap;
+      }
       header > .ds-container {
         display: flex;
         align-items: center;
         flex-flow: row nowrap;
+      }
+      main {
+        flex-grow: 1;
       }
       main,
       article {
