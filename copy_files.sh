@@ -1,4 +1,3 @@
 #! /bin/bash
 
-cp ../web-config.test.js dist/config.js
-cp -r public/* dist
+cp ../web-config.test.js public/config.js
