@@ -24,7 +24,8 @@ customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
   item: null,
-  map: false
+  map: false,
+  orientation: 'north'
 }
 let url_params = (new URL(document.location)).searchParams
 let collections = []
@@ -55,7 +56,7 @@ function updateViews(state) {
     ]
   }
 
-  if (state.map) {
+  if (state.orientation === 'map') {
     openMap()
   } else {
     updateMainViewport(state)
@@ -92,14 +93,8 @@ function parseUrlState(params, state) {
     })
   }
 
-  // Parse map status from URL
-  const param_map = params.get('map')
-  if (param_map === '1') {
-    new_state.map = true
-  } else {
-    new_state.map = false
-  }
-
+  // Parse orientation status from URL
+  new_state.orientation = params.get('orientation')
   
   // Parse item param from URL
   const param_item = params.get('item')
@@ -122,10 +117,8 @@ function updateUrl(state) {
   if (state.coordinate) {
     url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
   }
-  if (state.map) {
-    url.searchParams.set('map', 1)
-  } else {
-    url.searchParams.set('map', 0)
+  if (state.orientation) {
+    url.searchParams.set('orientation', state.orientation)
   }
   window.history.pushState({}, '', url)
 }
@@ -163,13 +156,13 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   main_viewport_element.setItem = event.detail
   main_viewport_element.setCenter = state.coordinate
   state.item = event.detail
-  state.map = false
+  state.orientation = event.detail.properties.direction
   updateUrl(state)
 })
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
 direction_picker_element.addEventListener('mapchange', function(event) {
-  state.map = true
+  state.orientation = 'map'
   updateUrl(state)
   openMap()
 })

@@ -87,12 +87,12 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       content: '';
       position: absolute;
       display: block;
-      top: 0;
+      bottom: 0;
       left: 0;
-      height: 3rem;
-      width: 3rem;
+      height: 1.5rem;
+      width: 100%;
       background-color: var(--aktion);
-      clip-path: polygon(0 0, 100% 0, 0 100%);
+      clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
     }
 
     .sf-direction-picker-btn:hover::after,
@@ -189,7 +189,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       for (let i in items) {
         this.updateViewport(options.center, items[i])
       }
-      this.highlightCurrentDirection(items)
+      this.highlightCurrentDirection()
     })
 
     // Update map
@@ -252,30 +252,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
   }
 
-  highlightCurrentDirection(items = []) {
-    let url_param_item = (new URL(document.location)).searchParams.get('item')
-    let url_params_map = (new URL(document.location)).searchParams.get('map')
+  highlightCurrentDirection() {
+    let url_params_orientation = (new URL(document.location)).searchParams.get('orientation')
 
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
     })
     
-    if (url_params_map === '1') {
-      this.map_element.parentNode.classList.add('active')
-    } else {
-      this.map_element.parentNode.classList.remove('active')
-    }
-    
-    if (!items || url_param_item === '' && items?.length < 1) {
-      this.north_element.parentNode.classList.add('active')
-    } else {
-      const i = items.find(function(item) {
-        return item.id === url_param_item
-      })
-      if (i) {
-        this[`${ i.properties.direction }_element`].parentNode.classList.add('active')
-      }
-    }
+    this[`${ url_params_orientation }_element`].parentNode.classList.add('active')
   }
 
 
