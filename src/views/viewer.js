@@ -27,6 +27,7 @@ let state = {
   map: false
 }
 let url_params = (new URL(document.location)).searchParams
+let collections = []
 
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
@@ -104,15 +105,12 @@ function parseUrlState(params, state) {
   const param_item = params.get('item')
   if (param_item) {
     return queryItem(param_item).then((item) => {
-
       new_state.item = item
       return new_state
     })
   } else {
     // Go through all collections and return the newest available item
-    return getCollections().then(async (collections) => {
-      return queryItemsForDifferentCollections(new_state, collections, 0)
-    })
+    return queryItemsForDifferentCollections(new_state, collections, 0)
   }
 }
 
@@ -152,8 +150,9 @@ document.addEventListener('coordinatechange', async function(event) {
 // On a new address input, update viewports
 document.addEventListener('addresschange', function(event) {
   state.coordinate = event.detail
-  queryItems(event.detail, 'north').then((response) => {
-    state.item = response.features[0]
+  queryItemsForDifferentCollections(state, collections, 0).then((response) => {
+    console.log('response', response)
+    state.item = response.item
     updateViews(state)
   })
 })
@@ -198,7 +197,11 @@ document.addEventListener('loaderror', function(event) {
 })
 
 // Initialize
-parseUrlState(url_params, state).then((new_state) => {
-  state = new_state
-  updateViews(state)
+getCollections().then(colls => {
+  collections = colls
+
+  parseUrlState(url_params, state).then((new_state) => {
+    state = new_state
+    updateViews(state)
+  })
 })
