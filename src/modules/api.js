@@ -22,7 +22,20 @@ function queryItems(coord, direction, collection, limit = 1) {
   return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
 }
 
+function getCollections() {
+  return getSTAC(`/collections`, auth)
+  .then((data) => {
+    let sorted_collections = data.collections.sort(function(a,b) {
+      if (a.id > b.id) {return -1}
+      if (a.id < b.id) {return 1}
+      if (a.id === b.id) {return 0}
+    })
+    return sorted_collections
+  })
+}
+
 export {
   queryItem,
-  queryItems
+  queryItems,
+  getCollections
 }

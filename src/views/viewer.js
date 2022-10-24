@@ -1,4 +1,4 @@
-import { queryItems, queryItem } from '../modules/api.js'
+import { queryItems, queryItem, getCollections } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
@@ -69,6 +69,17 @@ function updateViews(state) {
   updateUrl(state)
 }
 
+function queryItemsForDifferentCollections(state, collections, collection_idx) {
+  return queryItems(state.coordinate, 'north', collections[collection_idx].id).then((response) => {
+    if (response.features.length > 0) {
+      state.item = response.features[0]
+      return state
+    } else {
+      return queryItemsForDifferentCollections(state, collections, collection_idx + 1)
+    }
+  })
+}
+
 function parseUrlState(params, state) {
   let new_state = Object.assign({}, state)
   
@@ -88,6 +99,7 @@ function parseUrlState(params, state) {
     new_state.map = false
   }
 
+  
   // Parse item param from URL
   const param_item = params.get('item')
   if (param_item) {
@@ -96,10 +108,10 @@ function parseUrlState(params, state) {
       new_state.item = item
       return new_state
     })
-  } else { 
-    return queryItems(new_state.coordinate, 'north').then((response) => {
-      new_state.item = response.features[0]
-      return new_state
+  } else {
+    // Go through all collections and return the newest available item
+    return getCollections().then(async (collections) => {
+      return queryItemsForDifferentCollections(new_state, collections, 0)
     })
   }
 }
@@ -184,7 +196,6 @@ document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
   alert('Der var et problem med at hente data fra serveren')
 })
-
 
 // Initialize
 parseUrlState(url_params, state).then((new_state) => {
