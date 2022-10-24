@@ -5,7 +5,7 @@
   "main": "./public/index.html",
   "scripts": {
     "dev": "export NODE_ENV=development && ./copy_files.sh && node esbuild.js",
-    "build": "export NODE_ENV=production && ./copy_files.sh && node esbuild.js",
+    "build": "export NODE_ENV=production && node esbuild.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
