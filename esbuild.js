@@ -10,13 +10,13 @@ if (process.env.NODE_ENV === 'development') {
   // Development mode watches for file changes and rebuilds
 
   require('esbuild').serve({
-    servedir: 'dist',
+    servedir: 'public',
   }, {
     entryPoints: entry_points,
     loader: {
       '.ttf': 'file'
     },
-    outdir: 'dist',
+    outdir: 'public',
     bundle: true
   }).then(server => {
     console.log(server)
