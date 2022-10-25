@@ -58,10 +58,21 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ds-button-group {
       min-width: 10rem;
       min-height: 3rem;
-      padding: 0 0.5rem;
+      padding: 0 0 0 0.5rem;
     }
     .ds-nav-tools button.active {
       background-color: var(--mork-tyrkis) !important;
+    }
+
+    /* Download tool */
+    .sf-download-tool {
+      border-radius: 0 2.5rem 2.5rem 0;
+      width: 3.5rem !important;
+    }
+    
+    /* Info tool */
+    .sf-info-btn {
+      border-radius: 0;
     }
 
     /* Measure width tool */
