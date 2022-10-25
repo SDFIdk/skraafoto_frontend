@@ -24,7 +24,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.btn = document.createElement('button')
-    this.btn.className = 'ds-icon-hentdata-icon-download'
+    this.btn.className = 'sf-download-tool ds-icon-hentdata-icon-download'
     this.btn.title = 'Download billede'
     this.append(this.btn)
   }
