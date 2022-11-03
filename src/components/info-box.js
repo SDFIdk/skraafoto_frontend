@@ -111,7 +111,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
     let center =  url.searchParams.get('center').split(',').map(function(coord) {
       return Number(coord).toFixed(0)
     })
-    this.slider_content.querySelector('.area-position').innerText = `${ center[0] }ø ${ center[1] }n`
+    this.slider_content.querySelector('.area-position').innerText = `${ center[0] }e ${ center[1] }n`
     area_element.innerText = 'søger ...'
     get(`https://api.dataforsyningen.dk/steder?x=${ center[0] }&y=${ center[1] }&per_side=1&srid=25832&nærmeste`)
     .then(response => {
