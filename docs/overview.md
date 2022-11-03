@@ -3,7 +3,7 @@
 `skraafoto_frontend` **(Skraafoto)** is an application that enables users to browse **skewed arial photographs (skråfotos)** in a web browser.
 
 
-## Skraafoto application and its related services
+## Services related to Skraafoto
 
 Skraafoto itself is just a HTML/JS application that is downloaded to a browser. 
 From here, it fetches data from various sources to browse skråfotos. These are:
@@ -20,6 +20,8 @@ From here, it fetches data from various sources to browse skråfotos. These are:
 ![Fig. 1: Skraafoto web application and its related web services](./images/high-level.svg)
 
 
-## Skraafoto application internally
+## The Skraafoto application
 
+![Fig. 2: Web pages and their related resources](./images/page-level.svg)
 
+![Fig. 3: Communication between components and controller scripts within web pages](./images/javascript-level.svg)
