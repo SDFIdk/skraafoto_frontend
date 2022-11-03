@@ -113,9 +113,9 @@ export class MeasureHeightTool {
     if (event.dragging) {
       return
     }
-    let helpMsg = 'Klik for at starte måling'
+    let helpMsg = '‘Klik på terræn for at måle højde’'
     if (this.sketch) {
-      helpMsg = 'Klik for at måle højde'
+      helpMsg = 'Klik for at afslutte måling'
     }
     this.helpTooltipElement.innerHTML = helpMsg
     this.helpTooltip.setPosition(event.coordinate)
