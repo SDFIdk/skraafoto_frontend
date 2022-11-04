@@ -1,13 +1,18 @@
-# Documentation for Skraafoto Frontend
+# Documentation
 
-Start here if you are a developer who is just about to start contributing code to `skraafoto_frontend`.
-These documentation pages will give you an overview of the various parts that make up the application.
+These are the documentation pages for `skraafoto_frontend` **(Skraafoto).**
 
-We hope this will help you keep the codebase of `skraafoto_frontend` in great shape and make it enjoyable to work with. 
+Start with the [System overview](./overview.md) if:
 
-## Table of contents
+- You are interested in Skraafoto's architecture.
+- You are a frontend developer who is just about to start developing on Skraafoto.
+
+We hope that the documentation will make you enjoy developing Skraafoto and help you to keep the codebase in great shape.
+
+## Related sections
 
 - [System overview](./overview.md)
 - Folder structure (TODO)
 - Building the application (TODO)
 - Contributing code (TODO)
+- Concepts (TODO)
