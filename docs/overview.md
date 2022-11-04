@@ -6,7 +6,7 @@
 ## Services related to Skraafoto
 
 Skraafoto itself is just a HTML/JS application that is downloaded to a browser. 
-From here, it fetches data from various sources to browse skråfotos. These are:
+From here, it fetches data from various sources to browse skråfotos. These sources are:
 
 - [Skråfoto STAC API](https://github.com/SDFIdk/skraafoto_stac_public/blob/main/dokumentation.md)
   For searching through skråfoto metadata 
@@ -28,7 +28,7 @@ Pages reside in the `public/` directory.
 There is no javascript single page application or rendering system on the server side.
 Routing between pages is as simple as linking to other HTML pages.
 
-While there is some repeated markup across pages, this approach makes it simple to extend the application with custom views and ensures a level of accessibility.
+While this results in some repeated markup across pages, this approach makes it simple to extend the application with custom views and ensures a high level of accessibility.
 
 ### Views
 
@@ -36,7 +36,7 @@ Each HTML page represents a "view".
 You can add more views simply by adding a HTML file and linking to it from some other page.
 
 <em>Example:</em> The "skråfoto viewer" view is `public/viewer.html`. 
-When you are running the local development server, you can point a browser to `localhost:8000/viewer.html` to display the view.
+This corresponds to "skraafoto.dataforsyningen.dk/viewer.html` in the browser.
 Each view imports some tailored Javascript and common style sheets. 
 
 ![Fig. 2: Web pages and their related resources](./images/page-level.svg)
@@ -44,7 +44,7 @@ Each view imports some tailored Javascript and common style sheets.
 ### View Javascripts
 
 The build system is set up to create individual Javascript bundles for every view. 
-The bundles are build from entry files in `src/views/` directory. They are named to correspond with HTML views and import all external libraries needed within the bundle.
+The Javascript bundles are build from entry files in `src/views/` directory. Entry files are named to correspond with HTML views. These bundled scripts import all external libraries needed within the bundle.
 
 The scripts in `src/views/` act as **controllers** for the view pages. They have the following responsibilities:
 
@@ -59,7 +59,7 @@ Individual web components may import 3rd party modules.
 
 ### View style sheets (CSS)
 
-Views import some common CSS (`style.css`) that is built including [@dataforsyningen/css](https://www.npmjs.com/package/@dataforsyningen/css) and [@dataforsyningen/icons](https://www.npmjs.com/package/@dataforsyningen/icons) packages.
+Views import some common CSS (`style.css`) that is built with parts from these modules: [@dataforsyningen/css](https://www.npmjs.com/package/@dataforsyningen/css) and [@dataforsyningen/icons](https://www.npmjs.com/package/@dataforsyningen/icons).
 
 Indvidual web components include custom CSS that is bundled with the view's Javascript.
 
@@ -73,7 +73,10 @@ Ideally, web components should only display UI updates and not contain any busin
 
 ### Relation between controllers and web components
 
-The controller or other components can supply data to web components by setting element attributes or directly using class `set` methods.
+The controller or other components can transfer input to web components in various ways:
+
+- By setting element attributes 
+- By using class `set` methods
 
 Web components communicate back to the controller by dispatching [custom events](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
 Event listeners in the controller causes it act on these events.
@@ -82,10 +85,10 @@ Event listeners in the controller causes it act on these events.
 
 #### User inputs
 
-Individual web components handle user inputs by listening to events and may in turn dispatch custom events to be handled by the controller.
+Individual web components handle user inputs by listening to events. The componont may react by dispatching other (custom) events to be handled by the controller.
 
 #### State management
 
 There is no global Javascript state object. 
 
-Instead, because the Skraafoto application is sharable by link, the application state is kept by parameters in the URL query string.
+Instead, because the Skraafoto application is sharable by link, query string parameters in the URL are used to keep track of application state.
