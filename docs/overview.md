@@ -17,7 +17,7 @@ From here, it fetches data from various sources to browse skråfotos. These sour
 - [Dataforsyningen maps](https://dataforsyningen.dk/data/962)
   To display a map that gives the user some context as to where the skråfoto was taken
 
-The relations are illustrated in the following diagram:
+The relations are illustrated in the following diagram (Danish):
 
 ![Fig. 1: Skraafoto web application and its related web services](./images/high-level.svg)
 
@@ -40,7 +40,7 @@ You can add more views simply by adding a HTML file and linking to it from some 
 <em>Example:</em> The "skråfoto viewer" view is `public/viewer.html`. 
 This corresponds to "skraafoto.dataforsyningen.dk/viewer.html` in the browser.
 
-As the following diagram illustrates, each view imports some tailored Javascript and common style sheets:
+As the following diagram illustrates, each view imports some tailored Javascript and common style sheets (Danish):
 
 ![Fig. 2: Web pages and their related resources](./images/page-level.svg)
 
@@ -84,7 +84,7 @@ The controller or other components can transfer input to web components in vario
 Web components communicate back to the controller by dispatching [custom events](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
 Event listeners in the controller causes it act on these events.
 
-The following diagram illustrates how users, controllers, and components interact on the web page:
+The following diagram illustrates how users, controllers, and components interact on the web page (Danish):
 
 ![Fig. 3: Communication between components and controller scripts within web pages](./images/javascript-level.svg)
 
