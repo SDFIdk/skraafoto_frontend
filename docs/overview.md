@@ -29,7 +29,6 @@ Pages reside in the `public/` directory.
 
 There is no javascript single page application or rendering system on the server side.
 Routing between pages is as simple as linking to other HTML pages.
-
 While this results in some repeated markup across pages, this approach makes it simple to extend the application with custom views and ensures a high level of accessibility.
 
 ### Views
@@ -63,7 +62,6 @@ Individual web components may import 3rd party modules.
 ### View style sheets (CSS)
 
 Views import some common CSS (`style.css`) that is built with parts from these modules: [@dataforsyningen/css](https://www.npmjs.com/package/@dataforsyningen/css) and [@dataforsyningen/icons](https://www.npmjs.com/package/@dataforsyningen/icons).
-
 Indvidual web components include custom CSS that is bundled with the view's Javascript.
 
 ### Web components
@@ -95,5 +93,4 @@ Individual web components handle user inputs by listening to events. The compono
 #### State management
 
 There is no global Javascript state object. 
-
 Instead, because the Skraafoto application is sharable by link, query string parameters in the URL are used to keep track of application state.
