@@ -6,14 +6,8 @@ These documentation pages will give you an overview of the various parts that ma
 We hope this will help you keep the codebase of `skraafoto_frontend` in great shape and make it enjoyable to work with. 
 
 ## Table of contents
+
 - [System overview](../overview.md)
-
-### System detail 1
-
-### System detail 2
-
-### System detail 3
-
-### System detail N
-
-## Pushing changes
+- [Folder structure]()
+- [Building the application]()
+- [Contributing code]()

@@ -22,6 +22,70 @@ From here, it fetches data from various sources to browse skråfotos. These are:
 
 ## The Skraafoto application
 
+The Skraafoto application is a simple collection of HTML pages.
+Pages reside in the `public/` directory.
+
+There is no javascript single page application or rendering system on the server side.
+Routing between pages is as simple as linking to other HTML pages.
+
+While there is some repeated markup across pages, this approach makes it simple to extend the application with custom views and ensures a level of accessibility.
+
+### Views
+
+Each HTML page represents a "view".
+You can add more views simply by adding a HTML file and linking to it from some other page.
+
+<em>Example:</em> The "skråfoto viewer" view is `public/viewer.html`. 
+When you are running the local development server, you can point a browser to `localhost:8000/viewer.html` to display the view.
+Each view imports some tailored Javascript and common style sheets. 
+
 ![Fig. 2: Web pages and their related resources](./images/page-level.svg)
 
+### View Javascripts
+
+The build system is set up to create individual Javascript bundles for every view. 
+The bundles are build from entry files in `src/views/` directory. They are named to correspond with HTML views and import all external libraries needed within the bundle.
+
+The scripts in `src/views/` act as **controllers** for the view pages. They have the following responsibilities:
+
+- Include and register **web components**
+- Orchestrate communication between components 
+
+Individual web components may import 3rd party modules.
+
+<em>Example:</em> `viewer.html` imports `viewer.js` script (from `dist/` directory). 
+`viewer.js` is built from `src/views/viewer.js` which in turn imports the web component `SkraaFotoViewport` from the `src/components/` directory.
+`SkraaFotoViewport` imports whatever classes and functions it needs from other modules, including 3rd party modules like [SAUL](https://www.npmjs.com/package/@dataforsyningen/saul) and [OpenLayers.](https://www.npmjs.com/package/ol)
+
+### View style sheets (CSS)
+
+Views import some common CSS (`style.css`) that is built including [@dataforsyningen/css](https://www.npmjs.com/package/@dataforsyningen/css) and [@dataforsyningen/icons](https://www.npmjs.com/package/@dataforsyningen/icons) packages.
+
+Indvidual web components include custom CSS that is bundled with the view's Javascript.
+
+### Web components
+
+A view's user interface is built from individual **[web components.](https://developer.mozilla.org/en-US/docs/Web/Web_Components)**
+
+Web components is a web standard for creating reusable custom elements. They include their own logic, markup, and styles.
+A view will usually contain some **controller** Javascript and a number of web components.
+Ideally, web components should only display UI updates and not contain any business logic. 
+
+### Relation between controllers and web components
+
+The controller or other components can supply data to web components by setting element attributes or directly using class `set` methods.
+
+Web components communicate back to the controller by dispatching [custom events](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent).
+Event listeners in the controller causes it act on these events.
+
 ![Fig. 3: Communication between components and controller scripts within web pages](./images/javascript-level.svg)
+
+#### User inputs
+
+Individual web components handle user inputs by listening to events and may in turn dispatch custom events to be handled by the controller.
+
+#### State management
+
+There is no global Javascript state object. 
+
+Instead, because the Skraafoto application is sharable by link, the application state is kept by parameters in the URL query string.

@@ -137,7 +137,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   `
   // Template adds link so that this component can use shared CSS
   template = `
-    <link rel="stylesheet" href="./skraafotostyle.css">
+    <link rel="stylesheet" href="./style.css">
     <style>
       ${ this.styles }
     </style>
