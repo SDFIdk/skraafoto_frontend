@@ -7,7 +7,7 @@ We hope this will help you keep the codebase of `skraafoto_frontend` in great sh
 
 ## Table of contents
 
-- [System overview](../overview.md)
+- [System overview](./overview.md)
 - Folder structure (TODO)
 - Building the application (TODO)
 - Contributing code (TODO)
