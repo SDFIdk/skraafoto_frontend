@@ -1,7 +1,7 @@
 # System overview
 
-`skraafoto_frontend` **(Skraafoto)** is an application that enables users to browse **skewed arial photographs (skråfotos)** in a web browser.
-
+`skraafoto_frontend` **(Skraafoto)** is an application that lets users browse **skewed arial photographs (skråfotos)** in a web browser.
+This section provides an overview of Skraafoto and its internal architecture.
 
 ## Services related to Skraafoto
 
