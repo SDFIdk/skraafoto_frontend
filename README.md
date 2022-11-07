@@ -3,16 +3,16 @@
 `skraafoto_frontend` **(Skraafoto)** er en webapplikation, som gør det muligt at finde og vise luftfotos, der er taget på skrå ("skråfotos").
 Fotos hentes via [Skråfoto STAC API.](https://github.com/SDFIdk/skraafoto_stac_public/blob/main/dokumentation.md)
 
-## Installation
+## Installation 
 
 1. `git clone https://github.com/SDFIdk/skraafoto_frontend`
 2. `cd skraafoto_frontend`
 3. `npm install`
 
-## Byg til udvikling
+### Byg til udvikling
 Kør `npm run dev` for at starte en lokal udviklingsserver, der kan tilgås i browseren på URLen `localhost:8000`
 
-## Byg til produktion
+### Byg til produktion
 Kør `npm run build` for at lave et byg til produktion. De byggede filer gemmes i `dist/`-mappen og er derefter klar til at blive hosted.
 
 ## Konfiguration (config.js)

@@ -4,7 +4,7 @@
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
-    "dev": "export NODE_ENV=development && ./copy_files.sh && node esbuild.js",
+    "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
