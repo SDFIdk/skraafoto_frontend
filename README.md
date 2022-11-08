@@ -13,7 +13,7 @@ Fotos hentes via [Skråfoto STAC API.](https://github.com/SDFIdk/skraafoto_stac_
 Kør `npm run dev` for at starte en lokal udviklingsserver, der kan tilgås i browseren på URLen `localhost:8000`
 
 ### Byg til produktion
-Kør `npm run build` for at lave et byg til produktion. De byggede filer gemmes i `dist/`-mappen og er derefter klar til at blive hosted.
+Kør `npm run build` for at lave et byg til produktion. De byggede filer gemmes i `dist/`-mappen og er derefter klar til at blive hosted sammen med filerne i `public`-mappen.
 
 ## Konfiguration (config.js)
 Skraafoto forventer at finde en `config.js` fil i roden af den mappe, som applikationen bliver hosted fra.
