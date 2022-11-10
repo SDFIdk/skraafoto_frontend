@@ -155,11 +155,24 @@ export class SkraaFotoViewport extends HTMLElement {
 
       // Set extra resolutions so we can zoom in further than the resolutions permit normally
       this.view.resolutions = this.addResolutions(this.view.resolutions)
+      
+      // Rotate nadir images relative to north
+      this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
       this.view.center = this.coord_image
       this.view.zoom = current_zoom ? current_zoom : this.zoom
       this.map.setView(new View(this.view))
     })
+  }
+
+  /** Calculate how much to rotate a nadir image to have it north upwards */
+  getAdjustedNadirRotation(item) {
+    if (item.properties.direction === 'nadir') {
+      //return item.properties['pers:kappa'] / (360 / (2 * Math.PI))
+      return ( item.properties['pers:kappa'] * Math.PI ) / 180
+    } else {
+      return 0  
+    }
   }
 
   generateSource(geotiff_href) {
