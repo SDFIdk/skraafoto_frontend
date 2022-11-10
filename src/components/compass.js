@@ -7,7 +7,6 @@ export class SkraaFotoCompass extends HTMLElement {
 
   markup
   compass_element
-  nadir_element
   styles = `
     .sf-compass {
       display: block;
@@ -81,20 +80,7 @@ export class SkraaFotoCompass extends HTMLElement {
     .arrow path {
       fill: var(--medium-steel);
     }
-    .nadir {
-      opacity: 0.66;
-    }
-    .nadir::before {
-      border-color: var(--mork-tyrkis);
-    }
-    .nadir .arrow,
-    .compass-nadir,
-    .nadir .compass-nadir {
-      display: none;
-    }
-    .nadir .direction.compass-north .letter {
-      display: inline;
-    }
+    
   `
   template = `
     <style>
@@ -102,7 +88,7 @@ export class SkraaFotoCompass extends HTMLElement {
     </style>
     
     <p class="compass">
-      <span class="direction compass-north">
+      <span class="direction compass-north compass-nadir">
         <svg class="arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="m 11.981797,5.9266529 4.474339,10.8988661 c 0,0 0.0816,0.392991 -0.129443,0.553108 -0.242307,0.183838 -0.675821,-0.06575 -0.675821,-0.06575 l -3.219356,-1.910006 v -2.42527 c 0,0 -0.04818,-0.449719 -0.481842,-0.449719 -0.433657,0 -0.513964,0.481842 -0.513964,0.481842 v 2.409208 L 8.1338513,17.35436 c 0,0 -0.3970297,0.309803 -0.6362302,0.07009 -0.2392004,-0.239708 -0.017375,-0.632389 -0.017375,-0.632389 0,0 2.9870166,-7.1781374 4.5015506,-10.8654181 z"/>
         </svg>
@@ -111,10 +97,6 @@ export class SkraaFotoCompass extends HTMLElement {
       <small class="direction compass-east">ø</small>
       <small class="direction compass-south">s</small>
       <small class="direction compass-west">v</small>
-    </p>
-
-    <p class="compass-nadir">
-      Set lige oppefra
     </p>
   `
 
@@ -146,7 +128,6 @@ export class SkraaFotoCompass extends HTMLElement {
     this.shadowRoot.append(this.markup)
 
     this.compass_element = this.markup.querySelector('.compass')
-    this.nadir_element = this.markup.querySelector('.compass-nadir')
   }
 
   
@@ -162,10 +143,8 @@ export class SkraaFotoCompass extends HTMLElement {
 
       if (new_value === 'nadir') {
         this.title = 'Set ovenfra'
-        this.markup.classList.add('nadir')
       } else {
         this.title = `Set mod ${ toDanish( new_value )}`
-        this.markup.classList.remove('nadir')
       }
       
       this.markup.querySelector(`.compass-${ new_value }`).classList.add('active')
