@@ -127,7 +127,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
   `
   template = `
-    <link rel="stylesheet" href="./skraafotostyle.css">
+    <link rel="stylesheet" href="./style.css">
     <style>
       ${ this.styles }
     </style>

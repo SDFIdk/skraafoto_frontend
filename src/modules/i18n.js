@@ -8,4 +8,4 @@ const translations = {
 
 export function toDanish(word) {
   return translations[word]
-} 
+}

@@ -1,9 +1,8 @@
 
 const entry_points = {
-  skraafotosplash: 'src/views/splash.js',
-  skraafotoviewer: 'src/views/viewer.js',
-  skraafotolist: 'src/views/list.js',
-  skraafotostyle: 'src/index.css'
+  splash: 'src/views/splash.js',
+  viewer: 'src/views/viewer.js',
+  style: 'src/index.css'
 }
 
 if (process.env.NODE_ENV === 'development') {
