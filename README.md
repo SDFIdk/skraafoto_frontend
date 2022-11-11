@@ -1,25 +1,26 @@
 # skraafoto_frontend
 
-`skraafoto_frontend` **(Skraafoto)** er en webapplikation, som gør det muligt at finde og vise luftfotos, der er taget på skrå ("skråfotos").
-Fotos hentes via [Skråfoto STAC API.](https://github.com/SDFIdk/skraafoto_stac_public/blob/main/dokumentation.md)
+`skraafoto_frontend` **(Skraafoto)** is an application that lets users browse **skewed arial photographs (skråfotos)** in a web browser.
+Photographs are fetched using [Skråfoto STAC API](https://github.com/SDFIdk/skraafoto_stac_public/blob/main/dokumentation.md).
 
-## Installation 
+## Installation
 
 1. `git clone https://github.com/SDFIdk/skraafoto_frontend`
 2. `cd skraafoto_frontend`
 3. `npm install`
 
-### Byg til udvikling
-Kør `npm run dev` for at starte en lokal udviklingsserver, der kan tilgås i browseren på URLen `localhost:8000`
+### Build for development
+Run `npm run dev` to start a development server running locally at `localhost:8000`
 
-### Byg til produktion
-Kør `npm run build` for at lave et byg til produktion. De byggede filer gemmes i `dist/`-mappen og er derefter klar til at blive hosted sammen med filerne i `public`-mappen.
+### Build for production
+Run `npm run build` to make a production build. The built resources are saved in `dist/` folder; ready to be hosted along with the static assets in the `public` folder.
 
-## Konfiguration (config.js)
-Skraafoto forventer at finde en `config.js` fil i roden af den mappe, som applikationen bliver hosted fra.
-Ved udvikling med `npm run dev`, skal `config.js` ligge i `public/`-mappen.
+## Configuration (config.js)
+Skraafoto expects to find a `config.js` file in the root folder when hosted.
 
-Indholdet i config.js skal være et enkelt Javascript objekt, der ser sådan ud:
+When running a development server, `config.js` should reside in the `public/` folder.
+
+The contents of `config.js` should be a single Javascript object defined like so:
 ```
 const environment = {
   
@@ -35,4 +36,5 @@ const environment = {
 
 }
 ```
-Der ligger en fil `public/config.js.example` som du kan kopiere og bruge som din egen `config.js`.
+You'll need to supply your own tokens, usernames, and passwords for your particular configuration.
+You can copy and edit `public/config.js.example` to use as your own `config.js`.
