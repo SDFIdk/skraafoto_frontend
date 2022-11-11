@@ -33,7 +33,8 @@ const viewport_element_2 = document.getElementById('viewport-2')
 
 function updateViewports(state) {
 
-  get(`https://services.datafordeler.dk/MATRIKEL/Matrikel/1/REST/SamletFastEjendom?username=${ environment.API_DHM_USERNAME }&password=${ environment.API_DHM_PASSWORD }`).then(response => {
+  // DELETE this service call is pretty useless
+  get(`https://services.datafordeler.dk/MATRIKEL/Matrikel/1/REST/SamletFastEjendom?Point=Point(${state.coordinate[0]} ${state.coordinate[1]})&username=${ environment.API_DHM_USERNAME }&password=${ environment.API_DHM_PASSWORD }`).then(response => {
     console.log('got matrikel', response)
   })
 
