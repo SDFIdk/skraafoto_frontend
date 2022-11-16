@@ -50,9 +50,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
     }
     .ds-nav-tools {
-      position: fixed;
+      position: absolute;
       z-index: 2;
-      top: 6rem;
+      top: 1.25rem;
       left: 1rem;
     }
     .ds-button-group {
