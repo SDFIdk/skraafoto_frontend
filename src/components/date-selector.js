@@ -46,6 +46,15 @@ export class SkraaFotoDateSelector extends HTMLElement {
       }
 
     }
+
+    @media screen and (min-width: 50.1rem) {
+
+      select {
+        width: auto;
+        background-position: center right .25rem !important;
+      }
+
+    }
   `
   template = `
     <link rel="stylesheet" href="./style.css">

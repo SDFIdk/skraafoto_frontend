@@ -41,16 +41,15 @@
         flex: 1 1 auto;
       }
 
-      #viewport-main {
+      #viewport-1,
+      #viewport-2 {
         position: relative;
-        display: block;
-        height: 100%;
+        border: solid 2px var(--mork-tyrkis);
       }
 
-      skraafoto-direction-picker {
-        display: block;
-        height: 0;
-        width: 0;
+      #viewport-1.active,
+      #viewport-2.active {
+        border-color: var(--highlight);
       }
 
       @media screen and (max-width: 40rem) {
@@ -67,16 +66,9 @@
           flex-flow: row nowrap;
         }
 
-        #viewport-main,
-        #map-main {
-          width: 70%;
-          flex: 1 1 70%;
-        }
-
-        skraafoto-direction-picker {
-          height: 100%;
-          width: 40rem;
-          flex: 0 0 40rem;
+        #viewport-1,
+        #viewport-2 {
+          width: 50%;
         }
       }
     </style>
@@ -96,13 +88,12 @@
 
     <main id="maincontent">
 
-      <skraafoto-advanced-viewport id="viewport-main"></skraafoto-advanced-viewport>
-      <skraafoto-map id="map-main" hidden></skraafoto-map>
-      <skraafoto-direction-picker></skraafoto-direction-picker> 
+      <skraafoto-advanced-viewport id="viewport-1"></skraafoto-advanced-viewport>
+      <skraafoto-advanced-viewport id="viewport-2"></skraafoto-advanced-viewport>
 
     </main>
 
-    <script type="module" src="viewer.js"></script>
+    <script type="module" src="twinview.js"></script>
 
   </body>
 </html>

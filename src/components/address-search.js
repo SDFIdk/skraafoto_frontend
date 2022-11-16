@@ -176,6 +176,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     
     dawaAutocomplete( this.input_element, {
       select: (selected) => {
+        console.log(selected)
         // Convert WGS84 coords to EPSG:25832
         const coords = this.coorTranslator.forward([selected.data.x, selected.data.y])
         this.dispatchEvent(new CustomEvent('addresschange', { detail: coords, bubbles: true, composed: true }))
