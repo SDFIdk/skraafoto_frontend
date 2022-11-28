@@ -264,7 +264,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   updatePlugins() {
     // No plugins
-    // Meant to be overwritten by extended classes like "SkraaFotoAdvancedViewport"
+    // This method is meant to be overwritten by extended classes like "SkraaFotoAdvancedViewport"
   }
 
 

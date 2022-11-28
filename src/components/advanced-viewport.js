@@ -6,6 +6,7 @@ import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
+import { getTerrainData } from '../modules/api.js'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 
 
@@ -21,6 +22,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   tool_center
   tool_measure_width
   tool_measure_height
+  geotiff
   // mousepos = new MousePosition() // For debugging
   date_selector_element
   // styles
@@ -144,6 +146,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
+    getTerrainData(this.item).then(geotiff => {
+      this.geotiff = geotiff
+    })
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item

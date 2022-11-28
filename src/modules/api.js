@@ -1,4 +1,4 @@
-import { getSTAC } from '@dataforsyningen/saul'
+import { getSTAC, getTerrainGeoTIFF } from '@dataforsyningen/saul'
 
 const auth = environment // We assume a global `enviroment` variable has been declared
 
@@ -34,8 +34,16 @@ function getCollections() {
   })
 }
 
+function getTerrainData(item) {
+  return getTerrainGeoTIFF(item, auth)
+  .then((geotiff) => {
+    return geotiff
+  })
+}
+
 export {
   queryItem,
   queryItems,
-  getCollections
+  getCollections,
+  getTerrainData
 }

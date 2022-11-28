@@ -62,13 +62,13 @@ function updateViews(state) {
     updateMainViewport(state)
   }
   
+  updateUrl(state)
+
   // Update the other viewports
   direction_picker_element.setView = {
     collection: state.item.collection,
     center: state.coordinate
   }
-
-  updateUrl(state)
 }
 
 function queryItemsForDifferentCollections(state, collections, collection_idx) {
@@ -94,7 +94,12 @@ function parseUrlState(params, state) {
   }
 
   // Parse orientation status from URL
-  new_state.orientation = params.get('orientation')
+  const param_orientation = params.get('orientation')
+  if (param_orientation) {
+    new_state.orientation = param_orientation
+  } else {
+    new_state.orientation = 'north'
+  }
   
   // Parse item param from URL
   const param_item = params.get('item')
