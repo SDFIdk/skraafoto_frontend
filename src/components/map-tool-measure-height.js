@@ -3,7 +3,7 @@ import { Vector as VectorLayer } from 'ol/layer'
 import { Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
 import Overlay from 'ol/Overlay'
-import { image2world, world2image, createTranslator } from '@dataforsyningen/saul'
+import { image2world, getImageXY, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 
@@ -163,6 +163,17 @@ export class MeasureHeightTool {
       // set sketch
       this.sketch = event.feature
       this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], this.viewport.item)
+
+      this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
+      listener = this.sketch.getGeometry().on('change', (ev) => {
+        const geom = ev.target
+        const new_coords = geom.getCoordinates()
+        const corrected_coord = this.axisFunc(new_coords[0], new_coords[1])
+        this.measureTooltipElement.innerHTML = `${corrected_coord[2]}m`
+        this.measureTooltip.setOffset([0, -7])
+        this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
+      })
+      
     })
   
     this.draw.on('drawend', () => {
@@ -179,6 +190,7 @@ export class MeasureHeightTool {
   }
 
   drawAdjustedLine(axisFunction, tooltipPositionFunction, tooltipElement, tooltip) {
+    
     const geom = this.sketch.getGeometry()
     const new_coords = geom.getCoordinates()
 
@@ -257,8 +269,8 @@ export class MeasureHeightTool {
   generateVerticalAxisFunction(coord, image_item) {
     const world0 = image2world(image_item, coord[0], coord[1], 0)
     const world1 = image2world(image_item, coord[0], coord[1], 10)
-    const image0 = world2image(image_item, world0[0], world0[1])
-    const image1 = world2image(image_item, world1[0], world1[1])
+    const image0 = getImageXY(image_item, world0[0], world0[1])
+    const image1 = getImageXY(image_item, world1[0], world1[1])
     const skew_factor = [(image1[0] - image0[0])/10, (image1[1] - image0[1])/10]
     
     // Return a function that takes two image coordinates and returns the second coordinate with Y axis skew adjusted
