@@ -1,28 +1,22 @@
-import { iterate } from '@dataforsyningen/saul'
+import { getWorldXYZ } from '@dataforsyningen/saul'
 import { queryItems } from '../modules/api'
 
 export class CenterTool {
 
-  constructor(viewport, auth) {
+  constructor(viewport) {
 
     // Set up event listener
     viewport.map.on('singleclick', (event) => {
       if (viewport.mode === 'center') {
         viewport.displaySpinner()
-        iterate(viewport.item, event.coordinate[0], event.coordinate[1], auth).then((response) => {
-          viewport.coord_world = response[0]
-          viewport.dispatchEvent(new CustomEvent('coordinatechange', { detail: response[0], bubbles: true }))
-
-          // Checks if click was made near image bounds and initiate loading a new image
-          if ( !this.checkBounds(viewport.item.properties['proj:shape'], event.coordinate) ) {
-            queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
-            .then(response => {
-              if (response.features[0].id !== viewport.item.id) {
-                viewport.shadowRoot.dispatchEvent(new CustomEvent('imagechange', {detail: response.features[0], bubbles: true, composed: true}))
-              }   
-            })
-          }
-
+        getWorldXYZ({
+          image: viewport.item,
+          terrain: viewport.geotiff,
+          xy: event.coordinate
+        }, 0.03).then((world_xyz) => {
+          
+          this.update(event, viewport, world_xyz)
+          
         })
       }
     })
@@ -39,6 +33,22 @@ export class CenterTool {
       return false
     } else {
       return true
+    }
+  }
+
+  update(event, viewport, world_xyz) {
+
+    viewport.coord_world = world_xyz
+    viewport.dispatchEvent(new CustomEvent('coordinatechange', { detail: world_xyz, bubbles: true }))
+
+    // Checks if click was made near image bounds and initiate loading a new image
+    if ( !this.checkBounds(viewport.item.properties['proj:shape'], event.coordinate) ) {
+      queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
+      .then(response => {
+        if (response.features[0].id !== viewport.item.id) {
+          viewport.shadowRoot.dispatchEvent(new CustomEvent('imagechange', {detail: response.features[0], bubbles: true, composed: true}))
+        }   
+      })
     }
   }
   

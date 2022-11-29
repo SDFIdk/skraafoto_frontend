@@ -172,7 +172,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
   // setters
 
-  set setView(options) {    
+  set setView(options) {
     
     // Update mini viewports
     let queries = [

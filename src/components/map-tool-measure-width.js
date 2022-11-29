@@ -4,7 +4,7 @@ import {Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
 import { getDistance } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
-import { image2world, createTranslator } from '@dataforsyningen/saul'
+import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import {unByKey} from 'ol/Observable'
 
 export class MeasureWidthTool {
@@ -144,23 +144,21 @@ export class MeasureWidthTool {
       // set sketch
       this.sketch = event.feature
   
-      /*
-      // This is only relevant when real time calculations are made possible
       let tooltipCoord = event.coordinate
-      listener = this.sketch.getGeometry().on('change', (ev) => {
+      listener = this.sketch.getGeometry().on('change', async (ev) => {
         const geom = ev.target
         let output
-        output = this.calculateDistance(geom.flatCoordinates)
+        output = await this.calculateDistance(geom.flatCoordinates)
         tooltipCoord = geom.getLastCoordinate()
         this.measureTooltipElement.innerHTML = output
         this.measureTooltip.setPosition(tooltipCoord)
       })
-      */
+      
     })
   
-    this.draw.on('drawend', () => {
+    this.draw.on('drawend', async () => {
       const geom = this.sketch.getGeometry()
-      this.measureTooltipElement.innerHTML = this.calculateDistance(geom.flatCoordinates)
+      this.measureTooltipElement.innerHTML = await this.calculateDistance(geom.flatCoordinates)
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
       this.measureTooltip.setOffset([0, -7])
       this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
@@ -214,7 +212,7 @@ export class MeasureWidthTool {
     return geometry.getFlatMidpoint()
   }
   
-  imageChangeHandler(event) {
+  imageChangeHandler() {
     this.clearInteraction()
     this.clearDrawings()
   }
@@ -232,10 +230,14 @@ export class MeasureWidthTool {
     this.viewport.map.getOverlays().clear()
   }
 
-  calculateDistance(coords) {
+  async calculateDistance(coords) {
     const world_coords = []
     for (let n = 0; coords.length > n; n = n+2) {
-      const new_coord = image2world(this.viewport.item, coords[n], coords[n + 1])
+      const new_coord = await getWorldXYZ({
+        image: this.viewport.item,
+        terrain: this.viewport.geotiff,
+        xy: [coords[n], coords[n + 1]]
+      })
       // Since `getDistance` works with WGS84 coordinates, we must translate the coords
       const wgs84_coords = this.coorTranslator.inverse([new_coord[0], new_coord[1]])
       world_coords.push(wgs84_coords)
