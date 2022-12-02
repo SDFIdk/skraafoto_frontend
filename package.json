@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
+    "docs": "jsdoc ./src/**/*.js --destination docs/api",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -36,6 +37,7 @@
     "proj4": "^2.8.0"
   },
   "devDependencies": {
-    "esbuild": "^0.14.39"
+    "esbuild": "^0.14.39",
+    "jsdoc": "^4.0.0"
   }
 }
