@@ -1,6 +1,6 @@
 {
   "name": "skraafoto-frontend",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
@@ -12,11 +12,15 @@
     "type": "git",
     "url": "git+https://github.com/Dataforsyningen/skraafoto_frontend.git"
   },
-  "keywords": ["skråfoto", "ortofoto", "SDFI"],
+  "keywords": [
+    "skråfoto",
+    "ortofoto",
+    "SDFI"
+  ],
   "author": {
-    "name" : "Styrelsen for Dataforsyning og Infrastruktur",
-    "email" : "support@sdfi.dk",
-    "url" : "https://sdfi.dk/"
+    "name": "Styrelsen for Dataforsyning og Infrastruktur",
+    "email": "support@sdfi.dk",
+    "url": "https://sdfi.dk/"
   },
   "license": "MIT",
   "bugs": {
