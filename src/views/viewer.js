@@ -22,7 +22,7 @@ customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 // Variables and state
 
 let state = {
-  coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
+  coordinate: null, // EPSG:25832 coordinate + elevation [longitude,latitude,elevation]
   item: null,
   map: false,
   orientation: 'north'

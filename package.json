@@ -12,15 +12,19 @@
     "type": "git",
     "url": "git+https://github.com/Dataforsyningen/skraafoto_frontend.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["skråfoto", "ortofoto", "SDFI"],
+  "author": {
+    "name" : "Styrelsen for Dataforsyning og Infrastruktur",
+    "email" : "support@sdfi.dk",
+    "url" : "https://sdfi.dk/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Dataforsyningen/skraafoto_frontend/issues"
   },
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
-    "@dataforsyningen/css": "^0.1.2",
+    "@dataforsyningen/css": "^0.2.0",
     "@dataforsyningen/icons": "^0.1.31",
     "@dataforsyningen/saul": "^3.0.2",
     "dawa-autocomplete2": "^1.0.2",

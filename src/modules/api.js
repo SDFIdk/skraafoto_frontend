@@ -35,7 +35,7 @@ function getCollections() {
 }
 
 function getTerrainData(item) {
-  return getTerrainGeoTIFF(item, auth)
+  return getTerrainGeoTIFF(item, auth, 0.03)
   .then((geotiff) => {
     return geotiff
   })

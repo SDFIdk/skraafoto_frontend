@@ -23,7 +23,6 @@ export class SkraaFotoViewport extends HTMLElement {
   coord_image
   coord_world
   zoom = 4
-  cached_elevation
   api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
   map
   layer_image
@@ -227,17 +226,17 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  updateCenter(coordinate) {
-    getZ(coordinate[0], coordinate[1], environment)
-    .then((z) => {
-      this.cached_elevation = z
-      this.coord_image = world2image(this.item, coordinate[0], coordinate[1], z)
-      this.map.removeLayer(this.layer_icon)
-      this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
-      this.map.addLayer(this.layer_icon)
-      this.updateView()
-      this.updateNonMap()
-    })
+  async updateCenter(coordinate) {
+    if (coordinate[2] === undefined) {
+      coordinate[2] = await getZ(coordinate[0], coordinate[1], environment)  
+    }
+    
+    this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])
+    this.map.removeLayer(this.layer_icon)
+    this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
+    this.map.addLayer(this.layer_icon)
+    this.updateView()
+    this.updateNonMap()
   }
 
   updateNonMap() {
