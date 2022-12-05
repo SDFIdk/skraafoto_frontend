@@ -7,6 +7,9 @@ import { image2world, getImageXY, createTranslator } from '@dataforsyningen/saul
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 
+/**
+ * Enables user to measure vertical distances in an image
+ */
 export class MeasureHeightTool {
 
   // properties

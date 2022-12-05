@@ -16,6 +16,9 @@ import {SkraaFotoCompass} from './compass.js'
 
 customElements.define('skraafoto-compass', SkraaFotoCompass)
 
+/**
+ * Web component that displays an image
+ */
 export class SkraaFotoViewport extends HTMLElement {
 
   // properties

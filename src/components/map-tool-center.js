@@ -1,6 +1,9 @@
 import { getWorldXYZ } from '@dataforsyningen/saul'
 import { queryItems } from '../modules/api'
 
+/**
+ * Enables a user to click an image an have it centered in that location
+ */
 export class CenterTool {
 
   constructor(viewport) {

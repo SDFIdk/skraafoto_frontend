@@ -18,6 +18,10 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 
+
+/**
+ * Web component that displays a map
+ */
 export class SkraaFotoMap extends HTMLElement {
 
   // public properties

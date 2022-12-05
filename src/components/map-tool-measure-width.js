@@ -7,6 +7,9 @@ import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import {unByKey} from 'ol/Observable'
 
+/**
+ * Enables user to measure horizontal distances in an image
+ */
 export class MeasureWidthTool {
 
   // properties

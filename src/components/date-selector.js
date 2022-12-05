@@ -1,7 +1,7 @@
 import { queryItems } from '../modules/api.js'
 
 /**
- * Fetches a list of items covering a specific coordinate and direction.
+ * Web component that fetches a list of items covering a specific coordinate and direction.
  * Enables user to select an item for view by its date
  */
 export class SkraaFotoDateSelector extends HTMLElement {

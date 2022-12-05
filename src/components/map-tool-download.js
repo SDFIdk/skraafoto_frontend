@@ -1,3 +1,6 @@
+/**
+ * Web component that enables user to download the current image
+ */
 export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties

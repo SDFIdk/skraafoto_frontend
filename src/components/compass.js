@@ -1,5 +1,8 @@
 import { toDanish } from '../modules/i18n.js'
 
+/** 
+ * Web component that displays a compass 
+ */
 export class SkraaFotoCompass extends HTMLElement {
 
   
@@ -107,7 +110,7 @@ export class SkraaFotoCompass extends HTMLElement {
     ]
   }
 
-
+  
   constructor() {
     super()
     this.createDOM()

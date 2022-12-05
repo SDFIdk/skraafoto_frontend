@@ -6,6 +6,9 @@ const translations = {
   nadir: 'top'
 }
 
+/**
+ * Translates compass directions from English (system language) to Danish
+ */
 export function toDanish(word) {
   return translations[word]
 }
