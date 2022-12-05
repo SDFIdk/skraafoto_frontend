@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
-    "docs": "jsdoc ./src/**/*.js --destination docs --package package.json --recurse --readme docs/introduction.md --tutorials docs/tutorials && cp -r docs/images docs/$npm_package_name/$npm_package_version/",
+    "docs": "jsdoc --configure docs/jsdoc-conf.js && cp -r docs/images docs/$npm_package_name/$npm_package_version/",
     "serve-docs": "python3 -m http.server 8001 --directory docs/$npm_package_name/$npm_package_version/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
