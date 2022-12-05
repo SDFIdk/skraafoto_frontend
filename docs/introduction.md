@@ -5,11 +5,11 @@ We hope that the documentation will make you enjoy developing Skraafoto and help
 
 ## Overview
 
-[Start reading the system overview](tutorials/overview.md) to get a high level introduction to the inner workings of Skraafoto.
+[Start reading the system overview](https://sdfidk.github.io/skraafoto_frontend/tutorials-overview.html) to get a high level introduction to the inner workings of Skraafoto.
 
 ## Building the system
 
-Refer to the [install and build instuctions](tutorials/installing.md) for details on building Skraafoto, or running a development server.
+Refer to the [install and build instuctions](https://sdfidk.github.io/skraafoto_frontend/tutorials-installing.html) for details on building Skraafoto, or running a development server.
 
 ## Folder structure
 
