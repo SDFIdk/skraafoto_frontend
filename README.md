@@ -5,8 +5,8 @@ Photographs are fetched using [Skråfoto STAC API](https://github.com/SDFIdk/skr
 
 The full documentation is available at https://sdfidk.github.io/skraafoto_frontend/
 
-- [Introduction to documentation](https://sdfidk.github.io/skraafoto_frontend/introduction.html)
-- [Instructions for installation](https://sdfidk.github.io/skraafoto_frontend/tutorials-installing.html)
-- [System overview](https://sdfidk.github.io/skraafoto_frontend/tutorials-overview.html)
+- [Introduction to documentation](https://sdfidk.github.io/skraafoto_frontend/)
+- [Instructions for installation](https://sdfidk.github.io/skraafoto_frontend/tutorial-installing.html)
+- [System overview](https://sdfidk.github.io/skraafoto_frontend/tutorial-overview.html)
 
 Provided by *Styrelsen for Dataforsyning og Infrastruktur* 2022

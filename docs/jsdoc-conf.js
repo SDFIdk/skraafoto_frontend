@@ -9,6 +9,5 @@ module.exports = {
     recurse: true,
     tutorials: "./docs/tutorials",
     readme: "./docs/introduction.md"
-    //package: "./package.json"
   }
 }
