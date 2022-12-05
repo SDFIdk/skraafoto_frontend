@@ -5,10 +5,10 @@ module.exports = {
     include: ['./src']
   },
   opts: {
-    destination: "./docs",
+    destination: "./docs/api",
     recurse: true,
     tutorials: "./docs/tutorials",
-    readme: "./docs/introduction.md",
-    package: "./package.json"
+    readme: "./docs/introduction.md"
+    //package: "./package.json"
   }
 }
