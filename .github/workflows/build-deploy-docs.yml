@@ -21,19 +21,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  builddocs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: npm ci
-      - run: npm run docs
-
-  # Single deploy job since we're just deploying
+  
   deploy:
-    needs: builddocs
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -41,6 +30,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Build with Node
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - run: npm run docs
+      
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
