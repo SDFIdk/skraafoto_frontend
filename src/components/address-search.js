@@ -1,6 +1,9 @@
 import {dawaAutocomplete} from 'dawa-autocomplete2'
 import {createTranslator} from '@dataforsyningen/saul'
 
+/**
+ * Web component that enables users to search for an address
+ */
 export class SkraaFotoAddressSearch extends HTMLElement {
 
   // public properties

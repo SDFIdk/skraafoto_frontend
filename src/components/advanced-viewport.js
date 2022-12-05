@@ -12,6 +12,9 @@ import { getTerrainData } from '../modules/api.js'
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
+/**
+ * Web component that displays a viewport with a toolbar
+ */
 export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
 

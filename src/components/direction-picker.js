@@ -1,5 +1,8 @@
 import { queryItems } from '../modules/api.js'
 
+/**
+ * Web component that displays and updates a list of viewports with views from various directions
+ */
 export class SkraaFotoDirectionPicker extends HTMLElement {
 
   
