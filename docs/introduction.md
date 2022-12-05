@@ -5,11 +5,11 @@ We hope that the documentation will make you enjoy developing Skraafoto and help
 
 ## Overview
 
-[Start here](./overview.md) to get a high level introduction to the inner workings of Skraafoto.
+[Start reading the system overview](tutorials/overview.md) to get a high level introduction to the inner workings of Skraafoto.
 
 ## Building the system
 
-Refer to the [install and build instuctions](../README.md) for details on building Skraafoto or running a development server.
+Refer to the [install and build instuctions](tutorials/installing.md) for details on building Skraafoto, or running a development server.
 
 ## Folder structure
 
