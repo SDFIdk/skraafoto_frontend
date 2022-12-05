@@ -31,7 +31,8 @@ You'll need to supply your own tokens, usernames, and passwords for your particu
 You can copy and edit `public/config.js.example` to use as your own `config.js`.
 
 ## Build the documentation
-Run `npm run docs` to build the documentation pages.
+First, run `npm run docs` to build the documentation pages.
+Then you can run `npm run serve-docs` and access the documentation in a browser at `localhost:8001`
 
 ## Build for development
 Run `npm run dev` to start a development server running locally at `localhost:8000`
