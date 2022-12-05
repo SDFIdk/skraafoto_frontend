@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
-    "docs": "jsdoc ./src/**/*.js --destination docs/api",
+    "docs": "jsdoc ./src/**/*.js --destination docs --package package.json --recurse --readme docs/introduction.md --tutorials docs/tutorials",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
