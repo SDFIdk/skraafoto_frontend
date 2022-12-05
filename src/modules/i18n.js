@@ -1,3 +1,5 @@
+/** @module */
+
 const translations = {
   north: 'nord',
   south: 'syd',

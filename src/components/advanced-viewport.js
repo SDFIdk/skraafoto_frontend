@@ -14,6 +14,7 @@ customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
 /**
  * Web component that displays a viewport with a toolbar
+ * @extends SkraaFotoViewport
  */
 export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
