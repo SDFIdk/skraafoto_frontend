@@ -186,7 +186,7 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   generateLayer(src) {
-    return new WebGLTile({source: src})
+    return new WebGLTile({source: src, preload: 4})
   }
 
   generateIconLayer(center, icon_image) {
