@@ -7,6 +7,7 @@ import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
 import { getTerrainData } from '../modules/api.js'
+import FullScreen from 'ol/control/FullScreen';
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 
 
@@ -27,6 +28,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   tool_measure_width
   tool_measure_height
   geotiff
+  fullscreen = new FullScreen({
+    label: '',
+    activeClassName: 'ds-icon-icon-close',
+    inactiveClassName: 'ds-icon-icon-fullscreen'
+  })
   // mousepos = new MousePosition() // For debugging
   date_selector_element
   // styles
@@ -36,6 +42,13 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
     .image-date {
       display: none;
+    }
+    .ol-full-screen {
+      position: absolute;
+      top: 5.5rem;
+      right: 1rem;
+    }
+    .ol-full-screen button {
     }
     .ol-zoom {
       bottom: 2rem;
@@ -195,7 +208,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   connectedCallback() {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false}), //.extend([this.mousepos]) // For debugging
+      controls: defaultControls({rotate: false, attribution: false}).extend([this.fullscreen]),
       interactions: defaultInteractions({pinchRotate: false})
     })
 
