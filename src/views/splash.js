@@ -1,5 +1,7 @@
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
+import { SkraaFotoHeader } from '../components/page-header.js'
 
+customElements.define('skraafoto-header', SkraaFotoHeader)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 
 document.querySelector('skraafoto-address-search').shadowRoot.querySelector('input').focus()

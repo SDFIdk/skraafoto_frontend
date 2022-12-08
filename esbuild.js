@@ -3,6 +3,7 @@ const entry_points = {
   splash: 'src/views/splash.js',
   viewer: 'src/views/viewer.js',
   twinview: 'src/views/twinview.js',
+  info: 'src/views/info.js',
   style: 'src/index.css'
 }
 
