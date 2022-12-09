@@ -65,16 +65,7 @@ export class SkraaFotoHeader extends HTMLElement {
       <strong>Skråfoto</strong>
       <span>Styrelsen for Dataforsyning og Infrastruktur</span>
     </a>
-    <button class="sf-nav-toggle ds-icon-icon-burgerbar" title="Information om Skråfoto"></button>
-    <nav hidden data-theme="light" class="ds-nav-vertical ds-padding ds-nav-tools">
-      <ul>
-        <li><a href="/">Forside</a></li>
-        <li><a href="/viewer.html">Standard visning</a></li>
-        <li><a href="/twinview.html">Dobbelt visning</a></li>
-        <li><a href="/info.html">Om Skråfoto</a></li>
-      </ul>
-      <button class="ds-icon-icon-close" title="Luk navigation"></button>
-    </nav>
+    <a role="button" class="sf-help-link ds-icon-icon-question" title="Information om Skråfoto" href="/info.html"></a>
   `
 
   

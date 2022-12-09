@@ -19,10 +19,16 @@
       article {
         background-color: var(--lys-steel);
       }
-      .skraafoto-link-back.ds-icon-hentdata-icon-get {
+      .sf-help-link {
+        display: none;
+      }
+      .sf-link-back.ds-icon-icon-close {
+        float: right;
+      }
+      .sf-link-back.ds-icon-hentdata-icon-get {
         margin-left: -0.33rem;
       }
-      .skraafoto-link-back.ds-icon-hentdata-icon-get::before {
+      .sf-link-back.ds-icon-hentdata-icon-get::before {
         transform: rotate(90deg);
       }
       @media screen and (max-width: 576px) {
@@ -40,7 +46,9 @@
 
       <article class="ds-container ds-padding">
 
-        <h1>Information om Skråfoto</h1>
+        <a href="/" class="sf-link-back secondary ds-icon-icon-close" role="button" title="Luk og gå tilbage til Skråfoto"></a>
+
+        <h1 style="margin-top: 0;">Information om Skråfoto</h1>
         
         <p>
           Skråfoto er en webapplikation, som stilles til rådighed af Styrelsen for Dataforsyning og Infrastruktur.<br>
@@ -79,7 +87,7 @@
         </p>
 
         <p style="margin-top: 2rem;">
-          <a href="/" class="skraafoto-link-back ds-icon-hentdata-icon-get" role="button">Tilbage til Skråfoto</a>
+          <a href="/" class="sf-link-back ds-icon-hentdata-icon-get" role="button">Tilbage til Skråfoto</a>
         </p>
       </article>
 
