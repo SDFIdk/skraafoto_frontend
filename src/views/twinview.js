@@ -4,6 +4,7 @@ import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { get } from '@dataforsyningen/saul'
+import { SkraaFotoHeader } from '../components/page-header.js'
 
 
 // Initialize web components
@@ -12,6 +13,7 @@ customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
+customElements.define('skraafoto-header', SkraaFotoHeader)
 
 
 // Variables and state

@@ -11,13 +11,14 @@ import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import {defaults as defaultInteractions} from 'ol/interaction'
 import {getZ, world2image} from '@dataforsyningen/saul'
+import {queryItem} from '../modules/api.js'
 import {toDanish} from '../modules/i18n.js'
 import {SkraaFotoCompass} from './compass.js'
 
 customElements.define('skraafoto-compass', SkraaFotoCompass)
 
 /**
- * Web component that displays an image
+ *  Web component that displays an image using the OpenLayers library
  */
 export class SkraaFotoViewport extends HTMLElement {
 
@@ -98,8 +99,9 @@ export class SkraaFotoViewport extends HTMLElement {
   // getters
   static get observedAttributes() { 
     return [
-      'center',
-      'zoom'
+      'data-item',
+      'data-center',
+      'data-zoom'
     ]
   }
 
@@ -109,6 +111,12 @@ export class SkraaFotoViewport extends HTMLElement {
   // Set image item and updates image layer
   set setItem(item) {
     this.updateItem(item)
+  }
+
+  set setItemId(item_id) {
+    queryItem(item_id).then((item => {
+      this.updateItem(item)
+    }))
   }
 
   // Set center coordinate and update view
@@ -147,6 +155,10 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updateView() {
+    if (!this.item || !this.source_image || !this.coord_image || !this.zoom) {
+      return
+    }
+
     // Record current zoom level to reinitialize view laver
     const current_zoom = this.map.getView().getZoom()
     
@@ -231,6 +243,12 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   async updateCenter(coordinate) {
+    if (!this.item) {
+      setTimeout(() => {
+        this.updateCenter(coordinate)
+      }, 300)
+      return
+    }
     if (coordinate[2] === undefined) {
       coordinate[2] = await getZ(coordinate[0], coordinate[1], environment)  
     }
@@ -244,6 +262,9 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updateNonMap() {
+    if (!this.item) {
+      return
+    }
     this.updateDirection(this.item)
     this.updateDate(this.item)
     this.updateTextContent(this.item)
@@ -282,13 +303,16 @@ export class SkraaFotoViewport extends HTMLElement {
     })
   }
 
-  attributeChangeCallback(name, old_value, new_value) {
+  attributeChangedCallback(name, old_value, new_value) {
 
-    if (name === 'center' && old_value !== new_value) {
-      this.setCenter(JSON.parse(new_value))
+    if (name === 'data-item' && old_value !== new_value) {
+      this.setItemId = new_value
     }
-    if (name === 'zoom' && old_value !== new_value) {
-      this.setZoom(JSON.parse(new_value))
+    if (name === 'data-center' && old_value !== new_value) {
+      this.setCenter = JSON.parse(new_value)
+    }
+    if (name === 'data-zoom' && old_value !== new_value) {
+      this.setZoom = Number(new_value)
     }
   }
 }
