@@ -29,15 +29,9 @@
         right: 5rem;
       }
 
-      #viewport-1,
-      #viewport-2 {
+      #viewport-1 {
         position: relative;
-        border: solid 2px var(--mork-tyrkis);
-      }
-
-      #viewport-1.active,
-      #viewport-2.active {
-        border-color: var(--highlight);
+        width: 100%;
       }
 
       @media screen and (max-width: 40rem) {
@@ -53,11 +47,6 @@
           display: flex;
           flex-flow: row nowrap;
         }
-
-        #viewport-1,
-        #viewport-2 {
-          width: 50%;
-        }
       }
     </style>
   </head>
@@ -69,12 +58,11 @@
 
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
       <skraafoto-advanced-viewport id="viewport-1"></skraafoto-advanced-viewport>
-      <skraafoto-advanced-viewport id="viewport-2"></skraafoto-advanced-viewport>
       <skraafoto-view-switcher></skraafoto-view-switcher>
 
     </main>
 
-    <script type="module" src="twinview.js"></script>
+    <script type="module" src="singleview.js"></script>
 
   </body>
 </html>

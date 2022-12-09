@@ -7,6 +7,8 @@ import { SkraaFotoDirectionPicker } from '../components/direction-picker.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { SkraaFotoHeader } from '../components/page-header.js'
+import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
+import { configuration } from '../modules/configuration.js'
 
 // Initialize web components
 
@@ -18,7 +20,6 @@ customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
-
 
 // Variables and state
 
@@ -137,6 +138,15 @@ function openMap() {
   }
 }
 
+function setupConfigurables(conf) {
+  if (conf.ENABLE_VIEW_SWITCH) {
+    console.log('view switch enabled')
+    customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
+  } else {
+    console.log('view switch disabled')
+  }
+}
+
 
 // Set up event listeners
 
@@ -194,7 +204,11 @@ document.addEventListener('loaderror', function(event) {
   alert('Der var et problem med at hente data fra serveren')
 })
 
+
 // Initialize
+
+setupConfigurables(configuration)
+
 getCollections().then(colls => {
   collections = colls
 

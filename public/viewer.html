@@ -35,7 +35,7 @@
 
       skraafoto-address-search {
         position: absolute;
-        top: 0.6rem;
+        top: 0.75rem;
         right: 5rem;
       }
 
@@ -43,6 +43,12 @@
         display: block;
         height: 0;
         width: 0;
+      }
+
+      skraafoto-view-switcher {
+        position: absolute;
+        top: 15rem;
+        right: 1rem;
       }
 
       @media screen and (max-width: 40rem) {
@@ -70,6 +76,7 @@
           width: 40rem;
           flex: 0 0 40rem;
         }
+
       }
     </style>
   </head>
@@ -83,6 +90,7 @@
       <skraafoto-advanced-viewport id="viewport-main"></skraafoto-advanced-viewport>
       <skraafoto-map id="map-main" hidden></skraafoto-map>
       <skraafoto-direction-picker></skraafoto-direction-picker> 
+      <skraafoto-view-switcher></skraafoto-view-switcher>
 
     </main>
 
