@@ -6,9 +6,6 @@ export class SkraaFotoHeader extends HTMLElement {
   
   // Properties
 
-  nav_toggle_element
-  nav_element
-  close_element
   markup
   styles = `
     .sf-header {
@@ -86,38 +83,7 @@ export class SkraaFotoHeader extends HTMLElement {
     this.markup.innerHTML = this.template
     // attach the created elements to the DOM
     this.append(this.markup)
-
-    this.nav_toggle_element = this.querySelector('.sf-nav-toggle')
-    this.nav_element = this.querySelector('nav')
-    this.close_element = this.querySelector('.ds-icon-icon-close')
-  }
-
-
-  // Lifecycle
-
-  connectedCallback() {
-    
-    this.nav_toggle_element.addEventListener('click', () => {
-      if (this.nav_element.hidden) {
-        this.nav_element.hidden = false
-        this.nav_element.focus()
-      } else {
-        this.nav_element.hidden = true
-        this.nav_toggle_element.focus()
-      }
-    })
-
-    this.close_element.addEventListener('click', () => {
-      this.nav_element.hidden = true
-      this.nav_toggle_element.focus()
-    })
-
-    document.addEventListener('keyup', (event) => {
-      if (event.key === 'Escape' && !this.nav_element.hidden) {
-        this.nav_element.hidden = true
-      }
-    })
-  }
+  }    
 
 }
 

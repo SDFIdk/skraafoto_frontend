@@ -7,8 +7,9 @@ import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
 import { getTerrainData } from '../modules/api.js'
-import FullScreen from 'ol/control/FullScreen';
+import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
+import { configuration } from '../modules/configuration.js'
 
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
@@ -21,7 +22,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
 
   // properties
-  
   mode = 'center'
   modechange = new CustomEvent('modechange', {detail: () => this.mode })
   tool_center
@@ -239,7 +239,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.toggleMode('center')
     })
 
-    this.tool_center = new CenterTool(this, environment)
+    this.tool_center = new CenterTool(this, configuration)
     this.tool_measure_width = new MeasureWidthTool(this)
     this.tool_measure_height = new MeasureHeightTool(this)
   }

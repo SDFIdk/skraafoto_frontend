@@ -17,7 +17,7 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
-
+import { configuration } from '../modules/configuration.js'
 
 /**
  * Web component that displays a map
@@ -25,7 +25,7 @@ import {defaults as defaultControls} from 'ol/control'
 export class SkraaFotoMap extends HTMLElement {
 
   // public properties
-  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
+  api_stac_token = configuration.API_STAC_TOKEN
   projection
   parser = new WMTSCapabilities()
   map = null

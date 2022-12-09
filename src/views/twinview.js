@@ -5,6 +5,7 @@ import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { get } from '@dataforsyningen/saul'
 import { SkraaFotoHeader } from '../components/page-header.js'
+import { configuration } from '../modules/configuration.js'
 
 
 // Initialize web components
@@ -36,7 +37,7 @@ const viewport_element_2 = document.getElementById('viewport-2')
 function updateViewports(state) {
 
   // DELETE this service call is pretty useless
-  get(`https://services.datafordeler.dk/MATRIKEL/Matrikel/1/REST/SamletFastEjendom?Point=Point(${state.coordinate[0]} ${state.coordinate[1]})&username=${ environment.API_DHM_USERNAME }&password=${ environment.API_DHM_PASSWORD }`).then(response => {
+  get(`https://services.datafordeler.dk/MATRIKEL/Matrikel/1/REST/SamletFastEjendom?Point=Point(${state.coordinate[0]} ${state.coordinate[1]})&username=${ configuration.API_DHM_USERNAME }&password=${ configuration.API_DHM_PASSWORD }`).then(response => {
     console.log('got matrikel', response)
   })
 

@@ -7,13 +7,14 @@ import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
-import {Icon, Style} from 'ol/style'
-import {defaults as defaultControls} from 'ol/control'
-import {defaults as defaultInteractions} from 'ol/interaction'
-import {getZ, world2image} from '@dataforsyningen/saul'
-import {queryItem} from '../modules/api.js'
-import {toDanish} from '../modules/i18n.js'
-import {SkraaFotoCompass} from './compass.js'
+import { Icon, Style } from 'ol/style'
+import { defaults as defaultControls } from 'ol/control'
+import { defaults as defaultInteractions } from 'ol/interaction'
+import { getZ, world2image } from '@dataforsyningen/saul'
+import { queryItem } from '../modules/api.js'
+import { toDanish } from '../modules/i18n.js'
+import { SkraaFotoCompass } from './compass.js'
+import { configuration } from '../modules/configuration.js'
 
 customElements.define('skraafoto-compass', SkraaFotoCompass)
 
@@ -27,7 +28,7 @@ export class SkraaFotoViewport extends HTMLElement {
   coord_image
   coord_world
   zoom = 4
-  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
+  api_stac_token = configuration.API_STAC_TOKEN
   map
   layer_image
   layer_icon
@@ -250,7 +251,7 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     if (coordinate[2] === undefined) {
-      coordinate[2] = await getZ(coordinate[0], coordinate[1], environment)  
+      coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)  
     }
     
     this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])

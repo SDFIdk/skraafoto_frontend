@@ -8,7 +8,6 @@ import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { SkraaFotoHeader } from '../components/page-header.js'
 
-
 // Initialize web components
 
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
