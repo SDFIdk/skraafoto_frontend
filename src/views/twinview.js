@@ -6,6 +6,7 @@ import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { get } from '@dataforsyningen/saul'
 import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
+import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 
 
 // Initialize web components
@@ -159,6 +160,12 @@ async function shiftItem(direction, item_key) {
   })
 }
 
+function setupConfigurables(conf) {
+  if (conf.ENABLE_VIEW_SWITCH) {
+    customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
+  }
+}
+
 // Set up event listeners
 
 // When a coordinate input is given, update viewports
@@ -231,6 +238,8 @@ document.addEventListener('keyup', function(event) {
 
 
 // Initialize
+
+setupConfigurables(configuration)
 
 getCollections().then(colls => {
   collections = colls

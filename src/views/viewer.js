@@ -7,7 +7,7 @@ import { SkraaFotoDirectionPicker } from '../components/direction-picker.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { SkraaFotoHeader } from '../components/page-header.js'
-import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
+import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
 
 // Initialize web components
@@ -140,10 +140,7 @@ function openMap() {
 
 function setupConfigurables(conf) {
   if (conf.ENABLE_VIEW_SWITCH) {
-    console.log('view switch enabled')
     customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
-  } else {
-    console.log('view switch disabled')
   }
 }
 
