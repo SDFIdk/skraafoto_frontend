@@ -1,8 +1,7 @@
 /** @module */
 
 import { getSTAC, getTerrainGeoTIFF } from '@dataforsyningen/saul'
-
-const auth = environment // We assume a global `enviroment` variable has been declared
+import { configuration } from './configuration.js'
 
 /** 
  * Fetches a single item from STAC API 
@@ -10,7 +9,7 @@ const auth = environment // We assume a global `enviroment` variable has been de
  * @return {object} The STAC item
  */
 function queryItem(item_id) {
-  return getSTAC(`/search?limit=1&ids=${item_id}&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
+  return getSTAC(`/search?limit=1&ids=${item_id}&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
   .then((data) => {
     return data.features[0]
   })
@@ -34,7 +33,7 @@ function queryItems(coord, direction, collection, limit = 1) {
   if (collection) {
     search_query.and.push({"eq": [ { "property": "collection" }, collection ]})
   }
-  return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, auth)
+  return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
 }
 
 /** 
@@ -42,7 +41,7 @@ function queryItems(coord, direction, collection, limit = 1) {
  * @return {array} A list of collection IDs
  */
 function getCollections() {
-  return getSTAC(`/collections`, auth)
+  return getSTAC(`/collections`, configuration)
   .then((data) => {
     let sorted_collections = data.collections.sort(function(a,b) {
       if (a.id > b.id) {return -1}
@@ -59,7 +58,7 @@ function getCollections() {
  * @return {object} GeoTIFF image with elevation data
  */
 function getTerrainData(item) {
-  return getTerrainGeoTIFF(item, auth, 0.03)
+  return getTerrainGeoTIFF(item, configuration, 0.03)
   .then((geotiff) => {
     return geotiff
   })

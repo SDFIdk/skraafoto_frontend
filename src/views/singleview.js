@@ -3,7 +3,6 @@ import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
-import { get } from '@dataforsyningen/saul'
 import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
 
@@ -18,38 +17,26 @@ customElements.define('skraafoto-header', SkraaFotoHeader)
 
 
 // Variables and state
-let active_viewport = null
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
   item: null,
-  item1: null,
-  item2: null
+  item1: null
 }
 let url_params = (new URL(document.location)).searchParams
 let collections = []
 
 const viewport_element_1 = document.getElementById('viewport-1')
-const viewport_element_2 = document.getElementById('viewport-2')
 
 
 // Methods
 
 function updateViewports(state) {
 
-  // DELETE this service call is pretty useless
-  get(`https://services.datafordeler.dk/MATRIKEL/Matrikel/1/REST/SamletFastEjendom?Point=Point(${state.coordinate[0]} ${state.coordinate[1]})&username=${ configuration.API_DHM_USERNAME }&password=${ configuration.API_DHM_PASSWORD }`).then(response => {
-    console.log('got matrikel', response)
-  })
-
   if (state.item1) {
     viewport_element_1.setItem = state.item1
   }
-  if (state.item2) {
-    viewport_element_2.setItem = state.item2
-  }
   if (state.coordinate) {
     viewport_element_1.setCenter = state.coordinate
-    viewport_element_2.setCenter = state.coordinate
   }    
 }
 
@@ -72,7 +59,6 @@ function queryItemsForDifferentCollections(state, collections, collection_idx) {
   return queryItems(state.coordinate, 'north', collections[collection_idx].id).then((response) => {
     if (response.features.length > 0) {
       state.item1 = response.features[0]
-      state.item2 = response.features[0]
       return state
     } else {
       return queryItemsForDifferentCollections(state, collections, collection_idx + 1)
@@ -92,11 +78,10 @@ function parseUrlState(params, state) {
   }
   
   // Parse item param from URL
-  const param_item1 = params.get('item1')
+  const param_item1 = params.get('item')
   if (param_item1) {
     return queryItem(param_item1).then((item) => {
       new_state.item1 = item
-      new_state.item2 = item
       return new_state
     })
   } else {
@@ -108,10 +93,7 @@ function parseUrlState(params, state) {
 function updateUrl(state) {
   const url = new URL(window.location)
   if (state.item1) {
-    url.searchParams.set('item1', state.item1.id)
-  }
-  if (state.item2) {
-    url.searchParams.set('item2', state.item2.id)
+    url.searchParams.set('item', state.item1.id)
   }
   if (state.coordinate) {
     url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
@@ -172,18 +154,12 @@ document.addEventListener('addresschange', function(event) {
   state.coordinate = event.detail
   queryItemsForDifferentCollections(state, collections, 0).then((response) => {
     state.item1 = response.item
-    state.item2 = response.item
     updateViews(state)
   })
 })
 
 // When a differently dated image is selected, update the URL and check to see if direction picker needs an update
 viewport_element_1.shadowRoot.addEventListener('imagechange', function(event) {
-  state.item = event.detail
-  updateUrl(state)
-})
-
-viewport_element_2.shadowRoot.addEventListener('imagechange', function(event) {
   state.item = event.detail
   updateUrl(state)
 })
@@ -200,29 +176,11 @@ document.addEventListener('loaderror', function(event) {
 // Set up shortkeys
 document.addEventListener('keyup', function(event) {
   switch(event.key) {
-    case '1':
-      active_viewport = 1
-      viewport_element_2.classList.remove('active')
-      viewport_element_1.classList.add('active')
-      break
-    case '2':
-      active_viewport = 2
-      viewport_element_1.classList.remove('active')
-      viewport_element_2.classList.add('active')
-      break
     case 'ArrowLeft':
-      if (active_viewport === 1) {
-        shiftItem('left', 'item1')
-      } else if (active_viewport === 2) { 
-        shiftItem('left', 'item2')
-      }
+      shiftItem('left', 'item1')
       break
     case 'ArrowRight':
-      if (active_viewport === 1) {
-        shiftItem('right', 'item1')
-      } else if (active_viewport === 2) { 
-        shiftItem('right', 'item2')
-      }
+      shiftItem('right', 'item1')
       break
     default:
       // Nothing

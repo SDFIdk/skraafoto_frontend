@@ -1,3 +1,5 @@
+import { configuration } from '../modules/configuration.js'
+
 /**
  * Web component that enables user to download the current image
  */
@@ -5,7 +7,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
   btn
-  api_stac_token = environment.API_STAC_TOKEN ? environment.API_STAC_TOKEN : ''
+  api_stac_token = configuration.API_STAC_TOKEN
 
 
   // getters

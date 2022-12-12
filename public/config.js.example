@@ -1,4 +1,11 @@
-const environment = {
+/*
+ * THESE CONFIGURATIONS WILL BE MADE PUBLIC!
+ *
+ * These variables will be available in a Javascript for everyone to see.
+ * NO SECRET PASSWORDS HERE, PLEASE
+ */
+
+const config = {
   
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",

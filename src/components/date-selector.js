@@ -1,4 +1,5 @@
 import { queryItems } from '../modules/api.js'
+import { configuration } from '../modules/configuration.js'
 
 /**
  * Web component that fetches a list of items covering a specific coordinate and direction.
@@ -8,7 +9,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
 
   // public properties
-  auth = environment // We assume a global `enviroment` variable has been declared
+  auth = configuration
   items = []
   direction = 'north'
   center
