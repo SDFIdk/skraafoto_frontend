@@ -149,6 +149,22 @@ function setupConfigurables(conf) {
   }
 }
 
+function getGSearchCenterPoint(detail) {
+  let coord = []
+  if (detail.adgangspunkt_geometri) {
+    console.log('is adgangspunkt')
+    coord = detail.vejpunkt_geometri.coordinates[0]
+  } else if (detail.bbox) {
+    console.log('is bbox', detail.bbox.coordinates[0])
+    const bbox = detail.bbox.coordinates[0]
+    const x = bbox[0][0] + (Math.abs(bbox[2][0] - bbox[0][0]) / 2)
+    const y = bbox[0][1] + (Math.abs(bbox[2][1] - bbox[0][1]) / 2)
+    coord = [x,y]
+  }
+  console.log(coord)
+  return coord
+}
+
 
 // Set up event listeners
 
@@ -159,8 +175,8 @@ document.addEventListener('coordinatechange', async function(event) {
 })
 
 // On a new address input, update viewports
-document.addEventListener('addresschange', function(event) {
-  state.coordinate = event.detail
+document.addEventListener('gsearch:select', function(event) {
+  state.coordinate = getGSearchCenterPoint(event.detail)
   queryItemsForDifferentCollections(state, collections, 0).then((response) => {
     state.item = response.item
     updateViews(state)
