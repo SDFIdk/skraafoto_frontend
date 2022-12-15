@@ -13,6 +13,7 @@ export class CookieAlert extends HTMLElement {
   local_storage_key = configuration.LOCAL_STORAGE_COOKIE_KEY
   styles = `
     dialog {
+      bottom: 3.5vh;
       z-index: 10;
       margin-top: var(--grid-spacing-vertical);
     }
