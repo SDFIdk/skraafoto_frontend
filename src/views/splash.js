@@ -2,14 +2,20 @@ import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
+import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 
 customElements.define('skraafoto-header', SkraaFotoHeader)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 
-document.querySelector('skraafoto-address-search').shadowRoot.querySelector('input').focus()
+// This long selector toggles focus on an element hidden deep within shadow DOMs
+document.querySelector('skraafoto-address-search')
+  .shadowRoot.querySelector('g-search')
+  .shadowRoot.querySelector('g-search-input')
+  .shadowRoot.querySelector('input').focus()
 
-document.querySelector('skraafoto-address-search').addEventListener('addresschange', function(event) {
-  location.href = `viewer.html?center=${event.detail[0]},${event.detail[1]}&orientation=north`
+document.addEventListener('gsearch:select', function(event) {
+  const coor = getGSearchCenterPoint(event.detail)
+  location.href = `viewer.html?center=${coor[0]},${coor[1]}&orientation=north`
 })
 
 if (configuration.ENABLE_WEB_STATISTICS) {

@@ -10,7 +10,7 @@ import { SkraaFotoHeader } from '../components/page-header.js'
 import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
-
+import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 
 // Initialize web components
 
@@ -147,22 +147,6 @@ function setupConfigurables(conf) {
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
   }
-}
-
-function getGSearchCenterPoint(detail) {
-  let coord = []
-  if (detail.adgangspunkt_geometri) {
-    console.log('is adgangspunkt')
-    coord = detail.vejpunkt_geometri.coordinates[0]
-  } else if (detail.bbox) {
-    console.log('is bbox', detail.bbox.coordinates[0])
-    const bbox = detail.bbox.coordinates[0]
-    const x = bbox[0][0] + (Math.abs(bbox[2][0] - bbox[0][0]) / 2)
-    const y = bbox[0][1] + (Math.abs(bbox[2][1] - bbox[0][1]) / 2)
-    coord = [x,y]
-  }
-  console.log(coord)
-  return coord
 }
 
 

@@ -3,11 +3,11 @@ import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
 import { SkraaFotoInfoBox } from '../components/info-box.js'
-import { get } from '@dataforsyningen/saul'
 import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
+import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 
 
 // Initialize web components
@@ -37,12 +37,6 @@ const viewport_element_2 = document.getElementById('viewport-2')
 // Methods
 
 function updateViewports(state) {
-
-  // DELETE this service call is pretty useless
-  get(`https://services.datafordeler.dk/MATRIKEL/Matrikel/1/REST/SamletFastEjendom?Point=Point(${state.coordinate[0]} ${state.coordinate[1]})&username=${ configuration.API_DHM_USERNAME }&password=${ configuration.API_DHM_PASSWORD }`).then(response => {
-    console.log('got matrikel', response)
-  })
-
   if (state.item1) {
     viewport_element_1.setItem = state.item1
   }
@@ -180,7 +174,7 @@ document.addEventListener('coordinatechange', async function(event) {
 
 // On a new address input, update viewports
 document.addEventListener('addresschange', function(event) {
-  state.coordinate = event.detail
+  state.coordinate = getGSearchCenterPoint(event.detail)
   queryItemsForDifferentCollections(state, collections, 0).then((response) => {
     state.item1 = response.item
     state.item2 = response.item
