@@ -16,10 +16,18 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   input_element
   btn_open
   is_collapsible = false
-  random_id = Math.round(Math.random() * 1000)
   styles = `
     article {
       position: relative;
+    }
+    g-search {
+      --gs-input-width: 100%;
+      --gs-border-width: var(--border-width);
+      --gs-border-color: var(--border-color);
+      --gs-input-padding: var(--spacing);
+      --gs-list-padding: var(--spacing);
+      --gs-highlight-color: var(--highlight);
+      --gs-background-color: var(--background-color);
     }
     label {
       height: 0;
