@@ -7,7 +7,7 @@ import { get } from '@dataforsyningen/saul'
 import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
-import { initWebStat } from '../modules/webstats.js'
+import { CookieAlert } from '../components/cookie-alert.js'
 
 
 // Initialize web components
@@ -166,7 +166,7 @@ function setupConfigurables(conf) {
     customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
   }
   if (conf.ENABLE_WEB_STATISTICS) {
-    initWebStat()
+    customElements.define('cookie-alert', CookieAlert)
   }
 }
 

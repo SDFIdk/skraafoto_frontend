@@ -1,5 +1,6 @@
 import { SkraaFotoHeader } from '../components/page-header.js'
-import { initWebStat } from '../modules/webstats.js'
+import { configuration } from '../modules/configuration.js'
+import { CookieAlert } from '../components/cookie-alert.js'
 
 customElements.define('skraafoto-header', SkraaFotoHeader)
 
@@ -12,4 +13,6 @@ if (history.length > 1) {
   })
 }
 
-initWebStat()
+if (configuration.ENABLE_WEB_STATISTICS) {
+  customElements.define('cookie-alert', CookieAlert)
+}
