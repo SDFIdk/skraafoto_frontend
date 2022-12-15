@@ -1,4 +1,5 @@
 import { SkraaFotoHeader } from '../components/page-header.js'
+import { initWebStat } from '../modules/webstats.js'
 
 customElements.define('skraafoto-header', SkraaFotoHeader)
 
@@ -10,3 +11,5 @@ if (history.length > 1) {
     })
   })
 }
+
+initWebStat()

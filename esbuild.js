@@ -33,12 +33,11 @@ if (process.env.NODE_ENV === 'development') {
     outdir: 'dist',
     bundle: true,
     minify: true,
-    sourcemap:true,
     loader: {
       '.ttf': 'file'
     }
   })
-  .then((response) => {
+  .then(() => {
     console.log('build finished')
   })
   .catch(() => process.exit(1))

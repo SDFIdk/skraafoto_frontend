@@ -9,6 +9,7 @@ import { SkraaFotoInfoBox } from '../components/info-box.js'
 import { SkraaFotoHeader } from '../components/page-header.js'
 import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
+import { initWebStat } from '../modules/webstats.js'
 
 // Initialize web components
 
@@ -141,6 +142,9 @@ function openMap() {
 function setupConfigurables(conf) {
   if (conf.ENABLE_VIEW_SWITCH) {
     customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
+  }
+  if (conf.ENABLE_WEB_STATISTICS) {
+    initWebStat()
   }
 }
 

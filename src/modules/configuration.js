@@ -7,7 +7,8 @@ let configuration = {
   API_DHM_BASEURL: "https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter",
   API_DHM_USERNAME: '',
   API_DHM_PASSWORD: '',
-  ENABLE_VIEW_SWITCH: false
+  ENABLE_VIEW_SWITCH: false,
+  ENABLE_WEB_STATISTICS: false
 }
 
 // We assume a global variable `config` has been declared
