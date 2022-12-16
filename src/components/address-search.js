@@ -20,15 +20,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     article {
       position: relative;
     }
-    g-search {
-      --gs-input-width: 100%;
-      --gs-border-width: var(--border-width);
-      --gs-border-color: var(--border-color);
-      --gs-input-padding: var(--spacing);
-      --gs-list-padding: var(--spacing);
-      --gs-highlight-color: var(--highlight);
-      --gs-background-color: var(--background-color);
-    }
     label {
       height: 0;
       width: 0;
@@ -36,19 +27,27 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       display: block;
       margin: 0;
     }
-    input.sf-search-input {
+    .gs-input {
       margin: 0 !important;
-    }
-    input.sf-search-input + div {
-      position: absolute;
-      top: 2.5rem;
-      left: 0;
-      right: 0;
-      max-width: 100%;
-      z-index: 9999;
     }
     .sf-search-btn-open {
       display: none;
+    }
+    .gs-result-list {
+      background-color: var(--lys-steel);
+      text-align: left;
+      z-index: 100;
+      max-width: 100%;
+    }
+    .gs-result-item, 
+    .gs-no-result-item {
+      color: var(--sort) !important;
+      margin: 0;
+      border: none !important;
+      border-top: solid 1px var(--hvid);
+    }
+    .gs-result-item:hover {
+      background-color: var(--highlight);
     }
 
     @media screen and (max-width: 50rem) {
@@ -112,7 +111,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     
     <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse"></button>
     <div class=sf-input-container>
-      <g-search data-token="${ configuration.API_STAC_TOKEN }" data-limit="30" data-resources="adresse,stednavn"></g-search>
+      <g-search data-token="${ configuration.API_STAC_TOKEN }" data-limit="10" data-resources="adresse,stednavn"></g-search>
     </div>
   `
 
