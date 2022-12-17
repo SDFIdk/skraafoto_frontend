@@ -33,21 +33,38 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     .sf-search-btn-open {
       display: none;
     }
+    g-search-results {
+      top: -0.25rem;
+    }
     .gs-result-list {
       background-color: var(--lys-steel);
       text-align: left;
       z-index: 100;
       max-width: 100%;
+      border-radius: 1rem;
+      box-shadow: 0 0.0625em 0.15625em rgba(0,0,0,.15);
     }
-    .gs-result-item, 
-    .gs-no-result-item {
-      color: var(--sort) !important;
+    .gs-result-list:empty {
+      display: none;
+    }
+    .gs-result-item {
       margin: 0;
-      border: none !important;
       border-top: solid 1px var(--hvid);
     }
+    .gs-result-item:first-child {
+      border-top: none;
+      border-radius: 1rem 1rem 0 0;
+    }
+    .gs-result-item:last-child {
+      border-radius: 0 0 1rem 1rem;
+    }
     .gs-result-item:hover {
-      background-color: var(--highlight);
+      background-color: var(--medium-steel) !important;
+    }
+    .gs-title-text {
+      color: var(--sort);
+      padding: 0.66rem 1.75rem;
+      font-size: 0.95em;
     }
 
     @media screen and (max-width: 50rem) {
