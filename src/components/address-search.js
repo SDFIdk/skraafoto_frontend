@@ -1,5 +1,8 @@
-import {dawaAutocomplete} from 'dawa-autocomplete2'
-import {createTranslator} from '@dataforsyningen/saul'
+import { createTranslator } from '@dataforsyningen/saul'
+import { GSearchUI } from '@dataforsyningen/gsearch-ui'
+import { configuration } from '../modules/configuration.js'
+
+customElements.define('g-search', GSearchUI)
 
 /**
  * Web component that enables users to search for an address
@@ -13,7 +16,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   input_element
   btn_open
   is_collapsible = false
-  random_id = Math.round(Math.random() * 1000)
   styles = `
     article {
       position: relative;
@@ -25,55 +27,44 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       display: block;
       margin: 0;
     }
-    input.sf-search-input {
+    .gs-input {
       margin: 0 !important;
-    }
-    input.sf-search-input + div {
-      position: absolute;
-      top: 2.5rem;
-      left: 0;
-      right: 0;
-      max-width: 100%;
-      z-index: 9999;
     }
     .sf-search-btn-open {
       display: none;
     }
-
-    .dawa-autocomplete-suggestions {
-      margin: 0.3rem 0 0 0;
-      padding: 0;
-      text-align: left;
-      border-radius: 0.75rem;
-      background: var(--lys-steel);
-      box-shadow: 0 0.0625em 0.15625em rgba(0,0,0,.15);
-      
-      overflow: auto;
-      max-height: 80vh;
-      box-sizing: border-box;
-      border: solid 1px var(--dark-steel);
-      font-weight: 300;
+    g-search-results {
+      top: -0.25rem;
     }
-    .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion {
+    .gs-result-list {
+      background-color: var(--lys-steel);
+      text-align: left;
+      z-index: 100;
+      max-width: 100%;
+      border-radius: 1rem;
+      box-shadow: 0 0.0625em 0.15625em rgba(0,0,0,.15);
+    }
+    .gs-result-list:empty {
+      display: none;
+    }
+    .gs-result-item {
       margin: 0;
-      list-style: none;
-      cursor: pointer;
-      padding: 0.5rem 1.5rem;
-      color: var(--sort);
       border-top: solid 1px var(--hvid);
     }
-    .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion:first-child {
+    .gs-result-item:first-child {
       border-top: none;
-      border-top-left-radius: inherit;
-      border-top-right-radius: inherit;
+      border-radius: 1rem 1rem 0 0;
     }
-    .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion:last-child {
-      border-bottom-left-radius: inherit;
-      border-bottom-right-radius: inherit;
+    .gs-result-item:last-child {
+      border-radius: 0 0 1rem 1rem;
     }
-    .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion.dawa-selected,
-    .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion:hover {
-      background: var(--medium-steel);
+    .gs-result-item:hover {
+      background-color: var(--medium-steel) !important;
+    }
+    .gs-title-text {
+      color: var(--sort);
+      padding: 0.66rem 1.75rem;
+      font-size: 0.95em;
     }
 
     @media screen and (max-width: 50rem) {
@@ -96,7 +87,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         position: fixed;
         top: 0.75rem;
         right: 1rem;
-        z-index: 3;
+        z-index: 1000;
         transition: transform .2s;
         transform: translate(100vw,0);
         margin: 0;
@@ -137,10 +128,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     
     <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse"></button>
     <div class=sf-input-container>
-      <label for="sf-search-${ this.random_id }">Søg efter adresse</label>
-      <input id="sf-search-${ this.random_id }" type="text" class="sf-search-input" placeholder="Indtast en adresse">
+      <g-search data-token="${ configuration.API_STAC_TOKEN }" data-limit="10" data-resources="adresse,stednavn"></g-search>
     </div>
-  
   `
 
   // getters
@@ -168,7 +157,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     this.search_element = container
     this.btn_open = this.shadowRoot.querySelector('.sf-search-btn-open')
     this.input_container = this.shadowRoot.querySelector('.sf-input-container')
-    this.input_element = this.shadowRoot.querySelector('.sf-search-input')
+    this.input_element = this.shadowRoot.querySelector('g-search')
   }
 
   connectedCallback() {
@@ -176,15 +165,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     if (this.getAttribute('collapsible') !== null) {
       this.is_collapsible = true
     }
-    
-    dawaAutocomplete( this.input_element, {
-      select: (selected) => {
-        // Convert WGS84 coords to EPSG:25832
-        const coords = this.coorTranslator.forward([selected.data.x, selected.data.y])
-        this.dispatchEvent(new CustomEvent('addresschange', { detail: coords, bubbles: true, composed: true }))
-      },
-      adgangsadresserOnly: true
-    })
 
     if (this.is_collapsible) {
       this.search_element.classList.add('sf-search-collapsible')
@@ -194,8 +174,9 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         this.input_element.focus()
       })
 
-      this.input_element.addEventListener('change', () => {
+      this.input_element.addEventListener('gsearch:select', (event) => {
         this.input_container.classList.remove('open')
+        this.dispatchEvent(new CustomEvent('addresschange', { detail: event.detail, bubbles: true, composed: true }))
       })
   
       this.input_element.addEventListener('blur', () => {

@@ -10,7 +10,7 @@ import { SkraaFotoHeader } from '../components/page-header.js'
 import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
-
+import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 
 // Initialize web components
 
@@ -159,8 +159,8 @@ document.addEventListener('coordinatechange', async function(event) {
 })
 
 // On a new address input, update viewports
-document.addEventListener('addresschange', function(event) {
-  state.coordinate = event.detail
+document.addEventListener('gsearch:select', function(event) {
+  state.coordinate = getGSearchCenterPoint(event.detail)
   queryItemsForDifferentCollections(state, collections, 0).then((response) => {
     state.item = response.item
     updateViews(state)

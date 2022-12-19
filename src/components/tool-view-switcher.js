@@ -1,5 +1,3 @@
-import { configuration } from '../modules/configuration.js'
-
 /** 
  * Web component that a set of buttons to switch between kinds of views
  */
