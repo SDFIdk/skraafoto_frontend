@@ -8,10 +8,7 @@ customElements.define('skraafoto-header', SkraaFotoHeader)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 
 // This long selector toggles focus on an element hidden deep within shadow DOMs
-document.querySelector('skraafoto-address-search')
-  .shadowRoot.querySelector('g-search')
-  .shadowRoot.querySelector('g-search-input')
-  .shadowRoot.querySelector('input').focus()
+document.querySelector('skraafoto-address-search').shadowRoot.querySelector('.gs-input').focus()
 
 document.addEventListener('gsearch:select', function(event) {
   const coor = getGSearchCenterPoint(event.detail)
