@@ -1,15 +1,15 @@
+import Polygon from 'ol/geom/Polygon';
+
 function getGSearchCenterPoint(detail) {
-  let coord = []
-
-  if (detail.adgangspunkt_geometri) {
-    coord = detail.vejpunkt_geometri.coordinates[0]
-  } else if (detail.bbox) {
-    const bbox = detail.bbox.coordinates[0]
-    const x = bbox[0][0] + (Math.abs(bbox[2][0] - bbox[0][0]) / 2)
-    const y = bbox[0][1] + (Math.abs(bbox[2][1] - bbox[0][1]) / 2)
-    coord = [x,y]
+  let coord = [0,0]
+  if (detail.geometry.type === 'MultiPolygon') {
+    const poly = new Polygon(detail.geometry.coordinates[0])
+    const interior_point = poly.getInteriorPoint().flatCoordinates
+    coord = [interior_point[0], interior_point[1]]
+  } else {
+    // Other geometries will be of type 'MultiPoint'
+    coord = detail.geometry.coordinates[0]
   }
-
   return coord
 }
 
