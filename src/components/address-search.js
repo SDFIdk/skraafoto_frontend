@@ -128,7 +128,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     
     <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse"></button>
     <div class=sf-input-container>
-      <g-search data-token="${ configuration.API_STAC_TOKEN }" data-limit="10" data-resources="adresse,stednavn"></g-search>
+      <g-search data-token="${ configuration.API_STAC_TOKEN }" data-limit="10" data-resources="husnummer,stednavn"></g-search>
     </div>
   `
 
