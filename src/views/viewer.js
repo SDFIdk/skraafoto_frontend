@@ -23,6 +23,7 @@ customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
 
+
 // Variables and state
 
 let state = {

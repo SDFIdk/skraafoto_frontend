@@ -167,7 +167,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.geotiff = geotiff
     })
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    this.shadowRoot.querySelector('skraafoto-download-tool').setAttribute('href', this.item.assets.data.href)
+    if (this.map) {
+      this.shadowRoot.querySelector('skraafoto-download-tool').setCanvas = this.map.getTarget()
+    }
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
 
