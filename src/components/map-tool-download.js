@@ -6,15 +6,14 @@ import { configuration } from '../modules/configuration.js'
 export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
-  btn
-  api_stac_token = configuration.API_STAC_TOKEN
+  map_element
+  image
+  link
 
 
-  // getters
-  static get observedAttributes() { 
-    return [
-      'href'
-    ]
+  // setters
+  set setCanvas(map_element) {
+    this.map_element = map_element
   }
 
 
@@ -28,23 +27,32 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   createDOM() {
     // Add tool button to DOM
-    this.btn = document.createElement('button')
-    this.btn.className = 'sf-download-tool ds-icon-hentdata-icon-download'
-    this.btn.title = 'Download billede'
-    this.append(this.btn)
+    this.link = document.createElement('a')
+    this.link.setAttribute('role','button')
+    this.link.href = '#'
+    this.link.className = 'sf-download-tool ds-icon-hentdata-icon-download'
+    this.link.title = 'Download billede'
+    this.append(this.link)
   }
 
-  initiateDownload(item_href) {
-    const download_link = `${item_href}?token=${this.api_stac_token}`
-    window.location = download_link
+  generateDataUrl(canvas) {
+    // Convert the canvas to a JPG image
+    return canvas.toDataURL("image/jpeg")
+  }
+
+  initiateDownload() {
+    this.image = this.generateDataUrl(this.map_element.querySelector('canvas'))
+    this.link.href = this.image
+    this.link.download = 'brugerdefineret-skraafoto.jpg'
+    this.link.click()
   }
 
 
   // Lifecycle callbacks
 
   connectedCallback() {
-    this.querySelector('button').addEventListener('click', () => {
-      this.initiateDownload(this.getAttribute('href'))
+    this.link.addEventListener('click', () => {
+      this.initiateDownload()
     })
   }
 }
