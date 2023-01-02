@@ -43,6 +43,9 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       max-width: 100%;
       border-radius: 1rem;
       box-shadow: 0 0.0625em 0.15625em rgba(0,0,0,.15);
+      max-height: 90vh;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
     .gs-result-list:empty {
       display: none;
@@ -121,14 +124,13 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
   `
   template = `
-    <link rel="stylesheet" href="./style.css">
     <style>
       ${ this.styles }
     </style>
     
     <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse eller stednavn"></button>
     <div class=sf-input-container>
-      <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="20" data-resources="husnummer,stednavn"></g-search>
+      <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="15" data-resources="husnummer,stednavn"></g-search>
     </div>
   `
 
@@ -142,22 +144,20 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
   constructor() {
     super()
-    this.createShadowDOM()
+    this.createDOM()
   }
 
-  createShadowDOM() {
-    // Create a shadow root
-    this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
+  createDOM() {
     const container = document.createElement('article')
     container.innerHTML = this.template
-    // Attach the elements to the shadow DOM
-    this.shadowRoot.append(container)
+    // Attach the elements to the DOM
+    this.append(container)
 
     // Register elements for later use
     this.search_element = container
-    this.btn_open = this.shadowRoot.querySelector('.sf-search-btn-open')
-    this.input_container = this.shadowRoot.querySelector('.sf-input-container')
-    this.input_element = this.shadowRoot.querySelector('g-search')
+    this.btn_open = this.querySelector('.sf-search-btn-open')
+    this.input_container = this.querySelector('.sf-input-container')
+    this.input_element = this.querySelector('g-search')
   }
 
   connectedCallback() {
