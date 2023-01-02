@@ -16,6 +16,11 @@ export class CookieAlert extends HTMLElement {
       bottom: 3.5vh;
       z-index: 10;
       margin-top: var(--grid-spacing-vertical);
+      padding-top: var(--grid-spacing-vertical) !important;
+    }
+    
+    dialog article {
+      margin: var(--grid-spacing-vertical) 0;
     }
   `
   template = `
@@ -24,10 +29,22 @@ export class CookieAlert extends HTMLElement {
       ${this.styles}
     </style>
     <header>
-      <h3 tabindex="0">Om brug af cookies</h3>
+      <h3 tabindex="0">Vi benytter cookies</h3>
     </header>
     <article>
-      <p>Må vi gemme cookies hos dig for at føre statistik med brug af dette website?</p>
+      <p>Tillad cookies til at føre statistik på dette website?</p>
+      <details>
+        <summary>SiteImprove statistik cookies</summary>
+        <dl>
+          <dt>nmstat</dt>
+          <dd>Registrerer dine bevægelser på websitet.<br> Udløber efter 1000 dage</dd>
+          <dt>AWSALB / AWSALBCORS</dt>
+          <dd>Holder styr på, hvilken server data sendes til.<br> Udløber efter 7 dage</dd>
+        </dl>
+        <p>
+          <a target="_blank" href="https://help.siteimprove.com/support/solutions/articles/80000863908-siteimprove-analytics-cookies">Flere oplysninger kan findes på SiteImproves side om cookies.</a>
+        </p>
+      </details> 
     </article>
     <footer>
       <button>Ja</button>
