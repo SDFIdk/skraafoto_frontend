@@ -1,4 +1,4 @@
-/** Draw standard image footer */
+/** Draws a standard image footer */
 function drawFooterContent(vcanvas) {
 
   const today = new Date().toLocaleString()
@@ -11,9 +11,6 @@ function drawFooterContent(vcanvas) {
   ctx.font = '16px sans-serif';
   ctx.textAlign = 'right'
   ctx.fillText(`Dokument dannet: ${ today }`, (vcanvas.width - 10), (vcanvas.height - 10));
-
-  // Return the contents of vcanvas as JPG dataURL
-  return vcanvas.toDataURL("image/jpeg")
 }
 
 export {

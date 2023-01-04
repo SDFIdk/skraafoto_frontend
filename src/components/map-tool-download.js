@@ -42,7 +42,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     }
   }
 
-  async generateDataUrl(canvas) {
+  generateDataUrl(canvas) {
 
     // Create virtual canvas
     const vcanvas = document.createElement('canvas')
@@ -52,15 +52,18 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     
     // Load image from map canvas into virtual canvas
     ctx.drawImage(canvas, 0, 0)
-    
-    return this.drawFooterFunc(vcanvas)
+
+    // Draw footer information
+    this.drawFooterFunc(vcanvas)
+
+    // Return canvas image as data URL
+    return vcanvas.toDataURL("image/jpeg")
   }
 
   initiateDownload() {
-    this.generateDataUrl(this.map_element.querySelector('canvas')).then((dataURL) => {
-      this.link.href = dataURL
-      this.link.download = 'brugerdefineret-skraafoto.jpg'
-    })    
+    const dataURL = this.generateDataUrl(this.map_element.querySelector('canvas'))
+    this.link.href = dataURL
+    this.link.download = 'brugerdefineret-skraafoto.jpg'
   }
 
 

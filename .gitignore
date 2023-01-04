@@ -2,3 +2,6 @@ node_modules/
 dist/
 docs/api/
 config.js
+
+# macOS system files
+.DS_Store
