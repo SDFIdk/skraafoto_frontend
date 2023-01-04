@@ -9,8 +9,8 @@ const entry_points = {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  // Development mode watches for file changes and rebuilds
 
+  // Development mode watches for file changes and rebuilds
   require('esbuild').serve({
     servedir: 'public',
   }, {
@@ -19,26 +19,37 @@ if (process.env.NODE_ENV === 'development') {
       '.ttf': 'file'
     },
     outdir: 'public',
-    bundle: true
+    bundle: true,
+    splitting: true,
+    format: 'esm'
   }).then(server => {
     console.log(server)
     // Call "stop" on the web server to stop serving
-    //server.stop()
+    // server.stop()
   })
 
 } else {
+
   // Production build
   require('esbuild').build({
     entryPoints: entry_points,
     outdir: 'dist',
     bundle: true,
     minify: true,
+    metafile: true,
+    splitting: true,
+    format: 'esm',
     loader: {
       '.ttf': 'file'
     }
   })
-  .then(() => {
-    console.log('build finished')
+  .then((result) => {
+    
+    require('esbuild').analyzeMetafile(result.metafile).then((analysis) => {
+      console.log(analysis)
+      console.log('Build finished 👍')
+    })
+    
   })
   .catch(() => process.exit(1))
 }

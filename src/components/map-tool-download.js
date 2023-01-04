@@ -8,19 +8,17 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   // properties
   map_element
   link
-
+  drawFooterFunc
 
   // setters
   set setCanvas(map_element) {
     this.map_element = map_element
   }
 
-
   constructor() {
     super()
     this.createDOM()
   }
-  
 
   // Methods
 
@@ -34,7 +32,17 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.append(this.link)
   }
 
-  generateDataUrl(canvas) {
+  async setupPlugins() {
+    if (configuration.DOWNLOAD_IMAGE_FOOTER === 'vurdst') {
+      const { drawFooterContent } = await import('../modules/plugin-skat-image-footer.js') // '../modules/plugin-skat-image-footer.js'
+      this.drawFooterFunc = drawFooterContent
+    } else {
+      const { drawFooterContent } = await import('../modules/plugin-default-image-footer.js')
+      this.drawFooterFunc = drawFooterContent
+    }
+  }
+
+  async generateDataUrl(canvas) {
 
     // Create virtual canvas
     const vcanvas = document.createElement('canvas')
@@ -44,28 +52,24 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     
     // Load image from map canvas into virtual canvas
     ctx.drawImage(canvas, 0, 0)
-
-    // Write some information onto the canvas
-    ctx.fillStyle = '#fff'
-    ctx.fillRect(0, (vcanvas.height - 100), vcanvas.width, 100)
-    ctx.fillStyle = '#000'
-    ctx.font = '48px serif';
-    ctx.fillText('Testing', 10, (vcanvas.height - 10));
-
-    // Return the contents of vcanvas as JPG dataURL
-    return vcanvas.toDataURL("image/jpeg")
+    
+    return this.drawFooterFunc(vcanvas)
   }
 
   initiateDownload() {
-    this.link.href = this.generateDataUrl(this.map_element.querySelector('canvas'))
-    this.link.download = 'brugerdefineret-skraafoto.jpg'
-    this.link.click() // Click the link to start downloading the image
+    this.generateDataUrl(this.map_element.querySelector('canvas')).then((dataURL) => {
+      this.link.href = dataURL
+      this.link.download = 'brugerdefineret-skraafoto.jpg'
+    })    
   }
 
 
   // Lifecycle callbacks
 
   connectedCallback() {
+
+    this.setupPlugins()
+
     this.link.addEventListener('click', () => {
       this.initiateDownload()
     })
