@@ -7,7 +7,6 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
   map_element
-  image
   link
 
 
@@ -36,15 +35,31 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   }
 
   generateDataUrl(canvas) {
-    // Convert the canvas to a JPG image
-    return canvas.toDataURL("image/jpeg")
+
+    // Create virtual canvas
+    const vcanvas = document.createElement('canvas')
+    const ctx = vcanvas.getContext('2d')
+    vcanvas.height = canvas.height
+    vcanvas.width = canvas.width
+    
+    // Load image from map canvas into virtual canvas
+    ctx.drawImage(canvas, 0, 0)
+
+    // Write some information onto the canvas
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(0, (vcanvas.height - 100), vcanvas.width, 100)
+    ctx.fillStyle = '#000'
+    ctx.font = '48px serif';
+    ctx.fillText('Testing', 10, (vcanvas.height - 10));
+
+    // Return the contents of vcanvas as JPG dataURL
+    return vcanvas.toDataURL("image/jpeg")
   }
 
   initiateDownload() {
-    this.image = this.generateDataUrl(this.map_element.querySelector('canvas'))
-    this.link.href = this.image
+    this.link.href = this.generateDataUrl(this.map_element.querySelector('canvas'))
     this.link.download = 'brugerdefineret-skraafoto.jpg'
-    this.link.click()
+    this.link.click() // Click the link to start downloading the image
   }
 
 
