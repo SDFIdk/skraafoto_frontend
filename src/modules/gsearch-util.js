@@ -1,3 +1,5 @@
+/** @module */
+
 import Polygon from 'ol/geom/Polygon';
 
 function getGSearchCenterPoint(detail) {
