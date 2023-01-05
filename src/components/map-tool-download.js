@@ -7,7 +7,8 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
   map_element
-  link
+  button_element
+  link_element
   drawFooterFunc
 
   // setters
@@ -24,12 +25,14 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   createDOM() {
     // Add tool button to DOM
-    this.link = document.createElement('a')
-    this.link.setAttribute('role','button')
-    this.link.href = '#'
-    this.link.className = 'sf-download-tool ds-icon-hentdata-icon-download'
-    this.link.title = 'Download billede'
-    this.append(this.link)
+    this.button_element = document.createElement('button')
+    this.button_element.className = 'sf-download-tool ds-icon-hentdata-icon-download'
+    this.button_element.title = 'Download billede'
+    this.append(this.button_element)
+
+    // Create virtual link to initiate download with
+    this.link_element = document.createElement('a')
+    this.link_element.href = '#'
   }
 
   async setupPlugins() {
@@ -62,8 +65,9 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   initiateDownload() {
     const dataURL = this.generateDataUrl(this.map_element.querySelector('canvas'))
-    this.link.href = dataURL
-    this.link.download = 'brugerdefineret-skraafoto.jpg'
+    this.link_element.href = dataURL
+    this.link_element.download = 'brugerdefineret-skraafoto.jpg'
+    this.link_element.click()
   }
 
 
@@ -73,7 +77,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
     this.setupPlugins()
 
-    this.link.addEventListener('click', () => {
+    this.button_element.addEventListener('click', () => {
       this.initiateDownload()
     })
   }

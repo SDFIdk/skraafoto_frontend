@@ -1,3 +1,5 @@
+/** @module */
+
 /** Draws a standard image footer */
 function drawFooterContent(vcanvas) {
 

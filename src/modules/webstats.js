@@ -1,3 +1,5 @@
+/** @module */
+
 import { configuration } from "./configuration.js";
 
 function runWebStat() {
