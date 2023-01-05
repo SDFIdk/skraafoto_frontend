@@ -7,21 +7,18 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
   map_element
-  image
   link
-
+  drawFooterFunc
 
   // setters
   set setCanvas(map_element) {
     this.map_element = map_element
   }
 
-
   constructor() {
     super()
     this.createDOM()
   }
-  
 
   // Methods
 
@@ -35,22 +32,47 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.append(this.link)
   }
 
+  async setupPlugins() {
+    if (configuration.DOWNLOAD_IMAGE_FOOTER === 'vurdst') {
+      const { drawFooterContent } = await import('../modules/plugin-skat-image-footer.js')
+      this.drawFooterFunc = drawFooterContent
+    } else {
+      const { drawFooterContent } = await import('../modules/plugin-default-image-footer.js')
+      this.drawFooterFunc = drawFooterContent
+    }
+  }
+
   generateDataUrl(canvas) {
-    // Convert the canvas to a JPG image
-    return canvas.toDataURL("image/jpeg")
+
+    // Create virtual canvas
+    const vcanvas = document.createElement('canvas')
+    const ctx = vcanvas.getContext('2d')
+    vcanvas.height = canvas.height
+    vcanvas.width = canvas.width
+    
+    // Load image from map canvas into virtual canvas
+    ctx.drawImage(canvas, 0, 0)
+
+    // Draw footer information
+    this.drawFooterFunc(vcanvas)
+
+    // Return canvas image as data URL
+    return vcanvas.toDataURL("image/jpeg")
   }
 
   initiateDownload() {
-    this.image = this.generateDataUrl(this.map_element.querySelector('canvas'))
-    this.link.href = this.image
+    const dataURL = this.generateDataUrl(this.map_element.querySelector('canvas'))
+    this.link.href = dataURL
     this.link.download = 'brugerdefineret-skraafoto.jpg'
-    this.link.click()
   }
 
 
   // Lifecycle callbacks
 
   connectedCallback() {
+
+    this.setupPlugins()
+
     this.link.addEventListener('click', () => {
       this.initiateDownload()
     })
