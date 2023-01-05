@@ -34,7 +34,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   async setupPlugins() {
     if (configuration.DOWNLOAD_IMAGE_FOOTER === 'vurdst') {
-      const { drawFooterContent } = await import('../modules/plugin-skat-image-footer.js') // '../modules/plugin-skat-image-footer.js'
+      const { drawFooterContent } = await import('../modules/plugin-skat-image-footer.js')
       this.drawFooterFunc = drawFooterContent
     } else {
       const { drawFooterContent } = await import('../modules/plugin-default-image-footer.js')

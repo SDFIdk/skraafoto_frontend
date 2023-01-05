@@ -284,7 +284,7 @@ export class SkraaFotoViewport extends HTMLElement {
   updateTextContent(imagedata) {
     const area_x = ((imagedata.bbox[0] + imagedata.bbox[2]) / 2).toFixed(0)
     const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
-    this.innerText = `Billede af området omkring koordinat ${area_x},${area_y} set fra ${toDanish(imagedata.properties.direction)}.`
+    this.innerText = `Billede af området omkring koordinat ${area_x} øst,${area_y} nord set fra ${toDanish(imagedata.properties.direction)}.`
   }
 
   updatePlugins() {
