@@ -19,11 +19,12 @@ function queryItem(item_id) {
  * Fetches any number of STAC API items based on location and 
  * @param {array} coord - EPSG:25832 coordinate [x,y] of location that the items should cover
  * @param {string} direction - Direction that the item images should be facing ['north', 'south', 'east', 'west', 'nadir']
- * @param {string} collection - Collection from which to fetch the item(s)
+ * @param {string} [collection] - Collection from which to fetch the item(s)
  * @param {number} [limit] - Limits the number of returned results
  * @return {object} A featureCollection of STAC items
  */
-function queryItems(coord, direction, collection, limit = 1) {
+async function queryItems(coord, direction, collection, limit = 1) {
+  let sort_query = ''
   let search_query = { 
     "and": [
       {"contains": [ { "property": "geometry"}, {"type": "Point", "coordinates": [coord[0], coord[1]]} ]},
@@ -33,7 +34,7 @@ function queryItems(coord, direction, collection, limit = 1) {
   if (collection) {
     search_query.and.push({"eq": [ { "property": "collection" }, collection ]})
   }
-  return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
+  return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832&${ sort_query }`, configuration)
 }
 
 /** 

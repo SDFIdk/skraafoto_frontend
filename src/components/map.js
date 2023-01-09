@@ -2,6 +2,7 @@
 // https://openlayers.org/en/latest/examples/wmts-layer-from-capabilities.html
 // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
 
+import { getParam, setParams } from '../modules/url-state.js'
 import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import Map from 'ol/Map'
@@ -82,6 +83,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   // setters
   set setView(options) {
+    console.log('map setview')
     // Make sure a map exists before we try to update it
     const throttle = () => { 
       setTimeout(() => {
@@ -135,7 +137,7 @@ export class SkraaFotoMap extends HTMLElement {
 
       this.view = new View({
         projection: this.projection,
-        center: [638955,6209259],
+        center: getParam('center'),
         zoom: 7
       })
 
@@ -146,6 +148,7 @@ export class SkraaFotoMap extends HTMLElement {
         controls = defaultControls({rotate: false, attribution: false, zoom: false})
       } else {
         controls = defaultControls({rotate: false, attribution: false})
+        this.view.setZoom(8)
       }
       
       this.map = new Map({
@@ -167,6 +170,11 @@ export class SkraaFotoMap extends HTMLElement {
           this.singleClickHandler(event)
         })
       }
+
+      // Not quite sure why, but this is needed to make the map actually display
+      setTimeout(() => {
+        this.map.updateSize()
+      }, 200)
     })
   }
 
@@ -189,7 +197,11 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
+    //this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
+    setParams({
+      orientation: 'north',
+      center: event.coordinate
+    })
   }
 
   updateMap(center) {
@@ -209,7 +221,6 @@ export class SkraaFotoMap extends HTMLElement {
   // Lifecycle hooks
 
   connectedCallback() {
-
     this.generateMap(this.getAttribute('minimal'))
   }
 }
