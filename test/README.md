@@ -2,16 +2,17 @@
 
 ## User scenarios
 
-[ ] Load viewer with center: http://localhost:8000/viewer.html?center=686748.0727328601%2C6199208.5025510155
-[ ] Load viewer with center, direction: http://localhost:8000/viewer.html?orientation=north&center=686748.0727328601%2C6199208.5025510155
-[ ] Load viewer with no params: localhost:8000/viewer.html
-[ ] Load viewer with direction map: http://localhost:8000/viewer.html?orientation=map
-[ ] Load viewer with direction map, center: http://localhost:8000/viewer.html?orientation=map
+[x] Load viewer with center, direction, item: http://localhost:8000/viewer.html?center=514279.05%2C6188146.08%2C84.4&orientation=north&item=2021_83_28_2_0014_00003307
+[x] Load viewer with center, direction: localhost:8000/viewer.html?center=514279.05%2C6188146.08%2C84.4&orientation=south
+[x] Load viewer with center, item: localhost:8000/viewer.html?center=514279.05%2C6188146.08%2C84.4&item=2021_83_28_3_0014_00003297
 
+[x] Load viewer with center: http://localhost:8000/viewer.html?center=514279.05%2C6188146.08
+[x] Load viewer with direction, item: localhost:8000/viewer.html?orientation=north&item=2021_83_28_2_0014_00003307
+[x] Load viewer with item: localhost:8000/viewer.html?item=2021_83_28_2_0014_00003307
+[ ] Load viewer with direction: localhost:8000/viewer.html?orientation=nadir
 
-[ ] Load viewer with center only: localhost:8000/viewer.html?center=588434.6399679367%2C6137047.079928242
-[ ] Load viewer with item only: localhost:8000/viewer.html?item=2019_83_36_5_0023_00000321
-[ ] Load viewer with map: http://localhost:8000/viewer.html?center=586986.8442265043%2C6137148.88486701&item=2019_83_36_2_0018_00002375&map=1
+[x] Load viewer with no params: localhost:8000/viewer.html
+
 
 [ ] Click miniviewport to update maxiviewport 
 [ ] Select different image from date-selector

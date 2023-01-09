@@ -2,7 +2,7 @@
  * @module
  */
 
-import { queryItems, getCollections } from './api.js'
+import { queryItem, queryItems, getCollections } from './api.js'
 
 let collections = []
 
@@ -24,6 +24,12 @@ async function sanitizeParams(url) {
     return params
   }
 
+  // If we have item and center
+  if (params.get('center') && params.get('item')) {
+    params.set('orientation', 'north')
+    return params
+  }
+
   // If only center is given, add direction and find a matching recent item
   if (params.get('center')) {
     if (!params.get('orientation')) {
@@ -39,7 +45,31 @@ async function sanitizeParams(url) {
     }
     return params
   }
-  
+
+  // If we only have item
+  if (params.get('item')) {
+    const item = await queryItem(params.get('item'))
+    console.log('item', item)
+    const center_point = [
+      (item.bbox[0] + ((item.bbox[2] - item.bbox[0]) / 2)),
+      (item.bbox[1] + ((item.bbox[3] - item.bbox[1]) / 2))
+    ]
+    params.set('orientation', item.properties.direction)
+    params.set('center', center_point)
+    return params
+  }
+
+
+  // If we only have orientation=map
+  if (!params.get('item') && params.get('orientation') && params.get('orientation') === 'map') {
+    params.set('center', [574764,6220953])
+    return params
+  }
+
+  // Default 
+  params.set('orientation', 'north')
+  params.set('center', [574764,6220953])
+  params.set('item', '2021_82_24_2_0021_00002029_10cm')
   return params
 }
 

@@ -1,5 +1,5 @@
 import { getParam, setParams } from '../modules/url-state.js'
-import { queryItems, getCollections, queryItem } from '../modules/api.js'
+import { queryItem } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
@@ -55,7 +55,6 @@ function updateViews() {
   }
 
   // Update the other viewports
-  console.log('item', item)
   if (item) {
     direction_picker_element.setView = {
       collection: item.collection,
