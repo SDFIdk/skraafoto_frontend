@@ -7,7 +7,7 @@ import { queryItem, queryItems, getCollections } from './api.js'
 let collections = []
 
 async function sanitizeParams(url) {
-
+  
   let params = url.searchParams
 
   // Just return when we have center, orientation, and item
@@ -22,13 +22,13 @@ async function sanitizeParams(url) {
   }
 
   // If only center is given, add direction and find a matching recent item
-  if (params.get('center') && !params.get('orientation') === 'map') {
+  if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
     }
     const center = params.get('center').split(',').map(function(c) { return Number(c) })
     collections = await getCollections()
-    const response = await queryItems(center, params.get('orientation'), collections[0])
+    const response = await queryItems(center, params.get('orientation'), collections[0].id)
     if (response.features[0]) {
       params.set('item', response.features[0].id)
     } else {

@@ -1,5 +1,5 @@
 import { getParam, setParams } from '../modules/url-state.js'
-import { getCollections, queryItem, queryItems } from '../modules/api.js'
+import { getCollections, queryItem } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
