@@ -9,8 +9,6 @@ const urlupdate_event = new CustomEvent('urlupdate')
 const url = new URL(window.location)
 let search_params = await sanitizeParams(url)
 
-console.log('got params', search_params)
-
 history.replaceState({}, '', url)
 dispatchEvent(urlupdate_event)
 
@@ -26,7 +24,6 @@ function getParam(param) {
       case 'center':
         return search_params.get(param).split(',').map(function(c) { return Number(c) })
       default:
-        console.log(param)
         return search_params.get(param)  
     }
   } else {

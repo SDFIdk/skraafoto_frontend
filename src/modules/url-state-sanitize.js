@@ -40,7 +40,6 @@ async function sanitizeParams(url) {
   // If we only have item
   if (params.get('item')) {
     const item = await queryItem(params.get('item'))
-    console.log('item', item)
     const center_point = [
       (item.bbox[0] + ((item.bbox[2] - item.bbox[0]) / 2)),
       (item.bbox[1] + ((item.bbox[3] - item.bbox[1]) / 2))

@@ -83,7 +83,6 @@ export class SkraaFotoMap extends HTMLElement {
 
   // setters
   set setView(options) {
-    console.log('map setview')
     // Make sure a map exists before we try to update it
     const throttle = () => { 
       setTimeout(() => {
