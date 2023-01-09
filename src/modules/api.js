@@ -38,7 +38,7 @@ async function queryItems(coord, direction, collection, limit = 1) {
 }
 
 /** 
- * Fetches a list of collections that exist in the STAC database
+ * Fetches a list of (non-TEST) collections that exist in the STAC database
  * @return {array} A list of collection IDs
  */
 function getCollections() {
@@ -49,7 +49,15 @@ function getCollections() {
       if (a.id < b.id) {return 1}
       if (a.id === b.id) {return 0}
     })
-    return sorted_collections
+    // Filter out collections with "TEST" in them.
+    const useful_collections = sorted_collections.filter(function(coll) {
+      if (coll.id.includes('test') || coll.id.includes('TEST')) {
+        return false
+      } else {
+        return true
+      }
+    })
+    return useful_collections
   })
 }
 

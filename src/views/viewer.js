@@ -1,5 +1,5 @@
 import { getParam, setParams } from '../modules/url-state.js'
-import { queryItem } from '../modules/api.js'
+import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
@@ -27,7 +27,7 @@ customElements.define('skraafoto-header', SkraaFotoHeader)
 
 // Variables
 
-let item = null
+let collection = null
 
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
@@ -55,9 +55,9 @@ function updateViews() {
   }
 
   // Update the other viewports
-  if (item) {
+  if (collection) {
     direction_picker_element.setView = {
-      collection: item.collection,
+      collection: collection,
       center: getParam('center')
     }
   }
@@ -90,7 +90,7 @@ document.addEventListener('coordinatechange', function(event) {
 // On a new address input, update viewports
 document.addEventListener('gsearch:select', function(event) {
   setParams({center: getGSearchCenterPoint(event.detail)})
-  item = response.item
+  collection = response.item.collection
   updateViews()
 })
 
@@ -100,7 +100,7 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   main_viewport_element.removeAttribute('hidden')
   main_viewport_element.setItem = event.detail
   main_viewport_element.setCenter = getParam('center')
-  item = event.detail
+  collection = event.detail.collection
   setParams({orientation: event.detail.properties.direction})
   
 })
@@ -113,13 +113,13 @@ direction_picker_element.addEventListener('mapchange', function(event) {
 
 // When a different image is selected, update the URL and check to see if direction picker needs an update
 main_viewport_element.shadowRoot.addEventListener('imagechange', function(event) {
-  if (event.detail.collection !== item.collection) {
+  if (event.detail.collection !== collection) {
     direction_picker_element.setView = {
       collection: event.detail.collection,
       center: getParam('center')
     }
   }
-  item = event.detail
+  collection = event.detail.collection
   updateViews()
 })
 
@@ -141,5 +141,13 @@ document.addEventListener('loaderror', function(event) {
 // Initialize
 
 setupConfigurables(configuration)
-item = await queryItem(getParam('item'))
+
+if (getParam('item')) {
+  const item = await queryItem(getParam('item'))
+  collection = item.collection
+} else if (getParam('center')) {
+  const collections = await getCollections()
+  collection = collections[0].id
+}
+
 updateViews()

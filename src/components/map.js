@@ -138,7 +138,7 @@ export class SkraaFotoMap extends HTMLElement {
       this.view = new View({
         projection: this.projection,
         center: getParam('center'),
-        zoom: 7
+        zoom: 18
       })
 
       this.icon_layer = this.generateIconLayer([0,0])
@@ -148,7 +148,6 @@ export class SkraaFotoMap extends HTMLElement {
         controls = defaultControls({rotate: false, attribution: false, zoom: false})
       } else {
         controls = defaultControls({rotate: false, attribution: false})
-        this.view.setZoom(8)
       }
       
       this.map = new Map({

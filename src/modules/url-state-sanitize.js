@@ -6,15 +6,6 @@ import { queryItem, queryItems, getCollections } from './api.js'
 
 let collections = []
 
-
-function findNewestValidCollection(colls, idx) {
-  if (colls[idx].id.includes('test') || colls[idx].id.includes('TEST')) {
-    return findNewestValidCollection(colls, idx + 1)
-  } else {
-    return colls[idx].id
-  }
-}
-
 async function sanitizeParams(url) {
 
   let params = url.searchParams
@@ -31,13 +22,13 @@ async function sanitizeParams(url) {
   }
 
   // If only center is given, add direction and find a matching recent item
-  if (params.get('center')) {
+  if (params.get('center') && !params.get('orientation') === 'map') {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
     }
     const center = params.get('center').split(',').map(function(c) { return Number(c) })
     collections = await getCollections()
-    const response = await queryItems(center, params.get('orientation'), findNewestValidCollection(collections, 0))
+    const response = await queryItems(center, params.get('orientation'), collections[0])
     if (response.features[0]) {
       params.set('item', response.features[0].id)
     } else {
@@ -60,9 +51,14 @@ async function sanitizeParams(url) {
   }
 
 
-  // If we only have orientation=map
-  if (!params.get('item') && params.get('orientation') && params.get('orientation') === 'map') {
+  // If we only have orientation
+  if (params.get('orientation')) {
     params.set('center', [574764,6220953])
+    if (params.get('orientation') !== 'map') {
+      collections = await getCollections()
+      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0])
+      params.set('item', response.features[0].id)
+    }
     return params
   }
 
