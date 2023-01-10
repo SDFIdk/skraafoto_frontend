@@ -31,7 +31,7 @@
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
     "@dataforsyningen/css": "^0.2.0",
-    "@dataforsyningen/gsearch-ui": "^0.7.0",
+    "@dataforsyningen/gsearch-ui": "^0.8.1",
     "@dataforsyningen/icons": "^0.2.0",
     "@dataforsyningen/saul": "^3.0.2",
     "dawa-autocomplete2": "^1.0.2",
