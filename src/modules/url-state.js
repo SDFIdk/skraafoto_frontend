@@ -34,13 +34,14 @@ function getParam(param) {
 /** Sets parameters */
 function setParams(params) {
   for (let p in params) {
-    switch(params[p]) {
-      default:
-        search_params.set(p, params[p])
+    if (params[p] === null) {
+      search_params.delete(p)
+    } else {
+      search_params.set(p, params[p])
     }
   }
   history.pushState({}, '', url)
-  dispatchEvent(urlupdate_event)
+  window.dispatchEvent(urlupdate_event)
 }
 
 export {

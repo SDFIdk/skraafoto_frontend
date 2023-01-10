@@ -4,11 +4,11 @@
 
 import { queryItem, queryItems, getCollections } from './api.js'
 
-let collections = []
-
+/** Adds or modifies URL searchparams according to various edge cases */
 async function sanitizeParams(url) {
   
   let params = url.searchParams
+  let collections = []
 
   // Just return when we have center, orientation, and item
   if (params.get('center') && params.get('orientation') && params.get('item')) {

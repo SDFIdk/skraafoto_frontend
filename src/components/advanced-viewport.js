@@ -234,7 +234,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     })
 
     // Reset mode when changing the image
-    document.addEventListener('addresschange', () => {
+    document.addEventListener('gsearch:select', () => {
       this.toggleMode('center')
     })
     document.addEventListener('directionchange', () => {

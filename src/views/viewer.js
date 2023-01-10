@@ -1,5 +1,5 @@
 import { getParam, setParams } from '../modules/url-state.js'
-import { getCollections, queryItem } from '../modules/api.js'
+import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
@@ -40,9 +40,8 @@ function updateMainViewport() {
   if (getParam('item')) {
     main_viewport_element.setItemId = getParam('item')
   }
-  const coordinate = getParam('center')
-  if (coordinate) {
-    main_viewport_element.setCenter = coordinate
+  if (getParam('center')) {
+    main_viewport_element.setCenter = getParam('center')
   }    
 }
 
@@ -83,15 +82,23 @@ function setupConfigurables(conf) {
 
 // When a coordinate input is given, update viewports
 document.addEventListener('coordinatechange', function(event) {
-  setParams({center: event.detail})
-  updateViews()
+  setParams({ center: event.detail })
 })
 
-// On a new address input, update viewports
+// On a new address input, update URL params
 document.addEventListener('gsearch:select', function(event) {
-  setParams({center: getGSearchCenterPoint(event.detail)})
-  collection = response.item.collection
-  updateViews()
+  const new_center = getGSearchCenterPoint(event.detail)
+  queryItem(getParam('item')).then((item) => {
+    // Check if new center is still within current image.
+    if (new_center[0] > item.bbox[0] && new_center[0] < item.bbox[2] && new_center[1] > item.bbox[1] && new_center[1] < item.bbox[3]) {
+      setParams({ center: new_center })
+    } else {
+      queryItems(new_center, getParam('orientation'), item.collection).then((response) => {
+        setParams({ center: new_center, item: response.features[0].id })
+      })
+    }
+  })
+  
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
@@ -102,13 +109,12 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   main_viewport_element.setCenter = getParam('center')
   collection = event.detail.collection
   setParams({orientation: event.detail.properties.direction})
-  
 })
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
-direction_picker_element.addEventListener('mapchange', function(event) {
-  setParams({orientation: 'map'})
+direction_picker_element.addEventListener('mapchange', function() {
   openMap()
+  setParams({orientation: 'map'})
 })
 
 // When a different image is selected, update the URL and check to see if direction picker needs an update
@@ -123,8 +129,7 @@ main_viewport_element.shadowRoot.addEventListener('imagechange', function(event)
   updateViews()
 })
 
-// Do something when the URL params change
-window.addEventListener('urlupdate', function(event) {
+window.addEventListener('urlupdate', function() {
   updateViews()
 })
 

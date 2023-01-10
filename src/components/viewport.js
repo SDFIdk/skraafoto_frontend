@@ -247,7 +247,7 @@ export class SkraaFotoViewport extends HTMLElement {
     if (!this.item) {
       setTimeout(() => {
         this.updateCenter(coordinate)
-      }, 300)
+      }, 100)
       return
     }
     if (coordinate[2] === undefined) {
@@ -255,6 +255,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     
     this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])
+    console.log(this.coord_image)
     this.map.removeLayer(this.layer_icon)
     this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
     this.map.addLayer(this.layer_icon)
