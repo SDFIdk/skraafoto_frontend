@@ -108,7 +108,6 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   main_viewport_element.setData = {item: event.detail, center: getParam('center')}
-  collection = event.detail.collection
   setParams({orientation: event.detail.properties.direction})
 })
 
@@ -118,19 +117,11 @@ direction_picker_element.addEventListener('mapchange', function() {
   setParams({orientation: 'map'})
 })
 
-// When a different image is selected, update the URL and check to see if direction picker needs an update
-main_viewport_element.shadowRoot.addEventListener('imagechange', function(event) {
-  if (event.detail.collection !== collection) {
-    direction_picker_element.setView = {
-      collection: event.detail.collection,
-      center: getParam('center')
-    }
-  }
-  collection = event.detail.collection
-  updateViews()
-})
-
+// When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function() {
+  const year = getParam('item').substring(0,4)
+  collection = `skraafotos${year}`
+
   updateViews()
 })
 
