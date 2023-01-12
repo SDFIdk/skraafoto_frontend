@@ -174,9 +174,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         this.input_element.focus()
       })
 
-      this.input_element.addEventListener('gsearch:select', (event) => {
+      this.input_element.addEventListener('gsearch:select', () => {
         this.input_container.classList.remove('open')
-        this.dispatchEvent(new CustomEvent('addresschange', { detail: event.detail, bubbles: true, composed: true }))
       })
   
       this.input_element.addEventListener('blur', () => {

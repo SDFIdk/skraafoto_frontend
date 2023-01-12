@@ -108,29 +108,27 @@ export class SkraaFotoViewport extends HTMLElement {
 
 
   // setters
+  set setData(data) {
+    this.update(data)
+  }
 
   // Set image item and updates image layer
   set setItem(item) {
-    this.updateItem(item)
+    this.setData = {item: item}
   }
 
   set setItemId(item_id) {
-    queryItem(item_id).then((item => {
-      this.updateItem(item)
-    }))
+    this.setData = {item: item_id}
   }
 
   // Set center coordinate and update view
   set setCenter(coordinate) {
-    this.coord_world = coordinate
-    this.updateCenter(coordinate)
+    this.setData = {center: coordinate}
   }
 
   // Set zoom level and update view
   set setZoom(zoom_level) {
-    this.zoom = zoom_level
-    this.updateView()
-    this.updateNonMap()
+    this.setData = {zoom: zoom_level}
   }
 
 
@@ -155,29 +153,56 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
   }
 
-  updateView() {
-    if (!this.item || !this.source_image || !this.coord_image || !this.zoom) {
+  async update({item,center,zoom}) {
+    if (typeof item === 'object') {
+      this.item = item
+    } else if (typeof item === 'string') {
+      const item_obj = await queryItem(item)
+      this.item = item_obj
+    }
+    if (center) {
+      await this.updateCenter(center)
+    }
+    if (zoom) {
+      this.zoom = zoom
+    } else {
+      const current_zoom = this.map.getView().getZoom()
+      if (current_zoom) {
+        this.zoom = current_zoom
+      }
+    }
+    this.updateMap()
+    this.updateNonMap()
+  }
+
+  async updateMap() {
+
+    if (!this.item || !this.coord_image || !this.zoom || !this.map) {
       return
     }
 
-    // Record current zoom level to reinitialize view laver
-    const current_zoom = this.map.getView().getZoom()
-    
-    this.source_image.getView()
-    .then((view) => {
-      this.view = view
-      this.view.projection = this.projection
+    this.source_image = this.generateSource(this.item.assets.data.href)
 
-      // Set extra resolutions so we can zoom in further than the resolutions permit normally
-      this.view.resolutions = this.addResolutions(this.view.resolutions)
+    this.map.removeLayer(this.layer_image)
+    this.layer_image = this.generateLayer(this.source_image)
+    this.map.addLayer(this.layer_image)
+
+    this.map.removeLayer(this.layer_icon)
+    this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
+    this.map.addLayer(this.layer_icon)
+
+    this.view = await this.source_image.getView()
+    this.view.projection = this.projection
+
+    // Set extra resolutions so we can zoom in further than the resolutions permit normally
+    this.view.resolutions = this.addResolutions(this.view.resolutions)
       
-      // Rotate nadir images relative to north
-      this.view.rotation = this.getAdjustedNadirRotation(this.item)
+    // Rotate nadir images relative to north
+    this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
-      this.view.center = this.coord_image
-      this.view.zoom = current_zoom ? current_zoom : this.zoom
-      this.map.setView(new View(this.view))
-    })
+    this.view.center = this.coord_image
+    this.view.zoom = this.zoom
+    this.map.setView(new View(this.view))
   }
 
   /** Calculate how much to rotate a nadir image to have it north upwards */
@@ -231,35 +256,15 @@ export class SkraaFotoViewport extends HTMLElement {
     return new_resolutions
   }
 
-  updateItem(item) {
-    if (this.item?.id !== item.id) {
-      this.item = item
-      this.source_image = this.generateSource(item.assets.data.href)
-      this.map.removeLayer(this.layer_image)
-      this.layer_image = this.generateLayer(this.source_image)
-      this.map.addLayer(this.layer_image)
-      this.updateView()
-      this.updateNonMap()
-    }
-  }
-
   async updateCenter(coordinate) {
     if (!this.item) {
-      setTimeout(() => {
-        this.updateCenter(coordinate)
-      }, 300)
-      return
+      return 
     }
     if (coordinate[2] === undefined) {
       coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)  
     }
-    
+    this.coord_world = coordinate
     this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])
-    this.map.removeLayer(this.layer_icon)
-    this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
-    this.map.addLayer(this.layer_icon)
-    this.updateView()
-    this.updateNonMap()
   }
 
   updateNonMap() {
@@ -305,16 +310,17 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   attributeChangedCallback(name, old_value, new_value) {
-
+    const data = {}
     if (name === 'data-item' && old_value !== new_value) {
-      this.setItemId = new_value
+      data.item = new_value
     }
     if (name === 'data-center' && old_value !== new_value) {
-      this.setCenter = JSON.parse(new_value)
+      data.center = JSON.parse(new_value)
     }
     if (name === 'data-zoom' && old_value !== new_value) {
-      this.setZoom = Number(new_value)
+      data.zoom = Number(new_value)
     }
+    this.setData = data
   }
 }
 

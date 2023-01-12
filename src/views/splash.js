@@ -10,8 +10,8 @@ customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 document.querySelector('skraafoto-address-search .gs-input').focus()
 
 document.addEventListener('gsearch:select', function(event) {
-  const coor = getGSearchCenterPoint(event.detail)
-  location.href = `viewer.html?center=${coor[0]},${coor[1]}&orientation=north`
+  const coor = encodeURIComponent(getGSearchCenterPoint(event.detail))
+  location.href = `viewer.html?center=${ coor }&orientation=north`
 })
 
 if (configuration.ENABLE_WEB_STATISTICS) {

@@ -2,6 +2,7 @@
 // https://openlayers.org/en/latest/examples/wmts-layer-from-capabilities.html
 // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
 
+import { getParam, setParams } from '../modules/url-state.js'
 import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import Map from 'ol/Map'
@@ -135,8 +136,8 @@ export class SkraaFotoMap extends HTMLElement {
 
       this.view = new View({
         projection: this.projection,
-        center: [638955,6209259],
-        zoom: 7
+        center: getParam('center'),
+        zoom: 18
       })
 
       this.icon_layer = this.generateIconLayer([0,0])
@@ -167,6 +168,11 @@ export class SkraaFotoMap extends HTMLElement {
           this.singleClickHandler(event)
         })
       }
+
+      // Not quite sure why, but this is needed to make the map actually display
+      setTimeout(() => {
+        this.map.updateSize()
+      }, 200)
     })
   }
 
@@ -189,7 +195,11 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
+    //this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
+    setParams({
+      orientation: 'north',
+      center: event.coordinate
+    })
   }
 
   updateMap(center) {
@@ -209,7 +219,6 @@ export class SkraaFotoMap extends HTMLElement {
   // Lifecycle hooks
 
   connectedCallback() {
-
     this.generateMap(this.getAttribute('minimal'))
   }
 }

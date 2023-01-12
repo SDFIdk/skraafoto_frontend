@@ -1,8 +1,9 @@
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
+import { getParam, setParams } from '../modules/url-state.js'
 
 /**
- * Web component that fetches a list of items covering a specific coordinate and direction.
+ * Web component that fetches a list of items covering a specific coordinate and orientation.
  * Enables user to select an item for view by its date
  */
 export class SkraaFotoDateSelector extends HTMLElement {
@@ -11,7 +12,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
   // public properties
   auth = configuration
   items = []
-  direction = 'north'
   center
   selected
   styles = `
@@ -70,7 +70,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   // getters
   static get observedAttributes() { 
     return [
-      'data-direction', 
+      'data-orientation', 
       'data-center',
       'data-selected'
     ]
@@ -78,6 +78,9 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
   // setters
 
+  set setData(data) {
+    this.update(data)
+  }
 
   constructor() {
     super()
@@ -99,6 +102,17 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selector_element = this.shadowRoot.querySelector('.sf-date-selector')
   }
 
+  async update({center, selected, orientation}) {
+    this.center = center
+    this.selected = selected
+    if (orientation && center) {
+      queryItems(center, orientation, false, 50).then((items) => {
+        this.items = items.features
+        this.updateOptions(this.items)
+      })
+    }
+  }
+
   updateOptions(options) {
     this.selector_element.innerHTML = ''
     const sorted_collections = this.sortOptions(options)
@@ -108,7 +122,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
         this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
       }
     }
-    this.selector_element.value = this.selected
+    this.selector_element.value = getParam('item')
   }
 
   sortOptions(items) {
@@ -164,40 +178,11 @@ export class SkraaFotoDateSelector extends HTMLElement {
       const item = this.items.find(function(item) {
         return item.id === event.target.value
       })
-      this.dispatchEvent(new CustomEvent('imagechange', {detail: item, bubbles: true, composed: true}))
+      setParams({item: item.id})
     })
   }
 
-  async attributeChangedCallback(name, old_value, new_value) {
-    
-    if (old_value === new_value) {
-      return
-    }
-
-    switch(name) {
-      case 'data-center':
-        if (new_value !== 'undefined') {
-          this.center = JSON.parse(new_value)
-        }
-        break
-      case 'data-direction':
-        this.direction = new_value
-        break
-      case 'data-selected':
-        this.selected = new_value
-        break
-    }
-    
-    if (!this.selected || !this.direction || !this.center) {
-      return
-    }
-    
-    queryItems(this.center, this.direction, false, 50).then((items) => {
-      this.items = items.features
-      this.updateOptions(this.items)
-    })
-  }
 }
-
+  
 // This is how to initialize the custom element
 // customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)

@@ -1,4 +1,5 @@
-import { queryItems, queryItem, getCollections } from '../modules/api.js'
+import { getParam, setParams } from '../modules/url-state.js'
+import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
@@ -24,16 +25,9 @@ customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
 
 
-// Variables and state
+// Variables
 
-let state = {
-  coordinate: null, // EPSG:25832 coordinate + elevation [longitude,latitude,elevation]
-  item: null,
-  map: false,
-  orientation: 'north'
-}
-let url_params = (new URL(document.location)).searchParams
-let collections = []
+let collection = null
 
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
@@ -42,103 +36,37 @@ const direction_picker_element = document.querySelector('skraafoto-direction-pic
 
 // Methods
 
-function updateMainViewport(state) {
-  if (state.item) {
-    main_viewport_element.setItem = state.item
+function updateMainViewport() {
+  const data = {}
+  if (getParam('item')) {
+    data.item = getParam('item')
   }
-  if (state.coordinate) {
-    main_viewport_element.setCenter = state.coordinate
-  }    
+  if (getParam('center')) {
+    data.center = getParam('center')
+  }
+  main_viewport_element.setData = data
 }
 
-function updateViews(state) {
+function updateViews() {
 
-  // If no coordinate is given, center mid-image
-  if (!state.coordinate && state.item) {
-    state.coordinate = [
-      (state.item.bbox[0] + state.item.bbox[2]) / 2,
-      (state.item.bbox[1] + state.item.bbox[3]) / 2
-    ]
-  }
-
-  if (state.orientation === 'map') {
+  if (getParam('orientation') === 'map') {
     openMap()
   } else {
-    updateMainViewport(state)
+    updateMainViewport()
   }
-  
-  updateUrl(state)
 
   // Update the other viewports
-  direction_picker_element.setView = {
-    collection: state.item.collection,
-    center: state.coordinate
-  }
-}
-
-function queryItemsForDifferentCollections(state, collections, collection_idx) {
-  return queryItems(state.coordinate, 'north', collections[collection_idx].id).then((response) => {
-    if (response.features.length > 0) {
-      state.item = response.features[0]
-      return state
-    } else {
-      return queryItemsForDifferentCollections(state, collections, collection_idx + 1)
+  if (collection) {
+    direction_picker_element.setView = {
+      collection: collection,
+      center: getParam('center')
     }
-  })
-}
-
-function parseUrlState(params, state) {
-  let new_state = Object.assign({}, state)
-  
-  // Parse center param from URL
-  const param_center = params.get('center')
-  if (param_center) {
-    new_state.coordinate = param_center.split(',').map(function(coord) {
-      return Number(coord)
-    })
   }
-
-  // Parse orientation status from URL
-  const param_orientation = params.get('orientation')
-  if (param_orientation) {
-    new_state.orientation = param_orientation
-  } else {
-    new_state.orientation = 'north'
-  }
-  
-  // Parse item param from URL
-  const param_item = params.get('item')
-  if (param_item) {
-    return queryItem(param_item).then((item) => {
-      new_state.item = item
-      return new_state
-    })
-  } else {
-    // Go through all collections and return the newest available item
-    return queryItemsForDifferentCollections(new_state, collections, 0)
-  }
-}
-
-function updateUrl(state) {
-  const url = new URL(window.location)
-  if (state.item) {
-    url.searchParams.set('item', state.item.id)
-  }
-  if (state.coordinate) {
-    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
-  }
-  if (state.orientation) {
-    url.searchParams.set('orientation', state.orientation)
-  }
-  window.history.pushState({}, '', url)
 }
 
 function openMap() {
   main_viewport_element.setAttribute('hidden', true)
   big_map_element.removeAttribute('hidden')
-  big_map_element.setView = {
-    center: state.coordinate
-  }
 }
 
 function setupConfigurables(conf) {
@@ -153,49 +81,48 @@ function setupConfigurables(conf) {
 
 // Set up event listeners
 
+
 // When a coordinate input is given, update viewports
-document.addEventListener('coordinatechange', async function(event) {
-  state.coordinate = event.detail
-  updateViews(state)
+document.addEventListener('coordinatechange', function(event) {
+  setParams({ center: event.detail })
 })
 
-// On a new address input, update viewports
+// On a new address input, update URL params
 document.addEventListener('gsearch:select', function(event) {
-  state.coordinate = getGSearchCenterPoint(event.detail)
-  queryItemsForDifferentCollections(state, collections, 0).then((response) => {
-    state.item = response.item
-    updateViews(state)
+  const new_center = getGSearchCenterPoint(event.detail)
+  queryItem(getParam('item')).then((item) => {
+    // Check if new center is still within current image.
+    if (new_center[0] > item.bbox[0] && new_center[0] < item.bbox[2] && new_center[1] > item.bbox[1] && new_center[1] < item.bbox[3]) {
+      setParams({ center: new_center })
+    } else {
+      queryItems(new_center, getParam('orientation'), item.collection).then((response) => {
+        setParams({ center: new_center, item: response.features[0].id })
+      })
+    }
   })
+  
 })
 
 // When a viewport is clicked in the direction picker, update the main viewport and the URL
 direction_picker_element.addEventListener('directionchange', function(event) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
-  main_viewport_element.setItem = event.detail
-  main_viewport_element.setCenter = state.coordinate
-  state.item = event.detail
-  state.orientation = event.detail.properties.direction
-  updateUrl(state)
+  main_viewport_element.setData = {item: event.detail, center: getParam('center')}
+  setParams({orientation: event.detail.properties.direction})
 })
 
 // When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
-direction_picker_element.addEventListener('mapchange', function(event) {
-  state.orientation = 'map'
-  updateUrl(state)
+direction_picker_element.addEventListener('mapchange', function() {
   openMap()
+  setParams({orientation: 'map'})
 })
 
-// When a differently dated image is selected, update the URL and check to see if direction picker needs an update
-main_viewport_element.shadowRoot.addEventListener('imagechange', function(event) {
-  if (event.detail.collection !== state.item.collection) {
-    direction_picker_element.setView = {
-      collection: event.detail.collection,
-      center: state.coordinate
-    }
-  }
-  state.item = event.detail
-  updateUrl(state)
+// When the URL parameters update, update the views and collection value
+window.addEventListener('urlupdate', function() {
+  const year = getParam('item').substring(0,4)
+  collection = `skraafotos${year}`
+
+  updateViews()
 })
 
 // Catch load errors and display to user
@@ -212,11 +139,12 @@ document.addEventListener('loaderror', function(event) {
 
 setupConfigurables(configuration)
 
-getCollections().then(colls => {
-  collections = colls
+if (getParam('item')) {
+  const item = await queryItem(getParam('item'))
+  collection = item.collection
+} else if (getParam('center')) {
+  const collections = await getCollections()
+  collection = collections[0].id
+}
 
-  parseUrlState(url_params, state).then((new_state) => {
-    state = new_state
-    updateViews(state)
-  })
-})
+updateViews()

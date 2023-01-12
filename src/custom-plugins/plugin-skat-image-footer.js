@@ -1,6 +1,6 @@
 /** @module */
 
-import { queryItem } from './api.js'
+import { queryItem } from '../modules/api.js'
 
 // Initialize logo image so it's ready when needed
 const logo_image = new Image()

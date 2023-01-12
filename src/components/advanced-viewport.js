@@ -174,9 +174,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updateDateSelector(center, image_id, direction) {
-    this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
-    this.date_selector_element.setAttribute('data-direction', direction)
-    this.date_selector_element.setAttribute('data-selected', image_id)
+    this.date_selector_element.setData = {
+      center: center,
+      selected: image_id,
+      orientation: direction
+    }
   }
 
   displaySpinner() {
@@ -216,9 +218,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // When an image is selected via the date-selector, update this viewport
     this.shadowRoot.addEventListener('imagechange', (event) => {
-      this.map.removeLayer(this.layer_image)
-      this.updateItem(event.detail)
-      this.updateCenter(this.coord_world)
+      this.setData = {
+        item: event.detail,
+        center: this.coord_world
+      }
       this.toggleMode('center')
     })
 
@@ -234,7 +237,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     })
 
     // Reset mode when changing the image
-    document.addEventListener('addresschange', () => {
+    document.addEventListener('gsearch:select', () => {
       this.toggleMode('center')
     })
     document.addEventListener('directionchange', () => {

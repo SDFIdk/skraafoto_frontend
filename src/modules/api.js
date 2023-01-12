@@ -19,11 +19,11 @@ function queryItem(item_id) {
  * Fetches any number of STAC API items based on location and 
  * @param {array} coord - EPSG:25832 coordinate [x,y] of location that the items should cover
  * @param {string} direction - Direction that the item images should be facing ['north', 'south', 'east', 'west', 'nadir']
- * @param {string} collection - Collection from which to fetch the item(s)
+ * @param {string} [collection] - Collection from which to fetch the item(s)
  * @param {number} [limit] - Limits the number of returned results
  * @return {object} A featureCollection of STAC items
  */
-function queryItems(coord, direction, collection, limit = 1) {
+async function queryItems(coord, direction, collection, limit = 1) {
   let search_query = { 
     "and": [
       {"contains": [ { "property": "geometry"}, {"type": "Point", "coordinates": [coord[0], coord[1]]} ]},
@@ -37,7 +37,7 @@ function queryItems(coord, direction, collection, limit = 1) {
 }
 
 /** 
- * Fetches a list of collections that exist in the STAC database
+ * Fetches a list of (non-TEST) collections that exist in the STAC database
  * @return {array} A list of collection IDs
  */
 function getCollections() {
@@ -48,7 +48,15 @@ function getCollections() {
       if (a.id < b.id) {return 1}
       if (a.id === b.id) {return 0}
     })
-    return sorted_collections
+    // Filter out collections with "TEST" in them.
+    const useful_collections = sorted_collections.filter(function(coll) {
+      if (coll.id.includes('test') || coll.id.includes('TEST')) {
+        return false
+      } else {
+        return true
+      }
+    })
+    return useful_collections
   })
 }
 
