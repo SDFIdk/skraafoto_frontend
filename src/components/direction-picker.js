@@ -247,12 +247,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
   updateViewport(coordinate, item) {
     const element = this[`${item.properties.direction}_element`]
-    element.setItem = item
-    element.setCenter = coordinate
+    const data = {}
+    data.item = item
+    data.center = coordinate
     // Update zoom level of nadir viewport
     if (item.properties.direction === 'nadir') {
-      element.setZoom = 4
+      data.zoom = 4
     }
+    element.setData = data
   }
 
   highlightCurrentDirection() {

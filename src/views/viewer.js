@@ -37,12 +37,14 @@ const direction_picker_element = document.querySelector('skraafoto-direction-pic
 // Methods
 
 function updateMainViewport() {
+  const data = {}
   if (getParam('item')) {
-    main_viewport_element.setItemId = getParam('item')
+    data.item = getParam('item')
   }
   if (getParam('center')) {
-    main_viewport_element.setCenter = getParam('center')
-  }    
+    data.center = getParam('center')
+  }
+  main_viewport_element.setData = data
 }
 
 function updateViews() {
@@ -105,8 +107,7 @@ document.addEventListener('gsearch:select', function(event) {
 direction_picker_element.addEventListener('directionchange', function(event) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
-  main_viewport_element.setItem = event.detail
-  main_viewport_element.setCenter = getParam('center')
+  main_viewport_element.setData = {item: event.detail, center: getParam('center')}
   collection = event.detail.collection
   setParams({orientation: event.detail.properties.direction})
 })
