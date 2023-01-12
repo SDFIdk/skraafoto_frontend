@@ -174,9 +174,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updateDateSelector(center, image_id, direction) {
-    this.date_selector_element.setAttribute('data-center', JSON.stringify(center))
-    this.date_selector_element.setAttribute('data-direction', direction)
-    this.date_selector_element.setAttribute('data-selected', image_id)
+    this.date_selector_element.setData = {
+      center: center,
+      selected: image_id,
+      orientation: direction
+    }
   }
 
   displaySpinner() {
