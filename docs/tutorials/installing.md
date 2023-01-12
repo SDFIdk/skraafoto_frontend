@@ -27,7 +27,7 @@ const environment = {
 
 }
 ```
-You'll need to supply your own tokens, usernames, and passwords for your particular configuration.
+You'll need to supply your own tokens for your particular configuration.
 You can copy and edit `public/config.js.example` to use as your own `config.js`.
 
 ## Build the documentation
