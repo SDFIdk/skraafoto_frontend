@@ -257,11 +257,9 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   async updateCenter(coordinate) {
-    
     if (!this.item) {
       return 
     }
-
     if (coordinate[2] === undefined) {
       coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)  
     }

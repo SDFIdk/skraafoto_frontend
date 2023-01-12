@@ -216,9 +216,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // When an image is selected via the date-selector, update this viewport
     this.shadowRoot.addEventListener('imagechange', (event) => {
-      this.map.removeLayer(this.layer_image)
-      this.updateItem(event.detail)
-      this.updateCenter(this.coord_world)
+      this.setData = {
+        item: event.detail,
+        center: this.coord_world
+      }
       this.toggleMode('center')
     })
 
