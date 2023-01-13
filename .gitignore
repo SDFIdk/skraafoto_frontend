@@ -8,7 +8,7 @@ node_modules/
 dist/
 docs/api/
 
-# Config
+# Configw
 config.js
 
 # Test files

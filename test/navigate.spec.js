@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test'
 
+
 test('Search for an address from start page', async ({ page }) => {
-  await page.goto('http://localhost:8000/')
+
+  await page.goto('/')
   await page.getByPlaceholder('Søg adresse eller stednavn').fill('Rentemestervej 8')
   await page.getByPlaceholder('Søg adresse eller stednavn').press('Enter')
 
