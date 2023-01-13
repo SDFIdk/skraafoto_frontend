@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test'
 
-// Run tests in this file with portrait-like viewport.
-test.use({ headless: false, viewport: { width: 600, height: 900 } });
-
 test('Search for an address from start page', async ({ page }) => {
 
   await page.goto('/')
