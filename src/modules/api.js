@@ -14,9 +14,8 @@ function queryItem(item_id) {
     if (data.name === 'Error') {
       alert('Kunne ikke hente data fra Skråfoto API serveren. Prøv igen senere.')
       return []
-    } else {
-      return data.features[0]
     }
+    return data.features[0]
   })
 }
 
@@ -43,6 +42,7 @@ async function queryItems(coord, direction, collection, limit = 1) {
     if (response.name === 'Error') {
       alert('Kunne ikke hente data fra Skråfoto API serveren. Prøv igen senere.')
     }
+    return response
   })
 }
 
