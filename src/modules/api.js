@@ -11,6 +11,10 @@ import { configuration } from './configuration.js'
 function queryItem(item_id) {
   return getSTAC(`/search?limit=1&ids=${item_id}&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
   .then((data) => {
+    if (data.name === 'Error') {
+      alert('Kunne ikke hente data fra Skråfoto API serveren. Prøv igen senere.')
+      return []
+    }
     return data.features[0]
   })
 }
@@ -34,6 +38,12 @@ async function queryItems(coord, direction, collection, limit = 1) {
     search_query.and.push({"eq": [ { "property": "collection" }, collection ]})
   }
   return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
+  .then(response => {
+    if (response.name === 'Error') {
+      alert('Kunne ikke hente data fra Skråfoto API serveren. Prøv igen senere.')
+    }
+    return response
+  })
 }
 
 /** 

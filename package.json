@@ -4,11 +4,11 @@
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
+    "test": "npx playwright test",
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
     "docs": "jsdoc --configure docs/jsdoc-conf.js && cp -r docs/images docs/api/",
-    "serve-docs": "python3 -m http.server 8001 --directory docs/api",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve-docs": "python3 -m http.server 8001 --directory docs/api"
   },
   "repository": {
     "type": "git",
@@ -34,11 +34,11 @@
     "@dataforsyningen/gsearch-ui": "^0.8.1",
     "@dataforsyningen/icons": "^0.2.0",
     "@dataforsyningen/saul": "^3.0.2",
-    "dawa-autocomplete2": "^1.0.2",
     "ol": "6.14.1",
     "proj4": "^2.8.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.29.2",
     "esbuild": "^0.14.39",
     "jsdoc": "^4.0.0"
   }
