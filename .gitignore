@@ -1,7 +1,17 @@
-node_modules/
-dist/
-docs/api/
-config.js
-
 # macOS system files
 .DS_Store
+
+# NPM packages
+node_modules/
+
+# Built files
+dist/
+docs/api/
+
+# Config
+config.js
+
+# Test files
+/test-results/
+/playwright-report/
+/playwright/.cache/
