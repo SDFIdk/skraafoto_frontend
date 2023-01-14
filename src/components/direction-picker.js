@@ -281,15 +281,23 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
-      let target_img
+      let target_item
       switch(event.target.className) {
         case 'viewport-pick-option':
-          target_img = event.target.item
-          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
+          target_item = event.target.item
+          setParams({
+            orientation: target_item.properties.direction,
+            item: target_item.id
+          })
+          //this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'sf-direction-picker-btn':
-          target_img = event.target.querySelector('.viewport-pick-option').item
-          this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
+          target_item = event.target.querySelector('.viewport-pick-option').item
+          //this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
+          setParams({
+            orientation: target_item.properties.direction,
+            item: target_item.id
+          })
           break
         case 'pick-map':
           // Set orientation parameter, causing the page to reload with map open

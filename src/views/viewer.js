@@ -50,8 +50,11 @@ function updateMainViewport() {
 function updateViews() {
 
   if (getParam('orientation') === 'map') {
-    openMap()
+    big_map_element.removeAttribute('hidden')
+    main_viewport_element.setAttribute('hidden', true)
   } else {
+    main_viewport_element.removeAttribute('hidden')
+    big_map_element.setAttribute('hidden', true)
     updateMainViewport()
   }
 
@@ -62,11 +65,6 @@ function updateViews() {
       center: getParam('center')
     }
   }
-}
-
-function openMap() {
-  main_viewport_element.setAttribute('hidden', true)
-  big_map_element.removeAttribute('hidden')
 }
 
 function setupConfigurables(conf) {
@@ -101,14 +99,6 @@ document.addEventListener('gsearch:select', function(event) {
     }
   })
   
-})
-
-// When a viewport is clicked in the direction picker, update the main viewport and the URL
-direction_picker_element.addEventListener('directionchange', function(event) {
-  big_map_element.setAttribute('hidden', true)
-  main_viewport_element.removeAttribute('hidden')
-  main_viewport_element.setData = {item: event.detail, center: getParam('center')}
-  setParams({orientation: event.detail.properties.direction})
 })
 
 // When the URL parameters update, update the views and collection value
