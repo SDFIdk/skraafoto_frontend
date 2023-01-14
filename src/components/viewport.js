@@ -112,25 +112,6 @@ export class SkraaFotoViewport extends HTMLElement {
     this.update(data)
   }
 
-  // Set image item and updates image layer
-  set setItem(item) {
-    this.setData = {item: item}
-  }
-
-  set setItemId(item_id) {
-    this.setData = {item: item_id}
-  }
-
-  // Set center coordinate and update view
-  set setCenter(coordinate) {
-    this.setData = {center: coordinate}
-  }
-
-  // Set zoom level and update view
-  set setZoom(zoom_level) {
-    this.setData = {zoom: zoom_level}
-  }
-
 
   constructor() {
     super()
@@ -155,10 +136,10 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async update({item,center,zoom}) {
     if (typeof item === 'object') {
-      this.item = item
+      this.updateImage(item)
     } else if (typeof item === 'string') {
       const item_obj = await queryItem(item)
-      this.item = item_obj
+      this.updateImage(item_obj)
     }
     if (center) {
       await this.updateCenter(center)
@@ -175,17 +156,22 @@ export class SkraaFotoViewport extends HTMLElement {
     this.updateNonMap()
   }
 
+  updateImage(item) {
+    if (this.map && item.id !== this.item?.id) {
+      this.item = item
+      this.source_image = this.generateSource(this.item.assets.data.href)
+
+      this.map.removeLayer(this.layer_image)
+      this.layer_image = this.generateLayer(this.source_image)
+      this.map.addLayer(this.layer_image)
+    }
+  }
+
   async updateMap() {
 
     if (!this.item || !this.coord_image || !this.zoom || !this.map) {
       return
     }
-
-    this.source_image = this.generateSource(this.item.assets.data.href)
-
-    this.map.removeLayer(this.layer_image)
-    this.layer_image = this.generateLayer(this.source_image)
-    this.map.addLayer(this.layer_image)
 
     this.map.removeLayer(this.layer_icon)
     this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')

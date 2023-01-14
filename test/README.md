@@ -1,10 +1,8 @@
 # Notes for manual testing
 
 ## TODO
-* Fix Map not updating on address change
+
 Fix date selector
-Fix address search
-Fix edge recenter
 
 ## User scenarios
 
@@ -17,7 +15,7 @@ Fix edge recenter
 [ ] Load viewer with item: localhost:8000/viewer.html?item=2021_83_28_2_0014_00003307
 [ ] Load viewer with direction (not map): localhost:8000/viewer.html?orientation=nadir
 [ ] Load viewer with direction map: localhost:8000/viewer.html?orientation=map
-[-] Load viewer with center & direction map: localhost:8000/viewer.html?orientation=map&center=514279.05%2C6188146.08%2C84.4
+[ ] Load viewer with center & direction map: localhost:8000/viewer.html?orientation=map&center=514279.05%2C6188146.08%2C84.4
 
 [ ] Load image, switch to map, pick new position, switch to image
 [ ] Load image, switch to different image
@@ -30,4 +28,4 @@ Fix edge recenter
 [ ] Click in maxiviewport to change center
 [ ] Search and select new address to center view at that address
 
-[ ] 
+[ ] Click in corners of image to see if they change image only when necessary

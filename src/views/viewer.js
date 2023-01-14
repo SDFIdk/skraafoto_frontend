@@ -88,25 +88,20 @@ function setupConfigurables(conf) {
 
 // When a coordinate input is given, update viewports
 document.addEventListener('coordinatechange', function(event) {
-  setParams({ center: event.detail })
+  //setParams({ center: event.detail })
 })
 
 // On a new address input, update URL params
 address_search_element.addEventListener('gsearch:select', function(event) {
   const new_center = getGSearchCenterPoint(event.detail)
-  setParams({ center: new_center, item: null })
-  /*
-  queryItem(getParam('item')).then((item) => {
-    // Check if new center is still within current image.
-    if (new_center[0] > item.bbox[0] && new_center[0] < item.bbox[2] && new_center[1] > item.bbox[1] && new_center[1] < item.bbox[3]) {
-      setParams({ center: new_center })
-    } else {
-      queryItems(new_center, getParam('orientation'), item.collection).then((response) => {
-        setParams({ center: new_center, item: response.features[0].id })
-      })
-    }
-  })
-  */
+  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
+  if (orientation !== 'map') {
+    queryItems(new_center, orientation, collection).then((response) => {
+      setParams({ center: new_center, item: response.features[0].id })
+    })
+  } else {
+    setParams({ center: new_center, item: null })
+  }
 })
 
 // When the URL parameters update, update the views and collection value
