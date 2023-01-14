@@ -22,7 +22,7 @@ async function sanitizeParams(url) {
   }
 
   // If we have orientation and center
-  if (params.get('center') && params.get('orientation')) {
+  if (params.get('center') && params.get('orientation') === 'map') {
     return params
   }
 

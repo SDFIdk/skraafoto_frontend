@@ -94,7 +94,15 @@ document.addEventListener('coordinatechange', function(event) {
 // On a new address input, update URL params
 address_search_element.addEventListener('gsearch:select', function(event) {
   const new_center = getGSearchCenterPoint(event.detail)
-  setParams({ center: new_center, item: null })
+  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
+  if (orientation !== 'map') {
+    queryItems(new_center, orientation, collection).then((response) => {
+      setParams({ center: new_center, item: response.features[0].id })
+    })
+  } else {
+    setParams({ center: new_center, item: null })
+  }
+  
   /*
   queryItem(getParam('item')).then((item) => {
     // Check if new center is still within current image.

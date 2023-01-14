@@ -1,9 +1,9 @@
 # Notes for manual testing
 
 ## TODO
-* Fix Map not updating on address change
+
 Fix date selector
-Fix address search
+* Fix image not updating on address search
 Fix edge recenter
 
 ## User scenarios
