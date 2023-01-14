@@ -84,7 +84,7 @@ export class MeasureHeightTool {
     document.addEventListener('directionchange', this.imageChangeHandler.bind(this))
     document.addEventListener('addresschange', this.imageChangeHandler.bind(this))
     document.addEventListener('mapchange', this.imageChangeHandler.bind(this))
-    document.addEventListener('imagechange', this.imageChangeHandler.bind(this))
+    document.addEventListener('urlupdate', this.imageChangeHandler.bind(this))
   }
 
 

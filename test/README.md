@@ -1,9 +1,5 @@
 # Notes for manual testing
 
-## TODO
-
-Fix date selector
-
 ## User scenarios
 
 [ ] Load viewer with center, direction, item: http://localhost:8000/viewer.html?center=722120.17972822%2C6178879.0063692&orientation=north&item=2021_84_40_2_0041_00090757

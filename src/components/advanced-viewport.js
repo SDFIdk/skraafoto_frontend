@@ -216,15 +216,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       interactions: defaultInteractions({pinchRotate: false})
     })
 
-    // When an image is selected via the date-selector, update this viewport
-    this.shadowRoot.addEventListener('imagechange', (event) => {
-      this.setData = {
-        item: event.detail,
-        center: this.coord_world
-      }
-      this.toggleMode('center')
-    })
-
     // Change mode when clicking toolbar buttons
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
       if (event.target.classList.contains('btn-height-measure')) {
@@ -241,6 +232,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.toggleMode('center')
     })
     document.addEventListener('directionchange', () => {
+      this.toggleMode('center')
+    })
+    window.addEventListener('urlupdate', () => {
       this.toggleMode('center')
     })
 
