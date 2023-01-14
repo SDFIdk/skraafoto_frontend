@@ -1,5 +1,6 @@
 import { getWorldXYZ } from '@dataforsyningen/saul'
-import { queryItems } from '../modules/api'
+import { queryItems } from '../modules/api.js'
+import { setParams } from '../modules/url-state.js'
 
 /**
  * Enables a user to click an image an have it centered in that location
@@ -42,16 +43,17 @@ export class CenterTool {
   update(event, viewport, world_xyz) {
 
     viewport.coord_world = world_xyz
-    viewport.dispatchEvent(new CustomEvent('coordinatechange', { detail: world_xyz, bubbles: true }))
 
     // Checks if click was made near image bounds and initiate loading a new image
     if ( !this.checkBounds(viewport.item.properties['proj:shape'], event.coordinate) ) {
       queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
       .then(response => {
         if (response.features[0].id !== viewport.item.id) {
-          viewport.shadowRoot.dispatchEvent(new CustomEvent('imagechange', {detail: response.features[0], bubbles: true, composed: true}))
+          setParams({ center: world_xyz, item: response.features[0].id })
         }   
       })
+    } else {
+      setParams({ center: world_xyz })
     }
   }
   
