@@ -111,16 +111,13 @@ direction_picker_element.addEventListener('directionchange', function(event) {
   setParams({orientation: event.detail.properties.direction})
 })
 
-// When the tiny map in direction picker is clicked, hide the main viewport and display a big map instead.
-direction_picker_element.addEventListener('mapchange', function() {
-  openMap()
-  setParams({orientation: 'map'})
-})
-
 // When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function() {
-  const year = getParam('item').substring(0,4)
-  collection = `skraafotos${year}`
+  const item = getParam('item')
+  if (item) {
+    const year = item.substring(0,4)
+    collection = `skraafotos${year}`
+  }
 
   updateViews()
 })

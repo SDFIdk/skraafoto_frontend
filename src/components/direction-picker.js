@@ -1,4 +1,5 @@
 import { queryItems } from '../modules/api.js'
+import { setParams } from '../modules/url-state.js'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions
@@ -196,9 +197,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     })
 
     // Update map
-    this.map_element.setView = {
-      center: options.center
-    }
+    this.map_element.dataset.center = JSON.stringify(options.center)
   }
 
 
@@ -293,7 +292,11 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'pick-map':
-          this.dispatchEvent(new CustomEvent('mapchange', {bubbles: true, composed: true}))
+          // Set orientation parameter, causing the page to reload with map open
+          setParams({
+            orientation: 'map',
+            item: null
+          })
           break
         default:
           return
