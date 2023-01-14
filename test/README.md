@@ -13,6 +13,8 @@
 [ ] Load viewer with direction map: localhost:8000/viewer.html?orientation=map
 [ ] Load viewer with center & direction map: localhost:8000/viewer.html?orientation=map&center=514279.05%2C6188146.08%2C84.4
 
+[ ] Load image, switch to map, pick new position, switch to image
+
 [ ] Load viewer with no params: localhost:8000/viewer.html
 
 

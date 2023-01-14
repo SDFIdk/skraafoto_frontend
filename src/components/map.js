@@ -75,26 +75,10 @@ export class SkraaFotoMap extends HTMLElement {
   // getters
   static get observedAttributes() { 
     return [
-      'zoom', 
-      'center',
-      'minimal'
+      'data-center',
+      'minimal',
+      'hidden'
     ]
-  }
-
-  // setters
-  set setView(options) {
-    // Make sure a map exists before we try to update it
-    const throttle = () => { 
-      setTimeout(() => {
-        if (this.map === null) {
-          throttle()
-        } else {
-          this.updateMap(options.center)
-          return true
-        }
-      }, 200)
-    }
-    throttle()
   }
 
   constructor() {
@@ -123,7 +107,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   generateMap(is_minimal) {
-    fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.api_stac_token}`)
+    return fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.api_stac_token}`)
     .then((response) => {
       return response.text()
     })
@@ -134,14 +118,6 @@ export class SkraaFotoMap extends HTMLElement {
         matrixSet: 'View1'
       })
 
-      this.view = new View({
-        projection: this.projection,
-        center: getParam('center'),
-        zoom: 18
-      })
-
-      this.icon_layer = this.generateIconLayer([0,0])
-
       let controls
       if (is_minimal !== null) {
         controls = defaultControls({rotate: false, attribution: false, zoom: false})
@@ -149,30 +125,25 @@ export class SkraaFotoMap extends HTMLElement {
         controls = defaultControls({rotate: false, attribution: false})
       }
       
-      this.map = new Map({
+      const map = new Map({
         layers: [
           new TileLayer({
             opacity: 1,
             source: new WMTS(options)
-          }),
-          this.icon_layer
+          })
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
-        view: this.view,
         controls: controls
       })
 
       if (is_minimal === null) {
         // Do something when the big map is clicked
-        this.map.on('singleclick', (event) => {
+        map.on('singleclick', (event) => {
           this.singleClickHandler(event)
         })
       }
 
-      // Not quite sure why, but this is needed to make the map actually display
-      setTimeout(() => {
-        this.map.updateSize()
-      }, 200)
+      return map
     })
   }
 
@@ -195,31 +166,48 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    //this.dispatchEvent(new CustomEvent('coordinatechange', { detail: event.coordinate, bubbles: true }))
     setParams({
       orientation: 'north',
       center: event.coordinate
     })
+    // Update crosshairs icon on map
+    this.map.removeLayer(this.icon_layer)
+    this.icon_layer = this.generateIconLayer(event.coordinate)
+    this.map.addLayer(this.icon_layer)
   }
 
-  updateMap(center) {
-    const new_view = new View({
+  async updateMap(center) {
+    if (!this.map) {
+      this.map = await this.generateMap(this.getAttribute('minimal'))
+    } else if (this.map && this.icon_layer) {
+      this.map.removeLayer(this.icon_layer)
+    }
+    const view = new View({
       projection: this.projection,
       center: center,
       zoom: 18
     })
-    this.map.setView(new_view)
-    this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
-    this.map.updateSize()
+    this.map.setView(view)
+    this.map.updateSize() // Forces map visibility by updating layout
   }
 
 
-  // Lifecycle hooks
+  // Lifecycle
 
-  connectedCallback() {
-    this.generateMap(this.getAttribute('minimal'))
+  attributeChangedCallback(name, old_value, new_value) {
+    if (name === 'hidden') {
+      if (!(new_value === null || new_value === 'false')) {
+        // Map is hidden
+        return
+      } else {
+        this.updateMap(getParam('center'))    
+      }
+    }
+    if (name === 'data-center') {
+      this.updateMap(JSON.parse(new_value))  
+    }
   }
 }
 
