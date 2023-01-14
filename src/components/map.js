@@ -31,7 +31,6 @@ export class SkraaFotoMap extends HTMLElement {
   parser = new WMTSCapabilities()
   map = null
   icon_layer
-  view
   styles = `
     :root {
       height: 100%;
@@ -106,8 +105,8 @@ export class SkraaFotoMap extends HTMLElement {
     this.shadowRoot.append(div)
   }
 
-  generateMap(is_minimal) {
-    return fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${this.api_stac_token}`)
+  generateMap(is_minimal, center) {
+    return fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${ this.api_stac_token }`)
     .then((response) => {
       return response.text()
     })
@@ -124,6 +123,12 @@ export class SkraaFotoMap extends HTMLElement {
       } else {
         controls = defaultControls({rotate: false, attribution: false})
       }
+
+      const view = new View({
+        projection: this.projection,
+        center: center,
+        zoom: 18
+      })
       
       const map = new Map({
         layers: [
@@ -133,6 +138,7 @@ export class SkraaFotoMap extends HTMLElement {
           })
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
+        view: view,
         controls: controls
       })
 
@@ -177,35 +183,25 @@ export class SkraaFotoMap extends HTMLElement {
 
   async updateMap(center) {
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'))
+      this.map = await this.generateMap(this.getAttribute('minimal'), center)
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
-    const view = new View({
-      projection: this.projection,
-      center: center,
-      zoom: 18
-    })
+
+    const view = this.map.getView()
+    view.setCenter(center)
+    this.map.setView(view)
+
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
-    this.map.setView(view)
-    this.map.updateSize() // Forces map visibility by updating layout
   }
 
 
   // Lifecycle
 
   attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'hidden') {
-      if (!(new_value === null || new_value === 'false')) {
-        // Map is hidden
-        return
-      } else {
-        this.updateMap(getParam('center'))    
-      }
-    }
     if (name === 'data-center') {
-      this.updateMap(JSON.parse(new_value))  
+      this.updateMap(JSON.parse(new_value))
     }
   }
 }

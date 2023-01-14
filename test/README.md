@@ -1,6 +1,7 @@
 # Notes for manual testing
 
 ## TODO
+* Fix Map not updating on address change
 Fix date selector
 Fix address search
 Fix edge recenter

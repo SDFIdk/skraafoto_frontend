@@ -32,11 +32,20 @@ let collection = null
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
 const direction_picker_element = document.querySelector('skraafoto-direction-picker')
+const address_search_element = document.querySelector('skraafoto-address-search')
 
 
 // Methods
 
+function updateMainMap() {
+  main_viewport_element.setAttribute('hidden', true)
+  big_map_element.removeAttribute('hidden')  
+  big_map_element.dataset.center = JSON.stringify(getParam('center'))
+}
+
 function updateMainViewport() {
+  big_map_element.setAttribute('hidden', true)
+  main_viewport_element.removeAttribute('hidden')
   const data = {}
   if (getParam('item')) {
     data.item = getParam('item')
@@ -50,11 +59,8 @@ function updateMainViewport() {
 function updateViews() {
 
   if (getParam('orientation') === 'map') {
-    big_map_element.removeAttribute('hidden')
-    main_viewport_element.setAttribute('hidden', true)
+    updateMainMap()
   } else {
-    main_viewport_element.removeAttribute('hidden')
-    big_map_element.setAttribute('hidden', true)
     updateMainViewport()
   }
 
@@ -86,8 +92,10 @@ document.addEventListener('coordinatechange', function(event) {
 })
 
 // On a new address input, update URL params
-document.addEventListener('gsearch:select', function(event) {
+address_search_element.addEventListener('gsearch:select', function(event) {
   const new_center = getGSearchCenterPoint(event.detail)
+  setParams({ center: new_center, item: null })
+  /*
   queryItem(getParam('item')).then((item) => {
     // Check if new center is still within current image.
     if (new_center[0] > item.bbox[0] && new_center[0] < item.bbox[2] && new_center[1] > item.bbox[1] && new_center[1] < item.bbox[3]) {
@@ -98,7 +106,7 @@ document.addEventListener('gsearch:select', function(event) {
       })
     }
   })
-  
+  */
 })
 
 // When the URL parameters update, update the views and collection value
@@ -108,7 +116,6 @@ window.addEventListener('urlupdate', function() {
     const year = item.substring(0,4)
     collection = `skraafotos${year}`
   }
-
   updateViews()
 })
 

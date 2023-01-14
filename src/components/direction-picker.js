@@ -289,11 +289,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
             orientation: target_item.properties.direction,
             item: target_item.id
           })
-          //this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           break
         case 'sf-direction-picker-btn':
           target_item = event.target.querySelector('.viewport-pick-option').item
-          //this.dispatchEvent(new CustomEvent('directionchange', {detail: target_img, bubbles: true, composed: true}))
           setParams({
             orientation: target_item.properties.direction,
             item: target_item.id
