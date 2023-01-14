@@ -66,16 +66,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
     </select>
   `
 
-
-  // getters
-  static get observedAttributes() { 
-    return [
-      'data-orientation', 
-      'data-center',
-      'data-selected'
-    ]
-  }
-
   // setters
 
   set setData(data) {
