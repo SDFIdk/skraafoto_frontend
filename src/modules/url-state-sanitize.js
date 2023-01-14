@@ -21,6 +21,11 @@ async function sanitizeParams(url) {
     return params
   }
 
+  // If we have orientation and center
+  if (params.get('center') && params.get('orientation')) {
+    return params
+  }
+
   // If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {

@@ -167,7 +167,6 @@ export class SkraaFotoMap extends HTMLElement {
 
   singleClickHandler(event) {
     setParams({
-      orientation: 'north',
       center: event.coordinate
     })
     // Update crosshairs icon on map
