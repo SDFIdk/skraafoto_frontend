@@ -19,8 +19,6 @@
 [ ] Load viewer with no params: localhost:8000/viewer.html
 
 [ ] Select different image from date-selector
-[ ] Click minimap to enable maximap
-[ ] Click in maximap to change center
 [ ] Click in maxiviewport to change center
 [ ] Search and select new address to center view at that address
 
