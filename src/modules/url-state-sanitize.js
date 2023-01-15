@@ -17,7 +17,8 @@ async function sanitizeParams(url) {
 
   // If we have item and center
   if (params.get('center') && params.get('item')) {
-    params.set('orientation', 'north')
+    const item = await queryItem(params.get('item'))
+    params.set('orientation', item.properties.direction)
     return params
   }
 
