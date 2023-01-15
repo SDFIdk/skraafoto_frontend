@@ -4,10 +4,11 @@
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
-    "test": "npx playwright test",
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
     "docs": "jsdoc --configure docs/jsdoc-conf.js && cp -r docs/images docs/api/",
+    "test": "npx playwright test",
+    "test-update": "npx playwright test --update-snapshots",
     "serve-docs": "python3 -m http.server 8001 --directory docs/api"
   },
   "repository": {
