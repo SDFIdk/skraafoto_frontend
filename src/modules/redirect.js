@@ -4,7 +4,7 @@
 function redirect() {
   if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost') {
     let new_href = window.location.href
-    window.location.href = new_href.replace('http', 'https')
+    window.location.assign(new_href.replace('http', 'https'))
   }
 }
 
