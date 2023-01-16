@@ -12,10 +12,7 @@ import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import { redirect } from '../modules/redirect.js'
 
-// Redirect if page is HTTP
-redirect()
 
 // Initialize web components
 

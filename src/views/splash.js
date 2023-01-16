@@ -3,10 +3,7 @@ import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import { redirect } from '../modules/redirect.js'
 
-// Redirect if page is HTTP
-redirect()
 
 customElements.define('skraafoto-header', SkraaFotoHeader)
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
