@@ -7,7 +7,6 @@ import { getParam } from '../modules/url-state.js'
 export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
-  map_element
   button_element
   link_element
   viewport
@@ -50,7 +49,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
       
       const { download } = await import('../custom-plugins/plugin-custom-download-tool.js')
       this.button_element.addEventListener('click', () => {
-        download(this.map_element, this.link_element)
+        download(this.viewport.map.getTarget(), this.link_element)
       })
 
     } else {
