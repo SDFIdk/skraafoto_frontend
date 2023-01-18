@@ -16,7 +16,7 @@ let configuration = {
   ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
 
   SITEIMPROVE_SCRIPT: '',
-  DOWNLOAD_IMAGE_FOOTER: 'default'
+  DOWNLOAD_TYPE: 'default' // 'default' | 'currentview'
 }
 
 // We assume a global variable `config` has been declared
