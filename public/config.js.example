@@ -18,5 +18,6 @@ const config = {
   API_DHM_TOKENB: "[ INSERT PASSWORD ]",
 
   // Enable selected features
-  ENABLE_VIEW_SWITCH: false
+  ENABLE_VIEW_SWITCH: false,
+  DOWNLOAD_TYPE: 'default'
 }

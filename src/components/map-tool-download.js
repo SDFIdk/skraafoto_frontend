@@ -1,4 +1,5 @@
 import { configuration } from '../modules/configuration.js'
+import { getParam } from '../modules/url-state.js'
 
 /**
  * Web component that enables user to download the current image
@@ -6,14 +7,13 @@ import { configuration } from '../modules/configuration.js'
 export class SkraaFotoDownloadTool extends HTMLElement {
 
   // properties
-  map_element
   button_element
   link_element
-  drawFooterFunc
+  viewport
 
   // setters
-  set setCanvas(map_element) {
-    this.map_element = map_element
+  set setContextTarget(selector) {
+    this.viewport = document.querySelector(selector)
   }
 
   constructor() {
@@ -34,67 +34,31 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.link_element = document.createElement('a')
     this.link_element.href = '#'
   }
-
-  async setupPlugins() {
-    if (configuration.DOWNLOAD_IMAGE_FOOTER === 'vurdst') {
-      const { drawFooterContent } = await import('../custom-plugins/plugin-skat-image-footer.js')
-      this.drawFooterFunc = drawFooterContent
-    } else {
-      const { drawFooterContent } = await import('../modules/default-image-footer.js')
-      this.drawFooterFunc = drawFooterContent
-    }
-  }
-
-  /** Takes the current view and returns it as an image dataURL */
-  async generateDataUrl(canvas) {
-
-    // Create virtual canvas
-    let vcanvas = document.createElement('canvas')
-    const ctx = vcanvas.getContext('2d')
-    vcanvas.height = canvas.height
-    vcanvas.width = canvas.width
-    
-    // Load image from map canvas into virtual canvas
-    ctx.drawImage(canvas, 0, 0)
-
-    // Draw footer information
-    vcanvas = await this.drawFooterFunc(vcanvas)
-
-    // Return canvas image as data URL
-    return vcanvas.toDataURL("image/jpeg")
-  }
-
-  /** Generates a file name with information from the URL's query string (year, direction, image ID) */
-  generateFileName(url_params) {
-    const year = url_params.get('item').split('_')[0]
-    const position = url_params.get('center').split(',')
-    const direction = url_params.get('orientation')
-    return `skraafoto-${ year }-${ direction }-${ position[0].split('.')[0] }-${ position[1].split('.')[0] }.jpg`
-  }
-
-  /** 
-   * Adds a dataURL href to a virtual link element 
-   * and fires its click event to initiate a download
-  */
-  initiateDownload() {
-    const url_params = new URL(document.location.href).searchParams
-    this.generateDataUrl(this.map_element.querySelector('canvas')).then((dataURL) => {
-      this.link_element.href = dataURL
-      this.link_element.download = this.generateFileName(url_params)
-      this.link_element.click()
-    })
+  
+  download() {
+    this.link_element.href = this.viewport.item.assets.data.href
+    this.link_element.click()
   }
 
 
   // Lifecycle callbacks
 
-  connectedCallback() {
+  async connectedCallback() {
 
-    this.setupPlugins()
+    if (configuration.DOWNLOAD_TYPE === 'currentview') {
+      
+      const { download } = await import('../custom-plugins/plugin-custom-download-tool.js')
+      this.button_element.addEventListener('click', () => {
+        download(this.viewport.map.getTarget(), this.link_element)
+      })
 
-    this.button_element.addEventListener('click', () => {
-      this.initiateDownload()
-    })
+    } else {
+
+      this.button_element.addEventListener('click', () => {
+        this.download()
+      })
+
+    }
   }
 }
 
