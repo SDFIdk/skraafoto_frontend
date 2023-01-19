@@ -130,7 +130,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     
     <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse eller stednavn"></button>
     <div class=sf-input-container>
-      <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="15" data-resources="husnummer,stednavn"></g-search>
+      <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="100" data-resources="husnummer,stednavn"></g-search>
     </div>
   `
 
