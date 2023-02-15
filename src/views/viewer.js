@@ -12,6 +12,7 @@ import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
+import { FirstTimeVisit } from '../components/first-time-visitor.js'
 
 
 // Initialize web components
@@ -24,6 +25,7 @@ customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
+customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
 
 
 // Variables
@@ -93,7 +95,7 @@ document.addEventListener('coordinatechange', function(event) {
 })
 
 // On a new address input, update URL params
-address_search_element.addEventListener('gsearch:select', function(event) {
+document.addEventListener('gsearch:select', function(event) {
   const new_center = getGSearchCenterPoint(event.detail)
   const orientation = getParam('orientation') ? getParam('orientation') : 'north'
   if (orientation !== 'map') {
