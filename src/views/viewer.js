@@ -13,6 +13,7 @@ import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
+import { drawMatrikel } from '../custom-plugins/plugin-matrikel.js'
 
 
 // Initialize web components
@@ -42,7 +43,7 @@ const address_search_element = document.querySelector('skraafoto-address-search'
 
 function updateMainMap() {
   main_viewport_element.setAttribute('hidden', true)
-  big_map_element.removeAttribute('hidden')  
+  big_map_element.removeAttribute('hidden')
   big_map_element.dataset.center = JSON.stringify(getParam('center'))
 }
 
@@ -83,16 +84,15 @@ function setupConfigurables(conf) {
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
   }
+  if (conf.ENABLE_MATRIKEL) {
+    // If matrikel is enabled, run method that displays matrikel on map
+    drawMatrikel(getParam('center'), main_viewport_element)
+    // TODO: Maybe add an event listener to run drawMatrikel at other occasions
+  }
 }
 
 
 // Set up event listeners
-
-
-// When a coordinate input is given, update viewports
-document.addEventListener('coordinatechange', function(event) {
-  //setParams({ center: event.detail })
-})
 
 // On a new address input, update URL params
 document.addEventListener('gsearch:select', function(event) {
