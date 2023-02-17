@@ -1,4 +1,13 @@
 import { configuration } from '../modules/configuration.js'
+import { queryItem } from '../modules/api.js'
+import { getImageXY, getElevation } from '@dataforsyningen/saul'
+import VectorLayer from 'ol/layer/Vector'
+import VectorSource from 'ol/source/Vector'
+import Feature from 'ol/Feature'
+import Polygon from 'ol/geom/Polygon'
+import Style from 'ol/style/Style'
+import Fill from 'ol/style/Fill'
+import Stroke from 'ol/style/Stroke'
 
 function fetchAddressFromCenter(center) {
   return fetch(`https://api.dataforsyningen.dk/adgangsadresser/reverse?x=${ center[0] }&y=${ center[1] }&srid=25832`)
@@ -20,20 +29,85 @@ function fetchMatrikel(address_data) {
   })
 }
 
-async function drawMatrikel(center, map) {
-  console.log('got it', map)
+async function getPolygonElevations(coords, geotiff) {
+  
+  let promises = []
+  coords.forEach(function(coor) {
+    promises.push(getElevation(coor[0], coor[1], geotiff))
+  })
 
-  // fetch matrikel polygon using information on center position
-  fetchAddressFromCenter(center)
+  return Promise.all(promises)
+  .then(function(values) {
+    const improved_polygon = coords.map(function(coor, idx) {
+      coor[2] = values[idx]
+      return coor
+    })
+    return improved_polygon
+  })
+}
+
+function generatePolygon(polygon, image_id) {
+  return queryItem(image_id)
+  .then(function(image_data) {
+    const new_polygon = polygon.map(function(coor) {
+      // Convert every coordinate to image x,y
+      return getImageXY(image_data, coor[0], coor[1], coor[2])
+    })
+    return new Polygon([new_polygon])
+  })
+}
+
+function generateVectorLayer(polygon) {
+  const feature = new Feature({
+    geometry: polygon,
+    name: 'My Polygon'
+  })
+  const source = new VectorSource({
+    features: [feature]
+  })
+  const fill = new Fill({
+    color: 'transparent',
+  })
+  const stroke = new Stroke({
+    color: 'hsl(26,80%,56%)',
+    width: 2,
+  })
+  const style = new Style({
+    fill: fill,
+    stroke: stroke
+  })
+  const layer = new VectorLayer({
+    source: source,
+    style: style
+  })
+  return layer
+}
+
+/** 
+ * Converts the world coordinates of a polygon to image x,y 
+ * and draws that polygon over an image in an OpenLayers map object 
+ */
+function drawMatrikel({xy, image, map, elevationdata}) {
+
+  // Fetch matrikel polygon using center position information
+  fetchAddressFromCenter(xy)
   .then(function(address_data) {
-    
+
     fetchMatrikel(address_data)
-    .then(function(matrikel_data) {
+    .then(async function(matrikel_data) {
 
-      console.log('got matrikel', matrikel_data.geometri.coordinates[0])
-      // generate a map layer for matrikel polygon
-      // update map
+      // Create a polygon with coordinates converted to image x,y
+      const improved_polygon = await getPolygonElevations(matrikel_data.geometri.coordinates[0][0], elevationdata)
+      generatePolygon(improved_polygon, image)
+      .then(function(polygon) {
 
+        // generate a map layer for matrikel polygon
+        const layer = generateVectorLayer(polygon)
+
+        // update map
+        map.addLayer(layer)
+
+      })
     })
   })
 }
