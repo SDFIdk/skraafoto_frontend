@@ -87,10 +87,10 @@ async function setupConfigurables(conf) {
   }
   if (conf.ENABLE_MATRIKEL) {
     // If matrikel is enabled, run method that displays matrikel on map
-    // TODO: Maybe add an event listener to run drawMatrikel at other occasions
     window.addEventListener('load', function() {
       renderMatrikel(main_viewport_element)
     })
+    // TODO: Maybe add an event listener to run drawMatrikel at other occasions
   }
 }
 
