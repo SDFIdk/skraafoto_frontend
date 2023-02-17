@@ -77,7 +77,7 @@ function updateViews() {
   }
 }
 
-function setupConfigurables(conf) {
+async function setupConfigurables(conf) {
   if (conf.ENABLE_VIEW_SWITCH) {
     customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
   }
@@ -86,8 +86,22 @@ function setupConfigurables(conf) {
   }
   if (conf.ENABLE_MATRIKEL) {
     // If matrikel is enabled, run method that displays matrikel on map
-    drawMatrikel(getParam('center'), main_viewport_element)
     // TODO: Maybe add an event listener to run drawMatrikel at other occasions
+    function waitForGeoTIFF() {
+      // Elevation data geoTiFF will be ready in the future. We cycle while we wait for the data to be available.
+      if (!main_viewport_element.geotiff) {
+        console.log('bad data', main_viewport_element.geotiff)
+        setTimeout(waitForGeoTIFF, 600)
+      } else {
+        drawMatrikel({
+          xy: getParam('center'),
+          image: getParam('item'),
+          map: main_viewport_element.map,
+          elevationdata: main_viewport_element.geotiff
+        })
+      }
+    }
+    waitForGeoTIFF()
   }
 }
 
