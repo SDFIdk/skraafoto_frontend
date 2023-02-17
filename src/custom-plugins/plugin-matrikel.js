@@ -1,3 +1,4 @@
+import { getParam } from '../modules/url-state.js'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
 import { getImageXY, getElevation } from '@dataforsyningen/saul'
@@ -8,6 +9,8 @@ import Polygon from 'ol/geom/Polygon'
 import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
+
+let vp
 
 function fetchAddressFromCenter(center) {
   return fetch(`https://api.dataforsyningen.dk/adgangsadresser/reverse?x=${ center[0] }&y=${ center[1] }&srid=25832`)
@@ -83,6 +86,24 @@ function generateVectorLayer(polygon) {
   return layer
 }
 
+/**
+ * As elevation data geoTiFF will be ready in the future. 
+ * This method cycles while waiting for the data to be available,
+ * then initiates drawing the matrikel data.
+ */
+function waitForGeoTIFF() {
+  if (!vp.geotiff) {
+    setTimeout(waitForGeoTIFF, 600)
+  } else {
+    drawMatrikel({
+      xy: getParam('center'),
+      image: getParam('item'),
+      map: vp.map,
+      elevationdata: vp.geotiff
+    })
+  }
+}
+
 /** 
  * Converts the world coordinates of a polygon to image x,y 
  * and draws that polygon over an image in an OpenLayers map object 
@@ -112,6 +133,14 @@ function drawMatrikel({xy, image, map, elevationdata}) {
   })
 }
 
+/**
+ * Starts fetching the relevant data to draw a matrikel on map
+ */
+function renderMatrikel(viewport) {
+  vp = viewport
+  waitForGeoTIFF()
+}
+
 export {
-  drawMatrikel
+  renderMatrikel
 }

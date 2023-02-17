@@ -14,6 +14,7 @@ import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
 import { drawMatrikel } from '../custom-plugins/plugin-matrikel.js'
+import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
 
 
 // Initialize web components
@@ -87,21 +88,9 @@ async function setupConfigurables(conf) {
   if (conf.ENABLE_MATRIKEL) {
     // If matrikel is enabled, run method that displays matrikel on map
     // TODO: Maybe add an event listener to run drawMatrikel at other occasions
-    function waitForGeoTIFF() {
-      // Elevation data geoTiFF will be ready in the future. We cycle while we wait for the data to be available.
-      if (!main_viewport_element.geotiff) {
-        console.log('bad data', main_viewport_element.geotiff)
-        setTimeout(waitForGeoTIFF, 600)
-      } else {
-        drawMatrikel({
-          xy: getParam('center'),
-          image: getParam('item'),
-          map: main_viewport_element.map,
-          elevationdata: main_viewport_element.geotiff
-        })
-      }
-    }
-    waitForGeoTIFF()
+    window.addEventListener('load', function() {
+      renderMatrikel(main_viewport_element)
+    })
   }
 }
 
