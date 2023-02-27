@@ -114,6 +114,9 @@ function sanitizeCoords(url) {
   } else if (p_n && p_e) {
     x = Number(p_e)
     y = Number(p_n)
+  } else {
+    // Nothing applies. Just return params as is
+    return params
   }
 
   params.set('center', convertCoords([x,y]))

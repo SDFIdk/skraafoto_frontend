@@ -7,6 +7,7 @@ import { sanitizeCoords, sanitizeParams } from './url-sanitize.js'
 
 const urlupdate_event = new CustomEvent('urlupdate')
 const url = new URL(window.location)
+
 let search_params = await sanitizeParams(sanitizeCoords(url))
 
 history.replaceState({}, '', url)
