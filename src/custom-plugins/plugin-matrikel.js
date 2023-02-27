@@ -33,7 +33,7 @@ function fetchMatrikel(address_data) {
 }
 
 async function getPolygonElevations(coords, geotiff) {
-  
+
   let promises = []
   coords.forEach(function(coor) {
     promises.push(getElevation(coor[0], coor[1], geotiff))
@@ -85,15 +85,15 @@ function generateVectorLayer(polygon) {
   })
   return layer
 }
-
-/**
- * As elevation data geoTiFF will be ready in the future. 
+ /**
+ * Elevation data geoTiFF or map data might not be ready yet.
  * This method cycles while waiting for the data to be available,
  * then initiates drawing the matrikel data.
  */
-function waitForGeoTIFF() {
-  if (!vp.geotiff) {
-    setTimeout(waitForGeoTIFF, 600)
+
+function waitForData() {
+  if (!vp.geotiff || !vp.map) {
+    setTimeout(waitForData, 600)
   } else {
     drawMatrikel({
       xy: getParam('center'),
@@ -104,9 +104,9 @@ function waitForGeoTIFF() {
   }
 }
 
-/** 
- * Converts the world coordinates of a polygon to image x,y 
- * and draws that polygon over an image in an OpenLayers map object 
+/**
+ * Converts the world coordinates of a polygon to image x,y
+ * and draws that polygon over an image in an OpenLayers map object
  */
 function drawMatrikel({xy, image, map, elevationdata}) {
 
@@ -138,7 +138,7 @@ function drawMatrikel({xy, image, map, elevationdata}) {
  */
 function renderMatrikel(viewport) {
   vp = viewport
-  waitForGeoTIFF()
+  waitForData()
 }
 
 export {

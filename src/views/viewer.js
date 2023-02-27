@@ -88,7 +88,6 @@ async function setupConfigurables(conf) {
     window.addEventListener('load', function() {
       renderMatrikel(main_viewport_element)
     })
-    // TODO: Maybe add an event listener to run drawMatrikel at other occasions
   }
 }
 
@@ -110,12 +109,17 @@ document.addEventListener('gsearch:select', function(event) {
 
 // When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function() {
+
   const item = getParam('item')
   if (item) {
     const year = item.substring(0,4)
     collection = `skraafotos${year}`
   }
   updateViews()
+
+  if (configuration.ENABLE_MATRIKEL) {
+    renderMatrikel(main_viewport_element)
+  }
 })
 
 // Catch load errors and display to user
