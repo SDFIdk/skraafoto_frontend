@@ -87,15 +87,14 @@ function generateVectorLayer(polygon) {
 }
 
 /**
- * As elevation data geoTiFF will be ready in the future. 
+ * Elevation data geoTiFF or map data might not be ready yet.
  * This method cycles while waiting for the data to be available,
  * then initiates drawing the matrikel data.
  */
-function waitForGeoTIFF() {
-  if (!vp.geotiff) {
-    setTimeout(waitForGeoTIFF, 600)
+function waitForData() {
+  if (!vp.geotiff || !vp.map) {
+    setTimeout(waitForData, 600)
   } else {
-    console.log('draw the motherloving matrikel', vp.map, vp.geotiff)
     drawMatrikel({
       xy: getParam('center'),
       image: getParam('item'),
@@ -139,7 +138,7 @@ function drawMatrikel({xy, image, map, elevationdata}) {
  */
 function renderMatrikel(viewport) {
   vp = viewport
-  waitForGeoTIFF()
+  waitForData()
 }
 
 export {
