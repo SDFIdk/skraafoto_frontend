@@ -13,7 +13,6 @@ import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
-import { drawMatrikel } from '../custom-plugins/plugin-matrikel.js'
 import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
 
 
@@ -37,7 +36,6 @@ let collection = null
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
 const direction_picker_element = document.querySelector('skraafoto-direction-picker')
-const address_search_element = document.querySelector('skraafoto-address-search')
 
 
 // Methods
