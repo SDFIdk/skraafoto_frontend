@@ -8,27 +8,7 @@ const entry_points = {
   style: 'src/index.css'
 }
 
-if (process.env.NODE_ENV === 'development') {
-
-  // Development mode watches for file changes and rebuilds
-  require('esbuild').serve({
-    servedir: 'public',
-  }, {
-    entryPoints: entry_points,
-    loader: {
-      '.ttf': 'file'
-    },
-    outdir: 'public',
-    bundle: true,
-    splitting: true,
-    format: 'esm'
-  }).then(server => {
-    console.log(server)
-    // Call "stop" on the web server to stop serving
-    // server.stop()
-  })
-
-} else {
+if (process.env.NODE_ENV === 'production') {
 
   // Production build
   require('esbuild').build({
@@ -52,4 +32,24 @@ if (process.env.NODE_ENV === 'development') {
     
   })
   .catch(() => process.exit(1))
+
+} else {
+
+  // Development mode watches for file changes and rebuilds
+  require('esbuild').serve({
+    servedir: 'public',
+  }, {
+    entryPoints: entry_points,
+    loader: {
+      '.ttf': 'file'
+    },
+    outdir: 'public',
+    bundle: true,
+    splitting: true,
+    format: 'esm'
+  }).then(server => {
+    console.log(server)
+    // Call "stop" on the web server to stop serving
+    // server.stop()
+  })
 }
