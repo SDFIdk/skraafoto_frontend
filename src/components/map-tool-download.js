@@ -1,5 +1,4 @@
 import { configuration } from '../modules/configuration.js'
-import { getParam } from '../modules/url-state.js'
 
 /**
  * Web component that enables user to download the current image

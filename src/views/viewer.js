@@ -13,6 +13,7 @@ import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
+import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
 
 
 // Initialize web components
@@ -35,14 +36,13 @@ let collection = null
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
 const direction_picker_element = document.querySelector('skraafoto-direction-picker')
-const address_search_element = document.querySelector('skraafoto-address-search')
 
 
 // Methods
 
 function updateMainMap() {
   main_viewport_element.setAttribute('hidden', true)
-  big_map_element.removeAttribute('hidden')  
+  big_map_element.removeAttribute('hidden')
   big_map_element.dataset.center = JSON.stringify(getParam('center'))
 }
 
@@ -76,23 +76,23 @@ function updateViews() {
   }
 }
 
-function setupConfigurables(conf) {
+async function setupConfigurables(conf) {
   if (conf.ENABLE_VIEW_SWITCH) {
     customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
   }
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
   }
+  if (conf.ENABLE_MATRIKEL) {
+    // If matrikel is enabled, run method that displays matrikel on map
+    window.addEventListener('load', function() {
+      renderMatrikel(main_viewport_element)
+    })
+  }
 }
 
 
 // Set up event listeners
-
-
-// When a coordinate input is given, update viewports
-document.addEventListener('coordinatechange', function(event) {
-  //setParams({ center: event.detail })
-})
 
 // On a new address input, update URL params
 document.addEventListener('gsearch:select', function(event) {
@@ -109,12 +109,17 @@ document.addEventListener('gsearch:select', function(event) {
 
 // When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function() {
+
   const item = getParam('item')
   if (item) {
     const year = item.substring(0,4)
     collection = `skraafotos${year}`
   }
   updateViews()
+
+  if (configuration.ENABLE_MATRIKEL) {
+    renderMatrikel(main_viewport_element)
+  }
 })
 
 // Catch load errors and display to user
