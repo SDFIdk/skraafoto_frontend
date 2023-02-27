@@ -95,6 +95,7 @@ function waitForGeoTIFF() {
   if (!vp.geotiff) {
     setTimeout(waitForGeoTIFF, 600)
   } else {
+    console.log('draw the motherloving matrikel', vp.map, vp.geotiff)
     drawMatrikel({
       xy: getParam('center'),
       image: getParam('item'),
