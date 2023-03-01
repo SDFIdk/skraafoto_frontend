@@ -14,6 +14,7 @@ import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
 import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
+import { SkraaFotoCompass } from '../components/compass'
 
 
 // Initialize web components
@@ -27,6 +28,8 @@ customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
 customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
+customElements.define('skraafoto-compass', SkraaFotoCompass)
+
 
 
 // Variables

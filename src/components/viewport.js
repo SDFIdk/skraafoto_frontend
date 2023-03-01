@@ -13,10 +13,8 @@ import { defaults as defaultInteractions } from 'ol/interaction'
 import { getZ, world2image } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
-import { SkraaFotoCompass } from './compass.js'
 import { configuration } from '../modules/configuration.js'
 
-customElements.define('skraafoto-compass', SkraaFotoCompass)
 
 /**
  *  Web component that displays an image using the OpenLayers library
@@ -98,7 +96,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
 
   // getters
-  static get observedAttributes() { 
+  static get observedAttributes() {
     return [
       'data-item',
       'data-center',
@@ -118,7 +116,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.createShadowDOM()
   }
 
-  
+
   // Methods
 
   createShadowDOM() {
@@ -182,7 +180,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
     // Set extra resolutions so we can zoom in further than the resolutions permit normally
     this.view.resolutions = this.addResolutions(this.view.resolutions)
-      
+
     // Rotate nadir images relative to north
     this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
@@ -197,7 +195,7 @@ export class SkraaFotoViewport extends HTMLElement {
       //return item.properties['pers:kappa'] / (360 / (2 * Math.PI))
       return ( item.properties['pers:kappa'] * Math.PI ) / 180
     } else {
-      return 0  
+      return 0
     }
   }
 
@@ -229,7 +227,7 @@ export class SkraaFotoViewport extends HTMLElement {
         source: new VectorSource({
           features: [icon_feature]
         })
-      })  
+      })
     }
   }
 
@@ -244,10 +242,10 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateCenter(coordinate) {
     if (!this.item) {
-      return 
+      return
     }
     if (coordinate[2] === undefined) {
-      coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)  
+      coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)
     }
     this.coord_world = coordinate
     this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])
@@ -287,7 +285,7 @@ export class SkraaFotoViewport extends HTMLElement {
   // Lifecycle callbacks
 
   connectedCallback() {
-    
+
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),

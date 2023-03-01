@@ -8,10 +8,11 @@ node_modules/
 dist/
 docs/api/
 
-# Configw
+# Config
 config.js
 
 # Test files
 /test-results/
 /playwright-report/
 /playwright/.cache/
+.idea/workspace.xml

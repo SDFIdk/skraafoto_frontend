@@ -63,16 +63,31 @@ export class SkraaFotoMap extends HTMLElement {
       line-height: 1;
       box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
     }
+    skraafoto-compass {
+      position: absolute;
+      top: 1.5rem;
+      right: 1rem;
+      z-index: 1;
+      -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+    }
+    @media screen and (max-width: 35rem) {
+
+      skraafoto-compass {
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+    }
   `
   template = `
     <link rel="stylesheet" href="./style.css">
     <style>
       ${ this.styles }
     </style>
+    <skraafoto-compass direction="north"></skraafoto-compass>
   `
 
   // getters
-  static get observedAttributes() { 
+  static get observedAttributes() {
     return [
       'data-center',
       'minimal',
@@ -129,7 +144,7 @@ export class SkraaFotoMap extends HTMLElement {
         center: center,
         zoom: 18
       })
-      
+
       const map = new Map({
         layers: [
           new TileLayer({
