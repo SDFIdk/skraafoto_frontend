@@ -67,6 +67,7 @@ export class SkraaFotoViewport extends HTMLElement {
       left: 1rem;
       color: #fff;
       margin: 0;
+      font-size: 0.75rem;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
     }
 

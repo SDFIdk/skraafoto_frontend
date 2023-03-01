@@ -16,3 +16,4 @@ config.js
 /playwright-report/
 /playwright/.cache/
 .idea/workspace.xml
+src/modules/configuration.js
