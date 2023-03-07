@@ -17,3 +17,4 @@ config.js
 /playwright/.cache/
 .idea/workspace.xml
 src/modules/configuration.js
+.idea/inspectionProfiles/Project_Default.xml

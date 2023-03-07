@@ -135,6 +135,27 @@ document.addEventListener('loaderror', function(event) {
 })
 
 
+/*
+// Set up shortkeys for date-selector
+const dateSelector = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
+document.addEventListener('keydown', function(event) {
+  const sortedList = dateSelector.items.sort((a, b) => new Date(b.properties.datetime) - new Date(a.properties.datetime))
+  const currentIndex = sortedList.findIndex(item => {return item.id === getParam('item')})
+  if (event.key === 'ArrowUp' && event.shiftKey) {
+    debugger
+    // dateSelector.selector_element.value = dateSelector.items[dateSelector.selector_element.options.selectedIndex += 1].id
+    setParams({item: sortedList[currentIndex + 1].id})
+  } else if (event.key === 'ArrowDown' && event.shiftKey) {
+    console.log(dateSelector.selector_element.options.selectedIndex)
+    setParams({item: sortedList[currentIndex - 1].id})
+  }
+  // Steps to achieve goal
+  // make sortedList work, so that it sorts
+  // Change date-selector dropdown with up/down arrows
+})
+ */
+
+
 // Initialize
 
 setupConfigurables(configuration)
