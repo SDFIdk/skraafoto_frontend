@@ -135,25 +135,22 @@ document.addEventListener('loaderror', function(event) {
 })
 
 
-/*
 // Set up shortkeys for date-selector
-const dateSelector = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
 document.addEventListener('keydown', function(event) {
-  const sortedList = dateSelector.items.sort((a, b) => new Date(b.properties.datetime) - new Date(a.properties.datetime))
-  const currentIndex = sortedList.findIndex(item => {return item.id === getParam('item')})
-  if (event.key === 'ArrowUp' && event.shiftKey) {
-    debugger
-    // dateSelector.selector_element.value = dateSelector.items[dateSelector.selector_element.options.selectedIndex += 1].id
-    setParams({item: sortedList[currentIndex + 1].id})
-  } else if (event.key === 'ArrowDown' && event.shiftKey) {
-    console.log(dateSelector.selector_element.options.selectedIndex)
-    setParams({item: sortedList[currentIndex - 1].id})
+
+  const option_list = dateSelector_element.selector_element.options
+  let current_idx = option_list.selectedIndex
+
+  const past = option_list[current_idx + 1]
+  const future = option_list[current_idx - 1]
+
+  if (event.key === 'ArrowUp' && event.shiftKey && future) {
+    setParams({item: future.value})
+  } else if (event.key === 'ArrowDown' && event.shiftKey && past) {
+    setParams({item: past.value})
   }
-  // Steps to achieve goal
-  // make sortedList work, so that it sorts
-  // Change date-selector dropdown with up/down arrows
 })
- */
 
 
 // Initialize
