@@ -12,7 +12,7 @@ let configuration = {
 
   LOCAL_STORAGE_COOKIE_KEY: 'skraafoto-cookie-allowed',
 
-  ENABLE_VIEW_SWITCH: true, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
+  ENABLE_VIEW_SWITCH: false, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
   ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
 
   SITEIMPROVE_SCRIPT: '',
