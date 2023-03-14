@@ -2,7 +2,7 @@
 // https://openlayers.org/en/latest/examples/wmts-layer-from-capabilities.html
 // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
 
-import { getParam, setParams } from '../modules/url-state.js'
+import { setParams } from '../modules/url-state.js'
 import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import Map from 'ol/Map'
@@ -209,6 +209,7 @@ export class SkraaFotoMap extends HTMLElement {
 
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
+
   }
 
 
