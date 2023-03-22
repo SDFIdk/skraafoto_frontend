@@ -1,3 +1,5 @@
+/** @module */
+
 import { getParam } from '../modules/url-state.js'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'

@@ -1,3 +1,5 @@
+/** @module */
+
 import { getParam } from '../modules/url-state.js'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
@@ -9,8 +11,6 @@ import Polygon from 'ol/geom/Polygon'
 import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
-
-let vp
 
 function fetchParcel(id) {
   const idSplit = id.split('-')
@@ -70,7 +70,8 @@ function generateVectorLayer() {
   })
   const layer = new VectorLayer({
     source: source,
-    style: style
+    style: style,
+    title: 'Parcels'
   })
   return layer
 }
@@ -80,15 +81,15 @@ function generateVectorLayer() {
  * then initiates drawing the parcel data.
  */
 
-function waitForData() {
-  if (!vp.geotiff || !vp.map) {
-    setTimeout(waitForData, 600)
+function waitForData(viewport) {
+  if (!viewport.geotiff || !viewport.map) {
+    setTimeout(() => waitForData(viewport), 600)
   } else {
     drawParcels({
       ids: getParam('parcels'),
-      image: getParam('item'),
-      map: vp.map,
-      elevationdata: vp.geotiff
+      image: viewport.item.id,
+      map: viewport.map,
+      elevationdata: viewport.geotiff
     })
   }
 }
@@ -130,6 +131,10 @@ function drawParcels({ids, image, map, elevationdata}) {
         }
       })
       // update map
+      const oldLayer = map.getLayers().getArray().find((pLayer) => {
+        return pLayer.get('title') === 'Parcels'
+      })
+      map.removeLayer(oldLayer)
       map.addLayer(layer)
     })
 }
@@ -141,8 +146,7 @@ function renderParcels(viewport) {
   if (!getParam('parcels')) {
     return
   }
-  vp = viewport
-  waitForData()
+  waitForData(viewport)
 }
 
 export {
