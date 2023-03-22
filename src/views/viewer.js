@@ -14,6 +14,7 @@ import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
 import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
+import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { SkraaFotoCompass } from '../components/compass'
 
 
@@ -92,6 +93,12 @@ async function setupConfigurables(conf) {
       renderMatrikel(main_viewport_element)
     })
   }
+  if (conf.ENABLE_PARCEL) {
+    // If parcel is enabled, run method that displays parcels on map
+    window.addEventListener('load', function() {
+      renderParcels(main_viewport_element)
+    })
+  }
 }
 
 
@@ -122,6 +129,9 @@ window.addEventListener('urlupdate', function() {
 
   if (configuration.ENABLE_MATRIKEL) {
     renderMatrikel(main_viewport_element)
+  }
+  if (configuration.ENABLE_PARCEL) {
+    renderParcels(main_viewport_element)
   }
 })
 
