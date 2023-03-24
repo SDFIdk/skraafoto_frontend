@@ -55,21 +55,25 @@ function updateMainViewport(item) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   const data = {}
-  data.item = item
   if (getParam('center')) {
     data.center = getParam('center')
   }
-  main_viewport_element.setData = data
+  if (getParam('item')) {
+    queryItem(getParam('item')).then(item => {
+      data.item = item
+      main_viewport_element.setData = data
+    })
+  } else {
+    main_viewport_element.setData = data
+  }
 }
 
 function updateViews() {
-  queryItems(getParam('center'), getParam('orientation'), collection).then(item => {
-    if (getParam('orientation') === 'map') {
-      updateMainMap()
-    } else {
-      updateMainViewport(item.features[0])
-    }
-  })
+  if (getParam('orientation') === 'map') {
+    updateMainMap()
+  } else {
+    updateMainViewport()
+  }
 
   fetchParcels(getParam('parcels')).then(parcels => {
     store.dispatch('updateParcels', parcels)
