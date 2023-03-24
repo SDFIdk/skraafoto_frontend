@@ -13,7 +13,6 @@ import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
-import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
 import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
 import store from '../store'
 
@@ -92,12 +91,6 @@ async function setupConfigurables(conf) {
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
   }
-  if (conf.ENABLE_MATRIKEL) {
-    // If matrikel is enabled, run method that displays matrikel on map
-    window.addEventListener('load', function() {
-      renderMatrikel(main_viewport_element)
-    })
-  }
 }
 
 
@@ -125,10 +118,6 @@ window.addEventListener('urlupdate', function() {
     collection = `skraafotos${year}`
   }
   updateViews()
-
-  if (configuration.ENABLE_MATRIKEL) {
-    renderMatrikel(main_viewport_element)
-  }
 })
 
 // Catch load errors and display to user
