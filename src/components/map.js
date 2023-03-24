@@ -237,16 +237,20 @@ export class SkraaFotoMap extends HTMLElement {
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
 
-    this.drawParcels()
+    if (configuration.ENABLE_PARCEL) {
+      this.drawParcels()
+    }
   }
 
 
   // Lifecycle
 
   connectedCallback() {
-    window.addEventListener('parcels', () => {
-      this.drawParcels()
-    })
+    if (configuration.ENABLE_PARCEL) {
+      window.addEventListener('parcels', () => {
+        this.drawParcels()
+      })
+    }
   }
 
   attributeChangedCallback(name, old_value, new_value) {
