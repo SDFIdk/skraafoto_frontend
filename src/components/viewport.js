@@ -28,6 +28,7 @@ export class SkraaFotoViewport extends HTMLElement {
   coord_image
   coord_world
   zoom = 4
+  terrain
   api_stac_token = configuration.API_STAC_TOKEN
   map
   layer_image
@@ -279,8 +280,8 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updatePlugins() {
-    getTerrainData(this.item).then(geotiff => {
-      this.geotiff = geotiff
+    getTerrainData(this.item).then(terrain => {
+      this.terrain = terrain
     })
     if (configuration.ENABLE_PARCEL) {
       renderParcels(this)

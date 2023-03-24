@@ -26,7 +26,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   tool_center
   tool_measure_width
   tool_measure_height
-  geotiff
   fullscreen = new FullScreen({
     label: '',
     activeClassName: 'ds-icon-icon-close',

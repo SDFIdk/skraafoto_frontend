@@ -14,6 +14,9 @@ import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
 import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
+import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
+import store from '../store'
+
 import { SkraaFotoCompass } from '../components/compass'
 
 
@@ -49,13 +52,11 @@ function updateMainMap() {
   big_map_element.dataset.center = JSON.stringify(getParam('center'))
 }
 
-function updateMainViewport() {
+function updateMainViewport(item) {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   const data = {}
-  if (getParam('item')) {
-    data.item = getParam('item')
-  }
+  data.item = item
   if (getParam('center')) {
     data.center = getParam('center')
   }
@@ -63,12 +64,17 @@ function updateMainViewport() {
 }
 
 function updateViews() {
+  queryItems(getParam('center'), getParam('orientation'), collection).then(item => {
+    if (getParam('orientation') === 'map') {
+      updateMainMap()
+    } else {
+      updateMainViewport(item.features[0])
+    }
+  })
 
-  if (getParam('orientation') === 'map') {
-    updateMainMap()
-  } else {
-    updateMainViewport()
-  }
+  fetchParcels(getParam('parcels')).then(parcels => {
+    store.dispatch('updateParcels', parcels)
+  })
 
   // Update the other viewports
   if (collection) {

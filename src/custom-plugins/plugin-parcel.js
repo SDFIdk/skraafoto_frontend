@@ -3,6 +3,7 @@
 import { getParam } from '../modules/url-state.js'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
+import store from '../store'
 import { getImageXY, getElevation } from '@dataforsyningen/saul'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
@@ -23,11 +24,36 @@ function fetchParcel(id) {
   })
 }
 
-function getPolygonElevations(coords, geotiff) {
+function fetchParcels(ids) {
+  const splitIds = ids.split(';')
+  const promises = []
+
+  splitIds.forEach((id) => {
+    promises.push(fetchParcel(id)
+      .then((parcel_data) => {
+        return parcel_data.geometry ? parcel_data.geometry.coordinates[0] : undefined
+      })
+    )
+  })
+
+  const parcels = []
+
+  return Promise.all(promises)
+    .then((results) => {
+      results.forEach((result) => {
+        if (result) {
+          parcels.push(result)
+        }
+      })
+      return parcels
+    })
+}
+
+function getPolygonElevations(coords, terrain) {
 
   let promises = []
   coords.forEach(function(coor) {
-    promises.push(getElevation(coor[0], coor[1], geotiff))
+    promises.push(getElevation(coor[0], coor[1], terrain))
   })
 
   return Promise.all(promises)
@@ -82,14 +108,15 @@ function generateVectorLayer() {
  */
 
 function waitForData(viewport) {
-  if (!viewport.geotiff || !viewport.map) {
+
+  if (!viewport.terrain || !store.state.parcels || !viewport.map) {
     setTimeout(() => waitForData(viewport), 600)
   } else {
     drawParcels({
-      ids: getParam('parcels'),
+      parcels: store.state.parcels,
       image: viewport.item.id,
       map: viewport.map,
-      elevationdata: viewport.geotiff
+      elevationdata: viewport.terrain
     })
   }
 }
@@ -98,26 +125,16 @@ function waitForData(viewport) {
  * Fetches the parcel polygons based on the ids
  * and draws that polygon over an image in an OpenLayers map object
  */
-function drawParcels({ids, image, map, elevationdata}) {
-  const splitIds = ids.split(';')
+function drawParcels({parcels, image, map, elevationdata}) {
   const promises = []
-
-  splitIds.forEach((id) => {
-    promises.push(fetchParcel(id)
-      .then((parcel_data) => {
-        if (!parcel_data.geometry) {
-          return
-        }
-        // Create a polygon with coordinates converted to image x,y
-        return getPolygonElevations(parcel_data.geometry.coordinates[0], elevationdata)
-          .then((improved_polygon) => {
-            return generateFeature(improved_polygon, image)
-              .then(function(feature) {
-                return feature
-              })
+  parcels.forEach((parcel) => {
+    promises.push(getPolygonElevations(parcel, elevationdata)
+      .then((improved_polygon) => {
+        return generateFeature(improved_polygon, image)
+          .then(function(feature) {
+            return feature
           })
-      })
-    )
+      }))
   })
 
   // generate a map layer for parcel polygons
@@ -150,5 +167,6 @@ function renderParcels(viewport) {
 }
 
 export {
+  fetchParcels,
   renderParcels
 }

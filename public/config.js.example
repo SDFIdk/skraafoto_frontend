@@ -19,5 +19,7 @@ const config = {
 
   // Enable selected features
   ENABLE_VIEW_SWITCH: false,
+  ENABLE_MATRIKEL: false,
+  ENABLE_PARCEL: false,
   DOWNLOAD_TYPE: 'default'
 }
