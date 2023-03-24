@@ -51,7 +51,7 @@ function updateMainMap() {
   big_map_element.dataset.center = JSON.stringify(getParam('center'))
 }
 
-function updateMainViewport(item) {
+function updateMainViewport() {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   const data = {}
