@@ -79,7 +79,7 @@ function generateFeature(polygon, image_id) {
   })
 }
 
-function generateVectorLayer() {
+function generateParcelVectorLayer() {
   const source = new VectorSource({
     features: []
   })
@@ -138,7 +138,7 @@ function drawParcels({parcels, image, map, elevationdata}) {
   })
 
   // generate a map layer for parcel polygons
-  const layer = generateVectorLayer()
+  const layer = generateParcelVectorLayer()
 
   Promise.all(promises)
     .then((results) => {
@@ -168,5 +168,6 @@ function renderParcels(viewport) {
 
 export {
   fetchParcels,
-  renderParcels
+  renderParcels,
+  generateParcelVectorLayer
 }
