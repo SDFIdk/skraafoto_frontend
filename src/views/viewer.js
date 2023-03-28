@@ -13,7 +13,9 @@ import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { FirstTimeVisit } from '../components/first-time-visitor.js'
-import { renderMatrikel } from '../custom-plugins/plugin-matrikel.js'
+import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
+import store from '../store'
+
 import { SkraaFotoCompass } from '../components/compass'
 
 
@@ -53,21 +55,30 @@ function updateMainViewport() {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
   const data = {}
-  if (getParam('item')) {
-    data.item = getParam('item')
-  }
   if (getParam('center')) {
     data.center = getParam('center')
   }
-  main_viewport_element.setData = data
+  if (getParam('item')) {
+    queryItem(getParam('item')).then(item => {
+      data.item = item
+      main_viewport_element.setData = data
+    })
+  } else {
+    main_viewport_element.setData = data
+  }
 }
 
 function updateViews() {
-
   if (getParam('orientation') === 'map') {
     updateMainMap()
   } else {
     updateMainViewport()
+  }
+
+  if (getParam('parcels')) {
+    fetchParcels(getParam('parcels')).then(parcels => {
+      store.dispatch('updateParcels', parcels)
+    })
   }
 
   // Update the other viewports
@@ -85,12 +96,6 @@ async function setupConfigurables(conf) {
   }
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
-  }
-  if (conf.ENABLE_MATRIKEL) {
-    // If matrikel is enabled, run method that displays matrikel on map
-    window.addEventListener('load', function() {
-      renderMatrikel(main_viewport_element)
-    })
   }
 }
 
@@ -127,10 +132,6 @@ window.addEventListener('urlupdate', function(event) {
 
   if (event.detail.zoom || event.detail.orientation) {
     updateViewsQuick()
-  }
-
-  if (configuration.ENABLE_MATRIKEL) {
-    renderMatrikel(main_viewport_element)
   }
 })
 
