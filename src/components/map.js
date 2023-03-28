@@ -30,6 +30,10 @@ export class SkraaFotoMap extends HTMLElement {
   projection
   parser = new WMTSCapabilities()
   map = null
+  wmts_zoom_added = 15.5
+  zoom = 4
+  center
+  sync = true
   icon_layer
   styles = `
     :root {
@@ -90,6 +94,7 @@ export class SkraaFotoMap extends HTMLElement {
   static get observedAttributes() {
     return [
       'data-center',
+      'data-zoom',
       'minimal',
       'hidden'
     ]
@@ -120,7 +125,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.shadowRoot.append(div)
   }
 
-  generateMap(is_minimal, center) {
+  generateMap(is_minimal, center, zoom) {
     return fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${ this.api_stac_token }`)
     .then((response) => {
       return response.text()
@@ -142,7 +147,7 @@ export class SkraaFotoMap extends HTMLElement {
       const view = new View({
         projection: this.projection,
         center: center,
-        zoom: 18
+        zoom: this.wmts_zoom_added + zoom
       })
 
       const map = new Map({
@@ -163,6 +168,12 @@ export class SkraaFotoMap extends HTMLElement {
           this.singleClickHandler(event)
         })
       }
+
+      view.on('moveend', (event) => {
+        setParams({
+          zoom: view.getZoom() - this.wmts_zoom_added
+        })
+      })
 
       return map
     })
@@ -198,26 +209,41 @@ export class SkraaFotoMap extends HTMLElement {
 
   async updateMap(center) {
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center)
+      this.map = await this.generateMap(this.getAttribute('minimal'), center, this.zoom)
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
-
-    const view = this.map.getView()
-    view.setCenter(center)
-    this.map.setView(view)
 
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
 
   }
 
+  updateZoom(zoom) {
+    if (!this.map) {
+      return
+    }
+    if (this.sync) {
+      this.sync = false
+      this.map.getView().animate({
+        zoom: zoom + this.wmts_zoom_added,
+        duration: 0
+      }, () => {
+        this.sync = true 
+      })
+    }
+  }
 
   // Lifecycle
 
   attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'data-center') {
-      this.updateMap(JSON.parse(new_value))
+    if (name === 'data-center' && old_value !== new_value) {
+      this.center = JSON.parse(new_value)
+      this.updateMap(this.center)
+    }
+    if (name === 'data-zoom' && old_value !== new_value) {
+      this.zoom = Number(new_value)
+      this.updateZoom(this.zoom)
     }
   }
 }

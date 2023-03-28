@@ -14,6 +14,7 @@ import { getZ, world2image } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
+import { getParam, setParams } from '../modules/url-state.js'
 
 
 /**
@@ -32,6 +33,7 @@ export class SkraaFotoViewport extends HTMLElement {
   layer_icon
   source_image
   view
+  sync = true
   compass_element
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -281,6 +283,21 @@ export class SkraaFotoViewport extends HTMLElement {
     // This method is meant to be overwritten by extended classes like "SkraaFotoAdvancedViewport"
   }
 
+  updateZoom(zoom) {
+    if (!this.map) {
+      return
+    }
+    if (this.sync) {
+      this.sync = false
+      this.map.getView().animate({
+        zoom: zoom,
+        duration: 0
+      }, () => {
+        this.sync = true 
+      })
+    }
+  }
+
 
   // Lifecycle callbacks
 
@@ -290,6 +307,16 @@ export class SkraaFotoViewport extends HTMLElement {
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: defaultInteractions({dragPan: false, pinchRotate: false})
+    })
+
+    this.map.on('moveend', (event) => {
+      const zoom = this.map.getView().getZoom()
+      if (Number(getParam('zoom')) === zoom) {
+        return
+      }
+      setParams({
+        zoom: this.map.getView().getZoom()
+      })
     })
   }
 
@@ -302,9 +329,10 @@ export class SkraaFotoViewport extends HTMLElement {
       data.center = JSON.parse(new_value)
     }
     if (name === 'data-zoom' && old_value !== new_value) {
-      data.zoom = Number(new_value)
+      this.updateZoom(Number(new_value))
+    } else {
+      this.setData = data
     }
-    this.setData = data
   }
 }
 

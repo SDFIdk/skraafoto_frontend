@@ -1,5 +1,5 @@
 import { queryItems } from '../modules/api.js'
-import { setParams } from '../modules/url-state.js'
+import { setParams, getParam } from '../modules/url-state.js'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions
@@ -198,6 +198,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // Update map
     this.map_element.dataset.center = JSON.stringify(options.center)
+    this.map_element.dataset.zoom = getParam('zoom')
   }
 
 
@@ -249,10 +250,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     const data = {}
     data.item = item
     data.center = coordinate
-    // Update zoom level of nadir viewport
-    if (item.properties.direction === 'nadir') {
-      data.zoom = 4
-    }
     element.setData = data
   }
 
