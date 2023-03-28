@@ -309,13 +309,15 @@ export class SkraaFotoViewport extends HTMLElement {
       interactions: defaultInteractions({dragPan: false, pinchRotate: false})
     })
 
+    console.log('This aint called in advanced-viewport :(')
+
     this.map.on('moveend', (event) => {
       const zoom = this.map.getView().getZoom()
       if (Number(getParam('zoom')) === zoom) {
         return
       }
       setParams({
-        zoom: this.map.getView().getZoom()
+        zoom: zoom
       })
     })
   }
@@ -329,6 +331,7 @@ export class SkraaFotoViewport extends HTMLElement {
       data.center = JSON.parse(new_value)
     }
     if (name === 'data-zoom' && old_value !== new_value) {
+      console.log('xd')
       this.updateZoom(Number(new_value))
     } else {
       this.setData = data
