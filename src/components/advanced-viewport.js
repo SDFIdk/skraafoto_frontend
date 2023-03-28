@@ -6,7 +6,6 @@ import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
-import { getTerrainData } from '../modules/api.js'
 import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
@@ -27,7 +26,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   tool_center
   tool_measure_width
   tool_measure_height
-  geotiff
   fullscreen = new FullScreen({
     label: '',
     activeClassName: 'ds-icon-icon-close',
@@ -163,9 +161,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   updatePlugins() {
-    getTerrainData(this.item).then(geotiff => {
-      this.geotiff = geotiff
-    })
+    super.updatePlugins()
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
     this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = '#viewport-main'
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item

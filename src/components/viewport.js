@@ -14,6 +14,8 @@ import { getZ, world2image } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
+import { getTerrainData } from '../modules/api.js'
+import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 
 
 /**
@@ -26,6 +28,7 @@ export class SkraaFotoViewport extends HTMLElement {
   coord_image
   coord_world
   zoom = 4
+  terrain
   api_stac_token = configuration.API_STAC_TOKEN
   map
   layer_image
@@ -277,10 +280,13 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   updatePlugins() {
-    // No plugins
-    // This method is meant to be overwritten by extended classes like "SkraaFotoAdvancedViewport"
+    getTerrainData(this.item).then(terrain => {
+      this.terrain = terrain
+    })
+    if (configuration.ENABLE_PARCEL) {
+      renderParcels(this)
+    }
   }
-
 
   // Lifecycle callbacks
 

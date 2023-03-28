@@ -15,7 +15,7 @@ export class CenterTool {
         viewport.displaySpinner()
         getWorldXYZ({
           image: viewport.item,
-          terrain: viewport.geotiff,
+          terrain: viewport.terrain,
           xy: event.coordinate
         }, 0.03).then((world_xyz) => {
           

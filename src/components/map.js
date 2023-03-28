@@ -15,10 +15,13 @@ import {epsg25832proj} from '@dataforsyningen/saul'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
+import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {defaults as defaultControls} from 'ol/control'
 import { configuration } from '../modules/configuration.js'
+import store from '../store'
+import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 
 /**
  * Web component that displays a map
@@ -168,6 +171,31 @@ export class SkraaFotoMap extends HTMLElement {
     })
   }
 
+  drawParcels() {
+    const parcels = store.state.parcels
+    if (!this.map || !parcels[0]) {
+      return
+    }
+    // generate a map layer for parcel polygons
+    const layer = generateParcelVectorLayer()
+
+    parcels.forEach(parcel => {
+      const polygon = parcel.map(coor => {
+        return [coor[0], coor[1]]
+      })
+      layer.getSource().addFeature(new Feature({
+        geometry: new Polygon([polygon])
+      }))
+    })
+
+    // update map
+    const oldLayer = this.map.getLayers().getArray().find((pLayer) => {
+      return pLayer.get('title') === 'Parcels'
+    })
+    this.map.removeLayer(oldLayer)
+    this.map.addLayer(layer)
+  }
+
   generateIconLayer(center) {
     let icon_feature = new Feature({
       geometry: new Point([center[0], center[1]])
@@ -210,10 +238,21 @@ export class SkraaFotoMap extends HTMLElement {
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
 
+    if (configuration.ENABLE_PARCEL) {
+      this.drawParcels()
+    }
   }
 
 
   // Lifecycle
+
+  connectedCallback() {
+    if (configuration.ENABLE_PARCEL) {
+      window.addEventListener('parcels', () => {
+        this.drawParcels()
+      })
+    }
+  }
 
   attributeChangedCallback(name, old_value, new_value) {
     if (name === 'data-center') {
