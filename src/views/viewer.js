@@ -75,9 +75,11 @@ function updateViews() {
     updateMainViewport()
   }
 
-  fetchParcels(getParam('parcels')).then(parcels => {
-    store.dispatch('updateParcels', parcels)
-  })
+  if (getParam('parcels')) {
+    fetchParcels(getParam('parcels')).then(parcels => {
+      store.dispatch('updateParcels', parcels)
+    })
+  }
 
   // Update the other viewports
   if (collection) {

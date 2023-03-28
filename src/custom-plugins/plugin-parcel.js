@@ -25,6 +25,9 @@ function fetchParcel(id) {
 }
 
 function fetchParcels(ids) {
+  if (!ids) {
+    return Promise.resolve([])
+  }
   const splitIds = ids.split(';')
   const promises = []
 
@@ -126,6 +129,9 @@ function waitForData(viewport) {
  * and draws that polygon over an image in an OpenLayers map object
  */
 function drawParcels({parcels, image, map, elevationdata}) {
+  if (!parcels[0]) {
+    return
+  }
   const promises = []
   parcels.forEach((parcel) => {
     promises.push(getPolygonElevations(parcel, elevationdata)
