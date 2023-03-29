@@ -19,3 +19,4 @@ config.js
 src/modules/configuration.js
 .idea/inspectionProfiles/Project_Default.xml
 .idea/dictionaries/B074612.xml
+.idea/vcs.xml

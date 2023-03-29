@@ -94,7 +94,7 @@ export class SkraaFotoViewport extends HTMLElement {
     </style>
     <div class="viewport-map"></div>
     <skraafoto-compass direction="north"></skraafoto-compass>
-    <p class="image-date"></p>
+    <p id="image-date" class="image-date"></p>
   `
 
 
@@ -133,6 +133,10 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.append(wrapper)
 
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
+    if (configuration.ENABLE_SMALL_FONT) {
+      this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
+
+    }
   }
 
   async update({item,center,zoom}) {
@@ -295,9 +299,11 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
-      interactions: defaultInteractions({dragPan: false, pinchRotate: false})
+      interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
+      view: this.view
     })
   }
+
 
   attributeChangedCallback(name, old_value, new_value) {
     const data = {}
