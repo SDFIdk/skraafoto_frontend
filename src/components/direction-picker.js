@@ -198,7 +198,16 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // Update map
     this.map_element.dataset.center = JSON.stringify(options.center)
-    this.map_element.dataset.zoom = getParam('zoom')
+    
+  }
+
+  set setZoom(zoom) {
+    this.map_element.dataset.zoom = zoom
+    this.nadir_element.dataset.zoom = zoom
+    this.north_element.dataset.zoom = zoom
+    this.south_element.dataset.zoom = zoom
+    this.east_element.dataset.zoom = zoom
+    this.west_element.dataset.zoom = zoom
   }
 
 

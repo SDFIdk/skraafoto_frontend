@@ -136,7 +136,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
   }
 
-  async update({item,center,zoom}) {
+  async update({item, center}) {
     if (typeof item === 'object') {
       this.updateImage(item)
     } else if (typeof item === 'string') {
@@ -145,14 +145,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     if (center) {
       await this.updateCenter(center)
-    }
-    if (zoom) {
-      this.zoom = zoom
-    } else {
-      const current_zoom = this.map.getView().getZoom()
-      if (current_zoom) {
-        this.zoom = current_zoom
-      }
     }
     this.updateMap()
     this.updateNonMap()
@@ -315,9 +307,7 @@ export class SkraaFotoViewport extends HTMLElement {
       interactions: defaultInteractions({dragPan: false, pinchRotate: false})
     })
 
-    console.log('This aint called in advanced-viewport :(')
-
-    this.map.on('moveend', (event) => {
+    this.map.on('moveend', () => {
       const zoom = this.map.getView().getZoom()
       if (Number(getParam('zoom')) === zoom) {
         return
@@ -329,18 +319,15 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   attributeChangedCallback(name, old_value, new_value) {
-    const data = {}
     if (name === 'data-item' && old_value !== new_value) {
-      data.item = new_value
+      this.update({item: new_value})
     }
     if (name === 'data-center' && old_value !== new_value) {
-      data.center = JSON.parse(new_value)
+      this.update({center: JSON.parse(new_value)})
     }
     if (name === 'data-zoom' && old_value !== new_value) {
-      console.log('xd')
+      this.zoom = Number(new_value)
       this.updateZoom(Number(new_value))
-    } else {
-      this.setData = data
     }
   }
 }

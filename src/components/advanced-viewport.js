@@ -204,11 +204,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   // Lifecycle callbacks
 
   connectedCallback() {
-    this.map = new OlMap({
-      target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false}).extend([this.fullscreen]),
-      interactions: defaultInteractions({pinchRotate: false})
-    })
+    super.connectedCallback()
 
     // Change mode when clicking toolbar buttons
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {

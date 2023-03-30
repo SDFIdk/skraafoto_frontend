@@ -172,7 +172,7 @@ export class SkraaFotoMap extends HTMLElement {
         })
       }
 
-      view.on('moveend', (event) => {
+      map.on('moveend', () => {
         setParams({
           zoom: view.getZoom() - this.wmts_zoom_added
         })
@@ -242,6 +242,10 @@ export class SkraaFotoMap extends HTMLElement {
       this.map.removeLayer(this.icon_layer)
     }
 
+    const view = this.map.getView()
+    view.setCenter(center)
+    this.map.setView(view)
+
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
 
@@ -276,7 +280,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'data-center' && old_value !== new_value) {
+    if (name === 'data-center') {
       this.center = JSON.parse(new_value)
       this.updateMap(this.center)
     }
