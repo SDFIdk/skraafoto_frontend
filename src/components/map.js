@@ -33,7 +33,7 @@ export class SkraaFotoMap extends HTMLElement {
   projection
   parser = new WMTSCapabilities()
   map = null
-  wmts_zoom_added = 15.5
+  wmts_zoom_added = 12 // use 15.5 to have the same zoom as the skraafotos
   zoom = 4
   center
   sync = true
