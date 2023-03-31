@@ -90,15 +90,6 @@ function updateViews() {
   }
 }
 
-function syncViews() {
-  const zoom = getParam('zoom')
-  if (zoom) {
-    direction_picker_element.setZoom = zoom
-    main_viewport_element.dataset.zoom = zoom
-    big_map_element.dataset.zoom = zoom
-  }
-}
-
 async function setupConfigurables(conf) {
   if (conf.ENABLE_VIEW_SWITCH) {
     customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
@@ -137,10 +128,6 @@ window.addEventListener('urlupdate', function(event) {
   
   if (event.detail.item || event.detail.center || event.detail.orientation) {
     updateViews()
-  }
-
-  if (event.detail.zoom) {
-    syncViews()
   }
 })
 

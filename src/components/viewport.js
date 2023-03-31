@@ -10,13 +10,13 @@ import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction'
-import { getZ, world2image } from '@dataforsyningen/saul'
+import { getZ, world2image, image2world } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
-import { getParam, setParams } from '../modules/url-state.js'
 import { getTerrainData } from '../modules/api.js'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
+import store from '../store'
 
 /**
  *  Web component that displays an image using the OpenLayers library
@@ -27,7 +27,6 @@ export class SkraaFotoViewport extends HTMLElement {
   item
   coord_image
   coord_world
-  zoom = 4
   terrain
   api_stac_token = configuration.API_STAC_TOKEN
   map
@@ -103,8 +102,7 @@ export class SkraaFotoViewport extends HTMLElement {
   static get observedAttributes() {
     return [
       'data-item',
-      'data-center',
-      'data-zoom'
+      'data-center'
     ]
   }
 
@@ -163,7 +161,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateMap() {
 
-    if (!this.item || !this.coord_image || !this.zoom || !this.map) {
+    if (!this.item || !this.coord_image || !this.map) {
       return
     }
 
@@ -181,7 +179,6 @@ export class SkraaFotoViewport extends HTMLElement {
     this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
     this.view.center = this.coord_image
-    this.view.zoom = this.zoom
     this.map.setView(new View(this.view))
   }
 
@@ -281,17 +278,25 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  updateZoom(zoom) {
-    if (!this.map) {
+  syncMap({zoom, center}) {
+    if (!this.map || !this.item) {
       return
     }
+    const view = this.map.getView()
+    if (!view) {
+      return
+    }
+    const imageCenter = world2image(this.item, center[0], center[1], center[2])
     if (this.sync) {
       this.sync = false
-      this.map.getView().animate({
-        zoom: zoom,
+      view.animate({
+        zoom: zoom - configuration.ZOOM_DIFFERENCE,
+        center: imageCenter,
         duration: 0
       }, () => {
-        this.sync = true 
+        setTimeout(() => {
+          this.sync = true
+        }, 100)
       })
     }
   }
@@ -308,13 +313,21 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     this.map.on('moveend', () => {
-      const zoom = this.map.getView().getZoom()
-      if (Number(getParam('zoom')) === zoom) {
+      if (!this.sync) {
         return
       }
-      setParams({
-        zoom: zoom
+      const view = this.map.getView()
+      const center = view.getCenter()
+      const worldCenter = image2world(this.item, center[0], center[1], center[2])
+      store.dispatch('updateView', {
+        center: worldCenter,
+        zoom: view.getZoom() + configuration.ZOOM_DIFFERENCE
       })
+    })
+
+    window.addEventListener('updateView', (event) => {
+      console.log('a')
+      this.syncMap(event.detail)
     })
   }
 
@@ -324,10 +337,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     if (name === 'data-center' && old_value !== new_value) {
       this.update({center: JSON.parse(new_value)})
-    }
-    if (name === 'data-zoom' && old_value !== new_value) {
-      this.zoom = Number(new_value)
-      this.updateZoom(Number(new_value))
     }
   }
 }

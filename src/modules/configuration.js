@@ -16,6 +16,10 @@ let configuration = {
   ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
 
+  // The zoom difference between skraafotos and the WMTS service used for the map
+  ZOOM_DIFFERENCE: 12, // use 15.5 to have the same zoom on the map as the skraafotos
+  DEFAULT_ZOOM: 4, // the default zoom level for skraafotos
+
   SITEIMPROVE_SCRIPT: '',
   DOWNLOAD_TYPE: 'default' // 'default' | 'currentview'
 }
