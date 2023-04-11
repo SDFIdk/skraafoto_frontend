@@ -46,7 +46,7 @@ function updateViewports(state) {
   if (state.coordinate) {
     viewport_element_1.setCenter = state.coordinate
     viewport_element_2.setCenter = state.coordinate
-  }    
+  }
 }
 
 function updateViews(state) {
@@ -78,7 +78,7 @@ function queryItemsForDifferentCollections(state, collections, collection_idx) {
 
 function parseUrlState(params, state) {
   let new_state = Object.assign({}, state)
-  
+
   // Parse center param from URL
   const param_center = params.get('center')
   if (param_center) {
@@ -86,7 +86,7 @@ function parseUrlState(params, state) {
       return Number(coord)
     })
   }
-  
+
   // Parse item param from URL
   const param_item1 = params.get('item1')
   if (param_item1) {
@@ -116,7 +116,7 @@ function updateUrl(state) {
 }
 
 async function shiftItem(direction, item_key) {
-  
+
   let new_orientation = 'north'
   if (state[item_key].properties.direction === 'north') {
     if (direction === 'right') {
@@ -218,14 +218,14 @@ document.addEventListener('keyup', function(event) {
     case 'ArrowLeft':
       if (active_viewport === 1) {
         shiftItem('left', 'item1')
-      } else if (active_viewport === 2) { 
+      } else if (active_viewport === 2) {
         shiftItem('left', 'item2')
       }
       break
     case 'ArrowRight':
       if (active_viewport === 1) {
         shiftItem('right', 'item1')
-      } else if (active_viewport === 2) { 
+      } else if (active_viewport === 2) {
         shiftItem('right', 'item2')
       }
       break

@@ -17,13 +17,12 @@ customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
-
+1
 
 // Variables and state
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
-  item: null,
-  item1: null
+  item: null
 }
 let url_params = (new URL(document.location)).searchParams
 let collections = []
@@ -35,21 +34,26 @@ const viewport_element_1 = document.getElementById('viewport-1')
 
 function updateViewports(state) {
 
-  if (state.item1) {
-    viewport_element_1.setItem = state.item1
+  if (state.item) {
+    viewport_element_1.setData = {
+      item: state.item
+    }
   }
   if (state.coordinate) {
-    viewport_element_1.setCenter = state.coordinate
-  }    
+    viewport_element_1.setData = {
+      center: state.center
+    }
+  }
 }
 
 function updateViews(state) {
+  console.log(state)
 
   // If no coordinate is given, center mid-image
-  if (!state.coordinate && state.item1) {
+  if (!state.coordinate && state.item) {
     state.coordinate = [
-      (state.item1.bbox[0] + state.item1.bbox[2]) / 2,
-      (state.item1.bbox[1] + state.item1.bbox[3]) / 2
+      (state.item.bbox[0] + state.item.bbox[2]) / 2,
+      (state.item.bbox[1] + state.item.bbox[3]) / 2
     ]
   }
 
@@ -61,7 +65,7 @@ function updateViews(state) {
 function queryItemsForDifferentCollections(state, collections, collection_idx) {
   return queryItems(state.coordinate, 'north', collections[collection_idx].id).then((response) => {
     if (response.features.length > 0) {
-      state.item1 = response.features[0]
+      state.item = response.features[0]
       return state
     } else {
       return queryItemsForDifferentCollections(state, collections, collection_idx + 1)
@@ -71,7 +75,7 @@ function queryItemsForDifferentCollections(state, collections, collection_idx) {
 
 function parseUrlState(params, state) {
   let new_state = Object.assign({}, state)
-  
+
   // Parse center param from URL
   const param_center = params.get('center')
   if (param_center) {
@@ -79,12 +83,12 @@ function parseUrlState(params, state) {
       return Number(coord)
     })
   }
-  
+
   // Parse item param from URL
-  const param_item1 = params.get('item')
-  if (param_item1) {
-    return queryItem(param_item1).then((item) => {
-      new_state.item1 = item
+  const param_item = params.get('item')
+  if (param_item) {
+    return queryItem(param_item).then((item) => {
+      new_state.item = item
       return new_state
     })
   } else {
@@ -95,8 +99,8 @@ function parseUrlState(params, state) {
 
 function updateUrl(state) {
   const url = new URL(window.location)
-  if (state.item1) {
-    url.searchParams.set('item', state.item1.id)
+  if (state.item) {
+    url.searchParams.set('item', state.item.id)
   }
   if (state.coordinate) {
     url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
@@ -105,7 +109,7 @@ function updateUrl(state) {
 }
 
 async function shiftItem(direction, item_key) {
-  
+
   let new_orientation = 'north'
   if (state[item_key].properties.direction === 'north') {
     if (direction === 'right') {
@@ -165,7 +169,7 @@ document.addEventListener('coordinatechange', async function(event) {
 document.addEventListener('addresschange', function(event) {
   state.coordinate = getGSearchCenterPoint(event.detail)
   queryItemsForDifferentCollections(state, collections, 0).then((response) => {
-    state.item1 = response.item
+    state.item = response.item
     updateViews(state)
   })
 })
@@ -189,10 +193,10 @@ document.addEventListener('loaderror', function(event) {
 document.addEventListener('keyup', function(event) {
   switch(event.key) {
     case 'ArrowLeft':
-      shiftItem('left', 'item1')
+      shiftItem('left', 'item')
       break
     case 'ArrowRight':
-      shiftItem('right', 'item1')
+      shiftItem('right', 'item')
       break
     default:
       // Nothing
