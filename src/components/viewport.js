@@ -171,8 +171,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
-    // console.log(this.source_image)
-    // console.log(this.view)
+
     this.view.projection = this.projection
 
     // Set extra resolutions so we can zoom in further than the resolutions permit normally
@@ -182,6 +181,9 @@ export class SkraaFotoViewport extends HTMLElement {
     this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
     this.view.center = this.coord_image
+
+    // removes extent from the view
+    // this.view.extent = undefined
 
     this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
