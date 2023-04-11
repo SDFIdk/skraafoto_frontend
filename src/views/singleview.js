@@ -33,21 +33,17 @@ const viewport_element_1 = document.getElementById('viewport-1')
 // Methods
 
 function updateViewports(state) {
-
+  let data = {}
   if (state.item) {
-    viewport_element_1.setData = {
-      item: state.item
-    }
+    data.item = state.item
   }
   if (state.coordinate) {
-    viewport_element_1.setData = {
-      center: state.center
-    }
+    data.center = state.coordinate
   }
+  viewport_element_1.setData = data
 }
 
 function updateViews(state) {
-  console.log(state)
 
   // If no coordinate is given, center mid-image
   if (!state.coordinate && state.item) {
@@ -139,7 +135,6 @@ async function shiftItem(direction, item_key) {
 
   queryItems(state.coordinate, new_orientation, state[item_key].collection).then((response) => {
     if (response.features.length > 0) {
-      console.log(state[item_key],response.features[0])
       state[item_key] = response.features[0]
       updateViews(state)
     } else {

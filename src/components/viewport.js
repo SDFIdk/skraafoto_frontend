@@ -165,7 +165,6 @@ export class SkraaFotoViewport extends HTMLElement {
     if (this.map && item.id !== this.item?.id) {
       this.item = item
       this.source_image = this.generateSource(this.item.assets.data.href)
-
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
