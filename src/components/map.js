@@ -20,6 +20,7 @@ import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { configuration } from '../modules/configuration.js'
+import { closeEnough } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 import store from '../store'
 
@@ -95,7 +96,6 @@ export class SkraaFotoMap extends HTMLElement {
   static get observedAttributes() {
     return [
       'data-center',
-      'data-zoom',
       'minimal',
       'hidden'
     ]
@@ -175,7 +175,10 @@ export class SkraaFotoMap extends HTMLElement {
           return
         }
         const view = this.map.getView()
-        const center = [view.getCenter()[0], view.getCenter()[1]]
+        if (closeEnough({ zoom: view.getZoom(), center: view.getCenter() }, store.state.view)) {
+          return
+        }
+        const center = view.getCenter()
         getZ(center[0], center[1], configuration).then(z => {
           center[2] = z
           store.dispatch('updateView', {
@@ -244,7 +247,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   async updateMap(center) {
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center, configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE)
+      this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
@@ -276,9 +279,7 @@ export class SkraaFotoMap extends HTMLElement {
         center: center,
         duration: 0
       }, () => {
-        setTimeout(() => {
-          this.sync = true
-        }, 100)
+        this.sync = true
       })
     }
   }
@@ -293,7 +294,6 @@ export class SkraaFotoMap extends HTMLElement {
     }
 
     window.addEventListener('updateView', (event) => {
-      console.log(event.detail)
       this.syncMap(event.detail)
     })
   }
@@ -302,9 +302,6 @@ export class SkraaFotoMap extends HTMLElement {
     if (name === 'data-center') {
       this.center = JSON.parse(new_value)
       this.updateMap(this.center)
-    }
-    if (name === 'data-zoom' && old_value !== new_value) {
-      this.updateZoom(zoom)
     }
   }
 }

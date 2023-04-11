@@ -15,6 +15,7 @@ import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
+import { closeEnough } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import store from '../store'
 
@@ -170,6 +171,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
+    console.log(this.source_image)
+    console.log(this.view)
     this.view.projection = this.projection
 
     // Set extra resolutions so we can zoom in further than the resolutions permit normally
@@ -179,6 +182,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
     this.view.center = this.coord_image
+
+    this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
   }
 
@@ -286,17 +291,16 @@ export class SkraaFotoViewport extends HTMLElement {
     if (!view) {
       return
     }
-    const imageCenter = world2image(this.item, center[0], center[1], center[2])
+    const image_zoom = zoom - configuration.ZOOM_DIFFERENCE
+    const image_center = world2image(this.item, center[0], center[1], center[2])
     if (this.sync) {
       this.sync = false
       view.animate({
-        zoom: zoom - configuration.ZOOM_DIFFERENCE,
-        center: imageCenter,
+        zoom: image_zoom,
+        center: image_center,
         duration: 0
       }, () => {
-        setTimeout(() => {
-          this.sync = true
-        }, 100)
+        this.sync = true
       })
     }
   }
@@ -318,15 +322,33 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       const view = this.map.getView()
       const center = view.getCenter()
-      const worldCenter = image2world(this.item, center[0], center[1], center[2])
-      store.dispatch('updateView', {
-        center: worldCenter,
-        zoom: view.getZoom() + configuration.ZOOM_DIFFERENCE
+      const world_zoom = view.getZoom() + configuration.ZOOM_DIFFERENCE
+      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image 
+      * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
+      * vary. If there are big differences in elevation between the selected center and the zoom center this
+      * could lead to some big inaccuracies when calculating the zoom center.
+      */
+      if (!this.coord_world) {
+        return
+      }
+      const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
+      if (closeEnough({ zoom: world_zoom, center: world_center }, store.state.view)) {
+        return
+      }
+      getZ(world_center[0], world_center[1], configuration).then(z => {
+        world_center[2] = z
+        store.dispatch('updateView', {
+          center: world_center,
+          zoom: world_zoom
+        })
+        console.log('updateView', {
+          center: world_center,
+          zoom: world_zoom
+        })
       })
     })
 
     window.addEventListener('updateView', (event) => {
-      console.log('a')
       this.syncMap(event.detail)
     })
   }

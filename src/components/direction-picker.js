@@ -1,5 +1,5 @@
 import { queryItems } from '../modules/api.js'
-import { setParams, getParam } from '../modules/url-state.js'
+import { setParams } from '../modules/url-state.js'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions
