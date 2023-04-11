@@ -171,8 +171,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
-    console.log(this.source_image)
-    console.log(this.view)
+    // console.log(this.source_image)
+    // console.log(this.view)
     this.view.projection = this.projection
 
     // Set extra resolutions so we can zoom in further than the resolutions permit normally
@@ -300,7 +300,9 @@ export class SkraaFotoViewport extends HTMLElement {
         center: image_center,
         duration: 0
       }, () => {
-        this.sync = true
+        setTimeout(() => {
+          this.sync = true
+        }, 50)
       })
     }
   }
@@ -338,10 +340,6 @@ export class SkraaFotoViewport extends HTMLElement {
       getZ(world_center[0], world_center[1], configuration).then(z => {
         world_center[2] = z
         store.dispatch('updateView', {
-          center: world_center,
-          zoom: world_zoom
-        })
-        console.log('updateView', {
           center: world_center,
           zoom: world_zoom
         })

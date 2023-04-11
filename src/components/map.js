@@ -279,7 +279,9 @@ export class SkraaFotoMap extends HTMLElement {
         center: center,
         duration: 0
       }, () => {
-        this.sync = true
+        setTimeout(() => {
+          this.sync = true
+        }, 50)
       })
     }
   }
