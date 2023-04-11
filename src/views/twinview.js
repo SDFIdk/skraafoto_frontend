@@ -38,14 +38,22 @@ const viewport_element_2 = document.getElementById('viewport-2')
 
 function updateViewports(state) {
   if (state.item1) {
-    viewport_element_1.setItem = state.item1
+    viewport_element_1.setData = {
+      item: state.item1
+    }
   }
   if (state.item2) {
-    viewport_element_2.setItem = state.item2
+    viewport_element_2.setData = {
+      item: state.item2
+    }
   }
   if (state.coordinate) {
-    viewport_element_1.setCenter = state.coordinate
-    viewport_element_2.setCenter = state.coordinate
+    viewport_element_1.setData = {
+      center: state.coordinate
+    }
+    viewport_element_2.setData = {
+      center: state.coordinate
+    }
   }
 }
 
