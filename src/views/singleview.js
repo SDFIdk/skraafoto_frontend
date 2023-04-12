@@ -17,7 +17,6 @@ customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
-1
 
 // Variables and state
 let state = {
