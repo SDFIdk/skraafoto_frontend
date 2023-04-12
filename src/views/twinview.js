@@ -20,7 +20,7 @@ customElements.define('skraafoto-header', SkraaFotoHeader)
 
 
 // Variables and state
-let active_viewport = null
+let active_viewport;
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
   item: null,
@@ -38,15 +38,23 @@ const viewport_element_2 = document.getElementById('viewport-2')
 
 function updateViewports(state) {
   if (state.item1) {
-    viewport_element_1.setItem = state.item1
+    viewport_element_1.setData = {
+      item: state.item1
+    }
   }
   if (state.item2) {
-    viewport_element_2.setItem = state.item2
+    viewport_element_2.setData = {
+      item: state.item2
+    }
   }
   if (state.coordinate) {
-    viewport_element_1.setCenter = state.coordinate
-    viewport_element_2.setCenter = state.coordinate
-  }    
+    viewport_element_1.setData = {
+      center: state.coordinate
+    }
+    viewport_element_2.setData = {
+      center: state.coordinate
+    }
+  }
 }
 
 function updateViews(state) {
@@ -78,7 +86,7 @@ function queryItemsForDifferentCollections(state, collections, collection_idx) {
 
 function parseUrlState(params, state) {
   let new_state = Object.assign({}, state)
-  
+
   // Parse center param from URL
   const param_center = params.get('center')
   if (param_center) {
@@ -86,7 +94,7 @@ function parseUrlState(params, state) {
       return Number(coord)
     })
   }
-  
+
   // Parse item param from URL
   const param_item1 = params.get('item1')
   if (param_item1) {
@@ -115,8 +123,18 @@ function updateUrl(state) {
   window.history.pushState({}, '', url)
 }
 
+viewport_element_1.addEventListener('click', () => {
+  // update the value of the variable when option1 is clicked
+  active_viewport = 1;
+});
+
+viewport_element_2.addEventListener('click', () => {
+  // update the value of the variable when option1 is clicked
+  active_viewport = 2;
+});
+
 async function shiftItem(direction, item_key) {
-  
+
   let new_orientation = 'north'
   if (state[item_key].properties.direction === 'north') {
     if (direction === 'right') {
@@ -146,7 +164,7 @@ async function shiftItem(direction, item_key) {
 
   queryItems(state.coordinate, new_orientation, state[item_key].collection).then((response) => {
     if (response.features.length > 0) {
-      console.log(state[item_key],response.features[0])
+      // console.log(state[item_key],response.features[0])
       state[item_key] = response.features[0]
       updateViews(state)
     } else {
@@ -218,14 +236,14 @@ document.addEventListener('keyup', function(event) {
     case 'ArrowLeft':
       if (active_viewport === 1) {
         shiftItem('left', 'item1')
-      } else if (active_viewport === 2) { 
+      } else if (active_viewport === 2) {
         shiftItem('left', 'item2')
       }
       break
     case 'ArrowRight':
       if (active_viewport === 1) {
         shiftItem('right', 'item1')
-      } else if (active_viewport === 2) { 
+      } else if (active_viewport === 2) {
         shiftItem('right', 'item2')
       }
       break
