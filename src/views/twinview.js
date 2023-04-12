@@ -20,7 +20,7 @@ customElements.define('skraafoto-header', SkraaFotoHeader)
 
 
 // Variables and state
-let active_viewport = null
+let active_viewport;
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
   item: null,
@@ -123,6 +123,16 @@ function updateUrl(state) {
   window.history.pushState({}, '', url)
 }
 
+viewport_element_1.addEventListener('click', () => {
+  // update the value of the variable when option1 is clicked
+  active_viewport = 1;
+});
+
+viewport_element_2.addEventListener('click', () => {
+  // update the value of the variable when option1 is clicked
+  active_viewport = 2;
+});
+
 async function shiftItem(direction, item_key) {
 
   let new_orientation = 'north'
@@ -154,7 +164,7 @@ async function shiftItem(direction, item_key) {
 
   queryItems(state.coordinate, new_orientation, state[item_key].collection).then((response) => {
     if (response.features.length > 0) {
-      console.log(state[item_key],response.features[0])
+      // console.log(state[item_key],response.features[0])
       state[item_key] = response.features[0]
       updateViews(state)
     } else {
