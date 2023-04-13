@@ -180,10 +180,13 @@ export class SkraaFotoViewport extends HTMLElement {
     // Rotate nadir images relative to north
     this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
-    this.view.center = this.coord_image
-
-    // removes extent from the view
-    // this.view.extent = undefined
+    // this.view.center = this.coord_image
+    const center = store.state.view.center
+    if (center[0]) {
+      this.view.center = world2image(this.item, center[0], center[1], center[2])
+    } else {
+      this.view.center = this.coord_image
+    }
 
     this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
