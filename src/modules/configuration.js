@@ -17,6 +17,10 @@ let configuration = {
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
   ENABLE_SMALL_FONT: false,
 
+  // The zoom difference between skraafotos and the WMTS service used for the map
+  ZOOM_DIFFERENCE: 12, // use 15.5 to have the same zoom on the map as the skraafotos
+  DEFAULT_ZOOM: 4, // the default zoom level for skraafotos
+
   SITEIMPROVE_SCRIPT: '',
   DOWNLOAD_TYPE: 'default' // 'default' | 'currentview'
 }

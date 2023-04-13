@@ -5,13 +5,9 @@
 
 import { sanitizeCoords, sanitizeParams } from './url-sanitize.js'
 
-const urlupdate_event = new CustomEvent('urlupdate')
 const url = new URL(window.location)
 
 let search_params = await sanitizeParams(sanitizeCoords(url))
-
-history.replaceState({}, '', url)
-dispatchEvent(urlupdate_event)
 
 /** Returns entire search parameter string */
 function getParams() {
@@ -42,7 +38,7 @@ function setParams(params) {
     }
   }
   history.pushState({}, '', url)
-  window.dispatchEvent(urlupdate_event)
+  window.dispatchEvent(new CustomEvent('urlupdate', { detail: params }))
 }
 
 export {

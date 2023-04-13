@@ -1,7 +1,5 @@
 import { SkraaFotoViewport } from './viewport.js' 
-import OlMap from 'ol/Map.js'
-import { defaults as defaultControls } from 'ol/control'
-import { defaults as defaultInteractions } from 'ol/interaction'
+import { DragPan } from 'ol/interaction'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
@@ -204,11 +202,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   // Lifecycle callbacks
 
   connectedCallback() {
-    this.map = new OlMap({
-      target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false}).extend([this.fullscreen]),
-      interactions: defaultInteractions({pinchRotate: false})
-    })
+    super.connectedCallback()
+
+    this.map.addInteraction(new DragPan())
 
     // Change mode when clicking toolbar buttons
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {

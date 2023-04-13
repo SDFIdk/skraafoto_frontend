@@ -3,25 +3,26 @@
 // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
 
 import { setParams } from '../modules/url-state.js'
-import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS'
+import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import Map from 'ol/Map'
 import TileLayer from 'ol/layer/Tile'
 import View from 'ol/View'
-import {get as getProjection} from 'ol/proj'
-import {register} from 'ol/proj/proj4'
+import { get as getProjection } from 'ol/proj'
+import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
-import {epsg25832proj} from '@dataforsyningen/saul'
+import { epsg25832proj, getZ } from '@dataforsyningen/saul'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
 import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
-import {Icon, Style} from 'ol/style'
-import {defaults as defaultControls} from 'ol/control'
+import { Icon, Style } from 'ol/style'
+import { defaults as defaultControls } from 'ol/control'
 import { configuration } from '../modules/configuration.js'
-import store from '../store'
+import { closeEnough } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
+import store from '../store'
 
 /**
  * Web component that displays a map
@@ -33,6 +34,8 @@ export class SkraaFotoMap extends HTMLElement {
   projection
   parser = new WMTSCapabilities()
   map = null
+  center
+  sync = true
   icon_layer
   styles = `
     :root {
@@ -123,7 +126,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.shadowRoot.append(div)
   }
 
-  generateMap(is_minimal, center) {
+  generateMap(is_minimal, center, zoom) {
     return fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${ this.api_stac_token }`)
     .then((response) => {
       return response.text()
@@ -145,7 +148,7 @@ export class SkraaFotoMap extends HTMLElement {
       const view = new View({
         projection: this.projection,
         center: center,
-        zoom: 18
+        zoom: zoom
       })
 
       const map = new Map({
@@ -166,6 +169,24 @@ export class SkraaFotoMap extends HTMLElement {
           this.singleClickHandler(event)
         })
       }
+
+      map.on('moveend', (e) => {
+        if (!this.sync) {
+          return
+        }
+        const view = this.map.getView()
+        if (closeEnough({ zoom: view.getZoom(), center: view.getCenter() }, store.state.view)) {
+          return
+        }
+        const center = view.getCenter()
+        getZ(center[0], center[1], configuration).then(z => {
+          center[2] = z
+          store.dispatch('updateView', {
+            center: center,
+            zoom: view.getZoom()
+          })
+        })
+      })
 
       return map
     })
@@ -226,7 +247,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   async updateMap(center) {
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center)
+      this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
@@ -243,6 +264,27 @@ export class SkraaFotoMap extends HTMLElement {
     }
   }
 
+  syncMap({zoom, center}) {
+    if (!this.map) {
+      return
+    }
+    const view = this.map.getView()
+    if (!view) {
+      return
+    }
+    if (this.sync) {
+      this.sync = false
+      this.map.getView().animate({
+        zoom: zoom,
+        center: center,
+        duration: 0
+      }, () => {
+        setTimeout(() => {
+          this.sync = true
+        }, 50)
+      })
+    }
+  }
 
   // Lifecycle
 
@@ -252,11 +294,16 @@ export class SkraaFotoMap extends HTMLElement {
         this.drawParcels()
       })
     }
+
+    window.addEventListener('updateView', (event) => {
+      this.syncMap(event.detail)
+    })
   }
 
   attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'data-center') {
-      this.updateMap(JSON.parse(new_value))
+    if (name === 'data-center' && old_value !== new_value) {
+      this.center = JSON.parse(new_value)
+      this.updateMap(this.center)
     }
   }
 }
