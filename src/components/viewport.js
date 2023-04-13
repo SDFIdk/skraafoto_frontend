@@ -162,7 +162,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateMap() {
 
-    if (!this.item || !this.coord_image || !this.map) {
+    if (!this.item || !this.map) {
       return
     }
 
