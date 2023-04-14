@@ -22,6 +22,7 @@ import { defaults as defaultControls } from 'ol/control'
 import { configuration } from '../modules/configuration.js'
 import { closeEnough } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
+import { generatePointerLayer, updatePointer } from '../custom-plugins/plugin-pointer'
 import store from '../store'
 
 /**
@@ -187,6 +188,26 @@ export class SkraaFotoMap extends HTMLElement {
           })
         })
       })
+
+      if (configuration.ENABLE_POINTER) {
+        map.addLayer(generatePointerLayer())
+        map.on('pointermove', event => {
+          /**
+           * It is too expensive to get the Z value for every point, so we use the most recent value stored from
+           * zoom sync instead.
+           */ 
+          const coord = [event.coordinate[0], event.coordinate[1], store.state.view.center[2] || 0]
+          window.dispatchEvent(new CustomEvent("updatePointer", { detail: { coord: coord, map: map } }))
+        })
+        window.addEventListener('updatePointer', event => {
+          if (event.detail.map === map) {
+            updatePointer(this.map, [-9999, -9999])
+          } else {
+            const coord = event.detail.coord
+            updatePointer(map, [coord[0], coord[1]])
+          }
+        })
+      }
 
       return map
     })
