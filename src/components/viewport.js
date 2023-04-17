@@ -166,7 +166,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateMap() {
 
-    if (!this.item || !this.map) {
+    if (!this.item || !this.map || !this.coord_image) {
       return
     }
 
@@ -191,7 +191,6 @@ export class SkraaFotoViewport extends HTMLElement {
     } else {
       this.view.center = this.coord_image
     }
-
     this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
   }
@@ -335,12 +334,11 @@ export class SkraaFotoViewport extends HTMLElement {
       const view = this.map.getView()
       const center = view.getCenter()
       const world_zoom = view.getZoom() + configuration.ZOOM_DIFFERENCE
-      /** 
-       * Note that we use the coord_world Z value here as we have no way to get the Z value based on the image 
-       * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
-       * vary. If there are big differences in elevation between the selected center and the zoom center this
-       * could lead to some big inaccuracies when calculating the zoom center.
-       */
+      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
+      * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
+      * vary. If there are big differences in elevation between the selected center and the zoom center this
+      * could lead to some big inaccuracies when calculating the zoom center.
+      */
       if (!this.coord_world) {
         return
       }
@@ -356,7 +354,6 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-
     window.addEventListener('updateView', (event) => {
       this.syncMap(event.detail)
     })
