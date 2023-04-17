@@ -139,7 +139,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  async update({item, center}) {
+  async update({item,center}) {
     if (typeof item === 'object') {
       this.updateImage(item)
     } else if (typeof item === 'string') {
