@@ -1,13 +1,17 @@
 /** Simple state handling using URL search params.
- * Components can intercept URL changes by listening to the `popstate` event. 
+ * Components can intercept URL changes by listening to the `popstate` event.
  * @module
  */
 
 import { sanitizeCoords, sanitizeParams } from './url-sanitize.js'
 
+const urlupdate_event = new CustomEvent('urlupdate')
 const url = new URL(window.location)
 
 let search_params = await sanitizeParams(sanitizeCoords(url))
+
+history.replaceState({}, '', url)
+dispatchEvent(urlupdate_event)
 
 /** Returns entire search parameter string */
 function getParams() {
@@ -21,7 +25,7 @@ function getParam(param) {
       case 'center':
         return search_params.get(param).split(',').map(function(c) { return Number(c) })
       default:
-        return search_params.get(param)  
+        return search_params.get(param)
     }
   } else {
     return false
@@ -38,7 +42,7 @@ function setParams(params) {
     }
   }
   history.pushState({}, '', url)
-  window.dispatchEvent(new CustomEvent('urlupdate', { detail: params }))
+  window.dispatchEvent(urlupdate_event)
 }
 
 export {

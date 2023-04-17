@@ -28,6 +28,7 @@ export class SkraaFotoViewport extends HTMLElement {
   item
   coord_image
   coord_world
+  zoom = 4
   terrain
   api_stac_token = configuration.API_STAC_TOKEN
   map
@@ -103,7 +104,8 @@ export class SkraaFotoViewport extends HTMLElement {
   static get observedAttributes() {
     return [
       'data-item',
-      'data-center'
+      'data-center',
+      'data-zoom'
     ]
   }
 
@@ -139,7 +141,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  async update({item, center}) {
+  async update({item,center}) {
     if (typeof item === 'object') {
       this.updateImage(item)
     } else if (typeof item === 'string') {
@@ -165,7 +167,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateMap() {
 
-    if (!this.item || !this.map) {
+    if (!this.item || !this.coord_image || !this.zoom || !this.map) {
       return
     }
 
@@ -174,7 +176,6 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
-
     this.view.projection = this.projection
 
     // Set extra resolutions so we can zoom in further than the resolutions permit normally
@@ -190,7 +191,6 @@ export class SkraaFotoViewport extends HTMLElement {
     } else {
       this.view.center = this.coord_image
     }
-
     this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
   }
@@ -334,7 +334,7 @@ export class SkraaFotoViewport extends HTMLElement {
       const view = this.map.getView()
       const center = view.getCenter()
       const world_zoom = view.getZoom() + configuration.ZOOM_DIFFERENCE
-      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image 
+      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
       * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
       * vary. If there are big differences in elevation between the selected center and the zoom center this
       * could lead to some big inaccuracies when calculating the zoom center.
@@ -354,7 +354,6 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-
     window.addEventListener('updateView', (event) => {
       this.syncMap(event.detail)
     })
@@ -362,12 +361,17 @@ export class SkraaFotoViewport extends HTMLElement {
 
 
   attributeChangedCallback(name, old_value, new_value) {
+    const data = {}
     if (name === 'data-item' && old_value !== new_value) {
-      this.update({item: new_value})
+      data.item = new_value
     }
     if (name === 'data-center' && old_value !== new_value) {
-      this.update({center: JSON.parse(new_value)})
+      data.center = JSON.parse(new_value)
     }
+    if (name === 'data-zoom' && old_value !== new_value) {
+      data.zoom = Number(new_value)
+    }
+    this.setData = data
   }
 }
 
