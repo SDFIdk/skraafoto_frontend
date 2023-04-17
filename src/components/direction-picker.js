@@ -198,8 +198,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // Update map
     this.map_element.dataset.center = JSON.stringify(options.center)
-  }
 
+  }
 
   constructor() {
     super()
@@ -249,10 +249,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     const data = {}
     data.item = item
     data.center = coordinate
-    // Update zoom level of nadir viewport
-    if (item.properties.direction === 'nadir') {
-      data.zoom = 4
-    }
     element.setData = data
   }
 

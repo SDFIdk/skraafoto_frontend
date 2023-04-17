@@ -10,13 +10,14 @@ import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction'
-import { getZ, world2image } from '@dataforsyningen/saul'
+import { getZ, world2image, image2world } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
+import { closeEnough } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
-
+import store from '../store'
 
 /**
  *  Web component that displays an image using the OpenLayers library
@@ -27,7 +28,6 @@ export class SkraaFotoViewport extends HTMLElement {
   item
   coord_image
   coord_world
-  zoom = 4
   terrain
   api_stac_token = configuration.API_STAC_TOKEN
   map
@@ -35,6 +35,7 @@ export class SkraaFotoViewport extends HTMLElement {
   layer_icon
   source_image
   view
+  sync = true
   compass_element
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -102,8 +103,7 @@ export class SkraaFotoViewport extends HTMLElement {
   static get observedAttributes() {
     return [
       'data-item',
-      'data-center',
-      'data-zoom'
+      'data-center'
     ]
   }
 
@@ -139,7 +139,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  async update({item,center,zoom}) {
+  async update({item, center}) {
     if (typeof item === 'object') {
       this.updateImage(item)
     } else if (typeof item === 'string') {
@@ -148,14 +148,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     if (center) {
       await this.updateCenter(center)
-    }
-    if (zoom) {
-      this.zoom = zoom
-    } else {
-      const current_zoom = this.map.getView().getZoom()
-      if (current_zoom) {
-        this.zoom = current_zoom
-      }
     }
     this.updateMap()
     this.updateNonMap()
@@ -173,7 +165,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async updateMap() {
 
-    if (!this.item || !this.coord_image || !this.zoom || !this.map) {
+    if (!this.item || !this.map) {
       return
     }
 
@@ -182,6 +174,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
+
     this.view.projection = this.projection
 
     // Set extra resolutions so we can zoom in further than the resolutions permit normally
@@ -190,8 +183,15 @@ export class SkraaFotoViewport extends HTMLElement {
     // Rotate nadir images relative to north
     this.view.rotation = this.getAdjustedNadirRotation(this.item)
 
-    this.view.center = this.coord_image
-    this.view.zoom = this.zoom
+    // this.view.center = this.coord_image
+    const center = store.state.view.center
+    if (center[0]) {
+      this.view.center = world2image(this.item, center[0], center[1], center[2])
+    } else {
+      this.view.center = this.coord_image
+    }
+
+    this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
   }
 
@@ -291,6 +291,31 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  syncMap({zoom, center}) {
+    if (!this.map || !this.item) {
+      return
+    }
+    const view = this.map.getView()
+    if (!view) {
+      return
+    }
+    const image_zoom = zoom - configuration.ZOOM_DIFFERENCE
+    const image_center = world2image(this.item, center[0], center[1], center[2])
+    if (this.sync) {
+      this.sync = false
+      view.animate({
+        zoom: image_zoom,
+        center: image_center,
+        duration: 0
+      }, () => {
+        setTimeout(() => {
+          this.sync = true
+        }, 50)
+      })
+    }
+  }
+
+
   // Lifecycle callbacks
 
   connectedCallback() {
@@ -301,21 +326,48 @@ export class SkraaFotoViewport extends HTMLElement {
       interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
       view: this.view
     })
+
+    this.map.on('moveend', () => {
+      if (!this.sync) {
+        return
+      }
+      const view = this.map.getView()
+      const center = view.getCenter()
+      const world_zoom = view.getZoom() + configuration.ZOOM_DIFFERENCE
+      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image 
+      * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
+      * vary. If there are big differences in elevation between the selected center and the zoom center this
+      * could lead to some big inaccuracies when calculating the zoom center.
+      */
+      if (!this.coord_world) {
+        return
+      }
+      const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
+      if (closeEnough({ zoom: world_zoom, center: world_center }, store.state.view)) {
+        return
+      }
+      getZ(world_center[0], world_center[1], configuration).then(z => {
+        world_center[2] = z
+        store.dispatch('updateView', {
+          center: world_center,
+          zoom: world_zoom
+        })
+      })
+    })
+
+    window.addEventListener('updateView', (event) => {
+      this.syncMap(event.detail)
+    })
   }
 
 
   attributeChangedCallback(name, old_value, new_value) {
-    const data = {}
     if (name === 'data-item' && old_value !== new_value) {
-      data.item = new_value
+      this.update({item: new_value})
     }
     if (name === 'data-center' && old_value !== new_value) {
-      data.center = JSON.parse(new_value)
+      this.update({center: JSON.parse(new_value)})
     }
-    if (name === 'data-zoom' && old_value !== new_value) {
-      data.zoom = Number(new_value)
-    }
-    this.setData = data
   }
 }
 

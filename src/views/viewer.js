@@ -116,14 +116,19 @@ document.addEventListener('gsearch:select', function(event) {
 })
 
 // When the URL parameters update, update the views and collection value
-window.addEventListener('urlupdate', function() {
+window.addEventListener('urlupdate', function(event) {
 
-  const item = getParam('item')
-  if (item) {
-    const year = item.substring(0,4)
-    collection = `skraafotos${year}`
+  if (event.detail.item) {
+    const item = getParam('item')
+    if (item) {
+      const year = item.substring(0,4)
+      collection = `skraafotos${year}`
+    }
   }
-  updateViews()
+  
+  if (event.detail.item || event.detail.center || event.detail.orientation) {
+    updateViews()
+  }
 })
 
 // Catch load errors and display to user
