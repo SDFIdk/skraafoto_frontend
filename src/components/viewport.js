@@ -190,7 +190,6 @@ export class SkraaFotoViewport extends HTMLElement {
     } else {
       this.view.center = this.coord_image
     }
-
     this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
     this.map.setView(new View(this.view))
   }
@@ -354,7 +353,6 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-
     window.addEventListener('updateView', (event) => {
       this.syncMap(event.detail)
     })

@@ -1,5 +1,5 @@
 /** Simple state handling using URL search params.
- * Components can intercept URL changes by listening to the `popstate` event. 
+ * Components can intercept URL changes by listening to the `popstate` event.
  * @module
  */
 
@@ -21,7 +21,7 @@ function getParam(param) {
       case 'center':
         return search_params.get(param).split(',').map(function(c) { return Number(c) })
       default:
-        return search_params.get(param)  
+        return search_params.get(param)
     }
   } else {
     return false

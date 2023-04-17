@@ -8,6 +8,7 @@ import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
+import {getParam} from "../modules/url-state";
 
 
 // Initialize web components
@@ -184,31 +185,12 @@ function setupConfigurables(conf) {
 
 // Set up event listeners
 
-// When a coordinate input is given, update viewports
-document.addEventListener('coordinatechange', async function(event) {
-  state.coordinate = event.detail
-  updateViews(state)
-})
+// When the URL parameters update, update the views and collection value
+window.addEventListener('urlupdate', function(event) {
 
-// On a new address input, update viewports
-document.addEventListener('addresschange', function(event) {
-  state.coordinate = getGSearchCenterPoint(event.detail)
-  queryItemsForDifferentCollections(state, collections, 0).then((response) => {
-    state.item1 = response.item
-    state.item2 = response.item
-    updateViews(state)
-  })
-})
-
-// When a differently dated image is selected, update the URL and check to see if direction picker needs an update
-viewport_element_1.shadowRoot.addEventListener('imagechange', function(event) {
-  state.item = event.detail
-  updateUrl(state)
-})
-
-viewport_element_2.shadowRoot.addEventListener('imagechange', function(event) {
-  state.item = event.detail
-  updateUrl(state)
+  if (event.detail.item || event.detail.center || event.detail.orientation) {
+    updateViews()
+  }
 })
 
 // Catch load errors and display to user
