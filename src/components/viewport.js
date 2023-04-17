@@ -375,6 +375,9 @@ export class SkraaFotoViewport extends HTMLElement {
         if (event.detail.map === this.map) {
           updatePointer(this.map, [-9999, -9999])
         } else {
+          if (!this.coord_world) {
+            return
+          }
           const coord = event.detail.coord
           const position = world2image(this.item, coord[0], coord[1], this.coord_world[2])
           updatePointer(this.map, position)

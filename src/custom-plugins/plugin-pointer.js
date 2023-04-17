@@ -8,6 +8,10 @@ import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 
+/**
+ * Creates an Openlayers layer with a pointer marker.
+ * @returns An Openlayers layer with a pointer marker
+ */
 function generatePointerLayer() {
   const source = new VectorSource({
     features: [new Feature(new Point([-9999, -9999]))]
@@ -16,7 +20,7 @@ function generatePointerLayer() {
     image: new Circle({
       radius: 4,
       stroke: new Stroke({
-        color: [255, 255, 0, 1],
+        color: [255, 0, 0, 1],
         width: 2
       })
     }),
