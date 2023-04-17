@@ -234,18 +234,12 @@ document.addEventListener('keyup', function(event) {
       viewport_element_2.classList.add('active')
       break
     case 'ArrowLeft':
-      if (active_viewport === 1) {
         shiftItem('left', 'item1')
-      } else if (active_viewport === 2) {
         shiftItem('left', 'item2')
-      }
       break
     case 'ArrowRight':
-      if (active_viewport === 1) {
         shiftItem('right', 'item1')
-      } else if (active_viewport === 2) {
         shiftItem('right', 'item2')
-      }
       break
     default:
       // Nothing
