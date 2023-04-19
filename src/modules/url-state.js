@@ -11,7 +11,7 @@ const url = new URL(window.location)
 let search_params = await sanitizeParams(sanitizeCoords(url))
 
 history.replaceState({}, '', url)
-dispatchEvent(urlupdate_event)
+dispatchEvent(urlupdate_event, { details: {} })
 
 /** Returns entire search parameter string */
 function getParams() {
@@ -42,7 +42,7 @@ function setParams(params) {
     }
   }
   history.pushState({}, '', url)
-  window.dispatchEvent(new CustomEvent(urlupdate_event))
+  window.dispatchEvent(new CustomEvent('urlupdate', { detail: params }))
 }
 
 export {
