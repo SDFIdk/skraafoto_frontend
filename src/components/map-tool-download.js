@@ -1,4 +1,6 @@
 import { configuration } from '../modules/configuration.js'
+import { download } from '../custom-plugins/plugin-custom-download-tool.js'
+import { createPdf } from '../custom-plugins/plugin-custom-create-pdf.js'
 
 /**
  * Web component that enables user to download the current image
@@ -42,13 +44,14 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   // Lifecycle callbacks
 
-  async connectedCallback() {
+  connectedCallback() {
 
     if (configuration.DOWNLOAD_TYPE === 'currentview') {
-      
-      const { download } = await import('../custom-plugins/plugin-custom-download-tool.js')
       this.button_element.addEventListener('click', () => {
-        download(this.viewport.map.getTarget(), this.link_element)
+        const callback = (pdf, file_name) => {
+          pdf.save(file_name)
+        }
+        createPdf(this.viewport.map, this.viewport.item, callback)
       })
 
     } else {
