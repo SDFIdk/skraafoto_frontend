@@ -17,7 +17,7 @@ import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
 import { closeEnough } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
-import { generatePointerLayer, updatePointer } from '../custom-plugins/plugin-pointer'
+import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import store from '../store'
 
 /**
@@ -359,27 +359,8 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     if (configuration.ENABLE_POINTER) {
-      /**
-       * Similar to the zoom sync problem above, we can not get the exact Z value based on the image coordinates.
-       * We use the coord_world Z coordinate again.
-       */
-      this.map.addLayer(generatePointerLayer())
-      this.map.on('pointermove', event => {
-        const coord = image2world(this.item, event.coordinate[0], event.coordinate[1], this.coord_world[2])
-        window.dispatchEvent(new CustomEvent("updatePointer", { detail: { coord: coord, map: this.map } }))
-      })
-      window.addEventListener('updatePointer', event => {
-        if (event.detail.map === this.map) {
-          updatePointer(this.map, [-9999, -9999])
-        } else {
-          if (!this.coord_world) {
-            return
-          }
-          const coord = event.detail.coord
-          const position = world2image(this.item, coord[0], coord[1], this.coord_world[2])
-          updatePointer(this.map, position)
-        }
-      })
+      addPointerLayerToViewport(this)
+      window.addEventListener('updatePointer', getUpdateViewportPointerFunction(this))
     }
   }
 
