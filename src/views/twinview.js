@@ -8,7 +8,7 @@ import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import {getParam} from "../modules/url-state";
+import { getParam } from "../modules/url-state";
 
 
 // Initialize web components
@@ -49,6 +49,7 @@ function updateViewports(state) {
     }
   }
   if (state.coordinate) {
+    console.log(state.coordinate);
     viewport_element_1.setData = {
       center: state.coordinate
     }
@@ -189,7 +190,8 @@ function setupConfigurables(conf) {
 window.addEventListener('urlupdate', function(event) {
 
   if (event.detail.item || event.detail.center || event.detail.orientation) {
-    updateViews()
+    state.coordinate = getParam('center')
+    updateViews(state)
   }
 })
 
