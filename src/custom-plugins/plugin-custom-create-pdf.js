@@ -32,7 +32,8 @@ logo_image.width = logo_width
  */
 function formatDate(date) {
   let formated_date = ''
-  formated_date += date.getDate() + '.'
+  const day = date.getDate() + ''
+  formated_date += (day.length < 2 ? '0' : '') + day + '.'
   const month = date.getMonth() + 1 + ''
   formated_date += (month.length < 2 ? '0' : '') + month + '.'
   formated_date += (date.getFullYear() + ' ').substring(2)
@@ -44,19 +45,51 @@ function formatDate(date) {
 }
 
 /**
+ * Gets the address as an object, split into road_name, house_number, post_number, and post_name.
+ * @returns {Object}
+ */
+function getAddressObject() {
+  const address = getParam('address')
+  const comma_split = address.split(',')
+  if (!comma_split[1]) {
+    return {
+      road_name: '',
+      house_number: '',
+      post_number: '',
+      post_name: ''
+    }
+  }
+  const road = comma_split[0]
+  const last_index = road.lastIndexOf(' ')
+  const road_name = road.slice(0, last_index)
+  const house_number = road.slice(last_index + 1)
+
+  const post = comma_split[1].slice(1)
+  const first_index = post.indexOf(' ')
+  const post_number = post.slice(0, first_index)
+  const post_name = post.slice(first_index + 1)
+
+  return {
+    road_name,
+    house_number,
+    post_number,
+    post_name
+  }
+}
+
+/**
  * Generates a file name with the following syntax: 'Skraafoto_{vejnavn}_{husnr}_{postnr}_{postnavn}_{date}
  * Where the date is the date when the photo was taken in the format DDMMYY
  * @param {Object} item The item to generate a file name for.
  * @returns {String} The generated file name.
  */
 function generateFileName(item) {
-  const road_name = 'vejnavn'
-  const house_number = 'husnr'
-  const post_number = 'postnr'
-  const post_name = 'postnavn'
-  const date = 'DDMMÅÅ'
-  const year = getParam('item')
-  return `skraafoto-${ road_name }_${ house_number }_${ post_number }_${ post_name }_${ date }.pdf`
+  const address = getAddressObject()
+  const date = new Date(item.properties.datetime)
+  const month = date.getMonth() + 1 + ''
+  const day = date.getDate() + ''
+  const formated_date = (day.length < 2 ? '0' : '') + day + (month.length < 2 ? '0' : '') + month + (date.getFullYear() + '').slice(2)
+  return `Skraafoto-${ address.road_name }_${ address.house_number }_${ address.post_number }_${ address.post_name }_${ formated_date }.pdf`
 }
 
 /** Draws a custom image footer */
@@ -70,8 +103,8 @@ function drawFooterContent(height, width, item) {
   const ctx = canvas.getContext('2d')
 
   const capture_date = formatDate(new Date(item.properties.datetime)) //.slice(0, -6)
-  const address = 'Vejnavn husnr, postnr postnavn'
-  const vurd_id = 123456
+  const address = getParam('address')
+  const vurd_id = getParam('ejendomsid')
   
   // Write some information onto the canvas
   ctx.fillStyle = '#000'
