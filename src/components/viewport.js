@@ -38,6 +38,8 @@ export class SkraaFotoViewport extends HTMLElement {
   view
   sync = true
   compass_element
+  update_pointer_function
+
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
   // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -360,10 +362,14 @@ export class SkraaFotoViewport extends HTMLElement {
 
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
-      window.addEventListener('updatePointer', getUpdateViewportPointerFunction(this))
+      this.update_pointer_function = getUpdateViewportPointerFunction(this)
+      window.addEventListener('updatePointer', this.update_pointer_function)
     }
   }
 
+  disconnectedCallback() {
+    window.removeEventListener('updatePointer', this.update_pointer_function)
+  }
 
   attributeChangedCallback(name, old_value, new_value) {
     if (name === 'data-item' && old_value !== new_value) {

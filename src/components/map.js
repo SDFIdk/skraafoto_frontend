@@ -38,6 +38,8 @@ export class SkraaFotoMap extends HTMLElement {
   center
   sync = true
   icon_layer
+  update_pointer_function
+
   styles = `
     :root {
       height: 100%;
@@ -191,7 +193,8 @@ export class SkraaFotoMap extends HTMLElement {
 
       if (configuration.ENABLE_POINTER) {
         addPointerLayerToMap(map)
-        window.addEventListener('updatePointer', getUpdateMapPointerFunction(map))
+        this.update_pointer_function = getUpdateMapPointerFunction(map)
+        window.addEventListener('updatePointer', this.update_pointer_function)
       }
 
       return map
@@ -304,6 +307,10 @@ export class SkraaFotoMap extends HTMLElement {
     window.addEventListener('updateView', (event) => {
       this.syncMap(event.detail)
     })
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('updatePointer', this.update_pointer_function)
   }
 
   attributeChangedCallback(name, old_value, new_value) {
