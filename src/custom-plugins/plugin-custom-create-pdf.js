@@ -137,15 +137,27 @@ function createPdf(map, item, callback, resolution=150, format='a4', rotation='l
   const dimention = dimentions[format]
   const resInch = resolution / mmPerInch
   const isLandscape = rotation === 'landscape'
-  const width = Math.round(dimention[isLandscape ? 0 : 1] * resInch)
-  const height = Math.round(dimention[isLandscape ? 1 : 0] * resInch)
+  const canvas_width = Math.round(dimention[isLandscape ? 0 : 1] * resInch)
+  const canvas_height = Math.round(dimention[isLandscape ? 1 : 0] * resInch)
 
-  const image_max_height = height - footer_height - margin * 3
-  const image_max_width = width - margin * 2
+  const image_max_height = canvas_height - footer_height - margin * 3
+  const image_max_width = canvas_width - margin * 2
 
-  const image_width = map.getViewport().width
-  const image_height = map.getViewport().height
-  // What to do if width or height is bigger than max?
+  const image_width = map.getViewport().offsetWidth
+  const image_height = map.getViewport().offsetHeight
+
+  console.log(image_width, image_height)
+
+  const scale_factor = Math.min(image_max_width / image_width, image_max_height / image_height)
+
+  console.log(scale_factor)
+
+  const new_width = image_width * scale_factor
+  const new_height = image_height * scale_factor
+  const x = (image_max_width / 2) - (new_width / 2)
+  const y = (image_max_height / 2) - (new_height / 2)
+
+  console.log(new_width, new_height, x, y)
 
   const exportOptions = {
     useCORS: true,
@@ -162,14 +174,14 @@ function createPdf(map, item, callback, resolution=150, format='a4', rotation='l
 
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
-  canvas.height = height
-  canvas.width = width
+  canvas.height = canvas_height
+  canvas.width = canvas_width
   ctx.fillStyle = '#fff'
-  ctx.fillRect(0, 0, width, height)
+  ctx.fillRect(0, 0, canvas_width, canvas_height)
 
   html2canvas(map.getViewport(), exportOptions).then(function (i_canvas) {
-    ctx.drawImage(i_canvas, margin + (width - i_canvas.width) / 2, margin + (height - i_canvas.height) / 2 - footer_height)
-    ctx.drawImage(drawFooterContent(footer_height, image_max_width, item), margin, height - footer_height - margin)
+    ctx.drawImage(i_canvas, margin + x, margin + y, new_width, new_height)
+    ctx.drawImage(drawFooterContent(footer_height, image_max_width, item), margin, canvas_height - footer_height - margin)
     const pdf = new jsPDF(rotation, undefined, format)
     pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dimention[isLandscape ? 0 : 1], dimention[isLandscape ? 1 : 0])
     const file_name = generateFileName(item)
