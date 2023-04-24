@@ -146,18 +146,12 @@ function createPdf(map, item, callback, resolution=150, format='a4', rotation='l
   const image_width = map.getViewport().offsetWidth
   const image_height = map.getViewport().offsetHeight
 
-  console.log(image_width, image_height)
-
   const scale_factor = Math.min(image_max_width / image_width, image_max_height / image_height)
-
-  console.log(scale_factor)
 
   const new_width = image_width * scale_factor
   const new_height = image_height * scale_factor
   const x = (image_max_width / 2) - (new_width / 2)
   const y = (image_max_height / 2) - (new_height / 2)
-
-  console.log(new_width, new_height, x, y)
 
   const exportOptions = {
     useCORS: true,
