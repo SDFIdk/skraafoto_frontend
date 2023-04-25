@@ -22,6 +22,7 @@ import { defaults as defaultControls } from 'ol/control'
 import { configuration } from '../modules/configuration.js'
 import { closeEnough } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
+import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
 import store from '../store'
 
 /**
@@ -37,6 +38,10 @@ export class SkraaFotoMap extends HTMLElement {
   center
   sync = true
   icon_layer
+  update_pointer_function
+  update_view_function
+  parcels_function
+
   styles = `
     :root {
       height: 100%;
@@ -188,6 +193,12 @@ export class SkraaFotoMap extends HTMLElement {
         })
       })
 
+      if (configuration.ENABLE_POINTER) {
+        addPointerLayerToMap(map)
+        this.update_pointer_function = getUpdateMapPointerFunction(map)
+        window.addEventListener('updatePointer', this.update_pointer_function)
+      }
+
       return map
     })
   }
@@ -286,18 +297,30 @@ export class SkraaFotoMap extends HTMLElement {
     }
   }
 
+  parcelsHandler() {
+    this.drawParcels()
+  }
+
+  updateViewHandler(event) {
+    this.syncMap(event.detail)
+  }
+
   // Lifecycle
 
   connectedCallback() {
     if (configuration.ENABLE_PARCEL) {
-      window.addEventListener('parcels', () => {
-        this.drawParcels()
-      })
+      this.parcels_function = this.parcelsHandler.bind(this)
+      window.addEventListener('parcels', this.parcels_function)
     }
 
-    window.addEventListener('updateView', (event) => {
-      this.syncMap(event.detail)
-    })
+    this.update_view_function = this.updateViewHandler.bind(this)
+    window.addEventListener('updateView', this.update_view_function)
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('parcels', this.parcels_function)
+    window.removeEventListener('updatePointer', this.update_pointer_function)
+    window.removeEventListener('updateView', this.update_view_function)
   }
 
   attributeChangedCallback(name, old_value, new_value) {

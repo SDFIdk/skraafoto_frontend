@@ -17,6 +17,7 @@ import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
 import { closeEnough } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
+import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import store from '../store'
 
 /**
@@ -37,6 +38,9 @@ export class SkraaFotoViewport extends HTMLElement {
   view
   sync = true
   compass_element
+  update_pointer_function
+  update_view_function
+
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
   // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -314,6 +318,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  updateViewHandler(event) {
+    this.syncMap(event.detail)
+  }
+
 
   // Lifecycle callbacks
 
@@ -353,11 +361,21 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-    window.addEventListener('updateView', (event) => {
-      this.syncMap(event.detail)
-    })
+    
+    this.update_view_function = this.updateViewHandler.bind(this)
+    window.addEventListener('updateView', this.update_view_function)
+
+    if (configuration.ENABLE_POINTER) {
+      addPointerLayerToViewport(this)
+      this.update_pointer_function = getUpdateViewportPointerFunction(this)
+      window.addEventListener('updatePointer', this.update_pointer_function)
+    }
   }
 
+  disconnectedCallback() {
+    window.removeEventListener('updatePointer', this.update_pointer_function)
+    window.removeEventListener('updateView', this.update_view_function)
+  }
 
   attributeChangedCallback(name, old_value, new_value) {
     if (name === 'data-item' && old_value !== new_value) {
