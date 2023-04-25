@@ -147,25 +147,37 @@ document.addEventListener('keydown', function(event) {
 
   const option_list = dateSelector_element.selector_element.options;
   let current_idx = option_list.selectedIndex;
+  const current_group = option_list[current_idx].parentNode.label;
+  console.log('date', dateSelector_element.selector_element);
 
   // Calculate the indexes of the past and future options
   const num_options = option_list.length;
-  const future_idx = (current_idx + 1) % num_options;
-  const past_idx = (current_idx - 1 + num_options) % num_options;
+  let next_idx = (current_idx + 1) % num_options;
+  while (option_list[next_idx].parentNode.label !== current_group) {
+    next_idx = (next_idx + 1) % option_list.length;
+  }
+  let previous_idx = (current_idx - 1 + num_options) % num_options;
+  while (option_list[previous_idx].parentNode.label !== current_group) {
+    previous_idx = (previous_idx + 1) % option_list.length;
+  }
 
   // Get references to the past and future options based on their indexes
-  const past = option_list[past_idx];
-  const future = option_list[future_idx];
+  const previous = option_list[previous_idx];
+  const next = option_list[next_idx];
 
   if (event.key === 'ArrowUp' && event.shiftKey) {
-    setParams({item: future.value});
+    setParams({item: previous.value});
   } else if (event.key === 'ArrowDown' && event.shiftKey) {
-    setParams({item: past.value});
+    setParams({item: next.value});
   }
 });
 
 
+
+
+
 // Initialize
+
 setupConfigurables(configuration)
 
 if (getParam('item')) {
