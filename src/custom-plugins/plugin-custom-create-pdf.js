@@ -13,8 +13,8 @@ const dimentions = {
   a5: [210, 148]
 }
 const mmPerInch = 25.4
-const margin = 32
-const font_size = 16
+const margin = 64
+const font_size = 32
 const spacing = font_size * 1 // spacing between text
 // the footer height is two lines of text, spacing bewtween them and an extra space at the bottom
 const footer_height = font_size * 2 + spacing * 2
@@ -133,7 +133,7 @@ function drawFooterContent(height, width, item) {
  * @param {String} format The format of the PDF, supports a0 to a5.
  * @param {String} rotation The rotation of the PDF either 'landscape' or 'portrait'.
  */
-function createPdf(map, item, callback, resolution=150, format='a4', rotation='landscape') {
+function createPdf(map, item, callback, resolution=300, format='a4', rotation='landscape') {
   const dimention = dimentions[format]
   const resInch = resolution / mmPerInch
   const isLandscape = rotation === 'landscape'
