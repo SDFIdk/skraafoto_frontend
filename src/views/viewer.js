@@ -148,7 +148,6 @@ document.addEventListener('keydown', function(event) {
   const option_list = dateSelector_element.selector_element.options;
   let current_idx = option_list.selectedIndex;
   const current_group = option_list[current_idx].parentNode.label;
-  console.log('date', dateSelector_element.selector_element);
 
   // Calculate the indexes of the past and future options
   const num_options = option_list.length;
