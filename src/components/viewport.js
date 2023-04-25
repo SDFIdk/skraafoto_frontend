@@ -39,6 +39,7 @@ export class SkraaFotoViewport extends HTMLElement {
   sync = true
   compass_element
   update_pointer_function
+  update_view_function
 
 
   // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -317,6 +318,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  updateViewHandler(event) {
+    this.syncMap(event.detail)
+  }
+
 
   // Lifecycle callbacks
 
@@ -356,9 +361,9 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-    window.addEventListener('updateView', (event) => {
-      this.syncMap(event.detail)
-    })
+    
+    this.update_view_function = this.updateViewHandler.bind(this)
+    window.addEventListener('updateView', this.update_view_function)
 
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -369,6 +374,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
+    window.removeEventListener('updateView', this.update_view_function)
   }
 
   attributeChangedCallback(name, old_value, new_value) {
