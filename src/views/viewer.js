@@ -125,7 +125,7 @@ window.addEventListener('urlupdate', function(event) {
       collection = `skraafotos${year}`
     }
   }
-  
+
   if (event.detail.item || event.detail.center || event.detail.orientation) {
     updateViews()
   }
@@ -142,25 +142,30 @@ document.addEventListener('loaderror', function(event) {
 
 
 // Set up shortkeys for date-selector
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
 document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.selector_element.options
-  let current_idx = option_list.selectedIndex
+  const option_list = dateSelector_element.selector_element.options;
+  let current_idx = option_list.selectedIndex;
 
-  const past = option_list[current_idx + 1]
-  const future = option_list[current_idx - 1]
+  // Calculate the indexes of the past and future options
+  const num_options = option_list.length;
+  const future_idx = (current_idx + 1) % num_options;
+  const past_idx = (current_idx - 1 + num_options) % num_options;
 
-  if (event.key === 'ArrowUp' && event.shiftKey && future) {
-    setParams({item: future.value})
-  } else if (event.key === 'ArrowDown' && event.shiftKey && past) {
-    setParams({item: past.value})
+  // Get references to the past and future options based on their indexes
+  const past = option_list[past_idx];
+  const future = option_list[future_idx];
+
+  if (event.key === 'ArrowUp' && event.shiftKey) {
+    setParams({item: future.value});
+  } else if (event.key === 'ArrowDown' && event.shiftKey) {
+    setParams({item: past.value});
   }
-})
+});
 
 
 // Initialize
-
 setupConfigurables(configuration)
 
 if (getParam('item')) {
