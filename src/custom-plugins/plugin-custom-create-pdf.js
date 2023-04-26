@@ -49,7 +49,7 @@ function formatDate(date) {
  * @returns {Object}
  */
 function getAddressObject() {
-  const address = getParam('address')
+  const address = getParam('address') || ''
   const comma_split = address.split(',')
   if (!comma_split[1]) {
     return {
@@ -103,8 +103,8 @@ function drawFooterContent(height, width, item) {
   const ctx = canvas.getContext('2d')
 
   const capture_date = formatDate(new Date(item.properties.datetime)) //.slice(0, -6)
-  const address = getParam('address')
-  const vurd_id = getParam('ejendomsid')
+  const address = getParam('address') || ''
+  const vurd_id = getParam('ejendomsid') || ''
   
   // Write some information onto the canvas
   ctx.fillStyle = '#000'
