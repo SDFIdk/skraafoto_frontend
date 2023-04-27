@@ -8,6 +8,9 @@ import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
+import {getParam, setParams} from "../modules/url-state";
+import {fetchParcels} from "../custom-plugins/plugin-parcel";
+import store from "../store";
 
 
 // Initialize web components
@@ -19,6 +22,7 @@ customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
 
 // Variables and state
+let collection = null
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
   item: null
@@ -31,30 +35,31 @@ const viewport_element_1 = document.getElementById('viewport-1')
 
 // Methods
 
-function updateViewports(state) {
-  let data = {}
-  if (state.item) {
-    data.item = state.item
+function updateViewports() {
+  const data = {}
+  if (getParam('center')) {
+    data.center = getParam('center')
   }
-  if (state.coordinate) {
-    data.center = state.coordinate
+  if (getParam('item')) {
+    queryItem(getParam('item')).then(item => {
+      data.item = item
+      viewport_element_1.setData = data
+    })
+  } else {
+    viewport_element_1.setData = data
   }
-  viewport_element_1.setData = data
 }
 
 function updateViews(state) {
 
   // If no coordinate is given, center mid-image
-  if (!state.coordinate && state.item) {
-    state.coordinate = [
-      (state.item.bbox[0] + state.item.bbox[2]) / 2,
-      (state.item.bbox[1] + state.item.bbox[3]) / 2
-    ]
-  }
 
   updateViewports(state)
-
-  updateUrl(state)
+  if (getParam('parcels')) {
+    fetchParcels(getParam('parcels')).then(parcels => {
+      store.dispatch('updateParcels', parcels)
+    })
+  }
 }
 
 function queryItemsForDifferentCollections(state, collections, collection_idx) {
@@ -92,21 +97,11 @@ function parseUrlState(params, state) {
   }
 }
 
-function updateUrl(state) {
-  const url = new URL(window.location)
-  if (state.item) {
-    url.searchParams.set('item', state.item.id)
-  }
-  if (state.coordinate) {
-    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
-  }
-  window.history.pushState({}, '', url)
-}
-
 async function shiftItem(direction, item_key) {
 
   let new_orientation = 'north'
   if (state[item_key].properties.direction === 'north') {
+    console.log('this', state[item_key])
     if (direction === 'right') {
       new_orientation = 'west'
     } else {
@@ -152,26 +147,37 @@ function setupConfigurables(conf) {
 }
 
 // Set up event listeners
-
+/*
 // When a coordinate input is given, update viewports
 document.addEventListener('coordinatechange', async function(event) {
   state.coordinate = event.detail
   updateViews(state)
 })
+*/
 
-// On a new address input, update viewports
-document.addEventListener('addresschange', function(event) {
-  state.coordinate = getGSearchCenterPoint(event.detail)
-  queryItemsForDifferentCollections(state, collections, 0).then((response) => {
-    state.item = response.item
-    updateViews(state)
-  })
+// On a new address input, update URL params
+document.addEventListener('gsearch:select', function(event) {
+  const new_center = getGSearchCenterPoint(event.detail)
+  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
+    queryItems(new_center, orientation, collection).then((response) => {
+      setParams({ center: new_center, item: response.features[0].id })
+    })
 })
 
-// When a differently dated image is selected, update the URL and check to see if direction picker needs an update
-viewport_element_1.shadowRoot.addEventListener('imagechange', function(event) {
-  state.item = event.detail
-  updateUrl(state)
+// When the URL parameters update, update the views and collection value
+window.addEventListener('urlupdate', function(event) {
+
+  if (event.detail.item) {
+    const item = getParam('item')
+    if (item) {
+      const year = item.substring(0,4)
+      collection = `skraafotos${year}`
+    }
+  }
+
+  if (event.detail.item || event.detail.center || event.detail.orientation) {
+    updateViews()
+  }
 })
 
 // Catch load errors and display to user
@@ -187,6 +193,7 @@ document.addEventListener('loaderror', function(event) {
 document.addEventListener('keyup', function(event) {
   switch(event.key) {
     case 'ArrowLeft':
+      console.log('keyup', shiftItem())
       shiftItem('left', 'item')
       break
     case 'ArrowRight':

@@ -8,7 +8,7 @@ import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import { getParam } from "../modules/url-state";
+import {getParam, setParams} from "../modules/url-state";
 
 
 // Initialize web components
@@ -30,6 +30,7 @@ let state = {
 }
 let url_params = (new URL(document.location)).searchParams
 let collections = []
+let collection = null
 
 const viewport_element_1 = document.getElementById('viewport-1')
 const viewport_element_2 = document.getElementById('viewport-2')
@@ -38,24 +39,21 @@ const viewport_element_2 = document.getElementById('viewport-2')
 // Methods
 
 function updateViewports(state) {
-  if (state.item1) {
-    viewport_element_1.setData = {
-      item: state.item1
-    }
+  const data = {}
+  if (getParam('center')) {
+    data.center = getParam('center')
   }
-  if (state.item2) {
-    viewport_element_2.setData = {
-      item: state.item2
-    }
+  if (getParam('item1')) {
+    queryItem(getParam('item1')).then(item => {
+      data.item = item
+      viewport_element_1.setData = data
+    })
   }
-  if (state.coordinate) {
-    console.log(state.coordinate);
-    viewport_element_1.setData = {
-      center: state.coordinate
-    }
-    viewport_element_2.setData = {
-      center: state.coordinate
-    }
+  if (getParam('item2')) {
+    queryItem(getParam('item2')).then(item => {
+      data.item = item
+      viewport_element_2.setData = data
+    })
   }
 }
 
@@ -91,7 +89,7 @@ function parseUrlState(params, state) {
 
   // Parse center param from URL
   const param_center = params.get('center')
-  if (param_center) {
+  if (getParam('center')) {
     new_state.coordinate = param_center.split(',').map(function(coord) {
       return Number(coord)
     })
@@ -185,6 +183,15 @@ function setupConfigurables(conf) {
 }
 
 // Set up event listeners
+
+// On a new address input, update URL params
+document.addEventListener('gsearch:select', function(event) {
+  const new_center = getGSearchCenterPoint(event.detail)
+  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
+  queryItems(new_center, orientation, collection).then((response) => {
+    setParams({ center: new_center, item: response.features[0].id })
+  })
+})
 
 // When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function(event) {
