@@ -41,6 +41,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   download() {
     this.link_element.href = this.viewport.item.assets.data.href
     this.link_element.click()
+    this.button_element.blur()
   }
 
 
@@ -53,6 +54,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
       this.button_element.addEventListener('click', () => {
         const callback = (pdf, file_name) => {
           pdf.save(file_name)
+          this.button_element.blur()
         }
         createPdf(this.viewport.map, this.viewport.item, callback)
       })
