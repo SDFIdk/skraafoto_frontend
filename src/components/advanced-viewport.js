@@ -138,6 +138,12 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       </div>
     </nav>
   `
+
+  // setters
+
+  set setParamName(name) {
+    this.date_selector_element.setParamName = name
+  }
   
 
   constructor() {

@@ -62,6 +62,7 @@ export class SkraaFotoViewport extends HTMLElement {
       height: 100%;
       background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
       position: relative;
+      background-size: 10rem;
     }
     skraafoto-compass {
       position: absolute;

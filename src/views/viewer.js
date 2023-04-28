@@ -1,3 +1,4 @@
+import { getZ } from '@dataforsyningen/saul'
 import { getParam, setParams } from '../modules/url-state.js'
 import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
@@ -125,7 +126,18 @@ window.addEventListener('urlupdate', function(event) {
       collection = `skraafotos${year}`
     }
   }
-  
+
+  if (event.detail.center) {
+    const world_center = event.detail.center
+    getZ(world_center[0], world_center[1], configuration).then(z => {
+      world_center[2] = z
+      store.dispatch('updateView', {
+        center: world_center,
+        zoom: store.state.view.zoom
+      })
+    })
+  }
+
   if (event.detail.item || event.detail.center || event.detail.orientation) {
     updateViews()
   }
@@ -142,21 +154,36 @@ document.addEventListener('loaderror', function(event) {
 
 
 // Set up shortkeys for date-selector
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
 document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.selector_element.options
-  let current_idx = option_list.selectedIndex
+  const option_list = dateSelector_element.selector_element.options;
+  let current_idx = option_list.selectedIndex;
+  const num_options = option_list.length;
+  const current_group = option_list[current_idx].parentNode.label;
 
-  const past = option_list[current_idx + 1]
-  const future = option_list[current_idx - 1]
-
-  if (event.key === 'ArrowUp' && event.shiftKey && future) {
-    setParams({item: future.value})
-  } else if (event.key === 'ArrowDown' && event.shiftKey && past) {
-    setParams({item: past.value})
+  // Calculate the indexes of the past and future options
+  let next_idx = (current_idx + 1) % num_options;
+  while (option_list[next_idx].parentNode.label !== current_group) {
+    next_idx = (next_idx + 1) % option_list.length;
   }
-})
+  let previous_idx = (current_idx - 1 + num_options) % num_options;
+  while (option_list[previous_idx].parentNode.label !== current_group) {
+    previous_idx = (previous_idx - 1 + num_options) % num_options;
+  }
+
+  // Get references to the past and future options based on their indexes
+  const previous = option_list[previous_idx];
+  const next = option_list[next_idx];
+
+  if (event.key === 'ArrowUp' && event.shiftKey) {
+    setParams({item: previous.value});
+  } else if (event.key === 'ArrowDown' && event.shiftKey) {
+    setParams({item: next.value});
+  }
+});
+
+
 
 
 // Initialize
