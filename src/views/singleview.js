@@ -57,7 +57,7 @@ function updateViews() {
   }
 }
 
-async function shiftItem(direction, item_key) {
+async function shiftItem(direction) {
   const orientation = getParam('orientation')
   let new_orientation = 'north'
   if (orientation === 'north') {
@@ -85,8 +85,6 @@ async function shiftItem(direction, item_key) {
       new_orientation = 'south'
     }
   }
-
-  console.log(new_orientation)
 
   queryItems(getParam('center'), new_orientation, collection).then((response) => {
     if (response.features.length > 0) {
@@ -155,10 +153,10 @@ document.addEventListener('loaderror', function(event) {
 document.addEventListener('keyup', function(event) {
   switch(event.key) {
     case 'ArrowLeft':
-      shiftItem('left', 'item')
+      shiftItem('left')
       break
     case 'ArrowRight':
-      shiftItem('right', 'item')
+      shiftItem('right')
       break
     default:
       // Nothing

@@ -10,6 +10,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
 
   // public properties
+  param_name = 'item'
   auth = configuration
   items = []
   center
@@ -72,6 +73,10 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.update(data)
   }
 
+  set setParamName(name) {
+    this.param_name = name
+  }
+
   constructor() {
     super()
     this.createShadowDOM()
@@ -112,7 +117,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
         this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
       }
     }
-    this.selector_element.value = getParam('item')
+    this.selector_element.value = getParam(this.param_name)
   }
 
   sortOptions(items) {
@@ -168,7 +173,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
       const item = this.items.find(function(item) {
         return item.id === event.target.value
       })
-      setParams({item: item.id})
+      setParams({ [this.param_name]: item.id })
     })
   }
 
