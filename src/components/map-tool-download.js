@@ -1,5 +1,4 @@
 import { configuration } from '../modules/configuration.js'
-import { download } from '../custom-plugins/plugin-custom-download-tool.js'
 import { createPdf } from '../custom-plugins/plugin-custom-create-pdf.js'
 
 /**
@@ -19,7 +18,6 @@ export class SkraaFotoDownloadTool extends HTMLElement {
 
   constructor() {
     super()
-    this.createDOM()
   }
 
   // Methods
@@ -27,7 +25,11 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
-    this.button_element.className = 'sf-download-tool ds-icon-hentdata-icon-download'
+    if (configuration.DOWNLOAD_TYPE === 'currentview') {
+      this.button_element.className = 'sf-download-tool ds-icon-icon-print'
+    } else {
+      this.button_element.className = 'sf-download-tool ds-icon-hentdata-icon-download'
+    }
     this.button_element.title = 'Download billede'
     this.append(this.button_element)
 
@@ -45,6 +47,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   // Lifecycle callbacks
 
   connectedCallback() {
+    this.createDOM()
 
     if (configuration.DOWNLOAD_TYPE === 'currentview') {
       this.button_element.addEventListener('click', () => {
