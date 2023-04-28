@@ -59,6 +59,7 @@ function updateViews(state) {
 
 
   updateViewports(state)
+  updateUrl(state)
   if (getParam('parcels')) {
     fetchParcels(getParam('parcels')).then(parcels => {
       store.dispatch('updateParcels', parcels)
@@ -101,6 +102,20 @@ function parseUrlState(params, state) {
     // Go through all collections and return the newest available item
     return queryItemsForDifferentCollections(new_state, collections, 0)
   }
+}
+
+function updateUrl(state) {
+  const url = new URL(window.location)
+  if (state.item1) {
+    url.searchParams.set('item1', state.item1.id)
+  }
+  if (state.item2) {
+    url.searchParams.set('item2', state.item2.id)
+  }
+  if (state.coordinate) {
+    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
+  }
+  window.history.pushState({}, '', url)
 }
 
 viewport_element_1.addEventListener('click', () => {
