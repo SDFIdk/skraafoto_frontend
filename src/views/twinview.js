@@ -21,6 +21,7 @@ customElements.define('skraafoto-header', SkraaFotoHeader)
 
 
 // Variables and state
+
 let active_viewport;
 let state = {
   coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
@@ -37,21 +38,15 @@ const viewport_element_2 = document.getElementById('viewport-2')
 
 
 // Methods
-
 function updateViewports(state) {
   const data = {}
   if (getParam('center')) {
     data.center = getParam('center')
   }
-  if (getParam('item1')) {
-    queryItem(getParam('item1')).then(item => {
+  if (getParam('item')) {
+    queryItem(getParam('item')).then(item => {
       data.item = item
       viewport_element_1.setData = data
-    })
-  }
-  if (getParam('item2')) {
-    queryItem(getParam('item2')).then(item => {
-      data.item = item
       viewport_element_2.setData = data
     })
   }
@@ -59,13 +54,6 @@ function updateViewports(state) {
 
 function updateViews(state) {
 
-  // If no coordinate is given, center mid-image
-  if (!state.coordinate && state.item1) {
-    state.coordinate = [
-      (state.item1.bbox[0] + state.item1.bbox[2]) / 2,
-      (state.item1.bbox[1] + state.item1.bbox[3]) / 2
-    ]
-  }
 
   updateViewports(state)
 
@@ -96,9 +84,9 @@ function parseUrlState(params, state) {
   }
 
   // Parse item param from URL
-  const param_item1 = params.get('item1')
-  if (param_item1) {
-    return queryItem(param_item1).then((item) => {
+  const param_item = params.get('item')
+  if (param_item) {
+    return queryItem(param_item).then((item) => {
       new_state.item1 = item
       new_state.item2 = item
       return new_state

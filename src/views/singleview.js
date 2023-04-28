@@ -35,7 +35,7 @@ const viewport_element_1 = document.getElementById('viewport-1')
 
 // Methods
 
-function updateViewports() {
+function updateViewports(state) {
   const data = {}
   if (getParam('center')) {
     data.center = getParam('center')
