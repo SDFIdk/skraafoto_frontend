@@ -1,5 +1,5 @@
 import { getZ } from '@dataforsyningen/saul'
-import { queryItems, queryItem, getCollections } from '../modules/api.js'
+import { queryItems, queryItem } from '../modules/api.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDateSelector } from '../components/date-selector.js'
@@ -22,21 +22,15 @@ customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
 customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
 customElements.define('skraafoto-header', SkraaFotoHeader)
 
-// Variables and state
+// Variables
+
 let collection = null
-let state = {
-  coordinate: null, // EPSG:25832 coordinate [longitude,latitude]
-  item: null
-}
-let url_params = (new URL(document.location)).searchParams
-let collections = []
 
 const viewport_element_1 = document.getElementById('viewport-1')
 
-
 // Methods
 
-function updateViewports(state) {
+function updateViewports() {
   const data = {}
   if (getParam('center')) {
     data.center = getParam('center')
@@ -51,11 +45,11 @@ function updateViewports(state) {
   }
 }
 
-function updateViews(state) {
+function updateViews() {
 
   // If no coordinate is given, center mid-image
 
-  updateViewports(state)
+  updateViewports()
   if (getParam('parcels')) {
     fetchParcels(getParam('parcels')).then(parcels => {
       store.dispatch('updateParcels', parcels)
@@ -63,64 +57,28 @@ function updateViews(state) {
   }
 }
 
-function queryItemsForDifferentCollections(state, collections, collection_idx) {
-  return queryItems(state.coordinate, 'north', collections[collection_idx].id).then((response) => {
-    if (response.features.length > 0) {
-      state.item = response.features[0]
-      return state
-    } else {
-      return queryItemsForDifferentCollections(state, collections, collection_idx + 1)
-    }
-  })
-}
-
-function parseUrlState(params, state) {
-  let new_state = Object.assign({}, state)
-
-  // Parse center param from URL
-  const param_center = params.get('center')
-  if (param_center) {
-    new_state.coordinate = param_center.split(',').map(function(coord) {
-      return Number(coord)
-    })
-  }
-
-  // Parse item param from URL
-  const param_item = params.get('item')
-  if (param_item) {
-    return queryItem(param_item).then((item) => {
-      new_state.item = item
-      return new_state
-    })
-  } else {
-    // Go through all collections and return the newest available item
-    return queryItemsForDifferentCollections(new_state, collections, 0)
-  }
-}
-
 async function shiftItem(direction, item_key) {
-
+  const orientation = getParam('orientation')
   let new_orientation = 'north'
-  if (state[item_key].properties.direction === 'north') {
-    console.log('this', state[item_key])
+  if (orientation === 'north') {
     if (direction === 'right') {
       new_orientation = 'west'
     } else {
       new_orientation = 'east'
     }
-  } else if (state[item_key].properties.direction === 'west') {
+  } else if (orientation === 'west') {
     if (direction === 'right') {
       new_orientation = 'south'
     } else {
       new_orientation = 'north'
     }
-  } else if (state[item_key].properties.direction === 'south') {
+  } else if (orientation === 'south') {
     if (direction === 'right') {
       new_orientation = 'east'
     } else {
       new_orientation = 'west'
     }
-  } else if (state[item_key].properties.direction === 'east') {
+  } else if (orientation === 'east') {
     if (direction === 'right') {
       new_orientation = 'north'
     } else {
@@ -128,10 +86,11 @@ async function shiftItem(direction, item_key) {
     }
   }
 
-  queryItems(state.coordinate, new_orientation, state[item_key].collection).then((response) => {
+  console.log(new_orientation)
+
+  queryItems(getParam('center'), new_orientation, collection).then((response) => {
     if (response.features.length > 0) {
-      state[item_key] = response.features[0]
-      updateViews(state)
+      setParams({ orientation: new_orientation, item: response.features[0].id })
     } else {
       console.error(`No image found facing ${ new_orientation }`)
     }
@@ -146,15 +105,6 @@ function setupConfigurables(conf) {
     customElements.define('cookie-alert', CookieAlert)
   }
 }
-
-// Set up event listeners
-/*
-// When a coordinate input is given, update viewports
-document.addEventListener('coordinatechange', async function(event) {
-  state.coordinate = event.detail
-  updateViews(state)
-})
-*/
 
 // On a new address input, update URL params
 document.addEventListener('gsearch:select', function(event) {
@@ -205,7 +155,6 @@ document.addEventListener('loaderror', function(event) {
 document.addEventListener('keyup', function(event) {
   switch(event.key) {
     case 'ArrowLeft':
-      console.log('keyup', shiftItem())
       shiftItem('left', 'item')
       break
     case 'ArrowRight':
@@ -221,11 +170,12 @@ document.addEventListener('keyup', function(event) {
 
 setupConfigurables(configuration)
 
-getCollections().then(colls => {
-  collections = colls
+if (getParam('item')) {
+  const item = await queryItem(getParam('item'))
+  collection = item.collection
+} else if (getParam('center')) {
+  const collections = await getCollections()
+  collection = collections[0].id
+}
 
-  parseUrlState(url_params, state).then((new_state) => {
-    state = new_state
-    updateViews(state)
-  })
-})
+updateViews()
