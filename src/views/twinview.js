@@ -1,3 +1,4 @@
+import { getZ } from '@dataforsyningen/saul'
 import { queryItems, queryItem, getCollections } from '../modules/api.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
@@ -9,6 +10,8 @@ import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import {getParam, setParams} from "../modules/url-state";
+import {fetchParcels} from "../custom-plugins/plugin-parcel";
+import store from "../store";
 
 
 // Initialize web components
@@ -56,8 +59,11 @@ function updateViews(state) {
 
 
   updateViewports(state)
-
-  updateUrl(state)
+  if (getParam('parcels')) {
+    fetchParcels(getParam('parcels')).then(parcels => {
+      store.dispatch('updateParcels', parcels)
+    })
+  }
 }
 
 function queryItemsForDifferentCollections(state, collections, collection_idx) {
@@ -95,20 +101,6 @@ function parseUrlState(params, state) {
     // Go through all collections and return the newest available item
     return queryItemsForDifferentCollections(new_state, collections, 0)
   }
-}
-
-function updateUrl(state) {
-  const url = new URL(window.location)
-  if (state.item1) {
-    url.searchParams.set('item1', state.item1.id)
-  }
-  if (state.item2) {
-    url.searchParams.set('item2', state.item2.id)
-  }
-  if (state.coordinate) {
-    url.searchParams.set('center', state.coordinate[0] + ',' + state.coordinate[1])
-  }
-  window.history.pushState({}, '', url)
 }
 
 viewport_element_1.addEventListener('click', () => {
@@ -183,6 +175,17 @@ document.addEventListener('gsearch:select', function(event) {
 
 // When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function(event) {
+
+  if (event.detail.center) {
+    const world_center = event.detail.center
+    getZ(world_center[0], world_center[1], configuration).then(z => {
+      world_center[2] = z
+      store.dispatch('updateView', {
+        center: world_center,
+        zoom: store.state.view.zoom
+      })
+    })
+  }
 
   if (event.detail.item || event.detail.center || event.detail.orientation) {
     state.coordinate = getParam('center')

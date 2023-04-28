@@ -1,3 +1,4 @@
+import { getZ } from '@dataforsyningen/saul'
 import { queryItems, queryItem, getCollections } from '../modules/api.js'
 import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
@@ -173,6 +174,17 @@ window.addEventListener('urlupdate', function(event) {
       const year = item.substring(0,4)
       collection = `skraafotos${year}`
     }
+  }
+
+  if (event.detail.center) {
+    const world_center = event.detail.center
+    getZ(world_center[0], world_center[1], configuration).then(z => {
+      world_center[2] = z
+      store.dispatch('updateView', {
+        center: world_center,
+        zoom: store.state.view.zoom
+      })
+    })
   }
 
   if (event.detail.item || event.detail.center || event.detail.orientation) {

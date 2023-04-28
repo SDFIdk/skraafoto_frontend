@@ -1,3 +1,4 @@
+import { getZ } from '@dataforsyningen/saul'
 import { getParam, setParams } from '../modules/url-state.js'
 import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
@@ -124,6 +125,17 @@ window.addEventListener('urlupdate', function(event) {
       const year = item.substring(0,4)
       collection = `skraafotos${year}`
     }
+  }
+
+  if (event.detail.center) {
+    const world_center = event.detail.center
+    getZ(world_center[0], world_center[1], configuration).then(z => {
+      world_center[2] = z
+      store.dispatch('updateView', {
+        center: world_center,
+        zoom: store.state.view.zoom
+      })
+    })
   }
 
   if (event.detail.item || event.detail.center || event.detail.orientation) {
