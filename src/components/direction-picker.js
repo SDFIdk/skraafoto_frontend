@@ -41,7 +41,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       display: grid;
       grid-template-columns: auto auto;
       grid-template-rows: auto auto auto;
-      gap: 2px;
+      gap: 3px;
     }
 
     .sf-slider-open-wrapper {
@@ -135,7 +135,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       }
 
       .sf-slider-grid {
-        border-left: solid 2px var(--background-color);
+        border-left: solid 3px var(--background-color);
       }
     }
   `
