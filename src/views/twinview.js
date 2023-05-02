@@ -1,10 +1,5 @@
 import { getZ } from '@dataforsyningen/saul'
 import { queryItems, queryItem, getCollections } from '../modules/api.js'
-import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
-import { SkraaFotoAddressSearch } from '../components/address-search.js'
-import { SkraaFotoDateSelector } from '../components/date-selector.js'
-import { SkraaFotoInfoBox } from '../components/info-box.js'
-import { SkraaFotoHeader } from '../components/page-header.js'
 import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
@@ -12,15 +7,11 @@ import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import {getParam, setParams} from "../modules/url-state";
 import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
+import { registerComponents } from '../components/component-register.js'
 
 
 // Initialize web components
-
-customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)
-customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
-customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
-customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
-customElements.define('skraafoto-header', SkraaFotoHeader)
+registerComponents()
 
 
 // Variables

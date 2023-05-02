@@ -60,9 +60,8 @@ export class SkraaFotoViewport extends HTMLElement {
     .viewport-map { 
       width: 100%; 
       height: 100%;
-      background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
       position: relative;
-      background-size: 10rem;
+      background-color: transparent;
     }
     skraafoto-compass {
       position: absolute;
@@ -77,6 +76,17 @@ export class SkraaFotoViewport extends HTMLElement {
       color: #fff;
       margin: 0;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+    }
+    ds-spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: auto;
+      width: 50%;
+      height: auto;
+      z-index: 100000;
+      background-color: transparent;
+      border: solid 1px yellow;
     }
 
     @media screen and (max-width: 35rem) {
@@ -140,11 +150,13 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
-
     }
   }
 
   async update({item,center}) {
+
+    this.shadowRoot.append(document.createElement('ds-spinner'))
+
     if (typeof item === 'object') {
       this.updateImage(item)
     } else if (typeof item === 'string') {
@@ -323,6 +335,12 @@ export class SkraaFotoViewport extends HTMLElement {
     this.syncMap(event.detail)
   }
 
+  rendercompleteHandler() {
+    this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
+      spinner.remove()
+    })
+  }
+
 
   // Lifecycle callbacks
 
@@ -333,6 +351,10 @@ export class SkraaFotoViewport extends HTMLElement {
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
       view: this.view
+    })
+
+    this.map.on('rendercomplete', () => {
+      this.rendercompleteHandler()
     })
 
     this.map.on('moveend', () => {
@@ -364,6 +386,7 @@ export class SkraaFotoViewport extends HTMLElement {
     })
     
     this.update_view_function = this.updateViewHandler.bind(this)
+    
     window.addEventListener('updateView', this.update_view_function)
 
     if (configuration.ENABLE_POINTER) {
