@@ -167,7 +167,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   updatePlugins() {
     super.updatePlugins()
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = '#viewport-main'
+    this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
 
