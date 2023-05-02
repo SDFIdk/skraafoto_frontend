@@ -17,9 +17,9 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
     <style>
       ${ this.styles }
     </style>
-    <button class="switch-view-1" title="Vis ét stort billede">1</button>
-    <button class="switch-view-2" title="Vis 2 store billeder">2</button>
-    <button class="switch-view-5" title="Vis 1 stort og 5 små billeder">5</button>
+    <button class="switch-view-1 contrast" title="Vis ét stort billede">1</button>
+    <button class="switch-view-2 contrast" title="Vis 2 store billeder">2</button>
+    <button class="switch-view-5 contrast" title="Vis 1 stort og 5 små billeder">5</button>
   `
 
   
