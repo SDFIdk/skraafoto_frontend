@@ -344,7 +344,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   rendercompleteHandler() {
     // Removes loading animation elements
-    console.log('loaded', this.item)
     this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
       spinner.remove()
     })
@@ -360,6 +359,10 @@ export class SkraaFotoViewport extends HTMLElement {
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
       view: this.view
+    })
+
+    this.map.on('rendercomplete', () => {
+      this.rendercompleteHandler()
     })
 
     this.map.on('moveend', () => {
