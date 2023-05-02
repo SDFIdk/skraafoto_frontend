@@ -29,6 +29,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
     .gs-input {
       margin: 0 !important;
+      padding-top: 0.35rem;
+      padding-bottom: 0.35rem;
     }
     .sf-search-btn-open {
       display: none;
@@ -77,18 +79,12 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       }
 
       .sf-search-collapsible .sf-input-container {
-        position: absolute;
-        top: 2.5rem;
-        right: 1rem;
-      }
-
-      .sf-search-collapsible .sf-input-container {
         height: auto;
         width: calc(100vw - 4.25rem);
         max-width: 30rem;
         background-color: var(--background-color);
         position: fixed;
-        top: 0.75rem;
+        top: 1.15rem;
         right: 1rem;
         z-index: 1000;
         transition: transform .2s;
@@ -115,6 +111,15 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
     }
 
+    @media screen and (min-width: 50.1rem) { 
+      
+      .sf-search-collapsible .sf-input-container {
+        position: relative;
+        top: 0.4rem;
+      }
+
+    }
+
     @media screen and (min-width: 60rem) {
 
       .sf-search-collapsible .sf-input-container {
@@ -128,8 +133,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button class="sf-search-btn-open ds-icon-icon-search" title="Søg efter adresse eller stednavn"></button>
-    <div class=sf-input-container>
+    <button class="sf-search-btn-open ds-icon-icon-search secondary" title="Søg efter adresse eller stednavn"></button>
+    <div class="sf-input-container">
       <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="100" data-resources="husnummer,stednavn"></g-search>
     </div>
   `

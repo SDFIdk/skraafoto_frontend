@@ -18,35 +18,36 @@ export class SkraaFotoDateSelector extends HTMLElement {
   styles = `
     select {
       background-color: var(--hvid);
-      padding: 0.25rem 1.75rem 0.25rem 0 !important;
-      margin: 0 0 0 0.5rem;
       border: none;
       cursor: pointer;
+      box-shadow: none;
     }
 
     @media screen and (max-width: 50rem) {
 
       select {
         text-indent: -10000em;
-        width: 3rem;
+        width: 3.25rem;
         height: 3rem;
         border: none;
         padding: 0 !important;
-        border-radius: 50%;
         position: relative;
-        background: var(--ds-hentdata-icon-pending) no-repeat center center transparent !important;
+        background: var(--ds-hentdata-icon-pending);
         background-size: 2rem auto !important;
-        margin: 0;
+        background-repeat: no-repeat;
+        background-position: 0.75rem center !important;
+        background-color: transparent;
+        margin: 0 !important;
+        border-radius: 2.5rem 0 0 2.5rem;
       }
-      select:hover {
-        background-color: transparent !important; 
-        outline: solid 3px var(--aktion);
+      select:hover,
+      select:active {
+        background-color: var(--aktion) !important;
+        background-blend-mode: difference;
       }
       select:focus {
-        background-color: transparent !important; 
-        border-color: var(--highlight);
+        box-shadow: inset 0 0 0 3px var(--highlight);
       }
-
     }
 
     @media screen and (min-width: 50.1rem) {
@@ -54,6 +55,11 @@ export class SkraaFotoDateSelector extends HTMLElement {
       select {
         width: auto;
         background-position: center right .25rem !important;
+        margin: 0 !important;
+      }
+
+      select:focus {
+        box-shadow: 0 0 0 3px var(--highlight);
       }
 
     }
@@ -63,7 +69,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
     <style>
       ${this.styles}
     </style>
-    <select class="sf-date-selector" title="Vælg foto fra anden årgang">
+    <select class="sf-date-selector form-mini" title="Vælg foto fra anden årgang">
     </select>
   `
 

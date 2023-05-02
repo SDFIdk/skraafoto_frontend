@@ -62,7 +62,7 @@ export class SkraaFotoHeader extends HTMLElement {
       <strong>Skråfoto</strong>
       <span>Styrelsen for Dataforsyning og Infrastruktur</span>
     </a>
-    <a role="button" class="sf-help-link ds-icon-icon-question" title="Information om Skråfoto" href="/info.html"></a>
+    <a role="button" class="sf-help-link ds-icon-icon-question secondary" title="Information om Skråfoto" href="/info.html"></a>
   `
 
   

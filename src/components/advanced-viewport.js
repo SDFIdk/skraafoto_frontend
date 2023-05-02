@@ -44,8 +44,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       top: 5.5rem;
       right: 1rem;
     }
-    .ol-full-screen button {
-    }
     .ol-zoom {
       bottom: 2rem;
       right: 1rem;
@@ -67,13 +65,14 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ds-nav-tools {
       position: absolute;
       z-index: 2;
-      top: 1.25rem;
+      top: 1.5rem;
       left: 1rem;
     }
     .ds-button-group {
       min-width: 10rem;
       min-height: 3rem;
       padding: 0 0 0 0.5rem;
+      align-items: center;
     }
     .ds-nav-tools button.active {
       background-color: var(--mork-tyrkis) !important;
@@ -112,6 +111,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
 
     @media screen and (max-width: 50rem) {
+
+      .ds-button-group {
+        padding-left: 0;
+      }
     
       .image-date {
         display: block;
