@@ -51,6 +51,10 @@ export class SkraaFotoViewport extends HTMLElement {
   })
 
   styles = `
+    :host {
+      position: relative;
+      display: block;
+    }
     .viewport-wrapper {
       position: relative;
       height: 100%;
@@ -61,7 +65,7 @@ export class SkraaFotoViewport extends HTMLElement {
       width: 100%; 
       height: 100%;
       position: relative;
-      background-color: transparent;
+      background-color: var(--background-color);
     }
     skraafoto-compass {
       position: absolute;
@@ -81,12 +85,13 @@ export class SkraaFotoViewport extends HTMLElement {
       position: absolute;
       top: 0;
       left: 0;
-      margin: auto;
-      width: 50%;
-      height: auto;
-      z-index: 100000;
-      background-color: transparent;
-      border: solid 1px yellow;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      background-color: var(--background-color);
+    }
+    ds-spinner > .ds-loading-svg {
+      max-width: 25% !important;
     }
 
     @media screen and (max-width: 35rem) {
@@ -140,7 +145,7 @@ export class SkraaFotoViewport extends HTMLElement {
   createShadowDOM() {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    // Create div element
+    // Create elements
     const wrapper = document.createElement('article')
     wrapper.className = 'viewport-wrapper'
     wrapper.innerHTML = this.template
@@ -155,7 +160,9 @@ export class SkraaFotoViewport extends HTMLElement {
 
   async update({item,center}) {
 
-    this.shadowRoot.append(document.createElement('ds-spinner'))
+    // Attach a loading animation element while updating
+    const spinner_element = document.createElement('ds-spinner')
+    this.shadowRoot.append(spinner_element)
 
     if (typeof item === 'object') {
       this.updateImage(item)
@@ -336,6 +343,8 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   rendercompleteHandler() {
+    // Removes loading animation elements
+    console.log('loaded', this.item)
     this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
       spinner.remove()
     })
@@ -351,10 +360,6 @@ export class SkraaFotoViewport extends HTMLElement {
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
       view: this.view
-    })
-
-    this.map.on('rendercomplete', () => {
-      this.rendercompleteHandler()
     })
 
     this.map.on('moveend', () => {
