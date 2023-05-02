@@ -27,10 +27,11 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.button_element = document.createElement('button')
     if (configuration.DOWNLOAD_TYPE === 'currentview') {
       this.button_element.className = 'sf-download-tool ds-icon-icon-print'
+      this.button_element.title = 'Print billede til PDF'
     } else {
       this.button_element.className = 'sf-download-tool ds-icon-hentdata-icon-download'
+      this.button_element.title = 'Download billede'
     }
-    this.button_element.title = 'Download billede'
     this.append(this.button_element)
 
     // Create virtual link to initiate download with
