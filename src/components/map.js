@@ -51,7 +51,6 @@ export class SkraaFotoMap extends HTMLElement {
     .geographic-map { 
       width: 100%; 
       height: 100%;
-      background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
       cursor: crosshair;
     }
     .ol-zoom {
@@ -80,6 +79,18 @@ export class SkraaFotoMap extends HTMLElement {
       right: 1rem;
       z-index: 1;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+    }
+    ds-spinner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      background-color: var(--background-color);
+    }
+    ds-spinner > .ds-loading-svg {
+      max-width: 25% !important;
     }
     @media screen and (max-width: 35rem) {
 
@@ -175,6 +186,10 @@ export class SkraaFotoMap extends HTMLElement {
         })
       }
 
+      map.on('rendercomplete', () => {
+        this.rendercompleteHandler()
+      })
+
       map.on('moveend', (e) => {
         if (!this.sync) {
           return
@@ -200,6 +215,13 @@ export class SkraaFotoMap extends HTMLElement {
       }
 
       return map
+    })
+  }
+
+  rendercompleteHandler() {
+    // Removes loading animation elements
+    this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
+      spinner.remove()
     })
   }
 
@@ -257,6 +279,11 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   async updateMap(center) {
+
+    // Attach a loading animation element while updating
+    const spinner_element = document.createElement('ds-spinner')
+    this.shadowRoot.append(spinner_element)
+
     if (!this.map) {
       this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
     } else if (this.map && this.icon_layer) {
