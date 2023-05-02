@@ -12,8 +12,8 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   viewport
 
   // setters
-  set setContextTarget(selector) {
-    this.viewport = document.querySelector(selector)
+  set setContextTarget(viewport) {
+    this.viewport = viewport
   }
 
   constructor() {
