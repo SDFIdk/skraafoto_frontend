@@ -163,6 +163,36 @@ document.addEventListener('keyup', function(event) {
   }
 })
 
+// Set up shortkeys for date-selector
+const dateSelector_element = viewport_element_1.shadowRoot.querySelector('skraafoto-date-selector');
+document.addEventListener('keydown', function(event) {
+
+  const option_list = dateSelector_element.selector_element.options;
+  let current_idx = option_list.selectedIndex;
+  const num_options = option_list.length;
+  const current_group = option_list[current_idx].parentNode.label;
+
+  // Calculate the indexes of the past and future options
+  let next_idx = (current_idx + 1) % num_options;
+  while (option_list[next_idx].parentNode.label !== current_group) {
+    next_idx = (next_idx + 1) % option_list.length;
+  }
+  let previous_idx = (current_idx - 1 + num_options) % num_options;
+  while (option_list[previous_idx].parentNode.label !== current_group) {
+    previous_idx = (previous_idx - 1 + num_options) % num_options;
+  }
+
+  // Get references to the past and future options based on their indexes
+  const previous = option_list[previous_idx];
+  const next = option_list[next_idx];
+
+  if (event.key === 'ArrowUp' && event.shiftKey) {
+    setParams({item: previous.value});
+  } else if (event.key === 'ArrowDown' && event.shiftKey) {
+    setParams({item: next.value});
+  }
+});
+
 
 // Initialize
 

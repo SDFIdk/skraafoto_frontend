@@ -135,7 +135,7 @@ document.addEventListener('gsearch:select', function(event) {
   const new_center = getGSearchCenterPoint(event.detail)
   const orientation = getParam('orientation') ? getParam('orientation') : 'north'
   queryItems(new_center, orientation, collection).then((response) => {
-    setParams({ center: new_center, item: response.features[0].id })
+    setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id })
   })
 })
 
