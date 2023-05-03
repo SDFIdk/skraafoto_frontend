@@ -195,8 +195,11 @@ export class SkraaFotoViewport extends HTMLElement {
     } else {
       this.view.center = this.coord_image
     }
-    this.view.zoom = store.state.view.zoom - configuration.ZOOM_DIFFERENCE
-    this.map.setView(new View(this.view))
+    this.view.zoom = this.toImageZoom(store.state.view.zoom)
+
+    const view = new View(this.view)
+    this.setViewConstraints(view)
+    this.map.setView(view)
   }
 
   /** Calculate how much to rotate a nadir image to have it north upwards */
@@ -303,7 +306,7 @@ export class SkraaFotoViewport extends HTMLElement {
     if (!view) {
       return
     }
-    const image_zoom = zoom - configuration.ZOOM_DIFFERENCE
+    const image_zoom = this.toImageZoom(zoom)
     const image_center = world2image(this.item, center[0], center[1], center[2])
     if (this.sync) {
       this.sync = false
@@ -321,6 +324,19 @@ export class SkraaFotoViewport extends HTMLElement {
 
   updateViewHandler(event) {
     this.syncMap(event.detail)
+  }
+
+  toImageZoom(zoom) {
+    return zoom - configuration.ZOOM_DIFFERENCE - configuration.OVERVIEW_ZOOM_DIFFERENCE
+  }
+
+  toMapZoom(zoom) {
+    return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
+  }
+
+  setViewConstraints(view) {
+    view.setMinZoom(configuration.MIN_ZOOM)
+    view.setMaxZoom(configuration.MAX_ZOOM - configuration.OVERVIEW_ZOOM_DIFFERENCE)
   }
 
 
@@ -341,7 +357,7 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       const view = this.map.getView()
       const center = view.getCenter()
-      const world_zoom = view.getZoom() + configuration.ZOOM_DIFFERENCE
+      const world_zoom = this.toMapZoom(view.getZoom())
       /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
       * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
       * vary. If there are big differences in elevation between the selected center and the zoom center this
