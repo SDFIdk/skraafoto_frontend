@@ -22,7 +22,7 @@ function generatePointerLayer() {
     image: new Circle({
       radius: 4,
       stroke: new Stroke({
-        color: [255, 0, 0, 1],
+        color: 'hsl(0,100%,66%)', // advarsel
         width: 2
       })
     }),

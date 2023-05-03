@@ -18,7 +18,7 @@ function generateFootprintLayer() {
   })
   const style = new Style({
     stroke: new Stroke({
-      color: [0, 55, 61, 1],
+      color: 'hsl(186,100%,12%)', // --mork-tyrkis
       width: 2
     }),
     zIndex: Infinity

@@ -90,7 +90,7 @@ function generateParcelVectorLayer() {
     color: 'transparent',
   })
   const stroke = new Stroke({
-    color: 'hsl(60,100%,50%)',
+    color: 'hsl(26,80%,56%)', // highlight
     width: 2,
   })
   const style = new Style({
