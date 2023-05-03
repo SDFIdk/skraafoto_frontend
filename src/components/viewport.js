@@ -84,14 +84,15 @@ export class SkraaFotoViewport extends HTMLElement {
     ds-spinner {
       position: absolute;
       top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
-      z-index: 10;
-      background-color: var(--background-color);
+      z-index: 10
     }
     ds-spinner > .ds-loading-svg {
-      max-width: 25% !important;
+      max-width: 5rem !important;
+      background-color: var(--background-color);
+      border-radius: 50%;
+      padding: 0.5rem;
     }
 
     @media screen and (max-width: 35rem) {
@@ -392,9 +393,9 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-    
+
     this.update_view_function = this.updateViewHandler.bind(this)
-    
+
     window.addEventListener('updateView', this.update_view_function)
 
     if (configuration.ENABLE_POINTER) {

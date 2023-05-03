@@ -87,10 +87,12 @@ export class SkraaFotoMap extends HTMLElement {
       width: 100%;
       height: 100%;
       z-index: 10;
-      background-color: var(--background-color);
     }
     ds-spinner > .ds-loading-svg {
-      max-width: 25% !important;
+      max-width: 5rem !important;
+      background-color: var(--background-color);
+      border-radius: 40px;
+      padding: 0.5rem;
     }
     @media screen and (max-width: 35rem) {
 
