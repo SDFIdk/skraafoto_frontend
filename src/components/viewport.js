@@ -92,7 +92,7 @@ export class SkraaFotoViewport extends HTMLElement {
       max-width: 5rem !important;
       background-color: var(--background-color);
       border-radius: 50%;
-      padding: 0.5rem;
+      padding: 0.75rem;
     }
 
     @media screen and (max-width: 35rem) {
