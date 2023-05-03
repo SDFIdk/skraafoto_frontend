@@ -60,7 +60,9 @@ function addFootprintListenerToViewport(viewport) {
     const tl = image2world(viewport.item, bbox_image[0], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
     const tr = image2world(viewport.item, bbox_image[2], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
     const bbox = [[ bl, br, tr, tl, bl]]
-    window.dispatchEvent(new CustomEvent("updateFootprint", { detail: { bounding_box: bbox, orientation: 'nadir' }}))
+    window.dispatchEvent(new CustomEvent("updateFootprint", { 
+      detail: { bounding_box: bbox, orientation: viewport.item.properties.direction }
+    }))
   })
 }
 
