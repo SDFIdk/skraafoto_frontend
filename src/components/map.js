@@ -23,6 +23,7 @@ import { configuration } from '../modules/configuration.js'
 import { closeEnough } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
+import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
 import store from '../store'
 
 /**
@@ -39,6 +40,7 @@ export class SkraaFotoMap extends HTMLElement {
   sync = true
   icon_layer
   update_pointer_function
+  update_footprint_function
   update_view_function
   parcels_function
 
@@ -199,6 +201,12 @@ export class SkraaFotoMap extends HTMLElement {
         window.addEventListener('updatePointer', this.update_pointer_function)
       }
 
+      if (configuration.ENABLE_FOOTPRINT) {
+        addFootprintLayerToMap(map)
+        this.update_footprint_function = getUpdateMapFootprintFunction(map)
+        window.addEventListener('updateFootprint', this.update_footprint_function)
+      }
+
       return map
     })
   }
@@ -320,6 +328,7 @@ export class SkraaFotoMap extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('parcels', this.parcels_function)
     window.removeEventListener('updatePointer', this.update_pointer_function)
+    window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)
   }
 

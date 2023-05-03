@@ -18,6 +18,7 @@ import { getTerrainData } from '../modules/api.js'
 import { closeEnough } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
+import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import store from '../store'
 
 /**
@@ -370,6 +371,9 @@ export class SkraaFotoViewport extends HTMLElement {
       addPointerLayerToViewport(this)
       this.update_pointer_function = getUpdateViewportPointerFunction(this)
       window.addEventListener('updatePointer', this.update_pointer_function)
+    }
+    if (configuration.ENABLE_FOOTPRINT) {
+      addFootprintListenerToViewport(this)
     }
   }
 

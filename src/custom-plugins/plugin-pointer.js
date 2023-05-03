@@ -12,7 +12,7 @@ import store from '../store'
 
 /**
  * Creates an Openlayers layer with a pointer marker.
- * @returns An Openlayers layer with a pointer marker
+ * @returns An Openlayers layer with a pointer marker.
  */
 function generatePointerLayer() {
   const source = new VectorSource({
@@ -39,7 +39,8 @@ function generatePointerLayer() {
 
 /**
  * Updates the pointer for the map to the given position.
- * @param {ol.Map} map The map to update. The map needs to previously have added a pointer layer generated using the generatePointerLayer function. 
+ * @param {ol.Map} map The map to update. The map needs to previously have added a pointer layer generated using
+ * the generatePointerLayer function.
  * @param {number[]} position The position in the maps coordinates.
  */
 function updatePointer(map, position) {
@@ -67,9 +68,9 @@ function addPointerLayerToViewport(viewport) {
 }
 
 /**
- * Gets a function for updating the viewport pointer
+ * Gets a function for updating the viewport pointer.
  * @param {*} viewport The viewport.
- * @returns {function} the viewport pointer update function.
+ * @returns {function} The viewport pointer update function.
  */
 function getUpdateViewportPointerFunction(viewport) {
   return event => {
@@ -86,6 +87,10 @@ function getUpdateViewportPointerFunction(viewport) {
   }
 }
 
+/**
+ * Adds a pointerLayer to a map.
+ * @param {ol.Map} map The map.
+ */
 function addPointerLayerToMap(map) {
   map.addLayer(generatePointerLayer())
   map.on('pointermove', event => {
@@ -98,6 +103,11 @@ function addPointerLayerToMap(map) {
   })
 }
 
+/**
+ * Gets a function for updating the map pointer.
+ * @param {ol.Map} map The map.
+ * @returns {function} The map pointer update function.
+ */
 function getUpdateMapPointerFunction(map) {
   return event => {
     if (event.detail.map === map) {
