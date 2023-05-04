@@ -11,6 +11,9 @@ async function sanitizeParams(searchparams) {
   let params = searchparams
   let collections = []
 
+  // Remove params from skat that are never used
+  removeUnusedParams(params)
+
   // Just return when we have center, orientation, and item
   if (params.get('center') && params.get('orientation') && params.get('item')) {
     return params
@@ -93,6 +96,7 @@ function sanitizeCoords(url) {
 
   // If `center` param exists, return the params unchanged
   if (params.get('center')) {
+    removeUnusedCoordParams(url.searchParams)
     return params
   }
   
@@ -120,10 +124,26 @@ function sanitizeCoords(url) {
   }
 
   params.set('center', convertCoords([x,y]))
+  removeUnusedCoordParams(url.searchParams)
 
   return params
 }
 
+function removeUnusedCoordParams(params) {
+  params.delete('lat')
+  params.delete('lon')
+  params.delete('x')
+  params.delete('y')
+  params.delete('n')
+  params.delete('e')
+}
+
+function removeUnusedParams(params) {
+  params.delete('width')
+  params.delete('mode')
+  params.delete('token')
+  params.delete('project')
+}
 
 export {
   sanitizeParams,
