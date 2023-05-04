@@ -18,9 +18,9 @@ export class CenterTool {
           terrain: viewport.terrain,
           xy: event.coordinate
         }, 0.03).then((world_xyz) => {
-          
+
           this.update(event, viewport, world_xyz)
-          
+
         })
       }
     })
@@ -49,12 +49,12 @@ export class CenterTool {
       queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
       .then(response => {
         if (response.features[0].id !== viewport.item.id) {
-          setParams({ center: world_xyz, item: response.features[0].id })
-        }   
+          setParams({ center: world_xyz, item: response.features[0].id, item2: response.features[0].id })
+        }
       })
     } else {
       setParams({ center: world_xyz })
     }
   }
-  
+
 }
