@@ -207,6 +207,22 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.dispatchEvent(this.modechange)
   }
 
+  // overwrite parent function
+  toImageZoom(zoom) {
+    return zoom - configuration.ZOOM_DIFFERENCE
+  }
+
+  // overwrite parent function
+  toMapZoom(zoom) {
+    return zoom + configuration.ZOOM_DIFFERENCE
+  }
+
+  // overwrite parent function
+  setViewConstraints(view) {
+    view.setMinZoom(configuration.MIN_ZOOM + configuration.OVERVIEW_ZOOM_DIFFERENCE)
+    view.setMaxZoom(configuration.MAX_ZOOM)
+  }
+
 
   // Lifecycle callbacks
 
