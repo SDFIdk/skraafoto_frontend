@@ -10,6 +10,14 @@ import Icon from 'ol/style/Icon'
 import Stroke from 'ol/style/Stroke'
 import { image2world } from '@dataforsyningen/saul'
 
+const camera_styles = {
+  'nadir': new Style(),
+  'north': createCameraStyle('north'),
+  'south': createCameraStyle('south'),
+  'east': createCameraStyle('east'),
+  'west': createCameraStyle('west')
+}
+
 /**
  * Creates an Openlayers layer with a footprint bounding box and camera illustrating the direction.
  * @returns An Openlayers layer with a footprint bounding box and camera illustrating the direction.
@@ -43,22 +51,13 @@ function generateFootprintLayer() {
  * @returns {ol.Style} The resulting style.
  */
 function createCameraStyle(orientation) {
-  orientation = 'north' // TODO: rm once an icon for each direction exists.
   return new Style({
     image: new Icon({
       opacity: 1,
-      src: `img/icons/icon_${ orientation }_arrow.svg`,
+      src: `img/icons/icon_${ orientation }_camera.svg`,
       scale: 3
     })
   })
-}
-
-const cameraStyles = {
-  'nadir': new Style(),
-  'north': createCameraStyle('north'),
-  'south': createCameraStyle('south'),
-  'east': createCameraStyle('east'),
-  'west': createCameraStyle('west')
 }
 
 /**
@@ -101,7 +100,7 @@ function updateFootprint(map, bounding_box, orientation) {
   })
   polygon.setGeometry(new Polygon(bounding_box))
   point.getGeometry().setCoordinates(calculateCameraPosition(bounding_box, orientation))
-  point.setStyle(cameraStyles[orientation])
+  point.setStyle(camera_styles[orientation])
 }
 
 /**
