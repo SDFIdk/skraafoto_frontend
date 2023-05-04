@@ -51,6 +51,10 @@ export class SkraaFotoViewport extends HTMLElement {
   })
 
   styles = `
+    :host {
+      position: relative;
+      display: block;
+    }
     .viewport-wrapper {
       position: relative;
       height: 100%;
@@ -60,9 +64,8 @@ export class SkraaFotoViewport extends HTMLElement {
     .viewport-map { 
       width: 100%; 
       height: 100%;
-      background: url(/img/ds-pulser.svg) no-repeat center center var(--mork-tyrkis);
       position: relative;
-      background-size: 10rem;
+      background-color: var(--background-color);
     }
     skraafoto-compass {
       position: absolute;
@@ -77,6 +80,19 @@ export class SkraaFotoViewport extends HTMLElement {
       color: #fff;
       margin: 0;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+    }
+    ds-spinner {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10
+    }
+    ds-spinner > .ds-loading-svg {
+      max-width: 5rem !important;
+      background-color: var(--background-color);
+      border-radius: 50%;
+      padding: 0.75rem;
     }
 
     @media screen and (max-width: 35rem) {
@@ -130,7 +146,7 @@ export class SkraaFotoViewport extends HTMLElement {
   createShadowDOM() {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    // Create div element
+    // Create elements
     const wrapper = document.createElement('article')
     wrapper.className = 'viewport-wrapper'
     wrapper.innerHTML = this.template
@@ -140,11 +156,15 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
-
     }
   }
 
   async update({item,center}) {
+
+    // Attach a loading animation element while updating
+    const spinner_element = document.createElement('ds-spinner')
+    this.shadowRoot.append(spinner_element)
+
     if (typeof item === 'object') {
       this.updateImage(item)
     } else if (typeof item === 'string') {
@@ -326,6 +346,13 @@ export class SkraaFotoViewport extends HTMLElement {
     this.syncMap(event.detail)
   }
 
+  rendercompleteHandler() {
+    // Removes loading animation elements
+    this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
+      spinner.remove()
+    })
+  }
+
   toImageZoom(zoom) {
     return zoom - configuration.ZOOM_DIFFERENCE - configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
@@ -349,6 +376,10 @@ export class SkraaFotoViewport extends HTMLElement {
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
       view: this.view
+    })
+
+    this.map.on('rendercomplete', () => {
+      this.rendercompleteHandler()
     })
 
     this.map.on('moveend', () => {
@@ -378,8 +409,9 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       })
     })
-    
+
     this.update_view_function = this.updateViewHandler.bind(this)
+
     window.addEventListener('updateView', this.update_view_function)
 
     if (configuration.ENABLE_POINTER) {

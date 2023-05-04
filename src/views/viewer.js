@@ -1,38 +1,23 @@
 import { getZ } from '@dataforsyningen/saul'
 import { getParam, setParams } from '../modules/url-state.js'
 import { getCollections, queryItem, queryItems } from '../modules/api.js'
-import { SkraaFotoViewport } from '../components/viewport.js'
-import { SkraaFotoAdvancedViewport } from '../components/advanced-viewport.js'
-import { SkraaFotoMap } from '../components/map.js'
-import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoDirectionPicker } from '../components/direction-picker.js'
-import { SkraaFotoDateSelector } from '../components/date-selector.js'
-import { SkraaFotoInfoBox } from '../components/info-box.js'
-import { SkraaFotoHeader } from '../components/page-header.js'
 import { SkraaFotoViewSwitcher } from '../components/tool-view-switcher.js'
 import { configuration } from '../modules/configuration.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import { FirstTimeVisit } from '../components/first-time-visitor.js'
 import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
 import store from '../store'
-
-import { SkraaFotoCompass } from '../components/compass'
+import { registerComponents } from '../components/component-register.js'
+import { SkraaFotoViewport } from '../components/viewport.js'
+import { SkraaFotoMap } from '../components/map.js'
 
 
 // Initialize web components
-
-customElements.define('skraafoto-viewport', SkraaFotoViewport)
-customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)
-customElements.define('skraafoto-map', SkraaFotoMap)
-customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
+registerComponents()
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
-customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
-customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
-customElements.define('skraafoto-header', SkraaFotoHeader)
-customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
-customElements.define('skraafoto-compass', SkraaFotoCompass)
-
+customElements.define('skraafoto-viewport', SkraaFotoViewport)
+customElements.define('skraafoto-map', SkraaFotoMap)
 
 
 // Variables
