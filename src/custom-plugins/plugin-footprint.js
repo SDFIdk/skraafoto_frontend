@@ -4,7 +4,9 @@ import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import Feature from 'ol/Feature'
 import Polygon from 'ol/geom/Polygon'
+import Point from 'ol/geom/Point'
 import Style from 'ol/style/Style'
+import Icon from 'ol/style/Icon'
 import Stroke from 'ol/style/Stroke'
 import { image2world } from '@dataforsyningen/saul'
 
@@ -14,7 +16,10 @@ import { image2world } from '@dataforsyningen/saul'
  */
 function generateFootprintLayer() {
   const source = new VectorSource({
-    features: [new Feature()]
+    features: [
+      new Feature({ name: 'point', geometry: new Point([-9999, -9999]) }),
+      new Feature({ name: 'polygon' })
+    ]
   })
   const style = new Style({
     stroke: new Stroke({
@@ -33,6 +38,48 @@ function generateFootprintLayer() {
 }
 
 /**
+ * Creates a camera style for the given orientation.
+ * @param {String} orientation The orientation.
+ * @returns {ol.Style} The resulting style.
+ */
+function createCameraStyle(orientation) {
+  orientation = 'north' // TODO: rm once an icon for each direction exists.
+  return new Style({
+    image: new Icon({
+      opacity: 1,
+      src: `img/icons/icon_${ orientation }_arrow.svg`,
+      scale: 3
+    })
+  })
+}
+
+const cameraStyles = {
+  'nadir': new Style(),
+  'north': createCameraStyle('north'),
+  'south': createCameraStyle('south'),
+  'east': createCameraStyle('east'),
+  'west': createCameraStyle('west')
+}
+
+/**
+ * Calculate the position of the camera object belonging to the bbox based on the orientation.
+ * The camera is placed between the two points nearest the camera at a distance equal to the
+ * distance between the same two points.
+ * @param {Number[][]} bbox The bounding box.
+ * @param {String} orientation The orientation.
+ * @returns {Number[2]} the position of the camera object.
+ */
+function calculateCameraPosition(bbox, orientation) {
+  const l = bbox[0][0]
+  const r = bbox[0][1]
+  const lr = [r[0] - l[0], r[1] - l[1]] // lr vector
+  const rlr = [lr[1], 0 - lr[0]] // lr vector rotated 90 degrees clockwise
+  const hlr = [lr[0] / 2, lr[1] / 2] // half length lr vector
+  const camera_position = [l[0] + rlr[0] + hlr[0], l[1] + rlr[1] + hlr[1]]
+  return camera_position
+}
+
+/**
  * Updates the footprint for the map.
  * @param {ol.Map} map The map to update. The map needs to previously have added a footprint layer generated using
  * the generateFootprintLayer function.
@@ -45,7 +92,16 @@ function updateFootprint(map, bounding_box, orientation) {
   })
   const source = layer.getSource()
   // TODO: avoid rerendering if nothing changed
-  source.getFeatures()[0].setGeometry(new Polygon(bounding_box))
+  const features = source.getFeatures()
+  const polygon = features.find(feature => {
+    return feature.get('name') === 'polygon'
+  })
+  const point = features.find(feature => {
+    return feature.get('name') === 'point'
+  })
+  polygon.setGeometry(new Polygon(bounding_box))
+  point.getGeometry().setCoordinates(calculateCameraPosition(bounding_box, orientation))
+  point.setStyle(cameraStyles[orientation])
 }
 
 /**
@@ -81,7 +137,6 @@ function addFootprintLayerToMap(map) {
  */
 function getUpdateMapFootprintFunction(map) {
   return event => {
-    console.log(event.detail)
     updateFootprint(map, event.detail.bounding_box, event.detail.orientation)
   }
 }
