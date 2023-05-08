@@ -16,6 +16,7 @@ let configuration = {
   ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
   ENABLE_POINTER: false, // Enables displaying the cursor's position as a yellow dot on the other viewports
+  ENABLE_FOOTPRINT: true, // Enables displaying the footprint of the viewport being hovered over on the map
   ENABLE_SMALL_FONT: false,
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
