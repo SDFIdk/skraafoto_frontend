@@ -66,7 +66,7 @@ function createCameraStyle(orientation) {
  * distance between the same two points.
  * @param {Number[][]} bbox The bounding box.
  * @param {String} orientation The orientation.
- * @returns {Number[2]} the position of the camera object.
+ * @returns {Number[]} the position of the camera object.
  */
 function calculateCameraPosition(bbox, orientation) {
   const l = bbox[0][0]
