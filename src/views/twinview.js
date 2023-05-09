@@ -91,7 +91,7 @@ async function shiftItem(direction) {
 
   queryItems(getParam('center'), new_orientation, collection).then((response) => {
     if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item: response.features[0].id, item2: response.features[0].id })
+      setParams({ orientation: new_orientation, item: response.features[0].id })
     } else {
       console.error(`No image found facing ${ new_orientation }`)
     }
@@ -101,7 +101,7 @@ async function shiftItem(direction) {
   const collection2 = `skraafotos${year}`
   queryItems(getParam('center'), new_orientation, collection2).then((response) => {
     if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item: response.features[0].id, item2: response.features[0].id })
+      setParams({ orientation: new_orientation, item2: response.features[0].id })
     } else {
       console.error(`No image found facing ${ new_orientation }`)
     }
