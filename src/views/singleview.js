@@ -114,7 +114,7 @@ window.addEventListener('urlupdate', function(event) {
       const year = item.substring(0,4)
       collection = `skraafotos${year}`
     }
-    if (!getParam('item2')) {
+    if (getParam('item2')) {
       setParams({ item2: getParam('item') })
     }
   }
