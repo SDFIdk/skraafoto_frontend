@@ -18,12 +18,12 @@ const font_size = 32
 const spacing = font_size * 1 // spacing between text
 // the footer height is two lines of text, spacing bewtween them and an extra space at the bottom
 const footer_height = font_size * 2 + spacing * 2
-const logo_width = 320
+const logo_width = 300
+const logo_height_fallback = 74 // firefox can't get the natural height of the image
 
 // Initialize logo image so it's ready when needed
 const logo_image = new Image()
 logo_image.src = 'img/logos/vurdst-logo.svg'
-logo_image.style.width = logo_width
 
 /**
  * Formats a date to match the required specifications of dd.mm.yy hh:MM
@@ -119,7 +119,7 @@ function drawFooterContent(height, width, item) {
   ctx.fillText(`Dokument dannet: ${ today }`, width, 0)
   ctx.fillText(`Dato for fotografering: ${ capture_date }`, width, font_size + spacing)
 
-  const logo_height = logo_width / logo_image.width * logo_image.height
+  const logo_height = logo_width / logo_image.naturalWidth * logo_image.naturalHeight || logo_height_fallback
   ctx.drawImage(logo_image, ((width / 2 ) - (logo_width / 2)), 0, logo_width, logo_height)
 
   return canvas
