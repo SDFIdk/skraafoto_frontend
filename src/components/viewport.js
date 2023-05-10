@@ -349,9 +349,11 @@ export class SkraaFotoViewport extends HTMLElement {
 
   rendercompleteHandler() {
     // Removes loading animation elements
-    this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
-      spinner.remove()
-    })
+    setTimeout(() => {
+      this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
+        spinner.remove();
+      });
+    }, 500);
   }
 
   toImageZoom(zoom) {

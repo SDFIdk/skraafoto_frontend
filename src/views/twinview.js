@@ -89,6 +89,8 @@ async function shiftItem(direction) {
     }
   }
 
+  const year = getParam('item').substring(0,4)
+  const collection = `skraafotos${year}`
   queryItems(getParam('center'), new_orientation, collection).then((response) => {
     if (response.features.length > 0) {
       setParams({ orientation: new_orientation, item: response.features[0].id })
@@ -97,8 +99,8 @@ async function shiftItem(direction) {
     }
   })
 
-  const year = getParam('item2').substring(0,4)
-  const collection2 = `skraafotos${year}`
+  const year2 = getParam('item2').substring(0,4)
+  const collection2 = `skraafotos${year2}`
   queryItems(getParam('center'), new_orientation, collection2).then((response) => {
     if (response.features.length > 0) {
       setParams({ orientation: new_orientation, item2: response.features[0].id })
