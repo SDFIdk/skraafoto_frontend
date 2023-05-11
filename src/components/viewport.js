@@ -10,7 +10,7 @@ import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction'
-import { getZ, world2image, image2world } from '@dataforsyningen/saul'
+import { getZ, getImageXY, image2world } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
@@ -212,7 +212,7 @@ export class SkraaFotoViewport extends HTMLElement {
     // this.view.center = this.coord_image
     const center = store.state.view.center
     if (center[0]) {
-      this.view.center = world2image(this.item, center[0], center[1], center[2])
+      this.view.center = getImageXY(this.item, center[0], center[1], center[2])
     } else {
       this.view.center = this.coord_image
     }
@@ -282,7 +282,7 @@ export class SkraaFotoViewport extends HTMLElement {
       coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)
     }
     this.coord_world = coordinate
-    this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])
+    this.coord_image = getImageXY(this.item, coordinate[0], coordinate[1], coordinate[2])
   }
 
   updateNonMap() {
@@ -328,7 +328,7 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     const image_zoom = this.toImageZoom(zoom)
-    const image_center = world2image(this.item, center[0], center[1], center[2])
+    const image_center = getImageXY(this.item, center[0], center[1], center[2])
     if (this.sync) {
       this.sync = false
       view.animate({
