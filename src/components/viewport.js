@@ -9,13 +9,13 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
-import { defaults as defaultInteractions } from 'ol/interaction'
-import { getZ, getImageXY, image2world } from '@dataforsyningen/saul'
+import Collection from 'ol/Collection'
+import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
-import { closeEnough } from '../modules/sync-view'
+import { getViewSyncViewportListener } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
@@ -37,7 +37,8 @@ export class SkraaFotoViewport extends HTMLElement {
   layer_icon
   source_image
   view
-  sync = true
+  sync = false
+  self_sync = true
   compass_element
   update_pointer_function
   update_view_function
@@ -319,34 +320,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  syncMap({zoom, center}) {
-    if (!this.map || !this.item) {
-      return
-    }
-    const view = this.map.getView()
-    if (!view) {
-      return
-    }
-    const image_zoom = this.toImageZoom(zoom)
-    const image_center = getImageXY(this.item, center[0], center[1], center[2])
-    if (this.sync) {
-      this.sync = false
-      view.animate({
-        zoom: image_zoom,
-        center: image_center,
-        duration: 0
-      }, () => {
-        setTimeout(() => {
-          this.sync = true
-        }, 50)
-      })
-    }
-  }
-
-  updateViewHandler(event) {
-    this.syncMap(event.detail)
-  }
-
   rendercompleteHandler() {
     // Removes loading animation elements
     setTimeout(() => {
@@ -377,7 +350,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
-      interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
+      interactions: new Collection(),
       view: this.view
     })
 
@@ -385,36 +358,7 @@ export class SkraaFotoViewport extends HTMLElement {
       this.rendercompleteHandler()
     })
 
-    this.map.on('moveend', () => {
-      if (!this.sync) {
-        return
-      }
-      const view = this.map.getView()
-      const center = view.getCenter()
-      const world_zoom = this.toMapZoom(view.getZoom())
-      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
-      * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
-      * vary. If there are big differences in elevation between the selected center and the zoom center this
-      * could lead to some big inaccuracies when calculating the zoom center.
-      */
-      if (!this.coord_world) {
-        return
-      }
-      const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
-      if (closeEnough({ zoom: world_zoom, center: world_center }, store.state.view)) {
-        return
-      }
-      getZ(world_center[0], world_center[1], configuration).then(z => {
-        world_center[2] = z
-        store.dispatch('updateView', {
-          center: world_center,
-          zoom: world_zoom
-        })
-      })
-    })
-
-    this.update_view_function = this.updateViewHandler.bind(this)
-
+    this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
 
     if (configuration.ENABLE_POINTER) {

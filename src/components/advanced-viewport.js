@@ -1,5 +1,6 @@
 import { SkraaFotoViewport } from './viewport.js' 
-import { DragPan } from 'ol/interaction'
+import { defaults as defaultInteractions } from 'ol/interaction'
+import { addViewSyncViewportTrigger, getViewSyncViewportListener } from '../modules/sync-view'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
@@ -229,7 +230,16 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   connectedCallback() {
     super.connectedCallback()
 
-    this.map.addInteraction(new DragPan())
+    // add interactions
+    const interactions = defaultInteractions({ pinchRotate: false })
+    interactions.forEach(interaction => {
+      this.map.addInteraction(interaction)
+    })
+
+    addViewSyncViewportTrigger(this)
+    window.removeEventListener('updateView', this.update_view_function)
+    this.update_view_function = getViewSyncViewportListener(this, false)
+    window.addEventListener('updateView', this.update_view_function)
 
     // Change mode when clicking toolbar buttons
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
