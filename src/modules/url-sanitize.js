@@ -5,24 +5,32 @@
 import { queryItem, queryItems, getCollections } from './api.js'
 import { createTranslator } from '@dataforsyningen/saul'
 
-/** Adds or modifies URL searchparams according to various edge cases */
-async function sanitizeParams(searchparams) {
-  
-  let params = searchparams
+/** Adds or modifies URL search params according to various edge cases */
+async function sanitizeParams(searchParams) {
+  let params = searchParams
   let collections = []
+  let item = await queryItem(params.get('item'));
 
   // Remove params from skat that are never used
   removeUnusedParams(params)
 
-  // Just return when we have center, orientation, and item
-  if (params.get('center') && params.get('orientation') && params.get('item')) {
+  // Just return when we have center, orientation, item, and year
+  if (
+      params.get('center') &&
+      params.get('orientation') &&
+      params.get('item') &&
+      params.get('year')
+  ) {
     return params
   }
+
+
 
   // If we have item and center
   if (params.get('center') && params.get('item')) {
     const item = await queryItem(params.get('item'))
     params.set('orientation', item.properties.direction)
+    params.set('year', item.properties.datetime.substring(0,4));
     return params
   }
 
@@ -36,9 +44,19 @@ async function sanitizeParams(searchparams) {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
     }
-    const center = params.get('center').split(',').map(function(c) { return Number(c) })
-    collections = await getCollections()
-    const response = await queryItems(center, params.get('orientation'), collections[0].id)
+    const center = params
+        .get('center')
+        .split(',')
+        .map(function (c) {
+          return Number(c)
+        });
+    collections = getCollections();
+    const response = await queryItems(
+        center,
+        params.get('orientation'),
+        collections[0].id,
+        params.set('year')
+    );
     if (response.features[0]) {
       params.set('item', response.features[0].id)
     } else {
@@ -49,33 +67,44 @@ async function sanitizeParams(searchparams) {
 
   // If we only have item
   if (params.get('item')) {
-    const item = await queryItem(params.get('item'))
     const center_point = [
-      (item.bbox[0] + ((item.bbox[2] - item.bbox[0]) / 2)),
-      (item.bbox[1] + ((item.bbox[3] - item.bbox[1]) / 2))
+      item.bbox[0] + (item.bbox[2] - item.bbox[0]) / 2,
+      item.bbox[1] + (item.bbox[3] - item.bbox[1]) / 2,
     ]
     params.set('orientation', item.properties.direction)
     params.set('center', center_point)
+    params.set('year', item.properties.datetime.substring(0,4))
     return params
   }
 
+  // If we only have year
+  if (params.get('year')) {
+    params.set('year', item.properties.datetime.substring(0,4));
+    return params
+  }
 
   // If we only have orientation
   if (params.get('orientation')) {
-    params.set('center', [574764,6220953])
+    params.set('center', [574764, 6220953])
     if (params.get('orientation') !== 'map') {
-      collections = await getCollections()
-      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0])
+      collections = getCollections()
+      const response = await queryItems(
+          [574764, 6230953],
+          params.get('orientation'),
+          collections[0]
+      );
       params.set('item', response.features[0].id)
+      params.set('year', item.properties.datetime.substring(0,4));
     }
     return params
   }
 
-  // Default 
-  params.set('orientation', 'north')
-  params.set('center', [574764,6220953])
-  params.set('item', '2021_82_24_2_0021_00002029_10cm')
-  return params
+  // Default
+  params.set('orientation', 'north');
+  params.set('center', [574764, 6220953]);
+  params.set('item', '2021_82_24_2_0021_00002029_10cm');
+
+  return params;
 }
 
 /** Converts a coordinate to EPSG:25832 if it looks like a WGS84 coordinate */
@@ -90,7 +119,7 @@ function convertCoords(coords) {
 
 /** Converts lat/lon or x/y coordinates used in URL to `center` parameter */
 function sanitizeCoords(url) {
-  
+
   let params = url.searchParams
   let x, y
 
@@ -99,7 +128,7 @@ function sanitizeCoords(url) {
     removeUnusedCoordParams(url.searchParams)
     return params
   }
-  
+
   // Get param values
   const p_lat = params.get('lat')
   const p_lon = params.get('lon')
