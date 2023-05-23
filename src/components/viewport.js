@@ -219,8 +219,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     this.view.zoom = this.toImageZoom(store.state.view.zoom)
 
-    const view = new View(this.view)
-    this.setViewConstraints(view)
+    const view = this.createView(this.view)
     this.map.setView(view)
   }
 
@@ -337,9 +336,12 @@ export class SkraaFotoViewport extends HTMLElement {
     return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
-  setViewConstraints(view) {
+  createView(view_config) {
+    delete view_config.extent
+    const view = new View(view_config)
     view.setMinZoom(configuration.MIN_ZOOM)
     view.setMaxZoom(configuration.MAX_ZOOM - configuration.OVERVIEW_ZOOM_DIFFERENCE)
+    return view
   }
 
 
