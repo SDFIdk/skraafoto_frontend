@@ -5,6 +5,7 @@ import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
+import View from 'ol/View.js'
 import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
@@ -219,9 +220,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   // overwrite parent function
-  setViewConstraints(view) {
+  createView(view_config) {
+    const view = new View(view_config)
     view.setMinZoom(configuration.MIN_ZOOM + configuration.OVERVIEW_ZOOM_DIFFERENCE)
     view.setMaxZoom(configuration.MAX_ZOOM)
+    return view
   }
 
 
