@@ -52,7 +52,7 @@ export class SkraaFotoViewport extends HTMLElement {
     metersPerUnit: 1
   })
 
-  styles = `
+  styles = /*css*/`
     :host {
       position: relative;
       display: block;
@@ -96,6 +96,20 @@ export class SkraaFotoViewport extends HTMLElement {
       border-radius: 50%;
       padding: 0.75rem;
     }
+    .out-of-bounds {
+      display: none;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+    .out-of-bounds > p {
+      width: 50%;
+      margin: auto;
+      text-align: center;
+    }
 
     @media screen and (max-width: 35rem) {
 
@@ -111,12 +125,18 @@ export class SkraaFotoViewport extends HTMLElement {
 
     }
   `
-  template = `
+  template = /*html*/`
     <link rel="stylesheet" href="./style.css">
     <style>
       ${ this.styles }
     </style>
-    <div class="viewport-map"></div>
+    <div class="viewport-map">
+      <div class="out-of-bounds">
+        <p>
+        Out of bounds, klik på hovedvinduet for at hente nye billeder.
+        </p>
+      </div>
+    </div>
     <skraafoto-compass direction="north"></skraafoto-compass>
     <p id="image-date" class="image-date"></p>
   `
@@ -166,6 +186,10 @@ export class SkraaFotoViewport extends HTMLElement {
     // Attach a loading animation element while updating
     const spinner_element = document.createElement('ds-spinner')
     this.shadowRoot.append(spinner_element)
+    // hide out of bounds text while loading
+    this.shadowRoot.querySelectorAll('.out-of-bounds').forEach(function(el) {
+      el.style.display = 'none'
+    })
 
     if (typeof item === 'object') {
       this.updateImage(item)
@@ -323,9 +347,13 @@ export class SkraaFotoViewport extends HTMLElement {
     // Removes loading animation elements
     setTimeout(() => {
       this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
-        spinner.remove();
-      });
-    }, 500);
+        spinner.remove()
+      })
+    }, 500)
+    // display out of bounds text if done loading
+    this.shadowRoot.querySelectorAll('.out-of-bounds').forEach(function(el) {
+      el.style.display = 'block'
+    })
   }
 
   toImageZoom(zoom) {
