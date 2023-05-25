@@ -8,7 +8,10 @@ export class SkraaFotoExposureTool extends HTMLElement {
   // properties
   button_element
   viewport
-  variables
+  variables = {
+    exposure: 0,
+    brightness: 0
+  }
 
   // setters
   set setContextTarget(viewport) {
@@ -34,7 +37,6 @@ export class SkraaFotoExposureTool extends HTMLElement {
    * Cycles the exposure
    */
   cycleExposure() {
-    this.addStyleToLayer()
     this.variables.brightness += 0.25
     if (this.variables.brightness > 0.75) {
       this.variables.brightness = -0.75
@@ -45,18 +47,11 @@ export class SkraaFotoExposureTool extends HTMLElement {
   }
 
   addStyleToLayer() {
-    if (this.variables) { // style layer has already been added
-      return
-    }
     const layers = this.viewport.map.getLayers().getArray()
     const layer = layers.find(l => {
       return l instanceof WebGLTileLayer
     })
     if (layer) {
-      this.variables = {
-        exposure: 0,
-        brightness: 0
-      }
       layer.setStyle({
         exposure: ['var', 'exposure'],
         brightness: ['var', 'brightness'],
