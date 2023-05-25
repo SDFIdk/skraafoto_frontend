@@ -40,7 +40,6 @@ export class SkraaFotoExposureTool extends HTMLElement {
       this.variables.brightness = -0.75
     }
     this.variables.exposure = -0.5 * this.variables.brightness
-    console.log(`Brightness: ${ this.variables.brightness }, Exposure: ${ this.variables.exposure }`)
     this.viewport.map.render()
     this.button_element.blur()
   }
