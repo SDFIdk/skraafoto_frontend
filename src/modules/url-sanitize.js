@@ -7,15 +7,20 @@ import { createTranslator } from '@dataforsyningen/saul'
 
 /** Adds or modifies URL searchparams according to various edge cases */
 async function sanitizeParams(searchparams) {
-  
+
   let params = searchparams
   let collections = []
 
   // Remove params from skat that are never used
   removeUnusedParams(params)
 
-  // Just return when we have center, orientation, and item
-  if (params.get('center') && params.get('orientation') && params.get('item')) {
+  // Just return when we have center, orientation, item, and year
+  if (
+    params.get('center') &&
+    params.get('orientation') &&
+    params.get('item') &&
+    params.get('year')
+  ) {
     return params
   }
 
@@ -30,6 +35,7 @@ async function sanitizeParams(searchparams) {
   if (params.get('center') && params.get('orientation') === 'map') {
     return params
   }
+
 
   // If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
@@ -71,7 +77,7 @@ async function sanitizeParams(searchparams) {
     return params
   }
 
-  // Default 
+  // Default
   params.set('orientation', 'north')
   params.set('center', [574764,6220953])
   params.set('item', '2021_82_24_2_0021_00002029_10cm')
@@ -90,7 +96,7 @@ function convertCoords(coords) {
 
 /** Converts lat/lon or x/y coordinates used in URL to `center` parameter */
 function sanitizeCoords(url) {
-  
+
   let params = url.searchParams
   let x, y
 
@@ -99,7 +105,7 @@ function sanitizeCoords(url) {
     removeUnusedCoordParams(url.searchParams)
     return params
   }
-  
+
   // Get param values
   const p_lat = params.get('lat')
   const p_lon = params.get('lon')
@@ -136,6 +142,7 @@ function removeUnusedCoordParams(params) {
   params.delete('y')
   params.delete('n')
   params.delete('e')
+  params delete('year')
 }
 
 function removeUnusedParams(params) {

@@ -1,7 +1,8 @@
-import { SkraaFotoViewport } from './viewport.js' 
 import { defaults as defaultInteractions } from 'ol/interaction'
 import { addViewSyncViewportTrigger, getViewSyncViewportListener } from '../modules/sync-view'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
+import { SkraaFotoViewport } from './viewport.js'
+import { DragPan } from 'ol/interaction'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
@@ -10,10 +11,12 @@ import View from 'ol/View.js'
 import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
+import {SkraaFotoCompassArrows} from "./compass-arrows";
 
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
+customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
 
 /**
  * Web component that displays a viewport with a toolbar
@@ -104,6 +107,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .btn-height-measure::before {
       transform: rotate(90deg);
     }
+    
+    .compass-arrows {
+    display: absolute;
+    padding:10rem;
+    }
 
     @media screen and (max-width: 35rem) {
 
@@ -143,6 +151,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
+      <div>
+      <skraafoto-compass-arrows></skraafoto-compass-arrows>
+      </div>
     </nav>
   `
 
@@ -151,13 +162,13 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   set setParamName(name) {
     this.date_selector_element.setParamName = name
   }
-  
+
 
   constructor() {
     super() // Inherit stuff from SkraaFotoViewport
     this.addToDOM()
   }
-  
+
 
   // Methods
 

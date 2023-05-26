@@ -11,6 +11,7 @@ import store from '../store'
 import { registerComponents } from '../components/component-register.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
+import {SkraaFotoCompassArrows} from "../components/compass-arrows";
 
 
 // Initialize web components
@@ -18,6 +19,7 @@ registerComponents()
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
 customElements.define('skraafoto-map', SkraaFotoMap)
+customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
 
 
 // Variables

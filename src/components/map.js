@@ -46,6 +46,7 @@ export class SkraaFotoMap extends HTMLElement {
   update_view_function
   parcels_function
 
+
   styles = `
     :root {
       height: 100%;

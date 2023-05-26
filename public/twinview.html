@@ -46,15 +46,23 @@
         right: 1rem;
       }
 
+      skraafoto-compass-arrows {
+        position: relative;
+        top: 15rem;
+        right: 1rem;
+        z-index 1;
+        padding: 20rem;
+      }
+
       @media screen and (max-width: 40rem) {
-        
+
         .ds-logo-micro > span {
           display: none;
         }
       }
 
       @media screen and (min-width: 80rem) {
-        
+
         body > main {
           display: flex;
           flex-flow: row nowrap;
@@ -76,8 +84,14 @@
     <main id="maincontent">
 
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
-      <skraafoto-advanced-viewport id="viewport-1"></skraafoto-advanced-viewport>
-      <skraafoto-advanced-viewport id="viewport-2"></skraafoto-advanced-viewport>
+      <skraafoto-advanced-viewport id="viewport-1">
+        <skraafoto-compass-arrows></skraafoto-compass-arrows>
+      </skraafoto-advanced-viewport>
+
+      <skraafoto-advanced-viewport id="viewport-2">
+        <skraafoto-compass-arrows></skraafoto-compass-arrows>
+      </skraafoto-advanced-viewport>
+
       <skraafoto-view-switcher></skraafoto-view-switcher>
 
     </main>

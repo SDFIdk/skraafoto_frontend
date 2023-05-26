@@ -8,10 +8,11 @@ import {getParam, setParams} from "../modules/url-state";
 import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
-
+import {SkraaFotoCompassArrows} from "../components/compass-arrows";
 
 // Initialize web components
 registerComponents()
+customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
 
 
 // Variables
