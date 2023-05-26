@@ -9,13 +9,13 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
-import { defaults as defaultInteractions } from 'ol/interaction'
-import { getZ, world2image, image2world } from '@dataforsyningen/saul'
+import Collection from 'ol/Collection'
+import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
-import { closeEnough } from '../modules/sync-view'
+import { getViewSyncViewportListener } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
@@ -37,7 +37,8 @@ export class SkraaFotoViewport extends HTMLElement {
   layer_icon
   source_image
   view
-  sync = true
+  sync = false
+  self_sync = true
   compass_element
   update_pointer_function
   update_view_function
@@ -51,7 +52,7 @@ export class SkraaFotoViewport extends HTMLElement {
     metersPerUnit: 1
   })
 
-  styles = `
+  styles = /*css*/`
     :host {
       position: relative;
       display: block;
@@ -95,6 +96,20 @@ export class SkraaFotoViewport extends HTMLElement {
       border-radius: 50%;
       padding: 0.75rem;
     }
+    .out-of-bounds {
+      display: none;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+    .out-of-bounds > p {
+      width: 50%;
+      margin: auto;
+      text-align: center;
+    }
 
     @media screen and (max-width: 35rem) {
 
@@ -110,12 +125,18 @@ export class SkraaFotoViewport extends HTMLElement {
 
     }
   `
-  template = `
+  template = /*html*/`
     <link rel="stylesheet" href="./style.css">
     <style>
       ${ this.styles }
     </style>
-    <div class="viewport-map"></div>
+    <div class="viewport-map">
+      <div class="out-of-bounds">
+        <p>
+        Out of bounds, klik på hovedvinduet for at hente nye billeder.
+        </p>
+      </div>
+    </div>
     <skraafoto-compass direction="north"></skraafoto-compass>
     <p id="image-date" class="image-date"></p>
   `
@@ -165,6 +186,10 @@ export class SkraaFotoViewport extends HTMLElement {
     // Attach a loading animation element while updating
     const spinner_element = document.createElement('ds-spinner')
     this.shadowRoot.append(spinner_element)
+    // hide out of bounds text while loading
+    this.shadowRoot.querySelectorAll('.out-of-bounds').forEach(function(el) {
+      el.style.display = 'none'
+    })
 
     if (typeof item === 'object') {
       this.updateImage(item)
@@ -212,14 +237,13 @@ export class SkraaFotoViewport extends HTMLElement {
     // this.view.center = this.coord_image
     const center = store.state.view.center
     if (center[0]) {
-      this.view.center = world2image(this.item, center[0], center[1], center[2])
+      this.view.center = getImageXY(this.item, center[0], center[1], center[2])
     } else {
       this.view.center = this.coord_image
     }
     this.view.zoom = this.toImageZoom(store.state.view.zoom)
 
-    const view = new View(this.view)
-    this.setViewConstraints(view)
+    const view = this.createView(this.view)
     this.map.setView(view)
   }
 
@@ -242,7 +266,7 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   generateLayer(src) {
-    return new WebGLTile({source: src, preload: 4})
+    return new WebGLTile({source: src, preload: 0})
   }
 
   generateIconLayer(center, icon_image) {
@@ -282,7 +306,7 @@ export class SkraaFotoViewport extends HTMLElement {
       coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)
     }
     this.coord_world = coordinate
-    this.coord_image = world2image(this.item, coordinate[0], coordinate[1], coordinate[2])
+    this.coord_image = getImageXY(this.item, coordinate[0], coordinate[1], coordinate[2])
   }
 
   updateNonMap() {
@@ -319,41 +343,17 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  syncMap({zoom, center}) {
-    if (!this.map || !this.item) {
-      return
-    }
-    const view = this.map.getView()
-    if (!view) {
-      return
-    }
-    const image_zoom = this.toImageZoom(zoom)
-    const image_center = world2image(this.item, center[0], center[1], center[2])
-    if (this.sync) {
-      this.sync = false
-      view.animate({
-        zoom: image_zoom,
-        center: image_center,
-        duration: 0
-      }, () => {
-        setTimeout(() => {
-          this.sync = true
-        }, 50)
-      })
-    }
-  }
-
-  updateViewHandler(event) {
-    this.syncMap(event.detail)
-  }
-
   rendercompleteHandler() {
     // Removes loading animation elements
     setTimeout(() => {
       this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
-        spinner.remove();
-      });
-    }, 500);
+        spinner.remove()
+      })
+    }, 500)
+    // display out of bounds text if done loading
+    this.shadowRoot.querySelectorAll('.out-of-bounds').forEach(function(el) {
+      el.style.display = 'block'
+    })
   }
 
   toImageZoom(zoom) {
@@ -364,9 +364,12 @@ export class SkraaFotoViewport extends HTMLElement {
     return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
-  setViewConstraints(view) {
+  createView(view_config) {
+    delete view_config.extent
+    const view = new View(view_config)
     view.setMinZoom(configuration.MIN_ZOOM)
     view.setMaxZoom(configuration.MAX_ZOOM - configuration.OVERVIEW_ZOOM_DIFFERENCE)
+    return view
   }
 
 
@@ -377,7 +380,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: false}),
-      interactions: defaultInteractions({dragPan: false, pinchRotate: false}),
+      interactions: new Collection(),
       view: this.view
     })
 
@@ -385,36 +388,7 @@ export class SkraaFotoViewport extends HTMLElement {
       this.rendercompleteHandler()
     })
 
-    this.map.on('moveend', () => {
-      if (!this.sync) {
-        return
-      }
-      const view = this.map.getView()
-      const center = view.getCenter()
-      const world_zoom = this.toMapZoom(view.getZoom())
-      /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
-      * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
-      * vary. If there are big differences in elevation between the selected center and the zoom center this
-      * could lead to some big inaccuracies when calculating the zoom center.
-      */
-      if (!this.coord_world) {
-        return
-      }
-      const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
-      if (closeEnough({ zoom: world_zoom, center: world_center }, store.state.view)) {
-        return
-      }
-      getZ(world_center[0], world_center[1], configuration).then(z => {
-        world_center[2] = z
-        store.dispatch('updateView', {
-          center: world_center,
-          zoom: world_zoom
-        })
-      })
-    })
-
-    this.update_view_function = this.updateViewHandler.bind(this)
-
+    this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
 
     if (configuration.ENABLE_POINTER) {

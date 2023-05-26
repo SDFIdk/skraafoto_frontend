@@ -11,7 +11,7 @@ import View from 'ol/View'
 import { get as getProjection } from 'ol/proj'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
-import { epsg25832proj, getZ } from '@dataforsyningen/saul'
+import { epsg25832proj } from '@dataforsyningen/saul'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
@@ -19,8 +19,9 @@ import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
+import Collection from 'ol/Collection'
 import { configuration } from '../modules/configuration.js'
-import { closeEnough } from '../modules/sync-view'
+import { getViewSyncMapListener } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
@@ -37,7 +38,8 @@ export class SkraaFotoMap extends HTMLElement {
   parser = new WMTSCapabilities()
   map = null
   center
-  sync = true
+  sync = false
+  self_sync = true
   icon_layer
   update_pointer_function
   update_footprint_function
@@ -180,7 +182,8 @@ export class SkraaFotoMap extends HTMLElement {
         ],
         target: this.shadowRoot.querySelector('.geographic-map'),
         view: view,
-        controls: controls
+        controls: controls,
+        interactions: new Collection()
       })
 
       if (is_minimal === null) {
@@ -194,23 +197,8 @@ export class SkraaFotoMap extends HTMLElement {
         this.rendercompleteHandler()
       })
 
-      map.on('moveend', (e) => {
-        if (!this.sync) {
-          return
-        }
-        const view = this.map.getView()
-        if (closeEnough({ zoom: view.getZoom(), center: view.getCenter() }, store.state.view)) {
-          return
-        }
-        const center = view.getCenter()
-        getZ(center[0], center[1], configuration).then(z => {
-          center[2] = z
-          store.dispatch('updateView', {
-            center: center,
-            zoom: view.getZoom()
-          })
-        })
-      })
+      this.update_view_function = getViewSyncMapListener(this, map)
+      window.addEventListener('updateView', this.update_view_function)
 
       if (configuration.ENABLE_POINTER) {
         addPointerLayerToMap(map)
@@ -296,6 +284,7 @@ export class SkraaFotoMap extends HTMLElement {
 
     if (!this.map) {
       this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
+      this.updatePlugins()
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
@@ -312,34 +301,12 @@ export class SkraaFotoMap extends HTMLElement {
     }
   }
 
-  syncMap({zoom, center}) {
-    if (!this.map) {
-      return
-    }
-    const view = this.map.getView()
-    if (!view) {
-      return
-    }
-    if (this.sync) {
-      this.sync = false
-      this.map.getView().animate({
-        zoom: zoom,
-        center: center,
-        duration: 0
-      }, () => {
-        setTimeout(() => {
-          this.sync = true
-        }, 50)
-      })
-    }
+  updatePlugins() {
+
   }
 
   parcelsHandler() {
     this.drawParcels()
-  }
-
-  updateViewHandler(event) {
-    this.syncMap(event.detail)
   }
 
   // Lifecycle
@@ -349,9 +316,6 @@ export class SkraaFotoMap extends HTMLElement {
       this.parcels_function = this.parcelsHandler.bind(this)
       window.addEventListener('parcels', this.parcels_function)
     }
-
-    this.update_view_function = this.updateViewHandler.bind(this)
-    window.addEventListener('updateView', this.update_view_function)
   }
 
   disconnectedCallback() {

@@ -55,7 +55,7 @@ function createCameraStyle(orientation) {
     image: new Icon({
       opacity: 1,
       src: `img/icons/icon_${ orientation }_camera.svg`,
-      scale: 3
+      scale: 1
     })
   })
 }

@@ -54,7 +54,7 @@ function fetchParcels(ids) {
 
 function getPolygonElevations(coords, terrain) {
 
-  let promises = []
+  const promises = []
   coords.forEach(function(coor) {
     promises.push(getElevation(coor[0], coor[1], terrain))
   })

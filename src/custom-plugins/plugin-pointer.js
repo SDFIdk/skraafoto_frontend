@@ -7,7 +7,7 @@ import Point from 'ol/geom/Point'
 import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
-import { world2image, image2world } from '@dataforsyningen/saul'
+import { getImageXY, image2world } from '@dataforsyningen/saul'
 import store from '../store'
 
 /**
@@ -81,7 +81,7 @@ function getUpdateViewportPointerFunction(viewport) {
         return
       }
       const coord = event.detail.coord
-      const position = world2image(viewport.item, coord[0], coord[1], viewport.coord_world[2])
+      const position = getImageXY(viewport.item, coord[0], coord[1], viewport.coord_world[2])
       updatePointer(viewport.map, position)
     }
   }
