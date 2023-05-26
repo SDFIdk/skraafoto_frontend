@@ -27,7 +27,41 @@ let configuration = {
   MIN_ZOOM: 0, // the minimum zoom for skraafotos.
 
   SITEIMPROVE_SCRIPT: '',
-  DOWNLOAD_TYPE: 'default' // 'default' | 'currentview'
+  DOWNLOAD_TYPE: 'default', // 'default' | 'currentview'
+
+  // options for lighting to cycle through when clicking the light button
+  EXPOSURE_SETTINGS: [
+    {
+      exposure: 0,
+      brightness: 0,
+      contrast: 0,
+      saturation: 0
+    },
+    {
+      exposure: 0.4,
+      brightness: 0,
+      contrast: -0.4,
+      saturation: 0
+    },
+    {
+      exposure: 0.4,
+      brightness: 0,
+      contrast: 0,
+      saturation: 0
+    },
+    {
+      exposure: -0.6,
+      brightness: 0,
+      contrast: -0.4,
+      saturation: 0
+    },
+    {
+      exposure: -0.6,
+      brightness: 0,
+      contrast: -0.2,
+      saturation: 0
+    }
+  ]
 }
 
 // We assume a global variable `config` has been declared
