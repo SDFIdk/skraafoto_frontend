@@ -22,6 +22,7 @@ const config = {
   ENABLE_PARCEL: false,
   ENABLE_POINTER: false,
   ENABLE_FOOTPRINT: false,
+  ENABLE_EXPOSURE: false,
 
   DOWNLOAD_TYPE: 'default'
 }
