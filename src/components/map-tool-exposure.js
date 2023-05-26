@@ -1,4 +1,5 @@
 import WebGLTileLayer from 'ol/layer/WebGLTile'
+import { configuration } from '../modules/configuration'
 
 /**
  * Web component that enables user to change the exposure and brightness of the current image.
@@ -8,10 +9,9 @@ export class SkraaFotoExposureTool extends HTMLElement {
   // properties
   button_element
   viewport
-  variables = {
-    exposure: 0,
-    brightness: 0
-  }
+  exposure_index = 0
+  variables = {}
+
 
   // setters
   set setContextTarget(viewport) {
@@ -21,6 +21,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
 
   constructor() {
     super()
+    this.copySettingsToVariables(configuration.EXPOSURE_SETTINGS[this.exposure_index])
   }
 
   // Methods
@@ -32,16 +33,25 @@ export class SkraaFotoExposureTool extends HTMLElement {
     this.button_element.title = 'Ændr lysstyrke'
     this.append(this.button_element)
   }
+
+  copySettingsToVariables(settings) {
+    this.variables.exposure = settings.exposure
+    this.variables.brightness = settings.brightness
+    this.variables.contrast = settings.contrast
+    this.variables.saturation = settings.saturation
+  }
   
   /**
    * Cycles the exposure
    */
   cycleExposure() {
-    this.variables.brightness += 0.25
-    if (this.variables.brightness > 0.75) {
-      this.variables.brightness = -0.75
+    this.exposure_index += 1
+    if (this.exposure_index >= configuration.EXPOSURE_SETTINGS.length) {
+      this.exposure_index = 0
     }
-    this.variables.exposure = -0.5 * this.variables.brightness
+    const new_vars = configuration.EXPOSURE_SETTINGS[this.exposure_index]
+    this.copySettingsToVariables(configuration.EXPOSURE_SETTINGS[this.exposure_index])
+    console.log(this.variables)
     this.viewport.map.render()
     this.button_element.blur()
   }
@@ -55,6 +65,8 @@ export class SkraaFotoExposureTool extends HTMLElement {
       layer.setStyle({
         exposure: ['var', 'exposure'],
         brightness: ['var', 'brightness'],
+        contrast: ['var', 'contrast'],
+        saturation: ['var', 'saturation'],
         variables: this.variables
       })
     }
