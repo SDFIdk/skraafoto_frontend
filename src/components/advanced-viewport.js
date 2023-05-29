@@ -11,12 +11,10 @@ import View from 'ol/View.js'
 import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
-import {SkraaFotoCompassArrows} from "./compass-arrows";
 
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
-customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
 
 /**
  * Web component that displays a viewport with a toolbar
@@ -108,7 +106,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       transform: rotate(90deg);
     }
     
-    .compass-arrows {
+    .sf-compass-arrows {
     display: absolute;
     padding:10rem;
     }
@@ -150,9 +148,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <button class="btn-height-measure ds-icon-map-icon-ruler" title="Mål højde"></button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
-      </div>
-      <div>
-      <skraafoto-compass-arrows></skraafoto-compass-arrows>
       </div>
     </nav>
   `

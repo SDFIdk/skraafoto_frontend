@@ -47,11 +47,9 @@
       }
 
       skraafoto-compass-arrows {
-        position: relative;
+        position: absolute;
         top: 15rem;
         right: 1rem;
-        z-index 1;
-        padding: 20rem;
       }
 
       @media screen and (max-width: 40rem) {
@@ -85,11 +83,12 @@
 
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
       <skraafoto-advanced-viewport id="viewport-1">
-        <skraafoto-compass-arrows></skraafoto-compass-arrows>
+        <skraafoto-compass-arrows id="viewport-1-arrows"></skraafoto-compass-arrows>
       </skraafoto-advanced-viewport>
 
+
       <skraafoto-advanced-viewport id="viewport-2">
-        <skraafoto-compass-arrows></skraafoto-compass-arrows>
+        <skraafoto-compass-arrows id="viewport-2-arrows"></skraafoto-compass-arrows>
       </skraafoto-advanced-viewport>
 
       <skraafoto-view-switcher></skraafoto-view-switcher>

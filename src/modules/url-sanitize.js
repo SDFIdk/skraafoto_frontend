@@ -142,7 +142,7 @@ function removeUnusedCoordParams(params) {
   params.delete('y')
   params.delete('n')
   params.delete('e')
-  params delete('year')
+  params.delete('year')
 }
 
 function removeUnusedParams(params) {

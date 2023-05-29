@@ -14,6 +14,8 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     .sf-compass-arrows {
       display: flex;
       flex-flow: column nowrap;
+      cursor: pointer;
+}
     }
     .svg-icon-compass-arrows {
       display: block;
@@ -46,10 +48,16 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     }
     .left-button {
       background-color: #339f378c;
+      visibility: hidden;
+      content-visibility: hidden;
+      cursor: pointer
     }
 
     .right-button {
       background-color: #ff0000a8;
+      visibility: hidden;
+      content-visibility: hidden;
+      cursor: pointer
     }
     `
 

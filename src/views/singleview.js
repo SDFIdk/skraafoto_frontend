@@ -159,6 +159,18 @@ document.addEventListener('keyup', function(event) {
   }
 })
 
+// Set up shortkeys
+const leftButton = document.querySelector('.left-button');
+const rightButton = document.querySelector('.right-button');
+
+document.addEventListener('click', function () {
+  shiftItem('left');
+});
+
+document.addEventListener('click', function () {
+  shiftItem('right');
+});
+
 // Set up shortkeys for date-selector
 const dateSelector_element = viewport_element_1.shadowRoot.querySelector('skraafoto-date-selector');
 document.addEventListener('keydown', function(event) {
