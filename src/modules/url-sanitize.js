@@ -7,15 +7,20 @@ import { createTranslator } from '@dataforsyningen/saul'
 
 /** Adds or modifies URL searchparams according to various edge cases */
 async function sanitizeParams(searchparams) {
-  
+
   let params = searchparams
   let collections = []
 
   // Remove params from skat that are never used
   removeUnusedParams(params)
 
-  // Just return when we have center, orientation, and item
-  if (params.get('center') && params.get('orientation') && params.get('item')) {
+  // Just return when we have center, orientation, item, and year
+  if (
+    params.get('center') &&
+    params.get('orientation') &&
+    params.get('item') &&
+    params.get('year')
+  ) {
     return params
   }
 
@@ -31,20 +36,52 @@ async function sanitizeParams(searchparams) {
     return params
   }
 
-  // If only center is given, add direction and find a matching recent item
+
+// If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {
-      params.set('orientation', 'north')
+      params.set('orientation', 'north');
     }
-    const center = params.get('center').split(',').map(function(c) { return Number(c) })
-    collections = await getCollections()
-    const response = await queryItems(center, params.get('orientation'), collections[0].id)
-    if (response.features[0]) {
-      params.set('item', response.features[0].id)
+    const center = params
+      .get('center')
+      .split(',')
+      .map(function(c) {
+        return Number(c);
+      });
+    collections = await getCollections();
+
+    const desiredYearParam = params.get('year');
+    const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0;
+    // Assign a default value of 0 if desiredYearParam is null
+
+    const matchingCollection = collections.find(function(collection) {
+      // Extract the year parameter from the collection's ID
+      const yearPart = extractYearFromCollectionID(collection.id);
+
+      // Convert the year part to a number for comparison
+      const year = Number(yearPart);
+
+      // Check if the year meets your conditions (modify as per your requirements)
+      return year === desiredYear;
+    });
+
+    if (matchingCollection) {
+      const response = await queryItems(center, params.get('orientation'), matchingCollection.id);
+      if (response.features[0]) {
+        params.set('item', response.features[0].id);
+      } else {
+        alert('Der var ingen billeder for det valgte koordinat.');
+      }
     } else {
-      alert('Der var ingen billeder for det valgte koordinat.')
+      alert('No matching collection found.');
     }
-    return params
+    return params;
+  }
+
+  function extractYearFromCollectionID(collectionID) {
+    // Extract the year from the collection ID
+    const yearPart = collectionID.substring(collectionID.length - 4);
+    return yearPart;
   }
 
   // If we only have item
@@ -71,7 +108,7 @@ async function sanitizeParams(searchparams) {
     return params
   }
 
-  // Default 
+  // Default
   params.set('orientation', 'north')
   params.set('center', [574764,6220953])
   params.set('item', '2021_82_24_2_0021_00002029_10cm')
@@ -90,7 +127,7 @@ function convertCoords(coords) {
 
 /** Converts lat/lon or x/y coordinates used in URL to `center` parameter */
 function sanitizeCoords(url) {
-  
+
   let params = url.searchParams
   let x, y
 
@@ -99,7 +136,7 @@ function sanitizeCoords(url) {
     removeUnusedCoordParams(url.searchParams)
     return params
   }
-  
+
   // Get param values
   const p_lat = params.get('lat')
   const p_lon = params.get('lon')
