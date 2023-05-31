@@ -45,7 +45,7 @@ async function sanitizeParams(searchparams) {
     const center = params
       .get('center')
       .split(',')
-      .map(function(c) {
+      .map(function (c) {
         return Number(c);
       });
     collections = await getCollections();
@@ -54,16 +54,32 @@ async function sanitizeParams(searchparams) {
     const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0;
     // Assign a default value of 0 if desiredYearParam is null
 
-    const matchingCollection = collections.find(function(collection) {
-      // Extract the year parameter from the collection's ID
-      const yearPart = extractYearFromCollectionID(collection.id);
+    let matchingCollection;
+    if (desiredYear) {
+      matchingCollection = collections.find(function (collection) {
+        // Extract the year parameter from the collection's ID
+        const yearPart = extractYearFromCollectionID(collection.id);
+        // Convert the year part to a number for comparison
+        const year = Number(yearPart);
 
-      // Convert the year part to a number for comparison
-      const year = Number(yearPart);
+        // Check if the year meets your conditions (modify as per your requirements)
+        return year === desiredYear;
+      });
+    }
 
-      // Check if the year meets your conditions (modify as per your requirements)
-      return year === desiredYear;
-    });
+    if (!matchingCollection) {
+      // If no matching collection is found, find the most recent year
+      let maxYear = 0;
+      collections.forEach(function (collection) {
+        const yearPart = extractYearFromCollectionID(collection.id);
+        const year = Number(yearPart);
+        if (year > maxYear) {
+          maxYear = year;
+          matchingCollection = collection;
+        }
+      });
+      alert('Ingen match fundet, viser seneste år: ' + maxYear);
+    }
 
     if (matchingCollection) {
       const response = await queryItems(center, params.get('orientation'), matchingCollection.id);
@@ -74,6 +90,7 @@ async function sanitizeParams(searchparams) {
       }
     } else {
       alert('No matching collection found.');
+      return;
     }
     return params;
   }
