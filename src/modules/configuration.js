@@ -41,19 +41,19 @@ let configuration = {
     {
       exposure: 0.4,
       brightness: 0,
-      contrast: -0.4,
-      saturation: 0
-    },
-    {
-      exposure: 0.4,
-      brightness: 0,
       contrast: 0,
       saturation: 0
     },
     {
-      exposure: -0.6,
-      brightness: 0,
-      contrast: -0.4,
+      exposure: 0,
+      brightness: 0.2,
+      contrast: 0.2,
+      saturation: 0
+    },
+    {
+      exposure: 0,
+      brightness: 0.4,
+      contrast: 0.4,
       saturation: 0
     },
     {
