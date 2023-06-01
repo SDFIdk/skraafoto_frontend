@@ -71,6 +71,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       padding: 0.66rem 1.75rem;
       font-size: 0.95em;
     }
+    skraafoto-address-search {
+      height: 3rem;
+      margin: 0 1rem 0 auto;
+    }
 
     @media screen and (max-width: 50rem) {
 
@@ -125,7 +129,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       .sf-search-collapsible .sf-input-container {
         width: 35rem;
       }
-
     }
   `
   template = `
@@ -140,7 +143,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   `
 
   // getters
-  static get observedAttributes() { 
+  static get observedAttributes() {
     return [
       'collapsible'
     ]
@@ -182,7 +185,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       this.input_element.addEventListener('gsearch:select', () => {
         this.input_container.classList.remove('open')
       })
-  
+
       this.input_element.addEventListener('blur', () => {
         this.input_container.classList.remove('open')
       })

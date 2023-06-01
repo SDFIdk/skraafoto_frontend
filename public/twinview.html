@@ -23,12 +23,6 @@
         flex: 1 1 auto;
       }
 
-      skraafoto-address-search {
-        position: absolute;
-        top: 0.6rem;
-        right: 5rem;
-      }
-
       #viewport-1,
       #viewport-2 {
         position: relative;
@@ -40,21 +34,15 @@
         border-color: var(--highlight);
       }
 
-      skraafoto-view-switcher {
-        position: absolute;
-        top: 15rem;
-        right: 1rem;
-      }
-
       @media screen and (max-width: 40rem) {
-        
+
         .ds-logo-micro > span {
           display: none;
         }
       }
 
       @media screen and (min-width: 80rem) {
-        
+
         body > main {
           display: flex;
           flex-flow: row nowrap;
@@ -75,10 +63,8 @@
 
     <main id="maincontent">
 
-      <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
       <skraafoto-advanced-viewport id="viewport-1"></skraafoto-advanced-viewport>
       <skraafoto-advanced-viewport id="viewport-2"></skraafoto-advanced-viewport>
-      <skraafoto-view-switcher></skraafoto-view-switcher>
 
     </main>
 
