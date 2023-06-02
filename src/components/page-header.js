@@ -55,6 +55,10 @@ export class SkraaFotoHeader extends HTMLElement {
       margin-left: 1rem;
     }
     
+    ds-logo-micro {
+        margin-right: 2rem;
+    }
+    
     skraafoto-view-switcher {
       margin-right: 1rem;
     }

@@ -72,7 +72,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       font-size: 0.95em;
     }
     skraafoto-address-search {
-      height: 3rem;
       margin: 0 1rem 0 auto;
     }
 
@@ -84,20 +83,23 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
       .sf-search-collapsible .sf-input-container {
         height: auto;
-        width: calc(100vw - 4.25rem);
+        width: calc(90vw - 4.25rem);
         max-width: 30rem;
-        background-color: var(--background-color);
+        background: linear-gradient(to left, var(--background-color) 90%, transparent);
         position: fixed;
-        top: 1.15rem;
-        right: 1rem;
+        top: 0rem;
+        right: 0rem;
         z-index: 1000;
-        transition: transform .2s;
+        transition: transform .5s;
         transform: translate(100vw,0);
         margin: 0;
+        padding: 1.5rem 2rem;
       }
 
       .sf-search-collapsible .open {
         transform: translate(0,0) !important;
+        margin: 0rem;
+        padding: 1.5rem 2rem;
       }
 
       .sf-search-collapsible input.sf-search-input + div {
@@ -111,23 +113,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
       .sf-search-collapsible .sf-input-container {
         width: 25rem;
-      }
-
-    }
-
-    @media screen and (min-width: 50.1rem) { 
-      
-      .sf-search-collapsible .sf-input-container {
-        position: relative;
-        top: 0.4rem;
-      }
-
-    }
-
-    @media screen and (min-width: 60rem) {
-
-      .sf-search-collapsible .sf-input-container {
-        width: 35rem;
       }
     }
   `
@@ -189,6 +174,15 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       this.input_element.addEventListener('blur', () => {
         this.input_container.classList.remove('open')
       })
+
+      // Event listener to hide input_container when clicked outside
+      const outsideClickListener = (event) => {
+        if (!this.input_container.contains(event.target) && !this.btn_open.contains(event.target)) {
+          this.input_container.classList.remove('open');
+        }
+      }
+      // Attach the event listener to the document body
+      document.body.addEventListener('click', outsideClickListener);
     }
   }
 
