@@ -33,6 +33,12 @@
         display: none;
       }
 
+      skraafoto-address-search {
+        position: absolute;
+        top: 0.75rem;
+        right: 5rem;
+      }
+
       skraafoto-direction-picker {
         display: block;
         height: 0;
@@ -78,6 +84,10 @@
           flex: 0 0 40rem;
         }
 
+        skraafoto-view-switcher {
+          right: 41rem;
+        }
+
       }
     </style>
   </head>
@@ -94,6 +104,7 @@
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
       <skraafoto-advanced-viewport id="viewport-main"></skraafoto-advanced-viewport>
       <skraafoto-advanced-map id="map-main" hidden></skraafoto-advanced-map>
+      <skraafoto-map id="map-main" hidden></skraafoto-map>
       <skraafoto-direction-picker></skraafoto-direction-picker>
       <skraafoto-view-switcher></skraafoto-view-switcher>
       <skraafoto-compass-arrows></skraafoto-compass-arrows>

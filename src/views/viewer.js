@@ -77,6 +77,9 @@ function updateViews() {
 }
 
 async function setupConfigurables(conf) {
+  if (conf.ENABLE_VIEW_SWITCH) {
+    customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
+  }
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
   }
