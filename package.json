@@ -4,7 +4,7 @@
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
-    "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js && node esbuild.js",
+    "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js || : && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
     "docs": "jsdoc --configure docs/jsdoc-conf.js && cp -r docs/images docs/api/",
     "test": "npx playwright test",
@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
-    "@dataforsyningen/css": "^1.7.0",
-    "@dataforsyningen/gsearch-ui": "^1.0.0",
-    "@dataforsyningen/icons": "^0.5.0",
-    "@dataforsyningen/saul": "^3.0.2",
+    "@dataforsyningen/css": "^3.6.0",
+    "@dataforsyningen/gsearch-ui": "^1.1.0",
+    "@dataforsyningen/icons": "^0.6.0",
+    "@dataforsyningen/saul": "^3.3.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "ol": "^7.3.0",
