@@ -39,27 +39,21 @@ let configuration = {
       saturation: 0
     },
     {
-      exposure: 0.4,
+      exposure: 0,
       brightness: 0,
-      contrast: -0.4,
-      saturation: 0
+      contrast: 0.4,
+      saturation: -0.2   
     },
     {
-      exposure: 0.4,
+      exposure: 0.9,
       brightness: 0,
       contrast: 0,
       saturation: 0
     },
     {
-      exposure: -0.6,
-      brightness: 0,
-      contrast: -0.4,
-      saturation: 0
-    },
-    {
-      exposure: -0.6,
-      brightness: 0,
-      contrast: -0.2,
+      exposure: 0.9,
+      brightness: 0.2,
+      contrast: 0.0,
       saturation: 0
     }
   ]
