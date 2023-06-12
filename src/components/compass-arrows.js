@@ -188,5 +188,41 @@ export class SkraaFotoCompassArrows extends HTMLElement {
   }
 }
 
+let collection = null
+
+export async function shiftItem(direction) {
+  const orientation = getParam('orientation');
+  const orientations = {
+    north: { right: 'east', left: 'west' },
+    west: { right: 'north', left: 'south' },
+    south: { right: 'west', left: 'east' },
+    east: { right: 'south', left: 'north' }
+  }
+  const new_orientation = orientations[orientation][direction] || 'north'
+
+  const year = getParam('item').substring(0,4)
+  const collection = `skraafotos${year}`
+  queryItems(getParam('center'), new_orientation, collection).then((response) => {
+    if (response.features.length > 0) {
+      setParams({ orientation: new_orientation, item: response.features[0].id })
+    } else {
+      console.error(`No image found facing ${ new_orientation }`)
+    }
+  })
+
+  const year2 = getParam('item2').substring(0,4)
+  const collection2 = `skraafotos${year2}`
+  queryItems(getParam('center'), new_orientation, collection2).then((response) => {
+    if (response.features.length > 0) {
+      setParams({ orientation: new_orientation, item2: response.features[0].id })
+    } else {
+      console.error(`No image found facing ${ new_orientation }`)
+    }
+  })
+}
+
+
+
+
 // This is how to initialize the custom element
 // customElements.define('skraafoto-compass', SkraaFotoCompass)

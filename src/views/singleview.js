@@ -8,6 +8,7 @@ import {getParam, setParams} from "../modules/url-state";
 import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
+import { shiftItem } from "../components/compass-arrows";
 
 // Initialize web components
 registerComponents()
@@ -46,25 +47,6 @@ function updateViews() {
       store.dispatch('updateParcels', parcels)
     })
   }
-}
-
-async function shiftItem(direction) {
-  const orientation = getParam('orientation');
-  const orientations = {
-    north: { right: 'east', left: 'west' },
-    west: { right: 'north', left: 'south' },
-    south: { right: 'west', left: 'east' },
-    east: { right: 'south', left: 'north' }
-  }
-  const new_orientation = orientations[orientation][direction] || 'north'
-
-  queryItems(getParam('center'), new_orientation, collection).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
 }
 
 function setupConfigurables(conf) {
@@ -121,30 +103,16 @@ document.addEventListener('loaderror', function(event) {
   alert('Der var et problem med at hente data fra serveren')
 })
 
-// Set up shortkeys
-document.addEventListener('keyup', function(event) {
-  switch(event.key) {
-    case 'ArrowLeft':
-      shiftItem('left')
-      break
-    case 'ArrowRight':
-      shiftItem('right')
-      break
-    default:
-      // Nothing
-  }
-})
-
 
 // Set up compass buttons
-const compassSelector_element = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
-const leftButton_compass = compassSelector_element.shadowRoot.querySelector('.button-left')
-const rightButton_compass = compassSelector_element.shadowRoot.querySelector('.button-right')
+const compassSelector_element1 = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
+const leftButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-left')
+const rightButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-right')
 
-leftButton_compass.addEventListener('click', function(event) {
+leftButton_compass1.addEventListener('click', function(event) {
   shiftItem('left');
 });
-rightButton_compass.addEventListener('click', function(event) {
+rightButton_compass1.addEventListener('click', function(event) {
   shiftItem('right');
 });
 

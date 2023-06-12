@@ -4,8 +4,9 @@ import { configuration } from '../modules/configuration.js'
 import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import {getParam, setParams} from "../modules/url-state";
-import {fetchParcels} from "../custom-plugins/plugin-parcel";
+import {getParam, setParams } from "../modules/url-state";
+import {fetchParcels } from "../custom-plugins/plugin-parcel";
+import { shiftItem } from "../components/compass-arrows";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
 
@@ -61,37 +62,6 @@ function updateViews() {
   }
 }
 
-async function shiftItem(direction) {
-  const orientation = getParam('orientation');
-  const orientations = {
-    north: { right: 'east', left: 'west' },
-    west: { right: 'north', left: 'south' },
-    south: { right: 'west', left: 'east' },
-    east: { right: 'south', left: 'north' }
-  }
-  const new_orientation = orientations[orientation][direction] || 'north'
-
-  const year = getParam('item').substring(0,4)
-  const collection = `skraafotos${year}`
-  queryItems(getParam('center'), new_orientation, collection).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
-
-  const year2 = getParam('item2').substring(0,4)
-  const collection2 = `skraafotos${year2}`
-  queryItems(getParam('center'), new_orientation, collection2).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item2: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
-}
-
 function setupConfigurables(conf) {
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
@@ -138,16 +108,27 @@ document.addEventListener('loaderror', function(event) {
 })
 
 
-// Set up compass buttons
+// Set up compass buttons for viewport_element_1
 const compassSelector_element1 = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
-const compassSelector_element2 = viewport_element_2.shadowRoot.querySelector('skraafoto-compass-arrows')
-const leftButton_compass = compassSelector_element1.shadowRoot.querySelector('.button-left') || compassSelector_element2.shadowRoot.querySelector('.button-left')
-const rightButton_compass = compassSelector_element1.shadowRoot.querySelector('.button-right') || compassSelector_element2.shadowRoot.querySelector('.button-right')
+const leftButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-left')
+const rightButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-right')
 
-leftButton_compass.addEventListener('click', function(event) {
+leftButton_compass1.addEventListener('click', function(event) {
   shiftItem('left');
 });
-rightButton_compass.addEventListener('click', function(event) {
+rightButton_compass1.addEventListener('click', function(event) {
+  shiftItem('right');
+});
+
+// Set up compass buttons for viewport_element_2
+const compassSelector_element2 = viewport_element_2.shadowRoot.querySelector('skraafoto-compass-arrows')
+const leftButton_compass2 = compassSelector_element2.shadowRoot.querySelector('.button-left')
+const rightButton_compass2 = compassSelector_element2.shadowRoot.querySelector('.button-right')
+
+leftButton_compass2.addEventListener('click', function(event) {
+  shiftItem('left');
+});
+rightButton_compass2.addEventListener('click', function(event) {
   shiftItem('right');
 });
 
