@@ -70,8 +70,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ds-nav-tools {
       position: absolute;
       z-index: 2;
-      top: 1.5rem;
-      left: 1rem;
+      top: .5rem;
+      left: .5rem;
     }
     .ds-button-group {
       min-width: 10rem;

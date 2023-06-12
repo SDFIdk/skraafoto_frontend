@@ -20,12 +20,11 @@ import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import store from '../store'
-
 /**
  *  Web component that displays an image using the OpenLayers library
  */
 
-export class SkraaFotoViewport extends HTMLElement {
+export class SkraaFotoViewportMini extends HTMLElement {
 
   // properties
   item
@@ -70,10 +69,10 @@ export class SkraaFotoViewport extends HTMLElement {
       position: relative;
       background-color: var(--background-color);
     }
-    skraafoto-compass-arrows {
+    skraafoto-compass {
       position: absolute;
       top: 1.5rem;
-      right: 3rem;
+      right: 1rem;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
     }
     .image-date {
@@ -114,10 +113,9 @@ export class SkraaFotoViewport extends HTMLElement {
 
     @media screen and (max-width: 35rem) {
 
-      skraafoto-compass-arrows {
-        top: auto;
-        right: 3rem;
-        bottom: 3rem;
+      skraafoto-compass {
+        top: 0.5rem;
+        right: 0.5rem;
       }
 
       .image-date {
@@ -139,7 +137,7 @@ export class SkraaFotoViewport extends HTMLElement {
         </p>
       </div>
     </div>
-    <skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>
+    <skraafoto-compass direction="north"></skraafoto-compass>
     <p id="image-date" class="image-date"></p>
   `
 
@@ -176,7 +174,8 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
-    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
+
+    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
     }

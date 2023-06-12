@@ -1,12 +1,14 @@
 import { queryItems } from '../modules/api.js'
 import { setParams } from '../modules/url-state.js'
+import {SkraaFotoCompass} from "./compass";
 
+customElements.define('skraafoto-compass', SkraaFotoCompass)
 /**
  * Web component that displays and updates a list of viewports with views from various directions
  */
 export class SkraaFotoDirectionPicker extends HTMLElement {
 
-  
+
   // Properties
 
   slider_element
@@ -105,7 +107,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
 
     skraafoto-map,
-    skraafoto-viewport {
+    skraafoto-viewport, skraafoto-viewport-mini {
       height: 100%;
       width: 100%;
       display: block;
@@ -114,8 +116,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     @media screen and (max-width: 35rem) {
     
       .sf-slider-close {
-        top: 0.5rem;
-        right: 0.5rem;
+        right: 1rem;
+        bottom: 1rem;
+        top: auto !important;
       }      
 
     }
@@ -155,19 +158,19 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
         </button>
         <button class="sf-direction-picker-btn sf-btn-nadir">
-          <skraafoto-viewport id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport>
+          <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport-multi>
         </button>
         <button class="sf-direction-picker-btn sf-btn-north">
-          <skraafoto-viewport id="viewport-north" class="viewport-pick-option"></skraafoto-viewport>
+          <skraafoto-viewport-mini id="viewport-north" class="viewport-pick-option"></skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-east">
-          <skraafoto-viewport id="viewport-east" class="viewport-pick-option"></skraafoto-viewport>
+          <skraafoto-viewport-mini id="viewport-east" class="viewport-pick-option"></skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-south">
-          <skraafoto-viewport id="viewport-south" class="viewport-pick-option"></skraafoto-viewport>
+          <skraafoto-viewport-mini id="viewport-south" class="viewport-pick-option"></skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-west">
-          <skraafoto-viewport id="viewport-west" class="viewport-pick-option"></skraafoto-viewport>
+          <skraafoto-viewport-mini id="viewport-west" class="viewport-pick-option"></skraafoto-viewport-mini>
         </button>
       </div>
     </section>
@@ -177,7 +180,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   // setters
 
   set setView(options) {
-    
+
     // Update mini viewports
     let queries = [
       queryItems(options.center, 'north', options.collection),
@@ -258,7 +261,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
     })
-    
+
     this[`${ url_params_orientation }_element`].parentNode.classList.add('active')
   }
 

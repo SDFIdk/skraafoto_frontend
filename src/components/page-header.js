@@ -63,6 +63,10 @@ export class SkraaFotoHeader extends HTMLElement {
       margin-right: 1rem;
     }
     
+    .ds-logo-micro .span {
+      text-wrap: balance;
+    }
+    
     @media screen and (max-width: 576px) {
       .sf-header {
         --padding: 1.5rem 3rem 2rem;

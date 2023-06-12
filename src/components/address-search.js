@@ -83,9 +83,9 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
       .sf-search-collapsible .sf-input-container {
         height: auto;
-        width: calc(90vw - 4.25rem);
+        width: calc(100vw - 1.25rem);
         max-width: 30rem;
-        background: linear-gradient(to left, var(--background-color) 90%, transparent);
+        background: linear-gradient(to left, var(--background-color) 93%, transparent 95%);
         position: fixed;
         top: 0rem;
         right: 0rem;

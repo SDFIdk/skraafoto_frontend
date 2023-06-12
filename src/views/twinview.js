@@ -62,33 +62,14 @@ function updateViews() {
 }
 
 async function shiftItem(direction) {
-  const orientation = getParam('orientation')
-  let new_orientation = 'north'
-  if (orientation === 'north') {
-    if (direction === 'right') {
-      new_orientation = 'west'
-    } else {
-      new_orientation = 'east'
-    }
-  } else if (orientation === 'west') {
-    if (direction === 'right') {
-      new_orientation = 'south'
-    } else {
-      new_orientation = 'north'
-    }
-  } else if (orientation === 'south') {
-    if (direction === 'right') {
-      new_orientation = 'east'
-    } else {
-      new_orientation = 'west'
-    }
-  } else if (orientation === 'east') {
-    if (direction === 'right') {
-      new_orientation = 'north'
-    } else {
-      new_orientation = 'south'
-    }
+  const orientation = getParam('orientation');
+  const orientations = {
+    north: { right: 'east', left: 'west' },
+    west: { right: 'north', left: 'south' },
+    south: { right: 'west', left: 'east' },
+    east: { right: 'south', left: 'north' }
   }
+  const new_orientation = orientations[orientation][direction] || 'north'
 
   const year = getParam('item').substring(0,4)
   const collection = `skraafotos${year}`
@@ -155,6 +136,20 @@ document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
   alert('Der var et problem med at hente data fra serveren')
 })
+
+
+// Set up compass buttons
+const compassSelector_element1 = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
+const compassSelector_element2 = viewport_element_2.shadowRoot.querySelector('skraafoto-compass-arrows')
+const leftButton_compass = compassSelector_element1.shadowRoot.querySelector('.button-left') || compassSelector_element2.shadowRoot.querySelector('.button-left')
+const rightButton_compass = compassSelector_element1.shadowRoot.querySelector('.button-right') || compassSelector_element2.shadowRoot.querySelector('.button-right')
+
+leftButton_compass.addEventListener('click', function(event) {
+  shiftItem('left');
+});
+rightButton_compass.addEventListener('click', function(event) {
+  shiftItem('right');
+});
 
 // Set up shortkeys
 document.addEventListener('keyup', function(event) {

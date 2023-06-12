@@ -8,11 +8,9 @@ import {getParam, setParams} from "../modules/url-state";
 import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
-import {SkraaFotoCompassArrows} from "../components/compass-arrows";
 
 // Initialize web components
 registerComponents()
-customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
 
 
 // Variables
@@ -51,33 +49,14 @@ function updateViews() {
 }
 
 async function shiftItem(direction) {
-  const orientation = getParam('orientation')
-  let new_orientation = 'north'
-  if (orientation === 'north') {
-    if (direction === 'right') {
-      new_orientation = 'west'
-    } else {
-      new_orientation = 'east'
-    }
-  } else if (orientation === 'west') {
-    if (direction === 'right') {
-      new_orientation = 'south'
-    } else {
-      new_orientation = 'north'
-    }
-  } else if (orientation === 'south') {
-    if (direction === 'right') {
-      new_orientation = 'east'
-    } else {
-      new_orientation = 'west'
-    }
-  } else if (orientation === 'east') {
-    if (direction === 'right') {
-      new_orientation = 'north'
-    } else {
-      new_orientation = 'south'
-    }
+  const orientation = getParam('orientation');
+  const orientations = {
+    north: { right: 'east', left: 'west' },
+    west: { right: 'north', left: 'south' },
+    south: { right: 'west', left: 'east' },
+    east: { right: 'south', left: 'north' }
   }
+  const new_orientation = orientations[orientation][direction] || 'north'
 
   queryItems(getParam('center'), new_orientation, collection).then((response) => {
     if (response.features.length > 0) {
@@ -156,15 +135,16 @@ document.addEventListener('keyup', function(event) {
   }
 })
 
-// Set up shortkeys
-const leftButton = document.querySelector('.left-button');
-const rightButton = document.querySelector('.right-button');
 
-document.addEventListener('click', function () {
+// Set up compass buttons
+const compassSelector_element = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
+const leftButton_compass = compassSelector_element.shadowRoot.querySelector('.button-left')
+const rightButton_compass = compassSelector_element.shadowRoot.querySelector('.button-right')
+
+leftButton_compass.addEventListener('click', function(event) {
   shiftItem('left');
 });
-
-document.addEventListener('click', function () {
+rightButton_compass.addEventListener('click', function(event) {
   shiftItem('right');
 });
 
