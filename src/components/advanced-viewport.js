@@ -251,6 +251,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       this.map.addInteraction(interaction)
     })
 
+    // Add controls
+    this.map.addControl(this.fullscreen)
+
     addViewSyncViewportTrigger(this)
     window.removeEventListener('updateView', this.update_view_function)
     this.update_view_function = getViewSyncViewportListener(this, false)
