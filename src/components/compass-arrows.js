@@ -151,6 +151,18 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     this.button_right = this.markup.querySelector('.button-right')
   }
 
+  connectedCallback() {
+    // Set up compass buttons for viewport_element_2
+    console.log(document.querySelector('skraafoto-compass-arrows'))
+
+
+    this.button_left.addEventListener('click', function(event) {
+      shiftItem('left');
+    });
+    this.button_right.addEventListener('click', function(event) {
+      shiftItem('right');
+    });
+  }
 
   // Lifecycle
 
@@ -210,16 +222,43 @@ export async function shiftItem(direction) {
     }
   })
 
-  const year2 = getParam('item2').substring(0,4)
-  const collection2 = `skraafotos${year2}`
-  queryItems(getParam('center'), new_orientation, collection2).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item2: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
+  if (getParam('item2')) {
+    const year2 = getParam('item2').substring(0,4)
+    const collection2 = `skraafotos${year2}`
+    queryItems(getParam('center'), new_orientation, collection2).then((response) => {
+      if (response.features.length > 0) {
+        setParams({ orientation: new_orientation, item2: response.features[0].id })
+      } else {
+        console.error(`No image found facing ${ new_orientation }`)
+      }
+    })
+  }
 }
+
+
+
+
+
+
+
+
+
+
+function handleKeyUp(event) {
+  switch(event.key) {
+    case 'ArrowLeft':
+      shiftItem('left');
+      break;
+    case 'ArrowRight':
+      shiftItem('right');
+      break;
+    default:
+    // Nothing
+  }
+}
+
+// Set up the event listener
+document.addEventListener('keyup', handleKeyUp);
 
 
 
