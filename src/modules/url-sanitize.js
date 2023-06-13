@@ -5,6 +5,16 @@
 import { queryItem, queryItems, getCollections } from './api.js'
 import { createTranslator } from '@dataforsyningen/saul'
 
+async function getLatestImages(center, orientation, collection, collections) {
+  const response = await queryItems(center, orientation, collection)
+  if (response.features.length < 1) {
+    const collectionIndex = collections.findIndex(function(c) { return c.id === collection})
+    return getLatestImages(center, orientation, collections[collectionIndex + 1].id, collections)
+  } else {
+    return response
+  } 
+}
+
 /** Adds or modifies URL searchparams according to various edge cases */
 async function sanitizeParams(searchparams) {
 
@@ -47,8 +57,8 @@ async function sanitizeParams(searchparams) {
       .split(',')
       .map(function (c) {
         return Number(c);
-      });
-    collections = await getCollections();
+      })
+    collections = await getCollections()
 
     const desiredYearParam = params.get('year');
     const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0;
@@ -78,11 +88,10 @@ async function sanitizeParams(searchparams) {
           matchingCollection = collection;
         }
       });
-      alert('Ingen match fundet, viser seneste år: ' + maxYear);
     }
 
     if (matchingCollection) {
-      const response = await queryItems(center, params.get('orientation'), matchingCollection.id);
+      const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections)
       if (response.features[0]) {
         params.set('item', response.features[0].id);
       } else {
