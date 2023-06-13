@@ -1,4 +1,4 @@
-import { SkraaFotoViewport } from './viewport.js' 
+import { SkraaFotoViewport } from './viewport.js'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import { addViewSyncViewportTrigger, getViewSyncViewportListener } from '../modules/sync-view'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
@@ -45,7 +45,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
     .ol-full-screen {
       position: absolute;
-      top: 5.5rem;
+      top: 6rem;
       right: 1rem;
     }
     .ol-zoom {
@@ -108,10 +108,21 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     @media screen and (max-width: 35rem) {
 
       skraafoto-compass {
-        top: 1.75rem;
+        top: auto;
+        right: auto;
+        left: 2rem;
+        bottom: 3rem;
+      }
+      .ol-full-screen {
+        top: 5.5rem;
         right: 1rem;
       }
-
+      .ds-nav-tools {
+        position: absolute;
+        z-index: 2;
+        top: 0.5rem;
+        left: 0.5rem;
+    }
     }
 
     @media screen and (max-width: 50rem) {
@@ -123,7 +134,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       .image-date {
         display: block;
         bottom: auto;
-        top: 5.5rem;
+        top: 5rem;
         left: 2.25rem;
       }
 
@@ -151,13 +162,13 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   set setParamName(name) {
     this.date_selector_element.setParamName = name
   }
-  
+
 
   constructor() {
     super() // Inherit stuff from SkraaFotoViewport
     this.addToDOM()
   }
-  
+
 
   // Methods
 

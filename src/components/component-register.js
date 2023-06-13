@@ -9,6 +9,7 @@ import { SkraaFotoHeader } from './page-header.js'
 import { FirstTimeVisit } from './first-time-visitor.js'
 import { SkraaFotoCompass } from './compass.js'
 
+
 export function registerComponents() {
   customElements.define('ds-spinner', Spinner)
   customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)

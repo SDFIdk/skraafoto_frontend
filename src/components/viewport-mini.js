@@ -24,7 +24,7 @@ import store from '../store'
 /**
  *  Web component that displays an image using the OpenLayers library
  */
-export class SkraaFotoViewport extends HTMLElement {
+export class SkraaFotoViewportMini extends HTMLElement {
 
   // properties
   item
@@ -379,7 +379,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false, zoom: true}),
+      controls: defaultControls({rotate: false, attribution: false, zoom: false}),
       interactions: new Collection(),
       view: this.view
     })
