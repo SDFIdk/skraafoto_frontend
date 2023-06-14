@@ -11,6 +11,7 @@ import View from 'ol/View.js'
 import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
+import {addFootprintListenerToViewport} from "../custom-plugins/plugin-footprint";
 
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
@@ -269,7 +270,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     })
 
     // Add controls
-    this.map.addControl(this.fullscreen)
+    if (configuration.ENABLE_FULLSCREEN) {
+      this.map.addControl(this.fullscreen)
+    }
+
 
     addViewSyncViewportTrigger(this)
     window.removeEventListener('updateView', this.update_view_function)

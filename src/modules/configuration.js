@@ -19,6 +19,7 @@ let configuration = {
   ENABLE_FOOTPRINT: false, // Enables displaying the footprint of the viewport being hovered over on the map
   ENABLE_EXPOSURE: false, // Enables a button for cycling through a selection of different exposure manipulations.
   ENABLE_SMALL_FONT: false,
+  ENABLE_FULLSCREEN: false,
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
   ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
@@ -42,7 +43,7 @@ let configuration = {
       exposure: 0,
       brightness: 0,
       contrast: 0.4,
-      saturation: -0.2   
+      saturation: -0.2
     },
     {
       exposure: 0.9,
