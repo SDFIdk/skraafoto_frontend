@@ -74,7 +74,7 @@ export class SkraaFotoViewport extends HTMLElement {
       position: absolute;
       top: 0.5rem;
       right: 3rem;
-      -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+      -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
     }
     .image-date {
       position: absolute;
@@ -115,9 +115,8 @@ export class SkraaFotoViewport extends HTMLElement {
     @media screen and (max-width: 35rem) {
 
       skraafoto-compass-arrows {
-        top: auto;
-        left: 0.5rem;
-        bottom: 1.5rem;
+        top: 5.5rem;
+        right: 2.5rem;
       }
 
       .image-date {

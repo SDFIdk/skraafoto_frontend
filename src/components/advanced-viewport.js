@@ -47,7 +47,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ol-full-screen {
       position: absolute;
       top: 6rem;
-      right: 1rem;
+      right: 1.5rem;
     }
     .ol-zoom {
       bottom: 2rem;
@@ -120,7 +120,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         bottom: 3rem;
       }
       .ol-full-screen {
-        top: 5.5rem;
+        top: 0.5rem;
         right: 1rem;
       }
       .ds-nav-tools {
