@@ -65,8 +65,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     .sf-slider-close {
       position: absolute;
-      top: 1.5rem;
       right: 1rem;
+      bottom: 2rem;
       z-index: 2;
     }
 
@@ -107,7 +107,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
 
     skraafoto-map,
-    skraafoto-viewport, skraafoto-viewport-mini {
+    skraafoto-viewport,
+    skraafoto-viewport-mini {
       height: 100%;
       width: 100%;
       display: block;
@@ -158,7 +159,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
         </button>
         <button class="sf-direction-picker-btn sf-btn-nadir">
-          <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport-multi>
+          <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-north">
           <skraafoto-viewport-mini id="viewport-north" class="viewport-pick-option"></skraafoto-viewport-mini>

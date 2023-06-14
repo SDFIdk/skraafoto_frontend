@@ -20,6 +20,7 @@ import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import store from '../store'
+
 /**
  *  Web component that displays an image using the OpenLayers library
  */

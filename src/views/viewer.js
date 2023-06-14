@@ -6,11 +6,11 @@ import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
 import store from '../store'
-import { SkraaFotoDirectionPicker} from "../components/direction-picker";
+import { SkraaFotoDirectionPicker} from "../components/direction-picker"
 import { registerComponents } from '../components/component-register.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
-import {SkraaFotoViewportMini} from "../components/viewport-mini.js";
+import {SkraaFotoViewportMini } from "../components/viewport-mini.js"
 
 
 // Initialize web components
@@ -19,6 +19,7 @@ customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
 customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 customElements.define('skraafoto-map', SkraaFotoMap)
+customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 
 // Variables
 

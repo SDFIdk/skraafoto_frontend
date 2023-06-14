@@ -380,7 +380,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false, zoom: false}),
+      controls: defaultControls({rotate: false, attribution: false, zoom: true}),
       interactions: new Collection(),
       view: this.view
     })
