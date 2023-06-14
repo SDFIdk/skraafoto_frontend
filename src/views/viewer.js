@@ -17,7 +17,6 @@ import {SkraaFotoViewportMini } from "../components/viewport-mini.js"
 registerComponents()
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-viewport', SkraaFotoViewport)
-customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 customElements.define('skraafoto-map', SkraaFotoMap)
 customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 
