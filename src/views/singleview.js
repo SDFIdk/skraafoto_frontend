@@ -8,7 +8,6 @@ import {getParam, setParams} from "../modules/url-state";
 import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
-import { shiftItem } from "../components/compass-arrows";
 
 // Initialize web components
 registerComponents()
@@ -102,19 +101,6 @@ document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
   alert('Der var et problem med at hente data fra serveren')
 })
-
-
-// Set up compass buttons
-const compassSelector_element1 = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
-const leftButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-left')
-const rightButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-right')
-
-leftButton_compass1.addEventListener('click', function(event) {
-  shiftItem('left');
-});
-rightButton_compass1.addEventListener('click', function(event) {
-  shiftItem('right');
-});
 
 // Set up shortkeys for date-selector
 const dateSelector_element = viewport_element_1.shadowRoot.querySelector('skraafoto-date-selector');

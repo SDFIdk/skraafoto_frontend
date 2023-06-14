@@ -19,7 +19,6 @@ import { getViewSyncViewportListener } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
-import { shiftItem } from "./compass-arrows";
 import store from '../store'
 
 /**
@@ -73,7 +72,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     skraafoto-compass-arrows {
       position: absolute;
-      top: 1.5rem;
+      top: 0.5rem;
       right: 3rem;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
     }
@@ -401,37 +400,6 @@ export class SkraaFotoViewport extends HTMLElement {
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
     }
-
-
-/*    // Set up compass buttons
-    const compassSelector_element1 = this.shadowRoot.querySelector('skraafoto-compass-arrows')
-    debugger
-    console.log(compassSelector_element1)
-    const leftButton_compass1 = compassSelector_element1
-    const rightButton_compass1 = compassSelector_element1
-
-    leftButton_compass1.addEventListener('click', function(event) {
-      shiftItem('left');
-    });
-    rightButton_compass1.addEventListener('click', function(event) {
-      shiftItem('right');
-    });
-    */
-
-
-    // Set up shortkeys
-    document.addEventListener('keyup', function(event) {
-      switch(event.key) {
-        case 'ArrowLeft':
-          shiftItem('left')
-          break
-        case 'ArrowRight':
-          shiftItem('right')
-          break
-        default:
-        // Nothing
-      }
-    })
   }
 
   disconnectedCallback() {

@@ -1,12 +1,10 @@
 import { getZ } from '@dataforsyningen/saul'
 import { queryItems, queryItem, getCollections } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
-import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import {getParam, setParams } from "../modules/url-state";
 import {fetchParcels } from "../custom-plugins/plugin-parcel";
-import { shiftItem } from "../components/compass-arrows";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
 
@@ -105,45 +103,6 @@ window.addEventListener('offline', function() {
 document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
   alert('Der var et problem med at hente data fra serveren')
-})
-
-
-// Set up compass buttons for viewport_element_1
-const compassSelector_element1 = viewport_element_1.shadowRoot.querySelector('skraafoto-compass-arrows')
-const leftButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-left')
-const rightButton_compass1 = compassSelector_element1.shadowRoot.querySelector('.button-right')
-
-leftButton_compass1.addEventListener('click', function(event) {
-  shiftItem('left');
-});
-rightButton_compass1.addEventListener('click', function(event) {
-  shiftItem('right');
-});
-
-// Set up compass buttons for viewport_element_2
-const compassSelector_element2 = viewport_element_2.shadowRoot.querySelector('skraafoto-compass-arrows')
-const leftButton_compass2 = compassSelector_element2.shadowRoot.querySelector('.button-left')
-const rightButton_compass2 = compassSelector_element2.shadowRoot.querySelector('.button-right')
-
-leftButton_compass2.addEventListener('click', function(event) {
-  shiftItem('left');
-});
-rightButton_compass2.addEventListener('click', function(event) {
-  shiftItem('right');
-});
-
-// Set up shortkeys
-document.addEventListener('keyup', function(event) {
-  switch(event.key) {
-    case 'ArrowLeft':
-        shiftItem('left')
-      break
-    case 'ArrowRight':
-        shiftItem('right')
-      break
-    default:
-      // Nothing
-  }
 })
 
 

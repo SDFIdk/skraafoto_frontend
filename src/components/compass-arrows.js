@@ -152,10 +152,7 @@ export class SkraaFotoCompassArrows extends HTMLElement {
   }
 
   connectedCallback() {
-    // Set up compass buttons for viewport_element_2
-    console.log(document.querySelector('skraafoto-compass-arrows'))
-
-
+    // Clickable buttons on the sides of the compass
     this.button_left.addEventListener('click', function(event) {
       shiftItem('left');
     });
@@ -202,7 +199,7 @@ export class SkraaFotoCompassArrows extends HTMLElement {
 
 let collection = null
 
-export async function shiftItem(direction) {
+async function shiftItem(direction) {
   const orientation = getParam('orientation');
   const orientations = {
     north: { right: 'east', left: 'west' },
@@ -235,15 +232,7 @@ export async function shiftItem(direction) {
   }
 }
 
-
-
-
-
-
-
-
-
-
+// Shorthand for switching direction
 function handleKeyUp(event) {
   switch(event.key) {
     case 'ArrowLeft':
