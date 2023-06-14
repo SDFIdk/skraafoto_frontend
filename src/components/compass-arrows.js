@@ -178,7 +178,7 @@ export class SkraaFotoCompassArrows extends HTMLElement {
 
       switch(new_value) {
         case 'east':
-          this.compass.style.rotate = '-90deg'
+          this.compass.style.rotate = '270deg'
           this.l_east.classList.add('active-direction')
           break
         case 'south':
