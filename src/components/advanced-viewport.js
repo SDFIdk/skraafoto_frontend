@@ -1,7 +1,8 @@
-import { SkraaFotoViewport } from './viewport.js'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import { addViewSyncViewportTrigger, getViewSyncViewportListener } from '../modules/sync-view'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
+import { SkraaFotoViewport } from './viewport.js'
+import { DragPan } from 'ol/interaction'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
@@ -46,7 +47,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ol-full-screen {
       position: absolute;
       top: 6rem;
-      right: 1rem;
+      right: 1.5rem;
     }
     .ol-zoom {
       bottom: 2rem;
@@ -69,8 +70,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ds-nav-tools {
       position: absolute;
       z-index: 2;
-      top: 1.5rem;
-      left: 1rem;
+      top: .5rem;
+      left: .5rem;
     }
     .ds-button-group {
       min-width: 10rem;
@@ -104,6 +105,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .btn-height-measure::before {
       transform: rotate(90deg);
     }
+    
+    .sf-compass-arrows {
+    display: absolute;
+    padding:10rem;
+    }
 
     @media screen and (max-width: 35rem) {
 
@@ -114,7 +120,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         bottom: 3rem;
       }
       .ol-full-screen {
-        top: 5.5rem;
+        top: 0.5rem;
         right: 1rem;
       }
       .ds-nav-tools {

@@ -74,6 +74,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     skraafoto-address-search {
       margin: 0 1rem 0 auto;
     }
+    .gs-wrapper {
+      width: 20rem
+    
+    }
 
     @media screen and (max-width: 50rem) {
 
@@ -83,16 +87,15 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
       .sf-search-collapsible .sf-input-container {
         height: auto;
+        background: linear-gradient(to left, var(--background-color) 93%, transparent 95%);
         width: calc(90vw - 4.25rem);
         max-width: 30rem;
-        background: linear-gradient(to left, var(--background-color) 50%, transparent);
         position: fixed;
-        top: 0rem;
-        right: 0rem;
+        top: 0;
+        right: 0;
         z-index: 1000;
         transition: transform .5s;
         transform: translate(100vw,0);
-        margin: 0;
         padding: 1.5rem 2rem;
       }
 
@@ -106,13 +109,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         left: auto;
         right: 0;
         max-width: calc(100vw - 2rem);
-      }
-    }
-
-    @media screen and (min-width: 34rem) {
-
-      .sf-search-collapsible .sf-input-container {
-        width: 25rem;
       }
     }
   `

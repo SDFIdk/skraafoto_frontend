@@ -1,6 +1,8 @@
 import { queryItems } from '../modules/api.js'
 import { setParams } from '../modules/url-state.js'
+import {SkraaFotoCompass} from "./compass";
 
+customElements.define('skraafoto-compass', SkraaFotoCompass)
 /**
  * Web component that displays and updates a list of viewports with views from various directions
  */
@@ -49,11 +51,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       position: fixed;
       bottom: 2rem;
       left: 50%;
-      margin: 0 0 0 -5rem;
-      width: 10rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      transform: translate(-50%, -50%);
     }
 
     .sf-slider-open,
@@ -115,7 +113,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     @media screen and (max-width: 35rem) {
     
       .sf-slider-close {
-        right: 0.5rem;
+        right: 1rem;
+        bottom: 1rem;
+        top: auto !important;
       }      
 
     }

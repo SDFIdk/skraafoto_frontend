@@ -9,7 +9,6 @@ import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
 
-
 // Initialize web components
 registerComponents()
 
@@ -47,44 +46,6 @@ function updateViews() {
       store.dispatch('updateParcels', parcels)
     })
   }
-}
-
-async function shiftItem(direction) {
-  const orientation = getParam('orientation')
-  let new_orientation = 'north'
-  if (orientation === 'north') {
-    if (direction === 'right') {
-      new_orientation = 'west'
-    } else {
-      new_orientation = 'east'
-    }
-  } else if (orientation === 'west') {
-    if (direction === 'right') {
-      new_orientation = 'south'
-    } else {
-      new_orientation = 'north'
-    }
-  } else if (orientation === 'south') {
-    if (direction === 'right') {
-      new_orientation = 'east'
-    } else {
-      new_orientation = 'west'
-    }
-  } else if (orientation === 'east') {
-    if (direction === 'right') {
-      new_orientation = 'north'
-    } else {
-      new_orientation = 'south'
-    }
-  }
-
-  queryItems(getParam('center'), new_orientation, collection).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
 }
 
 function setupConfigurables(conf) {
@@ -139,20 +100,6 @@ window.addEventListener('offline', function() {
 document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
   alert('Der var et problem med at hente data fra serveren')
-})
-
-// Set up shortkeys
-document.addEventListener('keyup', function(event) {
-  switch(event.key) {
-    case 'ArrowLeft':
-      shiftItem('left')
-      break
-    case 'ArrowRight':
-      shiftItem('right')
-      break
-    default:
-      // Nothing
-  }
 })
 
 // Set up shortkeys for date-selector

@@ -173,17 +173,30 @@ export class SkraaFotoDateSelector extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
-    
-    // When a date is selected, send an event with the corresponding image data
-    this.shadowRoot.querySelector('select').addEventListener('input', (event) => {
-      const item = this.items.find(function(item) {
-        return item.id === event.target.value
-      })
-      setParams({ [this.param_name]: item.id })
-    })
-  }
+    const selectElement = this.shadowRoot.querySelector('select');
+    let isOptionClicked = false;
 
+    // When an option is selected, send an event with the corresponding image data
+    selectElement.addEventListener('change', (event) => {
+      const item = this.items.find((item) => item.id === event.target.value);
+      setParams({ [this.param_name]: item.id });
+      selectElement.blur(); // Remove focus from the select element
+    });
+
+    // When an option is clicked, set the flag to prevent focus removal
+    selectElement.addEventListener('mousedown', () => {
+      isOptionClicked = true;
+    });
+
+    // When the select element loses focus, remove focus if no option is selected
+    selectElement.addEventListener('blur', () => {
+      if (!isOptionClicked) {
+        selectElement.selectedIndex = -1; // Deselect any selected option
+      }
+      isOptionClicked = false; // Reset the flag
+    });
+  }
 }
-  
+
 // This is how to initialize the custom element
 // customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)

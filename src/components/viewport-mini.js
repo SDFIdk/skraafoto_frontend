@@ -24,6 +24,7 @@ import store from '../store'
 /**
  *  Web component that displays an image using the OpenLayers library
  */
+
 export class SkraaFotoViewportMini extends HTMLElement {
 
   // properties

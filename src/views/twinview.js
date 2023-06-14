@@ -1,17 +1,17 @@
 import { getZ } from '@dataforsyningen/saul'
 import { queryItems, queryItem, getCollections } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
-import { SkraaFotoViewSwitcher} from '../components/tool-view-switcher.js'
 import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import {getParam, setParams} from "../modules/url-state";
-import {fetchParcels} from "../custom-plugins/plugin-parcel";
+import {getParam, setParams } from "../modules/url-state";
+import {fetchParcels } from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
 
 
 // Initialize web components
 registerComponents()
+
 
 
 // Variables
@@ -60,56 +60,6 @@ function updateViews() {
   }
 }
 
-async function shiftItem(direction) {
-  const orientation = getParam('orientation')
-  let new_orientation = 'north'
-  if (orientation === 'north') {
-    if (direction === 'right') {
-      new_orientation = 'west'
-    } else {
-      new_orientation = 'east'
-    }
-  } else if (orientation === 'west') {
-    if (direction === 'right') {
-      new_orientation = 'south'
-    } else {
-      new_orientation = 'north'
-    }
-  } else if (orientation === 'south') {
-    if (direction === 'right') {
-      new_orientation = 'east'
-    } else {
-      new_orientation = 'west'
-    }
-  } else if (orientation === 'east') {
-    if (direction === 'right') {
-      new_orientation = 'north'
-    } else {
-      new_orientation = 'south'
-    }
-  }
-
-  const year = getParam('item').substring(0,4)
-  const collection = `skraafotos${year}`
-  queryItems(getParam('center'), new_orientation, collection).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
-
-  const year2 = getParam('item2').substring(0,4)
-  const collection2 = `skraafotos${year2}`
-  queryItems(getParam('center'), new_orientation, collection2).then((response) => {
-    if (response.features.length > 0) {
-      setParams({ orientation: new_orientation, item2: response.features[0].id })
-    } else {
-      console.error(`No image found facing ${ new_orientation }`)
-    }
-  })
-}
-
 function setupConfigurables(conf) {
   if (conf.ENABLE_WEB_STATISTICS) {
     customElements.define('cookie-alert', CookieAlert)
@@ -153,20 +103,6 @@ window.addEventListener('offline', function() {
 document.addEventListener('loaderror', function(event) {
   console.error('Network error: ', event.details)
   alert('Der var et problem med at hente data fra serveren')
-})
-
-// Set up shortkeys
-document.addEventListener('keyup', function(event) {
-  switch(event.key) {
-    case 'ArrowLeft':
-        shiftItem('left')
-      break
-    case 'ArrowRight':
-        shiftItem('right')
-      break
-    default:
-      // Nothing
-  }
 })
 
 

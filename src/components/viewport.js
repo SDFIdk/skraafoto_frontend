@@ -24,6 +24,7 @@ import store from '../store'
 /**
  *  Web component that displays an image using the OpenLayers library
  */
+
 export class SkraaFotoViewport extends HTMLElement {
 
   // properties
@@ -69,11 +70,11 @@ export class SkraaFotoViewport extends HTMLElement {
       position: relative;
       background-color: var(--background-color);
     }
-    skraafoto-compass {
+    skraafoto-compass-arrows {
       position: absolute;
-      top: 1.5rem;
-      right: 1rem;
-      -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
+      top: 0.5rem;
+      right: 3rem;
+      -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
     }
     .image-date {
       position: absolute;
@@ -113,9 +114,9 @@ export class SkraaFotoViewport extends HTMLElement {
 
     @media screen and (max-width: 35rem) {
 
-      skraafoto-compass {
-        top: 0.5rem;
-        right: 0.5rem;
+      skraafoto-compass-arrows {
+        top: 5.5rem;
+        right: 2.5rem;
       }
 
       .image-date {
@@ -137,7 +138,7 @@ export class SkraaFotoViewport extends HTMLElement {
         </p>
       </div>
     </div>
-    <skraafoto-compass direction="north"></skraafoto-compass>
+    <skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>
     <p id="image-date" class="image-date"></p>
   `
 
@@ -174,8 +175,7 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
-
-    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
+    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
     }
