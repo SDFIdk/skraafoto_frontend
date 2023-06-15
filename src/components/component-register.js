@@ -20,10 +20,9 @@ export function registerComponents() {
   customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
   customElements.define('skraafoto-header', SkraaFotoHeader)
   customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
+  customElements.define('skraafoto-compass', SkraaFotoCompass);
   if (configuration.ENABLE_COMPASSARROWS) {
     customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows);
-  } else {
-    customElements.define('skraafoto-compass', SkraaFotoCompass);
   }
 
 }

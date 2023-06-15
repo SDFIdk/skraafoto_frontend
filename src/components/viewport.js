@@ -190,6 +190,11 @@ export class SkraaFotoViewport extends HTMLElement {
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
     }
+    // Modify this block
+    if (configuration.ENABLE_COMPASSARROWS) {
+      const compassArrowsElement = wrapper.querySelector('skraafoto-compass');
+      compassArrowsElement.style.display = 'none';
+    }
   }
 
   async update({item,center}) {

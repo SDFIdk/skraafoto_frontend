@@ -18,9 +18,9 @@ let configuration = {
   ENABLE_POINTER: false, // Enables displaying the cursor's position as a yellow dot on the other viewports
   ENABLE_FOOTPRINT: false, // Enables displaying the footprint of the viewport being hovered over on the map
   ENABLE_EXPOSURE: false, // Enables a button for cycling through a selection of different exposure manipulations.
-  ENABLE_SMALL_FONT: false,
-  ENABLE_FULLSCREEN: false,
-  ENABLE_COMPASSARROWS: false,
+  ENABLE_SMALL_FONT: false, // Enables a small font on image-date
+  ENABLE_FULLSCREEN: false, // Enables Fullscreen button
+  ENABLE_COMPASSARROWS: true, // Enables compass buttons
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
   ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
