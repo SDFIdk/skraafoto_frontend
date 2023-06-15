@@ -1,8 +1,5 @@
 import { queryItems } from '../modules/api.js'
 import { setParams } from '../modules/url-state.js'
-import {SkraaFotoCompass} from "./compass";
-
-customElements.define('skraafoto-compass', SkraaFotoCompass)
 /**
  * Web component that displays and updates a list of viewports with views from various directions
  */

@@ -7,7 +7,9 @@ import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
 import { FirstTimeVisit } from './first-time-visitor.js'
-import { SkraaFotoCompassArrows } from "./compass-arrows";
+import {configuration} from "../modules/configuration";
+import {SkraaFotoCompassArrows} from "./compass-arrows";
+import {SkraaFotoCompass} from "./compass";
 
 
 export function registerComponents() {
@@ -18,5 +20,11 @@ export function registerComponents() {
   customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
   customElements.define('skraafoto-header', SkraaFotoHeader)
   customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
-  customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
+  if (configuration.ENABLE_COMPASSARROWS) {
+    customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows);
+  } else {
+    customElements.define('skraafoto-compass', SkraaFotoCompass);
+  }
+
 }
+

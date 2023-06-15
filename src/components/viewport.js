@@ -70,6 +70,12 @@ export class SkraaFotoViewport extends HTMLElement {
       position: relative;
       background-color: var(--background-color);
     }
+    skraafoto-compass {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
+    }
     skraafoto-compass-arrows {
       position: absolute;
       top: 0.5rem;
@@ -114,11 +120,14 @@ export class SkraaFotoViewport extends HTMLElement {
 
     @media screen and (max-width: 35rem) {
 
+      skraafoto-compass {
+        top: 5.5rem;
+        right: 1.5rem;
+      }
       skraafoto-compass-arrows {
         top: 5.5rem;
         right: 2.5rem;
       }
-
       .image-date {
         bottom: 0.5rem;
         left: 0.5rem;
@@ -138,6 +147,7 @@ export class SkraaFotoViewport extends HTMLElement {
         </p>
       </div>
     </div>
+    <skraafoto-compass direction="north"></skraafoto-compass>
     <skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>
     <p id="image-date" class="image-date"></p>
   `
@@ -175,7 +185,8 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
-    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
+    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
+    this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
     }
@@ -321,6 +332,8 @@ export class SkraaFotoViewport extends HTMLElement {
 
   updateDirection(imagedata) {
     this.compass_element.setAttribute('direction', imagedata.properties.direction)
+    this.compassArrows_element.setAttribute('direction', imagedata.properties.direction)
+
   }
 
   updateDate(imagedata) {

@@ -12,6 +12,8 @@ import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
 import {addFootprintListenerToViewport} from "../custom-plugins/plugin-footprint";
+import { SkraaFotoCompassArrows } from "./compass-arrows";
+import { SkraaFotoCompass } from "./compass";
 
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
@@ -113,13 +115,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
 
     @media screen and (max-width: 35rem) {
-
-      skraafoto-compass {
-        top: auto;
-        right: auto;
-        left: 2rem;
-        bottom: 3rem;
-      }
       .ol-full-screen {
         top: 0.5rem;
         right: 1rem;
@@ -273,7 +268,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     if (configuration.ENABLE_FULLSCREEN) {
       this.map.addControl(this.fullscreen)
     }
-
 
     addViewSyncViewportTrigger(this)
     window.removeEventListener('updateView', this.update_view_function)
