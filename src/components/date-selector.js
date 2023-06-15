@@ -162,11 +162,23 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   buildOptionHTML(item, idx, collection_length) {
-    const datetime = new Date(item.properties.datetime)
-    let option_el = document.createElement('option')
-    option_el.value = item.id
-    option_el.innerText = `${ datetime.toLocaleDateString() } ${ idx + 1 }/${ collection_length }`
-    this.selector_element.querySelector(`[label="${ item.collection }"]`).appendChild(option_el)
+    const datetime = new Date(item.properties.datetime);
+    const formattedDate = datetime.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric"
+    });
+
+    // Check if it's the first entry of the day
+    if (formattedDate !== this.lastDisplayedDate) {
+      let option_el = document.createElement('option');
+      option_el.value = item.id;
+      option_el.innerText = `${formattedDate} ${idx + 1}/${collection_length}`;
+      this.selector_element.querySelector(`[label="${item.collection}"]`).appendChild(option_el);
+
+      // Update the last displayed date
+      this.lastDisplayedDate = formattedDate;
+    }
   }
 
 
