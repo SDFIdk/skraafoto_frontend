@@ -161,23 +161,31 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selector_element.appendChild(option_group_el)
   }
 
+
   buildOptionHTML(item, idx, collection_length) {
     const datetime = new Date(item.properties.datetime);
-    const formattedDate = datetime.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "numeric",
-      year: "numeric"
-    });
+    if (configuration.ENABLE_DATESQUASH) {
+      const formattedDate = datetime.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric"
+      })
 
-    // Check if it's the first entry of the day
-    if (formattedDate !== this.lastDisplayedDate) {
-      let option_el = document.createElement('option');
-      option_el.value = item.id;
-      option_el.innerText = `${formattedDate} ${idx + 1}/${collection_length}`;
-      this.selector_element.querySelector(`[label="${item.collection}"]`).appendChild(option_el);
+      // Check if it's the first entry of the day
+      if (formattedDate !== this.lastDisplayedDate) {
+        let option_el = document.createElement('option')
+        option_el.value = item.id;
+        option_el.innerText = `${formattedDate} ${idx + 1}/${collection_length}`;
+        this.selector_element.querySelector(`[label="${item.collection}"]`).appendChild(option_el);
 
-      // Update the last displayed date
-      this.lastDisplayedDate = formattedDate;
+        // Update the last displayed date
+        this.lastDisplayedDate = formattedDate;
+      }
+    } else {
+      let option_el = document.createElement('option')
+      option_el.value = item.id
+      option_el.innerText = `${datetime.toLocaleDateString()} ${idx + 1}/${collection_length}`
+      this.selector_element.querySelector(`[label="${item.collection}"]`).appendChild(option_el)
     }
   }
 
