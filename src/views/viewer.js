@@ -136,6 +136,7 @@ document.addEventListener('loaderror', function(event) {
 
 
 // Set up shortkeys for date-selector
+if (!configuration.ENABLE_DATESQUASH) {
 const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
 document.addEventListener('keydown', function(event) {
 
@@ -164,6 +165,32 @@ document.addEventListener('keydown', function(event) {
     setParams({item: next.value});
   }
 });
+}
+
+// Datesquash shortkeys
+if (configuration.ENABLE_DATESQUASH) {
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
+document.addEventListener('keydown', function(event) {
+
+  const option_list = dateSelector_element.selector_element.options;
+  let current_idx = option_list.selectedIndex;
+
+  // Calculate the indexes of the past and future options
+  const num_options = option_list.length;
+  const past_idx = (current_idx + 1) % num_options;
+  const future_idx = (current_idx - 1 + num_options) % num_options;
+
+  // Get references to the past and future options based on their indexes
+  const past = option_list[past_idx];
+  const future = option_list[future_idx];
+
+  if (event.key === 'ArrowUp' && event.shiftKey) {
+    setParams({item: future.value});
+  } else if (event.key === 'ArrowDown' && event.shiftKey) {
+    setParams({item: past.value});
+  }
+});
+}
 
 
 
