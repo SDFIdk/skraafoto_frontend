@@ -29,6 +29,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
+    this.button_element.style.borderRadius = '0';
     this.button_element.className = 'exposure-btn ds-icon-sider-icon-lab'
     this.button_element.title = 'Ændr lysstyrke'
     this.append(this.button_element)
@@ -40,7 +41,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
     this.variables.contrast = settings.contrast
     this.variables.saturation = settings.saturation
   }
-  
+
   /**
    * Cycles the exposure
    */
@@ -53,6 +54,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
     this.copySettingsToVariables(configuration.EXPOSURE_SETTINGS[this.exposure_index])
     console.log(this.variables)
     this.viewport.map.render()
+    console.log(this.viewport.map)
     this.button_element.blur()
   }
 

@@ -1,6 +1,7 @@
 import { defaults as defaultInteractions } from 'ol/interaction'
 import { addViewSyncViewportTrigger, getViewSyncViewportListener } from '../modules/sync-view'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
+import { SkraaFotoCrossHairTool } from './map-tool-crosshair.js'
 import { SkraaFotoViewport } from './viewport.js'
 import { DragPan } from 'ol/interaction'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
@@ -12,11 +13,10 @@ import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
 import {addFootprintListenerToViewport} from "../custom-plugins/plugin-footprint";
-import { SkraaFotoCompassArrows } from "./compass-arrows";
-import { SkraaFotoCompass } from "./compass";
 
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
+customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
 /**
@@ -83,7 +83,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       align-items: center;
     }
     .ds-nav-tools button.active {
-      background-color: var(--mork-tyrkis) !important;
+      background-color: var(--aktion) !important;
     }
 
     /* Download tool */
@@ -151,8 +151,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       <div class="ds-button-group">
         <skraafoto-date-selector></skraafoto-date-selector>
         <hr>
-        <button class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
-        <button class="btn-height-measure ds-icon-map-icon-ruler" title="Mål højde"></button>
+        <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
+        <button id="height-btn" class="btn-height-measure ds-icon-map-icon-ruler" title="Mål højde"></button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
@@ -180,6 +180,12 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     div.innerHTML = this.adv_template
     this.shadowRoot.append(div)
 
+    if (configuration.ENABLE_CROSSHAIR) {
+      const button_group = this.shadowRoot.querySelector('.ds-button-group')
+      const length_button = this.shadowRoot.querySelector('#length-btn')
+      button_group.insertBefore(document.createElement('skraafoto-crosshair-tool'), length_button)
+    }
+
     // Add button to adjust brightness to the dom if enabled
     if (configuration.ENABLE_EXPOSURE) {
       const button_group = this.shadowRoot.querySelector('.ds-button-group')
@@ -194,6 +200,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   updatePlugins() {
     super.updatePlugins()
     this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
+    if (configuration.ENABLE_CROSSHAIR) {
+      this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
+    }
     if (configuration.ENABLE_EXPOSURE) {
       this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
     }

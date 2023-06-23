@@ -12,7 +12,7 @@ async function getLatestImages(center, orientation, collection, collections) {
     return getLatestImages(center, orientation, collections[collectionIndex + 1].id, collections)
   } else {
     return response
-  } 
+  }
 }
 
 /** Adds or modifies URL searchparams according to various edge cases */
@@ -125,10 +125,10 @@ async function sanitizeParams(searchparams) {
 
   // If we only have orientation
   if (params.get('orientation')) {
-    params.set('center', [574764,6220953])
+    params.set('center', [725871.29,6176763.35])
     if (params.get('orientation') !== 'map') {
       collections = await getCollections()
-      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0])
+      const response = await queryItems([725871.29,6176763.35], params.get('orientation'), collections[0])
       params.set('item', response.features[0].id)
     }
     return params
@@ -136,8 +136,8 @@ async function sanitizeParams(searchparams) {
 
   // Default
   params.set('orientation', 'north')
-  params.set('center', [574764,6220953])
-  params.set('item', '2021_82_24_2_0021_00002029_10cm')
+  params.set('center', [725871.29,6176763.35])
+  params.set('item', '2021_84_40_2_0049_00073005')
   return params
 }
 

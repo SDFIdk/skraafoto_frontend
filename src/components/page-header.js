@@ -66,6 +66,9 @@ export class SkraaFotoHeader extends HTMLElement {
     .ds-logo-micro .span {
       text-wrap: balance;
     }
+    .skat-logo {
+      width: 12rem;
+    }
     
     @media screen and (max-width: 576px) {
       .sf-header {
@@ -83,13 +86,18 @@ export class SkraaFotoHeader extends HTMLElement {
     <style>
       ${ this.styles }
     </style>
-    <a href="/" class="ds-logo-micro">
-      <strong>Skråfoto</strong>
-      <span>Styrelsen for Dataforsyning og Infrastruktur</span>
+    <a href="/" id="sdfiLogo" class="ds-logo-micro">
+      <strong id="headline">Skråfoto</strong>
+      <span id="subline">Styrelsen for Dataforsyning og Infrastruktur</span>
+    </a>
+    <a href="/" id="skatLogo">
+      <img href="/" id="vurderingsstyrelsen" class="skat-logo" src="img/logos/logo-vurderingsstyrelsen.svg" alt="logo af Vurderingsstyrelsen"/>
+      <strong id="headline">Skråfoto</strong>
     </a>
     <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
     <skraafoto-view-switcher></skraafoto-view-switcher>
     <a role="button" class="sf-help-link ds-icon-icon-question secondary" title="Information om Skråfoto" href="/info.html"></a>
+
   `
 
 
@@ -111,11 +119,35 @@ export class SkraaFotoHeader extends HTMLElement {
     // attach the created elements to the DOM
     this.append(this.markup)
   }
+
+  connectedCallback() {
+    if (configuration.ENABLE_SKATLOGO) {
+      const sdfiLogo = document.getElementById('sdfiLogo')
+      const headline = document.getElementById('headline')
+      const subline = document.getElementById('subline')
+      const skatLogo = document.getElementById('skatLogo')
+
+      sdfiLogo.style.display = 'none'
+      headline.style.display = 'none'
+      subline.style.display = 'none'
+      skatLogo.style.display = ''
+    } else {
+      const headline = document.getElementById('headline')
+      const subline = document.getElementById('subline')
+      const skatLogo = document.getElementById('skatLogo')
+      const sdfiLogo = document.getElementById('sdfiLogo')
+
+      sdfiLogo.style.display = ''
+      headline.style.display = '';
+      subline.style.display = '';
+      skatLogo.style.display = 'none'
+    }
+  }
 }
 
 async function setupConfigurables(conf) {
   if (conf.ENABLE_VIEW_SWITCH) {
-    customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
+    customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher);
   }
 }
 

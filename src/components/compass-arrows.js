@@ -202,10 +202,10 @@ let collection = null
 async function shiftItem(direction) {
   const orientation = getParam('orientation');
   const orientations = {
-    north: { right: 'east', left: 'west' },
-    west: { right: 'north', left: 'south' },
-    south: { right: 'west', left: 'east' },
-    east: { right: 'south', left: 'north' }
+    north: { left: 'east', right: 'west' },
+    west: { left: 'north', right: 'south' },
+    south: { left: 'west', right: 'east' },
+    east: { left: 'south', right: 'north' }
   }
   const new_orientation = orientations[orientation][direction] || 'north'
 
