@@ -17,7 +17,7 @@ const environment = {
   
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
-  API_STAC_BASEURL: "https://api.dataforsyningen.dk/skraafoto_api/v1.0",
+  API_STAC_BASEURL: "https://api.dataforsyningen.dk/rest/skraafoto_api/v1.0",
 
   // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
   API_DHM_WCS_BASEURL: "https://services.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS",
