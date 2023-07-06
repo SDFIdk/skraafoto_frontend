@@ -1,63 +1,62 @@
-import WebGLTileLayer from 'ol/layer/WebGLTile';
-import { getWorldXYZ } from "@dataforsyningen/saul";
-import {queryItems} from "../modules/api";
-import {setParams} from "../modules/url-state";
+import WebGLTileLayer from 'ol/layer/WebGLTile'
+import { getWorldXYZ } from "@dataforsyningen/saul"
+import {queryItems} from "../modules/api"
+import {setParams} from "../modules/url-state"
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
-  button_element;
-  viewport;
-  variables = {};
+  button_element
+  viewport
+  variables = {}
   crosshairEnabled = 0
   style = `
   button.crosshair-btn:hover {
-    background: black;
+    background: black
   }
   `
 
   set setContextTarget(viewport) {
-    this.viewport = viewport;
+    this.viewport = viewport
   }
 
   constructor() {
-    super();
+    super()
   }
 
   createDOM() {
-    this.button_element = document.createElement('button');
-    this.button_element.style.borderRadius = '0';
-    this.button_element.className = 'crosshair-btn ds-icon-icon-crosshair';
-    this.button_element.title = 'Aktivér sigtekorn';
-    this.append(this.button_element);
+    this.button_element = document.createElement('button')
+    this.button_element.style.borderRadius = '0'
+    this.button_element.className = 'crosshair-btn ds-icon-icon-crosshair'
+    this.button_element.title = 'Aktivér sigtekorn'
+    this.append(this.button_element)
   }
 
   toggleCrosshair() {
     if (this.crosshairEnabled === 0) {
-      this.viewport.map.on('singleclick', this.handleClick);
-      this.crosshairEnabled = 1; // Set the toggle value to 1 (enabled)
+      this.crosshairEnabled = 1 // Set the toggle value to 1 (enabled)
       this.button_element.style.background = 'var(--aktion)'
-      this.button_element.style.borderRadius = '0';
+      this.button_element.style.borderRadius = '0'
       this.button_element.blur()
-    } else if (this.crosshairEnabled === 1) {
-      this.viewport.map.on('singleclick', this.handleClick); // Unbind the click event listener
-      this.crosshairEnabled = 0; // Set the toggle value to 0 (disabled)
-      this.button_element.style.background = '';
-      this.button_element.style.borderRadius = '0';
-      this.button_element.blur()
+      this.viewport.map.once('singleclick', this.handleClick) // Bind the click event listener once
     }
   }
 
   handleClick = (event) => {
     if (this.crosshairEnabled === 1 && this.viewport.mode === 'center') {
-      this.viewport.displaySpinner();
+      this.crosshairEnabled = 0 // Set the toggle value to 0 (disabled)
+      this.button_element.style.background = ''
+      this.button_element.style.borderRadius = '0'
+      this.button_element.blur()
+
+      this.viewport.displaySpinner()
       getWorldXYZ({
         image: this.viewport.item,
         terrain: this.viewport.terrain,
         xy: event.coordinate
       }, 0.03).then((world_xyz) => {
-        this.update(event, this.viewport, world_xyz);
-      });
+        this.update(event, this.viewport, world_xyz)
+      })
     }
-  };
+  }
 
   // Methods
 
@@ -90,10 +89,10 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
   }
 
   connectedCallback() {
-    this.createDOM();
+    this.createDOM()
     this.button_element.addEventListener('click', () => {
-      this.toggleCrosshair();
-    });
+      this.toggleCrosshair()
+    })
   }
 }
 
