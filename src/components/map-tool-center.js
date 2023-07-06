@@ -7,6 +7,32 @@ import {configuration} from "../modules/configuration";
  * Enables a user to click an image an have it centered in that location
  */
 export class CenterTool {
+
+
+
+  constructor(viewport) {
+    if (!configuration.ENABLE_CROSSHAIR) {
+      
+      // Set up event listener
+      viewport.map.on('singleclick', (event) => {
+        if (viewport.mode === 'center') {
+          viewport.displaySpinner()
+          getWorldXYZ({
+            image: viewport.item,
+            terrain: viewport.terrain,
+            xy: event.coordinate
+          }, 0.03).then((world_xyz) => {
+
+            this.update(event, viewport, world_xyz)
+
+          })
+        }
+      })
+    }
+  }
+
+
+
   // Methods
 
   checkBounds(img_shape, coordinate) {
