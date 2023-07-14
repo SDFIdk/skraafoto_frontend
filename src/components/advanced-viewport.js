@@ -12,7 +12,6 @@ import View from 'ol/View.js'
 import FullScreen from 'ol/control/FullScreen'
 // import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
-import {addFootprintListenerToViewport} from "../custom-plugins/plugin-footprint";
 
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
@@ -42,7 +41,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   // styles
   adv_styles = /*css*/`
     .ol-viewport canvas {
-      cursor: crosshair;
+      cursor: url('../img/icons/icon_cursor_crosshair.svg'), crosshair;
     }
     .image-date {
       display: none;
