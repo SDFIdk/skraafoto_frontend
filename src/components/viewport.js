@@ -237,7 +237,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     this.map.removeLayer(this.layer_icon)
-    this.layer_icon = this.generateIconLayer(this.coord_image, './img/icons/icon_crosshair.svg')
+    this.layer_icon = this.generateIconLayer(this.coord_image, '../img/icons/icon_cursor_crosshair.svg')
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
@@ -293,7 +293,7 @@ export class SkraaFotoViewport extends HTMLElement {
       const icon_style = new Style({
         image: new Icon({
           src: icon_image,
-          scale: 2.5
+          scale: 1
         })
       })
       icon_feature.setStyle(icon_style)

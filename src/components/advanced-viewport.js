@@ -41,7 +41,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   // styles
   adv_styles = /*css*/`
     .ol-viewport canvas {
-      cursor: url('../img/icons/icon_cursor_crosshair.svg'), crosshair;
+      cursor: url('./img/icons/icon_crosshair.svg'), crosshair;
     }
     .image-date {
       display: none;
