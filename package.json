@@ -37,7 +37,7 @@
     "@dataforsyningen/saul": "^3.3.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
-    "ol": "^7.3.0",
+    "ol": "^7.4.0",
     "proj4": "^2.8.0"
   },
   "devDependencies": {
