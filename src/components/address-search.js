@@ -76,7 +76,9 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
     .gs-wrapper {
       width: 20rem
-    
+    }
+    .sf-search-collapsible {
+        border-radius: 15px
     }
 
     @media screen and (max-width: 50rem) {

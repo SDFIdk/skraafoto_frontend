@@ -56,7 +56,7 @@ export class SkraaFotoMap extends HTMLElement {
     .geographic-map { 
       width: 100%; 
       height: 100%;
-      cursor: crosshair;
+      cursor: url('./img/icons/icon_crosshair.svg') 15.5 16, crosshair;
     }
     .ol-zoom {
       top: auto;
@@ -255,8 +255,8 @@ export class SkraaFotoMap extends HTMLElement {
     })
     const icon_style = new Style({
       image: new Icon({
-        src: './img/icons/icon_crosshair.svg',
-        scale: 2.5
+        src: '../img/icons/icon_cursor_crosshair.svg',
+        scale: 1
       })
     })
     icon_feature.setStyle(icon_style)
