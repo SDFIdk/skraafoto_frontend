@@ -74,7 +74,7 @@ function calculateCameraPosition(bbox, orientation) {
   const lr = [r[0] - l[0], r[1] - l[1]] // lr vector
   const rlr = [lr[1], 0 - lr[0]] // lr vector rotated 90 degrees clockwise
   const hlr = [lr[0] / 2, lr[1] / 2] // half length lr vector
-  const camera_position = [l[0] + rlr[0] + hlr[0], l[1] + rlr[1] + hlr[1]]
+  const camera_position = [l[0] + (rlr[0] / 2) + hlr[0], l[1] + (rlr[1] / 2) + hlr[1]]
   return camera_position
 }
 
@@ -115,7 +115,7 @@ function addFootprintListenerToViewport(viewport) {
     const tl = image2world(viewport.item, bbox_image[0], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
     const tr = image2world(viewport.item, bbox_image[2], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
     const bbox = [[ bl, br, tr, tl, bl]]
-    window.dispatchEvent(new CustomEvent("updateFootprint", { 
+    window.dispatchEvent(new CustomEvent("updateFootprint", {
       detail: { bounding_box: bbox, orientation: viewport.item.properties.direction }
     }))
   })
