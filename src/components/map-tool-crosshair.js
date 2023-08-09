@@ -8,11 +8,6 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
   viewport
   variables = {}
   crosshairEnabled = 0
-  style = `
-  button.crosshair-btn:hover {
-    background: black
-  }
-  `
 
   set setContextTarget(viewport) {
     this.viewport = viewport
