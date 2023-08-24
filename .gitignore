@@ -15,8 +15,5 @@ config.js
 /test-results/
 /playwright-report/
 /playwright/.cache/
-.idea/workspace.xml
 src/modules/configuration.js
-.idea/inspectionProfiles/Project_Default.xml
-.idea/dictionaries/B074612.xml
-.idea/vcs.xml
+.idea
