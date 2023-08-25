@@ -2,11 +2,13 @@
 
 // Hack to enable requesting images from skraafoto_server
 function convertAPIurl(url) {
-  const newUrl = url.replace('test15.dataforsyningen.dk', location.host)
+  const newUrl = url.replace(configuration.NASTY_REPLACE_API_HACK_NO_NO_NO, location.host)
   return newUrl
 }
 
 let configuration = {
+
+  NASTY_REPLACE_API_HACK_NO_NO_NO: 'hest',
 
   API_STAC_TOKEN: '', // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_BASEURL: "https://test11.dataforsyningen.dk/api/rest/skraafoto_api/v1.0",
