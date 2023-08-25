@@ -82,6 +82,12 @@ export class SkraaFotoViewport extends HTMLElement {
       right: 3rem;
       -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
     }
+    skraafoto-date-viewer {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
     .image-date {
       position: absolute;
       bottom: 1rem;
@@ -147,8 +153,10 @@ export class SkraaFotoViewport extends HTMLElement {
         </p>
       </div>
     </div>
+    
     <skraafoto-compass direction="north"></skraafoto-compass>
     <skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>
+    <skraafoto-date-viewer></skraafoto-date-viewer>
     <p id="image-date" class="image-date"></p>
   `
 
@@ -175,6 +183,10 @@ export class SkraaFotoViewport extends HTMLElement {
 
 
   // Methods
+
+  addToDOM() {
+    this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-viewer')
+  }
 
   createShadowDOM() {
     // Create a shadow root
@@ -227,6 +239,14 @@ export class SkraaFotoViewport extends HTMLElement {
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
+    }
+  }
+
+  updateDateSelector(center, image_id, direction) {
+    this.date_selector_element.setData = {
+      center: center,
+      selected: image_id,
+      orientation: direction
     }
   }
 

@@ -137,10 +137,10 @@ document.addEventListener('loaderror', function(event) {
 
 // Set up shortkeys for date-selector
 if (!configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer');
 document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.selector_element.options;
+  const option_list = dateSelector_element.options;
   let current_idx = option_list.selectedIndex;
   const num_options = option_list.length;
   const current_group = option_list[current_idx].parentNode.label;

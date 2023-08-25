@@ -46,7 +46,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-slider-open-wrapper {
       z-index: 1;
       position: fixed;
-      bottom: 2rem;
+      bottom: 5rem;
       left: 50%;
       transform: translate(-50%, -50%);
     }
