@@ -2,7 +2,7 @@
 
 // Hack to enable requesting images from skraafoto_server
 function convertAPIurl(url) {
-  const newUrl = url.replace('test15.dataforsyningen.dk', location.origin)
+  const newUrl = url.replace('test15.dataforsyningen.dk', location.host)
   return newUrl
 }
 
