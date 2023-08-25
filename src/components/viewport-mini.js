@@ -217,7 +217,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   // Hack to enable requesting images from skraafoto_server
   convertAPIurl(url) {
-    console.log(url)
     const newUrl = url.replace('test15.dataforsyningen.dk', 'test11.dataforsyningen.dk')
     return newUrl
   }
