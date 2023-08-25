@@ -2,6 +2,8 @@
 
 let configuration = {
 
+  NASTY_REPLACE_API_HACK_NO_NO_NO: 'est',
+
   API_STAC_TOKEN: '', // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_BASEURL: "https://test11.dataforsyningen.dk/api/rest/skraafoto_api/v1.0",
 
