@@ -208,11 +208,18 @@ export class SkraaFotoViewportMini extends HTMLElement {
   updateImage(item) {
     if (this.map && item.id !== this.item?.id) {
       this.item = item
-      this.source_image = this.generateSource(this.item.assets.data.href)
+      this.source_image = this.generateSource(this.convertAPIurl(this.item.assets.data.href))
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
     }
+  }
+
+  // Hack to enable requesting images from skraafoto_server
+  convertAPIurl(url) {
+    console.log(url)
+    const newUrl = url.replace('test15.dataforsyningen.dk', 'test11.dataforsyningen.dk')
+    return newUrl
   }
 
   async updateMap() {
