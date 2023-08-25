@@ -1,5 +1,11 @@
 /** @module */
 
+// Hack to enable requesting images from skraafoto_server
+function convertAPIurl(url) {
+  const newUrl = url.replace('test15.dataforsyningen.dk', location.origin)
+  return newUrl
+}
+
 let configuration = {
 
   API_STAC_TOKEN: '', // STAC TOKEN can be aquired from https://dataforsyningen.dk/
@@ -73,5 +79,6 @@ if (config) {
 }
 
 export {
+  convertAPIurl,
   configuration
 }

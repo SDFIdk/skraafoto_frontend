@@ -13,7 +13,7 @@ import Collection from 'ol/Collection'
 import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { queryItem } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
-import { configuration } from '../modules/configuration.js'
+import { configuration, convertAPIurl } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
@@ -208,17 +208,11 @@ export class SkraaFotoViewportMini extends HTMLElement {
   updateImage(item) {
     if (this.map && item.id !== this.item?.id) {
       this.item = item
-      this.source_image = this.generateSource(this.convertAPIurl(this.item.assets.data.href))
+      this.source_image = this.generateSource(convertAPIurl(this.item.assets.data.href))
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
     }
-  }
-
-  // Hack to enable requesting images from skraafoto_server
-  convertAPIurl(url) {
-    const newUrl = url.replace('test15.dataforsyningen.dk', 'test11.dataforsyningen.dk')
-    return newUrl
   }
 
   async updateMap() {
