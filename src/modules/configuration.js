@@ -73,8 +73,9 @@ if (config) {
 }
 
 // Hack to enable requesting images from skraafoto_server
-function convertAPIurl(url) {
-  const newUrl = url.replace(configuration.NASTY_REPLACE_API_HACK_NO_NO_NO, location.host)
+function convertAPIurl(url, replaceStr) {
+  const newUrl = url.replace(replaceStr, location.host)
+  console.log(url, replaceStr, newUrl)
   return newUrl
 }
 
