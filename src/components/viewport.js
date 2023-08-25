@@ -224,6 +224,7 @@ export class SkraaFotoViewport extends HTMLElement {
   updateImage(item) {
     if (this.map && item.id !== this.item?.id) {
       this.item = item
+      console.log('show me the money', convertAPIurl(this.item.assets.data.href))
       this.source_image = this.generateSource(convertAPIurl(this.item.assets.data.href))
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
