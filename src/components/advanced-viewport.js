@@ -37,7 +37,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     inactiveClassName: 'ds-icon-icon-fullscreen'
   })
   // mousepos = new MousePosition() // For debugging
-  date_selector_element
   // styles
   adv_styles = /*css*/`
     .ol-viewport canvas {
@@ -158,13 +157,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     </nav>
   `
 
-  // setters
-
-  set setParamName(name) {
-    this.date_selector_element.setParamName = name
-  }
-
-
   constructor() {
     super() // Inherit stuff from SkraaFotoViewport
     this.addToDOM()
@@ -194,6 +186,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
     // Refer DOM elements for later use
     this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
+    this.date_viewer_element = this.shadowRoot.querySelector('skraafoto-date-viewer')
   }
 
   updatePlugins() {
@@ -211,6 +204,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   updateDateSelector(center, image_id, direction) {
     this.date_selector_element.setData = {
+      center: center,
+      selected: image_id,
+      orientation: direction
+    }
+    this.date_viewer_element.setData = {
       center: center,
       selected: image_id,
       orientation: direction

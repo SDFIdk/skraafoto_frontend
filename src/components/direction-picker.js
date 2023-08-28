@@ -1,5 +1,6 @@
 import { queryItems } from '../modules/api.js'
 import { setParams } from '../modules/url-state.js'
+import {configuration} from "../modules/configuration";
 /**
  * Web component that displays and updates a list of viewports with views from various directions
  */
@@ -226,6 +227,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.btn_open_element = this.shadowRoot.querySelector('.sf-slider-open')
     this.btn_close_element = this.shadowRoot.querySelector('.sf-slider-close')
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
+
+    if (configuration.ENABLE_DATESQUASH) {
+      this.shadowRoot
+    }
   }
 
   /** Checks whether center coordinate is outside image area */

@@ -21,7 +21,7 @@ let configuration = {
   ENABLE_SMALL_FONT: false, // Enables a small font on image-date
   ENABLE_FULLSCREEN: false, // Enables Fullscreen button
   ENABLE_COMPASSARROWS: true, // Enables compass buttons
-  ENABLE_DATESQUASH: false, // Enables date-selector squash
+  ENABLE_DATESQUASH: true, // Enables date-selector squash
   ENABLE_CROSSHAIR: false, // Enables crosshair/movement tool
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
 

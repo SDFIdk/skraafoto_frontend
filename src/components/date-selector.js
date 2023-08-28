@@ -118,7 +118,9 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selector_element.innerHTML = ''
     const sorted_collections = this.sortOptions(options)
     for (let c in sorted_collections) {
-      this.buildOptionGroupHTML(sorted_collections[c])
+      if (!configuration.ENABLE_DATESQUASH) {
+        this.buildOptionGroupHTML(sorted_collections[c])
+      }
       for (let i = 0; i < sorted_collections[c].items.length; i++) {
         this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
       }
@@ -165,21 +167,19 @@ export class SkraaFotoDateSelector extends HTMLElement {
   buildOptionHTML(item, idx, collection_length) {
     const datetime = new Date(item.properties.datetime);
     if (configuration.ENABLE_DATESQUASH) {
-      const formattedDate = datetime.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "numeric",
+      const formattedYear = datetime.toLocaleDateString("en-GB", {
         year: "numeric"
-      })
+      });
 
-      // Check if it's the first entry of the day
-      if (formattedDate !== this.lastDisplayedDate) {
-        let option_el = document.createElement('option')
+      // Check if it's the first entry of the year
+      if (formattedYear !== this.lastDisplayedYear) {
+        let option_el = document.createElement('option');
         option_el.value = item.id;
-        option_el.innerText = `${formattedDate} ${idx + 1}/${collection_length}`;
-        this.selector_element.querySelector(`[label="${item.collection}"]`).appendChild(option_el);
+        option_el.innerText = `${formattedYear}`;
+        this.selector_element.appendChild(option_el);
 
-        // Update the last displayed date
-        this.lastDisplayedDate = formattedDate;
+        // Update the last displayed year
+        this.lastDisplayedYear = formattedYear;
       }
     } else {
       let option_el = document.createElement('option')

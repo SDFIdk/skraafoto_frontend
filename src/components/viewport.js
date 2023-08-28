@@ -87,6 +87,7 @@ export class SkraaFotoViewport extends HTMLElement {
       right: 0;
       bottom: 0;
       left: 0;
+      pointer-events: none;
     }
     .image-date {
       position: absolute;
@@ -184,10 +185,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // Methods
 
-  addToDOM() {
-    this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-viewer')
-  }
-
   createShadowDOM() {
     // Create a shadow root
     this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
@@ -201,6 +198,11 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
+    }
+    if (!configuration.ENABLE_DATESQUASH) {
+      const dateViewer = this.shadowRoot.querySelector('skraafoto-date-viewer');
+      dateViewer.style.display = 'none';
+
     }
     // Modify this block
     if (configuration.ENABLE_COMPASSARROWS) {
@@ -239,14 +241,6 @@ export class SkraaFotoViewport extends HTMLElement {
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
-    }
-  }
-
-  updateDateSelector(center, image_id, direction) {
-    this.date_selector_element.setData = {
-      center: center,
-      selected: image_id,
-      orientation: direction
     }
   }
 
