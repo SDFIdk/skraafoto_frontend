@@ -1,5 +1,4 @@
 import Projection from 'ol/proj/Projection.js'
-import GeoTIFF from 'ol/source/GeoTIFF.js'
 import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
@@ -19,6 +18,7 @@ import { getViewSyncViewportListener } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
+import { generateSource } from './shared/viewport-mixin.js'
 import store from '../store'
 
 
@@ -224,7 +224,7 @@ export class SkraaFotoViewport extends HTMLElement {
   updateImage(item) {
     if (this.map && item.id !== this.item?.id) {
       this.item = item
-      this.source_image = this.generateSource(convertAPIurl(this.item.assets.data.href, configuration.NASTY_REPLACE_API_HACK_NO_NO_NO))
+      this.source_image = generateSource(this.item.assets.data.href)
       this.map.removeLayer(this.layer_image)
       this.layer_image = this.generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
@@ -272,14 +272,6 @@ export class SkraaFotoViewport extends HTMLElement {
     } else {
       return 0
     }
-  }
-
-  generateSource(geotiff_href) {
-    return new GeoTIFF({
-      convertToRGB: true,
-      transition: 0,
-      sources: [{ url: geotiff_href, bands: [1,2,3] }] // Ignores band 4. See https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF.html#~SourceInfo
-    })
   }
 
   generateLayer(src) {
