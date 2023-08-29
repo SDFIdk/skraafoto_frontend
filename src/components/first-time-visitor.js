@@ -30,7 +30,7 @@ export class FirstTimeVisit extends HTMLElement {
     </style>
     
     <article>
-      <h2 class="h1" tabindex="0">Velkommen til Skråfoto</h2>
+      <h2 class="h1">Velkommen til Skråfoto</h2>
       <p>
         Skråfoto giver dig mulighed for at finde luftfotos taget fra forskellige retninger.<br>
         Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.

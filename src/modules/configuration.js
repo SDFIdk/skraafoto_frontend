@@ -24,6 +24,7 @@ let configuration = {
   ENABLE_DATESQUASH: false, // Enables date-selector squash
   ENABLE_CROSSHAIR: false, // Enables crosshair/movement tool
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
+  ENABLE_ALERT: false,
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
   ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
