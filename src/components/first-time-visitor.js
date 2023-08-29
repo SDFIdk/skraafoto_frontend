@@ -9,6 +9,7 @@ export class FirstTimeVisit extends HTMLElement {
   styles = `
     dialog::backdrop {
       background-color: hsla(0, 0%, 0%, 0.6);
+      transition: backdrop-filter 0.2s;
     }
     dialog article {
       padding: var(--margin);
@@ -21,6 +22,10 @@ export class FirstTimeVisit extends HTMLElement {
     dialog p,
     dialog button {
       margin: 0;
+    }
+    .btn-welcome-close {
+      margin-top: 1rem;
+      transition: opacity 0.3s ease;
     }
     .fade-out, .fade-out::backdrop {
     opacity: 0;
@@ -74,20 +79,15 @@ export class FirstTimeVisit extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
-
-    this.shadowRoot.querySelector('.btn-confirm').addEventListener('click', () => {
-      this.dialog.classList.add('fade-out'); // Apply fade-out class
-      setTimeout(() => {
-        this.dialog.close();
-        this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
-      }, 300); // Adjust the timing to match the transition duration in milliseconds
-    });
-
     if (this.checkFirstTimeVisit() === null) {
       this.dialog.showModal()
 
       this.shadowRoot.querySelector('.btn-welcome-close').addEventListener('click', () => {
-        this.dialog.close()
+        this.dialog.classList.add('fade-out'); // Apply fade-out class
+        setTimeout(() => {
+          this.dialog.close();
+          this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
+        }, 300); // Adjust the timing to match the transition duration in milliseconds
         localStorage.setItem(this.local_storage_key, 'false')
       })
 
