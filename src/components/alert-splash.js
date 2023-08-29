@@ -42,6 +42,9 @@ export class AlertSplash extends HTMLElement {
       <p>
       Vi oplever pt. driftsforstyrrelser i vores skråfoto frontend. Der arbejdes på at finde en løsning. Læs mere på: <a href="https://trello.com/c/HPZCGzwA">Trello</a>
       </p>
+      <br>
+      <h3 id="firefox-title" style="display: none;">Fejl med Mozilla Firefox</h3>
+      <p id="firefox-message" style="display: none;">Skråfoto er midlertidigt ikke tilgængeligt i Mozilla Firefox efter nylig opdatering. Vi arbejder på at finde en løsning. I mellemtiden henviser vi til anden browser, såsom Google Chrome eller Microsoft Edge.</p>
       <button class="btn-confirm">Forstået</button>
     </article>
   `
@@ -74,6 +77,16 @@ export class AlertSplash extends HTMLElement {
         this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
       }, 300); // Adjust the timing to match the transition duration in milliseconds
     });
+    if (navigator.userAgent.indexOf("Firefox") !== -1) {
+      // User is using Firefox
+      console.log("User is using Firefox.");
+      const firefoxTitle = this.shadowRoot.querySelector('#firefox-title');
+      const firefoxMessage = this.shadowRoot.querySelector('#firefox-message');
+      if (firefoxTitle && firefoxMessage) {
+        firefoxTitle.style.display = 'block'; // Display the title for Firefox users
+        firefoxMessage.style.display = 'block'; // Display the message for Firefox users
+      }
+    }
   }
 }
 
