@@ -20,3 +20,6 @@ src/modules/configuration.js
 .idea/inspectionProfiles/Project_Default.xml
 .idea/dictionaries/B074612.xml
 .idea/vcs.xml
+.idea/markdown.xml
+.idea/modules.xml
+.idea/skraafoto_frontend.iml
