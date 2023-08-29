@@ -44,7 +44,7 @@ export class FirstTimeVisit extends HTMLElement {
         Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
       </p>
       <skraafoto-address-search></skraafoto-address-search>
-      <button class="btn-confirm">Forstået</button>
+      <button class="btn-welcome-close">Forstået</button>
     </article>
   `
 
