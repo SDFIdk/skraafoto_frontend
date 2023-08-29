@@ -1,14 +1,11 @@
-/**
- * Web component that presents a greeting to first time visitors to the site
- */
-export class FirstTimeVisit extends HTMLElement {
+import { configuration } from "../modules/configuration";
 
-  // Properties
+export class AlertSplash extends HTMLElement {
   dialog
-  local_storage_key = 'skraafoto-virgin'
   styles = `
     dialog::backdrop {
       background-color: hsla(0, 0%, 0%, 0.6);
+      transition: backdrop-filter 0.2s;
     }
     dialog article {
       padding: var(--margin);
@@ -22,28 +19,32 @@ export class FirstTimeVisit extends HTMLElement {
     dialog button {
       margin: 0;
     }
+    
+    .btn-confirm {
+      margin-top: 1rem;
+      transition: opacity 0.3s ease;
+    }
+    
     .fade-out, .fade-out::backdrop {
     opacity: 0;
     transition: opacity 0.3s ease;
     }
   `
+
   template = `
     <link rel="stylesheet" href="./style.css">
     <style>
       ${this.styles}
-      dialog {
-        padding: 0 !important;
-        overflow: visible;
-      }
     </style>
     
     <article>
-      <h2 class="h1">Velkommen til Skråfoto</h2>
+      <h2 class="h1">Skråfoto er midlertidigt ude af drift</h2>
       <p>
-        Skråfoto giver dig mulighed for at finde luftfotos taget fra forskellige retninger.<br>
-        Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
+      Vi oplever pt. driftsforstyrrelser i vores skråfoto frontend. Der arbejdes på at finde en løsning. Læs mere på: <a href="https://trello.com/c/HPZCGzwA">Trello</a>
       </p>
-      <skraafoto-address-search></skraafoto-address-search>
+      <br>
+      <h3 id="firefox-title" style="display: none;">Fejl med Mozilla Firefox</h3>
+      <p id="firefox-message" style="display: none;">Skråfoto er midlertidigt ikke tilgængeligt i Mozilla Firefox efter nylig opdatering. Vi arbejder på at finde en løsning. I mellemtiden henviser vi til anden browser, såsom Google Chrome eller Microsoft Edge.</p>
       <button class="btn-confirm">Forstået</button>
     </article>
   `
@@ -52,9 +53,6 @@ export class FirstTimeVisit extends HTMLElement {
     super()
     this.createShadowDOM()
   }
-
-
-  // methods
 
   createShadowDOM() {
     // Create a shadow root
@@ -66,14 +64,11 @@ export class FirstTimeVisit extends HTMLElement {
     this.shadowRoot.append(this.dialog)
   }
 
-  checkFirstTimeVisit() {
-    return JSON.parse(localStorage.getItem(this.local_storage_key))
-  }
-
-
   // Lifecycle
 
   connectedCallback() {
+    if (configuration.ENABLE_ALERT)
+      this.dialog.showModal()
 
     this.shadowRoot.querySelector('.btn-confirm').addEventListener('click', () => {
       this.dialog.classList.add('fade-out'); // Apply fade-out class
@@ -82,23 +77,18 @@ export class FirstTimeVisit extends HTMLElement {
         this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
       }, 300); // Adjust the timing to match the transition duration in milliseconds
     });
-
-    if (this.checkFirstTimeVisit() === null) {
-      this.dialog.showModal()
-
-      this.shadowRoot.querySelector('.btn-welcome-close').addEventListener('click', () => {
-        this.dialog.close()
-        localStorage.setItem(this.local_storage_key, 'false')
-      })
-
-      this.shadowRoot.querySelector('skraafoto-address-search').addEventListener('gsearch:select', () => {
-        this.dialog.close()
-        localStorage.setItem(this.local_storage_key, 'false')
-      })
+    if (navigator.userAgent.indexOf("Firefox") !== -1) {
+      // User is using Firefox
+      console.log("User is using Firefox.");
+      const firefoxTitle = this.shadowRoot.querySelector('#firefox-title');
+      const firefoxMessage = this.shadowRoot.querySelector('#firefox-message');
+      if (firefoxTitle && firefoxMessage) {
+        firefoxTitle.style.display = 'block'; // Display the title for Firefox users
+        firefoxMessage.style.display = 'block'; // Display the message for Firefox users
+      }
     }
   }
-
 }
 
 // This is how to initialize the custom element
-// customElements.define('first-time-visit', FirstTimeVisit)
+// customElements.define('alert-splash', AlertSplash)
