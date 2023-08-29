@@ -68,10 +68,8 @@ export class AlertSplash extends HTMLElement {
       this.dialog.showModal()
 
     this.shadowRoot.querySelector('.btn-confirm').addEventListener('click', () => {
-      console.log('Button clicked');
       this.dialog.classList.add('fade-out'); // Apply fade-out class
       setTimeout(() => {
-        console.log('Closing dialog');
         this.dialog.close();
         this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
       }, 300); // Adjust the timing to match the transition duration in milliseconds
