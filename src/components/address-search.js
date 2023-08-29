@@ -48,6 +48,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       max-height: 90vh;
       overflow-y: auto;
       overflow-x: hidden;
+      max-height: 35rem;
     }
     .gs-result-list:empty {
       display: none;

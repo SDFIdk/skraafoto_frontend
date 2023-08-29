@@ -28,7 +28,7 @@ export class AlertSplash extends HTMLElement {
     .fade-out, .fade-out::backdrop {
     opacity: 0;
     transition: opacity 0.3s ease;
-  }
+    }
   `
 
   template = `

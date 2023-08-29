@@ -22,11 +22,19 @@ export class FirstTimeVisit extends HTMLElement {
     dialog button {
       margin: 0;
     }
+    .fade-out, .fade-out::backdrop {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    }
   `
   template = `
     <link rel="stylesheet" href="./style.css">
     <style>
       ${this.styles}
+      dialog {
+        padding: 0 !important;
+        overflow: visible;
+      }
     </style>
     
     <article>
@@ -36,7 +44,7 @@ export class FirstTimeVisit extends HTMLElement {
         Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
       </p>
       <skraafoto-address-search></skraafoto-address-search>
-      <button class="btn-welcome-close">Forstået</button>
+      <button class="btn-confirm">Forstået</button>
     </article>
   `
 
@@ -66,6 +74,14 @@ export class FirstTimeVisit extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
+
+    this.shadowRoot.querySelector('.btn-confirm').addEventListener('click', () => {
+      this.dialog.classList.add('fade-out'); // Apply fade-out class
+      setTimeout(() => {
+        this.dialog.close();
+        this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
+      }, 300); // Adjust the timing to match the transition duration in milliseconds
+    });
 
     if (this.checkFirstTimeVisit() === null) {
       this.dialog.showModal()
