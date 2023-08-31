@@ -16,12 +16,11 @@ export class CookieAlert extends HTMLElement {
       bottom: 0;
       z-index: 10;
       margin-top: var(--grid-spacing-vertical);
-      padding-top: var(--grid-spacing-vertical) !important;
-      border-radius: 2rem 2rem 0 0 !important;
     }
     
     dialog article {
       margin: var(--grid-spacing-vertical) 0;
+      padding-top: 1rem;
     }
   `
   template = `
@@ -43,7 +42,7 @@ export class CookieAlert extends HTMLElement {
           <dd>Holder styr på, hvilken server data sendes til.<br> Udløber efter 7 dage</dd>
         </dl>
         <p>
-          <a target="_blank" href="https://help.siteimprove.com/support/solutions/articles/80000863908-siteimprove-analytics-cookies">Flere oplysninger kan findes på SiteImproves side om cookies.</a>
+          <a target="_blank" href="https://help.siteimprove.com/support/solutions/articles/80000863908-siteimprove-analytics-cookies">Flere oplysninger kan findes på SiteImproves side om cookies</a>
         </p>
       </details> 
     </article>
@@ -83,8 +82,10 @@ export class CookieAlert extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
+    this.dialog.open = true
+  }
 
-    if (this.checkSavedPermission() === null) {
+/*    if (this.checkSavedPermission() === null) {
       this.dialog.open = true
 
       this.shadowRoot.querySelector('button:not(.secondary)').addEventListener('click', () => {
@@ -92,7 +93,7 @@ export class CookieAlert extends HTMLElement {
         this.setSavedPermission(true)
         initWebStat()
       })
-  
+
       this.shadowRoot.querySelector('button.secondary').addEventListener('click', () => {
         this.dialog.open = false
         this.setSavedPermission(false)
@@ -100,7 +101,7 @@ export class CookieAlert extends HTMLElement {
     } else if (this.checkSavedPermission()) {
       initWebStat()
     }
-  }
+  }*/
 
 }
 
