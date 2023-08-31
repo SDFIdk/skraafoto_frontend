@@ -82,10 +82,8 @@ export class CookieAlert extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
-    this.dialog.open = true
-  }
 
-/*    if (this.checkSavedPermission() === null) {
+    if (this.checkSavedPermission() === null) {
       this.dialog.open = true
 
       this.shadowRoot.querySelector('button:not(.secondary)').addEventListener('click', () => {
@@ -101,7 +99,7 @@ export class CookieAlert extends HTMLElement {
     } else if (this.checkSavedPermission()) {
       initWebStat()
     }
-  }*/
+  }
 
 }
 
