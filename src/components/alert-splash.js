@@ -38,9 +38,9 @@ export class AlertSplash extends HTMLElement {
     </style>
     
     <article>
-      <h2 class="h1">Skråfoto er midlertidigt ude af drift</h2>
+      <h2 class="h1">Driftforstyrelser på Skråfoto</h2>
       <p>
-      Vi oplever pt. driftsforstyrrelser i vores skråfoto frontend. Der arbejdes på at finde en løsning. Læs mere på: <a href="https://trello.com/c/HPZCGzwA">Trello</a>
+      Der arbejdes på at finde en løsning. Læs mere på: <a href="https://trello.com/c/HPZCGzwA">Trello</a>
       </p>
       <br>
       <h3 id="firefox-title" style="display: none;">Fejl med Mozilla Firefox</h3>
