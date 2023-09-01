@@ -42,9 +42,6 @@ export class AlertSplash extends HTMLElement {
       <p>
       Der arbejdes på at finde en løsning. Læs mere på: <a href="https://trello.com/c/HPZCGzwA">Trello</a>
       </p>
-      <br>
-      <h3 id="firefox-title" style="display: none;">Fejl med Mozilla Firefox</h3>
-      <p id="firefox-message" style="display: none;">Skråfoto er midlertidigt ikke tilgængeligt i Mozilla Firefox efter nylig opdatering. Vi arbejder på at finde en løsning. I mellemtiden henviser vi til anden browser, såsom Google Chrome eller Microsoft Edge.</p>
       <button class="btn-confirm">Forstået</button>
     </article>
   `
