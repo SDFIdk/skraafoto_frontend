@@ -252,7 +252,11 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     this.map.removeLayer(this.layer_icon)
+    if (configuration.ENABLE_CROSSHAIR_ICON) {
     this.layer_icon = this.generateIconLayer(this.coord_image, '../img/icons/icon_cursor_crosshair.svg')
+    } else {
+      this.layer_icon = this.generateIconLayer(this.coord_image, '../img/icons/icon_crosshair.svg')
+    }
     this.map.addLayer(this.layer_icon)
 
     this.view = await this.source_image.getView()
@@ -297,12 +301,23 @@ export class SkraaFotoViewport extends HTMLElement {
       let icon_feature = new Feature({
         geometry: new Point([center[0], center[1]])
       })
-      const icon_style = new Style({
-        image: new Icon({
-          src: icon_image,
-          scale: 1
+      let icon_style
+      if (configuration.ENABLE_CROSSHAIR_ICON) {
+        icon_style = new Style({
+          image: new Icon({
+            src: icon_image,
+            scale: 1
+          })
         })
-      })
+      } else {
+          icon_style = new Style({
+            image: new Icon({
+              src: icon_image,
+              scale: 1.5
+            })
+          })
+        }
+
       icon_feature.setStyle(icon_style)
       return new VectorLayer({
         source: new VectorSource({

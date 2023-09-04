@@ -23,6 +23,7 @@ let configuration = {
   ENABLE_COMPASSARROWS: true, // Enables compass buttons
   ENABLE_DATESQUASH: true, // Enables date-selector squash
   ENABLE_CROSSHAIR: false, // Enables crosshair/movement tool
+  ENABLE_CROSSHAIR_ICON: false,
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
   ENABLE_ALERT: false,
 
