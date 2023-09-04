@@ -316,7 +316,7 @@ export class SkraaFotoViewport extends HTMLElement {
               scale: 1.5
             })
           })
-        }
+      }
 
       icon_feature.setStyle(icon_style)
       return new VectorLayer({
