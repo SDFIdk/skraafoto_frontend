@@ -9,6 +9,9 @@ import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 import { getImageXY, image2world } from '@dataforsyningen/saul'
 import store from '../store'
+import { configuration } from "../modules/configuration";
+
+
 
 /**
  * Creates an Openlayers layer with a pointer marker.
@@ -18,11 +21,12 @@ function generatePointerLayer() {
   const source = new VectorSource({
     features: [new Feature(new Point([-9999, -9999]))]
   })
+  const colorSetting = configuration.COLOR_SETTINGS.pointerColor
   const style = new Style({
     image: new Circle({
       radius: 4,
       stroke: new Stroke({
-        color: 'hsl(0,100%,66%)', // advarsel
+        color: colorSetting, // advarsel
         width: 2
       })
     }),
@@ -97,7 +101,7 @@ function addPointerLayerToMap(map) {
     /**
      * It is too expensive to get the Z value for every point, so we use the most recent value stored from
      * zoom sync instead.
-     */ 
+     */
     const coord = [event.coordinate[0], event.coordinate[1], store.state.view.center[2] || 0]
     window.dispatchEvent(new CustomEvent("updatePointer", { detail: { coord: coord, map: map } }))
   })

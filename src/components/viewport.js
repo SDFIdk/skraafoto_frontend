@@ -302,18 +302,21 @@ export class SkraaFotoViewport extends HTMLElement {
         geometry: new Point([center[0], center[1]])
       })
       let icon_style
+      const colorSetting = configuration.COLOR_SETTINGS.targetColor
       if (configuration.ENABLE_CROSSHAIR_ICON) {
         icon_style = new Style({
           image: new Icon({
             src: icon_image,
-            scale: 1
+            scale: 1,
+            color: colorSetting
           })
         })
       } else {
           icon_style = new Style({
             image: new Icon({
               src: icon_image,
-              scale: 1.5
+              scale: 1.5,
+              color: colorSetting
             })
           })
       }

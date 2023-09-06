@@ -9,6 +9,7 @@ import Style from 'ol/style/Style'
 import Icon from 'ol/style/Icon'
 import Stroke from 'ol/style/Stroke'
 import { image2world } from '@dataforsyningen/saul'
+import {configuration} from "../modules/configuration";
 
 const camera_styles = {
   'nadir': new Style(),
@@ -29,9 +30,10 @@ function generateFootprintLayer() {
       new Feature({ name: 'polygon' })
     ]
   })
+  const colorSetting = configuration.COLOR_SETTINGS.footprintColor
   const style = new Style({
     stroke: new Stroke({
-      color: 'hsl(186,100%,12%)', // --mork-tyrkis
+      color: colorSetting, // --mork-tyrkis
       width: 2
     }),
     zIndex: Infinity

@@ -5,7 +5,8 @@ import Draw from 'ol/interaction/Draw'
 import { getDistance } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
-import {unByKey} from 'ol/Observable'
+import { unByKey } from 'ol/Observable'
+import { configuration } from "../modules/configuration";
 
 /**
  * Enables user to measure horizontal distances in an image
@@ -15,9 +16,10 @@ export class MeasureWidthTool {
   // properties
   coorTranslator = createTranslator()
   viewport
+  colorSetting = configuration.COLOR_SETTINGS.heightColor
   style = new Style({
     stroke: new Stroke({
-      color: '#3EDDC6',
+      color: this.colorSetting,
       width: 3
     }),
     image: new CircleStyle({
@@ -68,7 +70,7 @@ export class MeasureWidthTool {
       left: 50%;
     }
   `
-  
+
 
   constructor(viewport) {
 
@@ -139,14 +141,14 @@ export class MeasureWidthTool {
       minPoints: 2
     })
     this.viewport.map.addInteraction(this.draw)
-  
+
     this.createHelpTooltip()
     this.createMeasureTooltip()
-  
+
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
-  
+
       let tooltipCoord = event.coordinate
       listener = this.sketch.getGeometry().on('change', async (ev) => {
         const geom = ev.target
@@ -156,9 +158,9 @@ export class MeasureWidthTool {
         this.measureTooltipElement.innerHTML = output
         this.measureTooltip.setPosition(tooltipCoord)
       })
-      
+
     })
-  
+
     this.draw.on('drawend', async () => {
       const geom = this.sketch.getGeometry()
       this.measureTooltipElement.innerHTML = await this.calculateDistance(geom.flatCoordinates)
@@ -181,7 +183,7 @@ export class MeasureWidthTool {
     if (this.helpTooltipElement) {
       this.helpTooltipElement.remove()
     }
-    
+
     this.helpTooltipElement = document.createElement('div')
     this.helpTooltipElement.className = 'ol-tooltip hidden'
     this.helpTooltip = new Overlay({
@@ -214,7 +216,7 @@ export class MeasureWidthTool {
   calcTooltipPosition(geometry) {
     return geometry.getFlatMidpoint()
   }
-  
+
   imageChangeHandler() {
     this.clearInteraction()
     this.clearDrawings()

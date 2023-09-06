@@ -15,7 +15,7 @@ let configuration = {
   ENABLE_VIEW_SWITCH: false, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
   ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
-  ENABLE_POINTER: false, // Enables displaying the cursor's position as a yellow dot on the other viewports
+  ENABLE_POINTER: true, // Enables displaying the cursor's position as a yellow dot on the other viewports
   ENABLE_FOOTPRINT: false, // Enables displaying the footprint of the viewport being hovered over on the map
   ENABLE_EXPOSURE: false, // Enables a button for cycling through a selection of different exposure manipulations.
   ENABLE_SMALL_FONT: false, // Enables a small font on image-date
@@ -36,6 +36,17 @@ let configuration = {
 
   SITEIMPROVE_SCRIPT: '',
   DOWNLOAD_TYPE: 'default', // 'default' | 'currentview'
+
+  COLOR_SETTINGS:
+    {
+      cursorColor: 'icon_crosshair.svg', // cursor                        / Default outer:'fill:#808080', inner:'fill:#ffffff' black/white
+      targetColor: '#FFF', // cursor-target viewport.js                   / Default '#FFF' white
+      heightColor: '#FF5252', // map-tool-measure-height.js line          / Default '#FF5252' red
+      widthColor: '#3EDDC6', // map-tool-measure-length.js line           / Default '#3EDDC6' cyan
+      pointerColor: 'hsl(0,100%,66%)', //plugin-pointer.js circle         / Default 'hsl(0,100%,66%)' red
+      parcelColor: 'hsl(26,80%,56%)', // plugin-parcel.js square          / Default 'hsl(26,80%,56%)' orange
+      footprintColor: 'hsl(186,100%,12%)', // plugin-footprint.js square  / Default 'hsl(186,100%,12%)' dark blue
+    },
 
   // options for lighting to cycle through when clicking the light button
   EXPOSURE_SETTINGS: [

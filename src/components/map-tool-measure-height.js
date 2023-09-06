@@ -6,6 +6,7 @@ import Overlay from 'ol/Overlay'
 import { image2world, getImageXY, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
+import { configuration } from "../modules/configuration";
 
 /**
  * Enables user to measure vertical distances in an image
@@ -15,9 +16,10 @@ export class MeasureHeightTool {
   // properties
   coorTranslator = createTranslator()
   viewport
+  colorSetting = configuration.COLOR_SETTINGS.heightColor
   style = new Style({
     stroke: new Stroke({
-      color: '#FF5252',
+      color: this.colorSetting,
       width: 3
     }),
     image: new CircleStyle({
@@ -69,7 +71,7 @@ export class MeasureHeightTool {
       left: 50%;
     }
   `
-  
+
 
   constructor(viewport) {
 
@@ -158,10 +160,10 @@ export class MeasureHeightTool {
       }
     })
     this.viewport.map.addInteraction(this.draw)
-  
+
     this.createHelpTooltip()
     this.createMeasureTooltip()
-  
+
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
@@ -176,13 +178,13 @@ export class MeasureHeightTool {
         this.measureTooltip.setOffset([0, -7])
         this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
       })
-      
+
     })
-  
+
     this.draw.on('drawend', () => {
 
       this.drawAdjustedLine(this.axisFunc, this.calcTooltipPosition, this.measureTooltipElement, this.measureTooltip)
-      
+
       // unset sketch
       this.sketch = null
       // unset tooltip so that a new one can be created
@@ -193,7 +195,7 @@ export class MeasureHeightTool {
   }
 
   drawAdjustedLine(axisFunction, tooltipPositionFunction, tooltipElement, tooltip) {
-    
+
     const geom = this.sketch.getGeometry()
     const new_coords = geom.getCoordinates()
 
@@ -217,7 +219,7 @@ export class MeasureHeightTool {
     if (this.helpTooltipElement) {
       this.helpTooltipElement.remove()
     }
-    
+
     this.helpTooltipElement = document.createElement('div')
     this.helpTooltipElement.className = 'ol-tooltip hidden'
     this.helpTooltip = new Overlay({
@@ -250,7 +252,7 @@ export class MeasureHeightTool {
   calcTooltipPosition(geometry) {
     return geometry.getFlatMidpoint()
   }
-  
+
   imageChangeHandler() {
     this.clearInteraction()
     this.clearDrawings()
@@ -275,7 +277,7 @@ export class MeasureHeightTool {
     const image0 = getImageXY(image_item, world0[0], world0[1])
     const image1 = getImageXY(image_item, world1[0], world1[1])
     const skew_factor = [(image1[0] - image0[0])/10, (image1[1] - image0[1])/10]
-    
+
     // Return a function that takes two image coordinates and returns the second coordinate with Y axis skew adjusted
     return function(image_coor_1, image_coor_2) {
       const s = skew_factor

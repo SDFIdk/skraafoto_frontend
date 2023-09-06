@@ -214,8 +214,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
     const buttonUp = this.shadowRoot.querySelector('.button-up');
     let isOptionClicked = false;
 
-    // ... Existing code ...
-
     // Add event listener to the button-down
     buttonDown.addEventListener('click', () => {
       const selectedIndex = selectElement.selectedIndex;

@@ -89,8 +89,9 @@ function generateParcelVectorLayer() {
   const fill = new Fill({
     color: 'transparent',
   })
+  const colorSetting = configuration.COLOR_SETTINGS.footprintColor
   const stroke = new Stroke({
-    color: 'hsl(26,80%,56%)', // highlight
+    color: colorSetting, // highlight
     width: 2,
   })
   const style = new Style({
