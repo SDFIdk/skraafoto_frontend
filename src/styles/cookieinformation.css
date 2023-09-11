@@ -12,5 +12,5 @@
 }
 
 button.coi-banner__accept {
-  --color: var(--hvid);
+  --color: var(--hvid) !important;
 }
