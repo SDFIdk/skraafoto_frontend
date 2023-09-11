@@ -12,5 +12,9 @@
 }
 
 button.coi-banner__accept {
-  --color: var(--hvid) !important;
+  color: var(--hvid) !important;
+}
+
+button.coi-consent-banner__category-name:focus {
+  box-shadow: none;
 }
