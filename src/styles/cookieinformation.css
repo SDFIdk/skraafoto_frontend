@@ -1,0 +1,16 @@
+#coi-banner-wrapper {
+  --color: var(--sort);
+  --footer-background: var(--hvid);
+}
+#coi-banner-wrapper h1,
+#coi-banner-wrapper h2,
+#coi-banner-wrapper h3,
+#coi-banner-wrapper h4,
+#coi-banner-wrapper h5,
+#coi-banner-wrapper h6 {
+  --color: var(--sort);
+}
+
+button.coi-banner__accept {
+  --color: var(--hvid);
+}
