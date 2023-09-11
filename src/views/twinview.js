@@ -1,17 +1,15 @@
 import { getZ } from '@dataforsyningen/saul'
 import { queryItems, queryItem, getCollections } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
-import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
-import {getParam, setParams } from "../modules/url-state";
-import {fetchParcels } from "../custom-plugins/plugin-parcel";
-import store from "../store";
+import {getParam, setParams } from "../modules/url-state"
+import {fetchParcels } from "../custom-plugins/plugin-parcel"
+import store from "../store"
 import { registerComponents } from '../components/component-register.js'
 
 
 // Initialize web components
 registerComponents()
-
 
 
 // Variables
@@ -60,12 +58,6 @@ function updateViews() {
   }
 }
 
-function setupConfigurables(conf) {
-  if (conf.ENABLE_WEB_STATISTICS) {
-    customElements.define('cookie-alert', CookieAlert)
-  }
-}
-
 // Set up event listeners
 
 // On a new address input, update URL params
@@ -107,8 +99,6 @@ document.addEventListener('loaderror', function(event) {
 
 
 // Initialize
-
-setupConfigurables(configuration)
 
 updateViews()
 

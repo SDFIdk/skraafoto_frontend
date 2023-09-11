@@ -8,10 +8,11 @@ import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoDateViewer } from "./date-viewer"
 import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
-import { SkraaFotoCompassArrows } from "./compass-arrows";
-import { SkraaFotoCompass } from "./compass";
+import { SkraaFotoCompassArrows } from "./compass-arrows"
+import { SkraaFotoCompass } from "./compass"
 import { FirstTimeVisit } from './first-time-visitor.js'
-import {configuration} from "../modules/configuration";
+import { configuration } from "../modules/configuration"
+import { CookieAlert } from '../components/cookie-alert.js'
 
 
 export function registerComponents() {
@@ -27,7 +28,10 @@ export function registerComponents() {
   customElements.define('skraafoto-compass', SkraaFotoCompass);
 
   if (configuration.ENABLE_COMPASSARROWS) {
-    customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows);
+    customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
+  }
+  if (configuration.ENABLE_WEB_STATISTICS) {
+    customElements.define('cookie-alert', CookieAlert)
   }
 
 }
