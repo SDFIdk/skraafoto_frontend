@@ -2,7 +2,6 @@ import { getZ } from '@dataforsyningen/saul'
 import { getParam, setParams } from '../modules/url-state.js'
 import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
-import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
 import store from '../store'
@@ -11,6 +10,7 @@ import { registerComponents } from '../components/component-register.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
 import {SkraaFotoViewportMini } from "../components/viewport-mini.js"
+import { setupAnalytics } from '../modules/tracking.js'
 
 
 // Initialize web components
@@ -73,12 +73,6 @@ function updateViews() {
       collection: collection,
       center: getParam('center')
     }
-  }
-}
-
-async function setupConfigurables(conf) {
-  if (conf.ENABLE_WEB_STATISTICS) {
-    customElements.define('cookie-alert', CookieAlert)
   }
 }
 
@@ -193,11 +187,9 @@ document.addEventListener('keydown', function(event) {
 }
 
 
-
-
 // Initialize
 
-setupConfigurables(configuration)
+setupAnalytics()
 
 if (getParam('item')) {
   const item = await queryItem(getParam('item'))

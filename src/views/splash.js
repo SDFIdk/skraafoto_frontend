@@ -1,8 +1,7 @@
 import { SkraaFotoAddressSearch } from '../components/address-search.js'
 import { SkraaFotoHeader } from '../components/page-header.js'
-import { configuration } from '../modules/configuration.js'
-import { CookieAlert } from '../components/cookie-alert.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
+import { setupAnalytics } from '../modules/tracking.js' 
 
 
 customElements.define('skraafoto-header', SkraaFotoHeader)
@@ -15,6 +14,4 @@ document.addEventListener('gsearch:select', function(event) {
   location.href = `viewer.html?center=${ coor }&orientation=north`
 })
 
-if (configuration.ENABLE_WEB_STATISTICS) {
-  customElements.define('cookie-alert', CookieAlert)
-}
+setupAnalytics()
