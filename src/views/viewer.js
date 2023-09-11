@@ -10,6 +10,7 @@ import { registerComponents } from '../components/component-register.js'
 import { SkraaFotoViewport } from '../components/viewport.js'
 import { SkraaFotoMap } from '../components/map.js'
 import {SkraaFotoViewportMini } from "../components/viewport-mini.js"
+import { setupAnalytics } from '../modules/tracking.js'
 
 
 // Initialize web components
@@ -187,6 +188,8 @@ document.addEventListener('keydown', function(event) {
 
 
 // Initialize
+
+setupAnalytics()
 
 if (getParam('item')) {
   const item = await queryItem(getParam('item'))

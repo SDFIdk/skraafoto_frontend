@@ -12,12 +12,11 @@ import { SkraaFotoCompassArrows } from "./compass-arrows"
 import { SkraaFotoCompass } from "./compass"
 import { FirstTimeVisit } from './first-time-visitor.js'
 import { configuration } from "../modules/configuration"
-import { CookieAlert } from '../components/cookie-alert.js'
 
 
 export function registerComponents() {
   customElements.define('ds-spinner', Spinner)
-  customElements.define('skraafoto-alert-splash', AlertSplash);
+  customElements.define('skraafoto-alert-splash', AlertSplash)
   customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)
   customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)
   customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
@@ -25,14 +24,10 @@ export function registerComponents() {
   customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
   customElements.define('skraafoto-header', SkraaFotoHeader)
   customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
-  customElements.define('skraafoto-compass', SkraaFotoCompass);
+  customElements.define('skraafoto-compass', SkraaFotoCompass)
 
   if (configuration.ENABLE_COMPASSARROWS) {
     customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
   }
-  if (configuration.ENABLE_WEB_STATISTICS) {
-    customElements.define('cookie-alert', CookieAlert)
-  }
 
 }
-

@@ -6,6 +6,7 @@ import {getParam, setParams} from "../modules/url-state";
 import {fetchParcels} from "../custom-plugins/plugin-parcel";
 import store from "../store";
 import { registerComponents } from '../components/component-register.js'
+import { setupAnalytics } from '../modules/tracking.js';
 
 // Initialize web components
 registerComponents()
@@ -126,6 +127,8 @@ document.addEventListener('keydown', function(event) {
 
 
 // Initialize
+
+setupAnalytics()
 
 if (getParam('item')) {
   const item = await queryItem(getParam('item'))
