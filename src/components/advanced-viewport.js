@@ -3,20 +3,23 @@ import { addViewSyncViewportTrigger, getViewSyncViewportListener } from '../modu
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from './map-tool-crosshair.js'
 import { SkraaFotoViewport } from './viewport.js'
-import { DragPan } from 'ol/interaction'
 import { SkraaFotoDownloadTool } from '../components/map-tool-download.js'
 import { CenterTool } from './map-tool-center.js'
 import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
 import View from 'ol/View.js'
 import FullScreen from 'ol/control/FullScreen'
-// import MousePosition from 'ol/control/MousePosition' // For debugging
 import { configuration } from '../modules/configuration.js'
-
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
 customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
+
+// Load web component if configured
+if (config.ENABLE_YEAR_SELECTOR) {
+  const { SkraaFotoYearSelector } = await import("./year-selector.js")
+  customElements.define('skraafoto-year-selector', SkraaFotoYearSelector)
+}
 
 /**
  * Web component that displays a viewport with a toolbar
@@ -148,7 +151,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     
     <nav class="ds-nav-tools">
       <div class="ds-button-group">
-        <skraafoto-date-selector></skraafoto-date-selector>
+        ${ 
+          config.ENABLE_YEAR_SELECTOR ? 
+          '<skraafoto-year-selector></skraafoto-year-selector>'
+          : '<skraafoto-date-selector></skraafoto-date-selector>' 
+        }
         <hr>
         <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
         <button id="height-btn" class="btn-height-measure ds-icon-map-icon-ruler" title="Mål højde"></button>
@@ -193,21 +200,26 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
 
     // Refer DOM elements for later use
-    this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
+    if (!config.ENABLE_YEAR_SELECTOR) {
+      this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
+    }
     this.date_viewer_element = this.shadowRoot.querySelector('skraafoto-date-viewer')
   }
 
   updatePlugins() {
     super.updatePlugins()
-    this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    if (configuration.ENABLE_CROSSHAIR) {
-      this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
+    
+    if (!config.ENABLE_YEAR_SELECTOR) {
+      this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
+      if (configuration.ENABLE_CROSSHAIR) {
+        this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
+      }
+      if (configuration.ENABLE_EXPOSURE) {
+        this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
+      }
+      this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
+      this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
     }
-    if (configuration.ENABLE_EXPOSURE) {
-      this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
-    }
-    this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
-    this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
 
   updateDateSelector(center, image_id, direction) {
