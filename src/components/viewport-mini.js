@@ -1,5 +1,4 @@
 import Projection from 'ol/proj/Projection.js'
-import GeoTIFF from 'ol/source/GeoTIFF.js'
 import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
 import View from 'ol/View.js'
