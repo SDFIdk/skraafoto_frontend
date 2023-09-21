@@ -15,12 +15,6 @@ customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
 customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
-// Load web component if configured
-if (config.ENABLE_YEAR_SELECTOR) {
-  const { SkraaFotoYearSelector } = await import("./year-selector.js")
-  customElements.define('skraafoto-year-selector', SkraaFotoYearSelector)
-}
-
 /**
  * Web component that displays a viewport with a toolbar
  * @extends SkraaFotoViewport
@@ -43,6 +37,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   date_selector_element
   // styles
   adv_styles = /*css*/`
+    .adv-viewport-wrapper {}
     .ol-viewport canvas {
       cursor: url('./img/icons/icon_crosshair.svg') 15 15, crosshair;
     }
@@ -112,8 +107,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
     
     .sf-compass-arrows {
-    display: absolute;
-    padding:10rem;
+      display: absolute;
+      padding:10rem;
     }
 
     @media screen and (max-width: 35rem) {
@@ -121,12 +116,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         top: 0.5rem;
         right: 1rem;
       }
-      .ds-nav-tools {
-        position: absolute;
-        z-index: 2;
-        top: 0.5rem;
-        left: 0.5rem;
-    }
     }
 
     @media screen and (max-width: 50rem) {
@@ -163,6 +152,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
     </nav>
+    ${ 
+      config.ENABLE_DATE_BROWSER ?
+      '<skraafoto-date-viewer></skraafoto-date-viewer>' : ''
+    }
   `
 
   // setters
@@ -183,6 +176,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   addToDOM() {
     // Add date selector to shadow DOM
     const div = document.createElement('div')
+    div.className = 'adv-viewport-wrapper'
     div.innerHTML = this.adv_template
     this.shadowRoot.append(div)
 
@@ -203,7 +197,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     if (!config.ENABLE_YEAR_SELECTOR) {
       this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
     }
-    this.date_viewer_element = this.shadowRoot.querySelector('skraafoto-date-viewer')
+    if (config.ENABLE_DATE_BROWSER) {
+      this.date_viewer_element = this.shadowRoot.querySelector('skraafoto-date-viewer');
+    }
   }
 
   updatePlugins() {

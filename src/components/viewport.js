@@ -83,13 +83,6 @@ export class SkraaFotoViewport extends HTMLElement {
       right: 3rem;
       -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
     }
-    skraafoto-date-viewer {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      pointer-events: none;
-    }
     .image-date {
       position: absolute;
       bottom: 1rem;
@@ -158,7 +151,6 @@ export class SkraaFotoViewport extends HTMLElement {
     
     <skraafoto-compass direction="north"></skraafoto-compass>
     <skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>
-    <skraafoto-date-viewer></skraafoto-date-viewer>
     <p id="image-date" class="image-date"></p>
   `
 
@@ -199,11 +191,6 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
-    }
-    if (!configuration.ENABLE_DATESQUASH) {
-      const dateViewer = this.shadowRoot.querySelector('skraafoto-date-viewer');
-      dateViewer.style.display = 'none';
-
     }
     // Modify this block
     if (configuration.ENABLE_COMPASSARROWS) {

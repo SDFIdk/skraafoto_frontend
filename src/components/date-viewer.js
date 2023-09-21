@@ -3,44 +3,35 @@ import { configuration } from '../modules/configuration.js'
 import { getParam, setParams } from '../modules/url-state.js'
 
 /**
- * Web component that fetches a list of items covering a specific coordinate and orientation.
+ * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
  * Enables user to select an item for view by its date
  */
 export class SkraaFotoDateViewer extends HTMLElement {
 
-  // public properties
-  param_name = 'item'
-  auth = configuration
-  items = []
-  center
-  selected
-  styles = `
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-  }
-  .ds-nav-tools {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .ds-button-group button, .ds-button-group  {
-    padding: 0;
-    pointer-events: all;
-  }
-  
-  .sf-date-viewer {
-    margin: 0 20px;
-    color: black;
-  }
-      select {
+  items
+  #selector_element
+  #styles = `
+    skraafoto-date-viewer {
+      z-index: 1;
+      position: fixed;
+      bottom: 1rem;
+      pointer-events: none;
+      height: 5rem;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+    }
+    .ds-nav-tools {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .ds-button-group button, .ds-button-group  {
+      padding: 0;
+      pointer-events: all;
+    }
+    select {
       background-color: var(--hvid);
       border: none;
       cursor: pointer;
@@ -87,131 +78,38 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
     }
    `
-  template = `
-    <link rel="stylesheet" href="./style.css">
+  #template = `
     <style>
-      ${this.styles}
+      ${ this.#styles }
     </style>
-      <nav class="ds-nav-tools">
-        <div class="ds-button-group">
-            <button class="button-down ds-icon-icon-arrow-single-down"></button>
-            <hr>
-            <select class="sf-date-viewer" id="date"></select>
-            <hr>
-            <button class=" button-up ds-icon-icon-arrow-single-up"></button>
-        </div>
-      </nav>
+    <nav class="ds-nav-tools">
+      <div class="ds-button-group">
+        <button class="button-down ds-icon-icon-arrow-single-down"></button>
+        <hr>
+        <select class="sf-date-viewer" id="date"></select>
+        <hr>
+        <button class=" button-up ds-icon-icon-arrow-single-up"></button>
+      </div>
+    </nav>
   `
-
-// setters
-
-  set setData(data) {
-    this.update(data)
-  }
-
-  set setParamName(name) {
-    this.param_name = name
-  }
 
   constructor() {
     super()
-    this.createShadowDOM()
   }
-
-
-  // methods
-
-  createShadowDOM() {
-    // Create a shadow root
-    this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    // Create div element
-    const div = document.createElement('div')
-    div.innerHTML = this.template
-    // attach the created elements to the shadow DOM
-    this.shadowRoot.append(div)
-    // save element for later use
-    this.selector_element = this.shadowRoot.querySelector('.sf-date-viewer')
-  }
-
-  async update({center, selected, orientation}) {
-    this.center = center
-    this.selected = selected
-    if (orientation && center) {
-      queryItems(center, orientation, false, 50).then((items) => {
-        this.items = items.features
-        this.updateOptions(this.items)
-      })
-    }
-  }
-
-  updateOptions(options) {
-    this.selector_element.innerHTML = ''
-    const sorted_collections = this.sortOptions(options)
-    for (let c in sorted_collections) {
-      this.buildOptionGroupHTML(sorted_collections[c])
-      for (let i = 0; i < sorted_collections[c].items.length; i++) {
-        this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
-      }
-    }
-    this.selector_element.value = getParam(this.param_name)
-  }
-
-  sortOptions(items) {
-    let collections = []
-    items.forEach(function(item) {
-      let coll = collections.find(function(c) {
-        return c.collection === item.collection
-      })
-      if (coll) {
-        coll.items.push(item)
-      } else {
-        collections.push({
-          collection: item.collection,
-          items: [item]
-        })
-      }
-    })
-    collections.sort(function(a,b) {
-      if (a.collection > b.collection) {
-        return -1
-      }
-      if (a.collection < b.collection) {
-        return 1
-      }
-      if (a.collection === b.collection) {
-        return 0
-      }
-    })
-    return collections
-  }
-
-  buildOptionGroupHTML(collection) {
-    let option_group_el = document.createElement('optgroup')
-    option_group_el.label = collection.collection
-    this.selector_element.appendChild(option_group_el)
-  }
-
-
-  buildOptionHTML(item, idx, collection_length) {
-    const datetime = new Date(item.properties.datetime);
-      const formattedDate = datetime.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric"
-      }); // Updated this line
-      let option_el = document.createElement('option');
-      option_el.value = item.id;
-      option_el.innerText = `${formattedDate} ${idx + 1}/${collection_length}`; // Updated this line
-      this.selector_element.querySelector(`[label="${item.collection}"]`).appendChild(option_el);
-  }
-
-
-  // Lifecycle
 
   connectedCallback() {
-    const selectElement = this.shadowRoot.querySelector('select');
-    const buttonDown = this.shadowRoot.querySelector('.button-down');
-    const buttonUp = this.shadowRoot.querySelector('.button-up');
+    this.#createDOM()
+
+    this.#update()
+
+    // Listen for URL opdates and update list of available items
+    window.addEventListener('urlupdate', () => {
+      this.#update()
+    })
+    
+    const selectElement = this.querySelector('select');
+    const buttonDown = this.querySelector('.button-down');
+    const buttonUp = this.querySelector('.button-up');
     let isOptionClicked = false;
 
     // Add event listener to the button-down
@@ -261,8 +159,49 @@ export class SkraaFotoDateViewer extends HTMLElement {
       isOptionClicked = false; // Reset the flag
     });
   }
+
+
+  // methods
+
+  #createDOM() {
+    this.innerHTML = this.#template
+    // save element for later use
+    this.#selector_element = this.querySelector('.sf-date-viewer')
+  }
+
+  async #update() {
+    const y = getParam('year')
+    const o = getParam('orientation')
+    const c = getParam('center')
+    if (y && o && c) {
+      const response = await queryItems(c, o, `skraafotos${ y }`, 50)
+      this.items = response.features
+      this.#buildOptionsHTML(this.items)
+      this.#setSelected(getParam('item'))
+    } else {
+      console.error('Not enough state information to fetch items. Missing either "year", "orientation", or "center".')
+      return
+    }
+  }
+
+  #buildOptionsHTML(features) {
+    this.#selector_element.innerHTML = ''
+    features.forEach((f, idx) => {
+      const datetime = new Date(f.properties.datetime)
+      const formattedDate = datetime.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric"
+      })
+      let option_el = document.createElement('option')
+      option_el.value = f.id
+      option_el.innerText = `${ formattedDate } ${ idx + 1 }/${ features.length }`
+      this.#selector_element.appendChild(option_el)
+    })
+  }
+
+  #setSelected(id) {
+    this.#selector_element.value = id
+  }
+
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-date-viewer', SkraaFotoDateViewer)
-
