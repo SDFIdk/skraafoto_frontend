@@ -208,18 +208,18 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   updatePlugins() {
     super.updatePlugins()
-    
+
     if (!config.ENABLE_YEAR_SELECTOR) {
       this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-      if (configuration.ENABLE_CROSSHAIR) {
-        this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
-      }
-      if (configuration.ENABLE_EXPOSURE) {
-        this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
-      }
-      this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
-      this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
     }
+    if (configuration.ENABLE_CROSSHAIR) {
+      this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
+    }
+    if (configuration.ENABLE_EXPOSURE) {
+      this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
+    }
+    this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
+    this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
   }
 
   updateDateSelector(center, image_id, direction) {
