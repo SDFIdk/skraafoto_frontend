@@ -95,6 +95,10 @@ export class SkraaFotoYearSelector extends HTMLElement {
       this.#selectElement.appendChild(optionElement)
     }
 
+    // If no 'year' URL param is present, set a default one
+    if (!getParam('year')) {
+      setParams({year: collections[0].title.match(yearRegex)[0]})
+    }
     // Setup select element value (from URL param)
     this.#selectElement.value = getParam('year')
     // Listen for user change
