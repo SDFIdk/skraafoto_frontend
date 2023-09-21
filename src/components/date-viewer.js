@@ -141,23 +141,23 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
     // When an option is selected, send an event with the corresponding image data
     selectElement.addEventListener('change', (event) => {
-      const item = this.items.find((item) => item.id === event.target.value);
-      setParams({ [this.param_name]: item.id });
-      selectElement.blur(); // Remove focus from the select element
-    });
+      const item = this.items.find((item) => item.id === event.target.value)
+      setParams({ item: item.id })
+      selectElement.blur() // Remove focus from the select element
+    })
 
     // When an option is clicked, set the flag to prevent focus removal
     selectElement.addEventListener('mousedown', () => {
-      isOptionClicked = true;
-    });
+      isOptionClicked = true
+    })
 
     // When the select element loses focus, remove focus if no option is selected
     selectElement.addEventListener('blur', () => {
       if (!isOptionClicked) {
-        selectElement.selectedIndex = -1; // Deselect any selected option
+        selectElement.selectedIndex = -1 // Deselect any selected option
       }
-      isOptionClicked = false; // Reset the flag
-    });
+      isOptionClicked = false // Reset the flag
+    })
   }
 
 
