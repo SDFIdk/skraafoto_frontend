@@ -177,8 +177,8 @@ document.addEventListener('loaderror', function(event) {
 
 // Set up shortkeys for date-selector
 if (!configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer');
-document.addEventListener('keydown', function(event) {
+  const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer');
+  document.addEventListener('keydown', function(event) {
 
   const option_list = dateSelector_element.options;
   let current_idx = option_list.selectedIndex;
@@ -209,8 +209,8 @@ document.addEventListener('keydown', function(event) {
 
 // Datesquash shortkeys
 if (configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
-document.addEventListener('keydown', function(event) {
+  const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
+  document.addEventListener('keydown', function(event) {
 
   const option_list = dateSelector_element.selector_element.options;
   let current_idx = option_list.selectedIndex;

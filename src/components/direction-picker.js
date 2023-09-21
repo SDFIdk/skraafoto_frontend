@@ -227,10 +227,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.btn_open_element = this.shadowRoot.querySelector('.sf-slider-open')
     this.btn_close_element = this.shadowRoot.querySelector('.sf-slider-close')
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
-
-    if (configuration.ENABLE_DATESQUASH) {
-      this.shadowRoot
-    }
   }
 
   /** Checks whether center coordinate is outside image area */
