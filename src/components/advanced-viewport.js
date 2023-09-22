@@ -37,6 +37,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     inactiveClassName: 'ds-icon-icon-fullscreen'
   })
   // mousepos = new MousePosition() // For debugging
+  date_selector_element
   // styles
   adv_styles = /*css*/`
     .ol-viewport canvas {
@@ -156,6 +157,13 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       </div>
     </nav>
   `
+
+  // setters
+
+  set setParamName(name) {
+    this.date_selector_element.setParamName = name
+  }
+
 
   constructor() {
     super() // Inherit stuff from SkraaFotoViewport
