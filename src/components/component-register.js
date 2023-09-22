@@ -13,7 +13,7 @@ import { configuration } from "../modules/configuration"
 
 
 export async function registerComponents() {
-  
+
   customElements.define('ds-spinner', Spinner)
   customElements.define('skraafoto-alert-splash', AlertSplash)
   customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)
