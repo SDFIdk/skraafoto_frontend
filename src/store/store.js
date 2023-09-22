@@ -29,12 +29,13 @@ export default class Store {
       return false
     }
 
-    // Publish only the event itself and not the whole state
-    self.events.publish(actionKey, payload)
-
     // Set the state
     self.actions[actionKey](self.state, payload)
 
+    // Publish only the event itself and not the whole state
+    self.events.publish(actionKey, payload)
+
     return true
   }
+
 }
