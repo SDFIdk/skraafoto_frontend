@@ -154,22 +154,6 @@ export class SkraaFotoViewport extends HTMLElement {
     <p id="image-date" class="image-date"></p>
   `
 
-
-  // getters
-  static get observedAttributes() {
-    return [
-      'data-item',
-      'data-center'
-    ]
-  }
-
-
-  // setters
-  set setData(data) {
-    this.update(data)
-  }
-
-
   constructor() {
     super()
     this.createShadowDOM()
@@ -350,7 +334,6 @@ export class SkraaFotoViewport extends HTMLElement {
   updateDirection(imagedata) {
     this.compass_element.setAttribute('direction', imagedata.properties.direction)
     this.compassArrows_element.setAttribute('direction', imagedata.properties.direction)
-
   }
 
   updateDate(imagedata) {
@@ -402,10 +385,23 @@ export class SkraaFotoViewport extends HTMLElement {
     return view
   }
 
+  update_item_function(event) {
+    this.update({item: event.detail})
+  }
+
+  update_center_function(event) {
+    this.update({center: event.detail.center})
+  }
+
 
   // Lifecycle callbacks
 
   connectedCallback() {
+
+    this.update({
+      item: store.state.itemId, 
+      center: store.state.view.center
+    })
 
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
@@ -420,6 +416,9 @@ export class SkraaFotoViewport extends HTMLElement {
 
     this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
+    
+    window.addEventListener('item', this.update_item_function.bind(this))
+    window.addEventListener('view', this.update_center_function.bind(this))
 
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -434,17 +433,8 @@ export class SkraaFotoViewport extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
+    window.removeEventListener('item', this.update_item_function)
+    window.removeEventListener('view', this.update_center_function)
   }
 
-  attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'data-item' && old_value !== new_value) {
-      this.update({item: new_value})
-    }
-    if (name === 'data-center' && old_value !== new_value) {
-      this.update({center: JSON.parse(new_value)})
-    }
-  }
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-viewport', SkraaFotoViewport)
