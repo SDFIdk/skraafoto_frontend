@@ -1,6 +1,7 @@
 import { queryItems } from '../modules/api.js'
-import { setParams } from '../modules/url-state.js'
-import {configuration} from "../modules/configuration";
+import { configuration } from "../modules/configuration.js"
+import store from '../store'
+
 /**
  * Web component that displays and updates a list of viewports with views from various directions
  */
@@ -171,37 +172,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     </section>
   `
 
-
-  // setters
-
-  set setView(options) {
-
-    // Update mini viewports
-    let queries = [
-      queryItems(options.center, 'north', options.collection),
-      queryItems(options.center, 'south', options.collection),
-      queryItems(options.center, 'east', options.collection),
-      queryItems(options.center, 'west', options.collection),
-      queryItems(options.center, 'nadir', options.collection)
-    ]
-    Promise.all(queries).then((responses) => {
-      let items = responses.map(function(response) {
-        return response.features[0]
-      })
-      for (let i in items) {
-        this.updateViewport(options.center, items[i])
-      }
-      this.highlightCurrentDirection()
-    })
-
-    // Update map
-    this.map_element.dataset.center = JSON.stringify(options.center)
-
-  }
-
   constructor() {
     super()
-    this.createShadowDOM()
   }
 
 
@@ -260,10 +232,39 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this[`${ url_params_orientation }_element`].parentNode.classList.add('active')
   }
 
+  updateViewHandler() {
+    const center = store.state.view.center
+    const collection = store.state.collection
+
+    // Update mini viewports
+    let queries = [
+      queryItems(center, 'north', collection),
+      queryItems(center, 'south', collection),
+      queryItems(center, 'east', collection),
+      queryItems(center, 'west', collection),
+      queryItems(center, 'nadir', collection)
+    ]
+    Promise.all(queries).then((responses) => {
+      let items = responses.map(function(response) {
+        return response.features[0]
+      })
+      for (let i in items) {
+        this.updateViewport(center, items[i])
+      }
+      this.highlightCurrentDirection()
+    })
+
+    // Update map
+    this.map_element.dataset.center = JSON.stringify(center)
+  }
+
 
   // Lifecycle
 
   connectedCallback() {
+
+    this.createShadowDOM()
+    this.updateViewHandler()
 
     this.btn_open_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,0)'
@@ -273,30 +274,27 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
+    // Update views on view and collection state changes
+    window.addEventListener('view', this.updateViewHandler.bind(this))
+    window.addEventListener('collection', this.updateViewHandler.bind(this))
+
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
       let target_item
       switch(event.target.className) {
         case 'viewport-pick-option':
           target_item = event.target.item
-          setParams({
-            orientation: target_item.properties.direction,
-            item: target_item.id
-          })
+          store.dispatch('updateOrientation', target_item.properties.direction)
+          store.dispatch('updateItemId', target_item.id)
           break
         case 'sf-direction-picker-btn':
           target_item = event.target.querySelector('.viewport-pick-option').item
-          setParams({
-            orientation: target_item.properties.direction,
-            item: target_item.id
-          })
+          store.dispatch('updateOrientation', target_item.properties.direction)
+          store.dispatch('updateItemId', target_item.id)
           break
         case 'pick-map':
           // Set orientation parameter, causing the page to reload with map open
-          setParams({
-            orientation: 'map',
-            item: null
-          })
+          store.dispatch('updateOrientation', 'map')
           break
         default:
           return
@@ -306,7 +304,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     })
   }
 
-}
+  disconnectedCallback() {
+    window.removeEventListener('view', this.updateViewHandler)
+    window.removeEventListener('collection', this.updateViewHandler)
+  }
 
-// This is how to initialize the custom element
-// customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
+}
