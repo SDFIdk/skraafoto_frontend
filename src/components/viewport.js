@@ -387,7 +387,8 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   update_item_function(event) {
-    this.update({item: event.detail})
+    console.log('item updated', store.state[this.id], event.detail)
+    this.update({item: store.state[this.id].item})
   }
 
   update_center_function(event) {
@@ -418,6 +419,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.update_view_function = getViewSyncViewportListener(this)
 
     window.addEventListener('updateView', this.update_view_function)
+    window.addEventListener('collection', this.update_item_function.bind(this))
     window.addEventListener('item', this.update_item_function.bind(this))
     window.addEventListener('view', this.update_center_function.bind(this))
 
@@ -434,6 +436,7 @@ export class SkraaFotoViewport extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
+    window.removeEventListener('updateCollection', this.update_item_function)
     window.removeEventListener('item', this.update_item_function)
     window.removeEventListener('view', this.update_center_function)
   }

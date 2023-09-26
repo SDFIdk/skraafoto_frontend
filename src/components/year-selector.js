@@ -75,17 +75,15 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   connectedCallback() {
-    if (store.state[this.dataset.viewportId].collection) {
-      this.createDOM()
-    }
-    window.addEventListener('collections', (event) => {
-      console.log('go go')
-      console.log('got new collections', event.details)
-      this.createDOM()
-    })
+    this.createDOM()
+    window.addEventListener('collection', this.collectionChangeHandler.bind(this))
   }
 
   // methods
+
+  collectionChangeHandler(event) {
+    console.log('collection was changed', event.detail)
+  }
 
   createDOM() {
     this.innerHTML = this.#template
