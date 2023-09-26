@@ -23,6 +23,7 @@ customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 // Variables
 
 let collection = null
+let initial_collection = null;
 
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
@@ -80,17 +81,62 @@ function updateViews() {
 // Set up event listeners
 
 // On a new address input, update URL params
-document.addEventListener('gsearch:select', function(event) {
-  const new_center = getGSearchCenterPoint(event.detail)
-  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
+document.addEventListener('gsearch:select', async function (event) {
+  const new_center = getGSearchCenterPoint(event.detail);
+  const orientation = getParam('orientation') ? getParam('orientation') : 'north';
+
   if (orientation !== 'map') {
-    queryItems(new_center, orientation, collection).then((response) => {
-      setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id })
-    })
-  } else {
-    setParams({ center: new_center, item: null })
+    queryItems(new_center, orientation, collection).then(async (response) => {
+      if (response.features[0]) {
+        setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id });
+      } else {
+        // Store the initial collection before switching
+        initial_collection = collection;
+
+        // No matches found in the current collection, switch to the next available collection
+        await switchToNextCollection();
+        queryItems(new_center, orientation, collection).then((response) => {
+          if (response.features[0]) {
+            setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id });
+
+            // Use initial_collection in the alert message
+            showAlert(initial_collection, collection);
+          }
+        });
+      }
+    });
   }
-})
+});
+
+// Function to switch to the next available collection
+async function switchToNextCollection() {
+  if (!collection) {
+    // If collection is not set, fetch the available collections
+    const collections = await getCollections();
+    if (collections.length > 0) {
+      collection = collections[0].id; // Use the first available collection
+    }
+  } else {
+    // If collection is already set, find its index in the list of collections
+    const collections = await getCollections();
+    const currentIndex = collections.findIndex((item) => item.id === collection);
+    if (currentIndex !== -1 && currentIndex < collections.length - 1) {
+      // If the current collection is not the last one, switch to the next collection
+      collection = collections[currentIndex + 1].id;
+    } else {
+      // If the current collection is the last one, switch back to the first collection
+      collection = collections[0].id;
+    }
+  }
+}
+
+function showAlert(initialCollection, currentCollection) {
+  const last4Initial = initialCollection.slice(-4); // Get last 4 characters of initialCollection
+  const last4Current = currentCollection.slice(-4); // Get last 4 characters of currentCollection
+
+  const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${last4Initial}, skifter til ${last4Current}`;
+  alert(message);
+}
 
 // When the URL parameters update, update the views and collection value
 window.addEventListener('urlupdate', function(event) {
