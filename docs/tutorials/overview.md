@@ -90,7 +90,6 @@ The following diagram illustrates how users, controllers, and components interac
 
 Individual web components handle user inputs by listening to events. The componont may react by dispatching other (custom) events to be handled by the controller.
 
-#### State management
+#### Dataflow and state management
 
-There is no global Javascript state object. 
-Instead, because the Skraafoto application is sharable by link, query string parameters in the URL are used to keep track of application state.
+[Read more about dataflow and state management here.](./dataflow.md)

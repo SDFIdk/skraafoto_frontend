@@ -35,6 +35,8 @@ export default class Store {
     // Publish only the event itself and not the whole state
     self.events.publish(actionKey, payload)
 
+    console.log('state', self.state)
+
     return true
   }
 

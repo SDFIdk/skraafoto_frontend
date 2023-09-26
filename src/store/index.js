@@ -2,6 +2,11 @@ import state from './state.js'
 import { actions } from './state.js'
 import Store from './store.js'
 import { getUrlParams } from './urlState.js'
+import { getCollections } from '../modules/api.js'
+
+// Fetch constants 
+const collections = await getCollections()
+actions.updateCollections(state, collections)
 
 // On first load, parse URL and copy relevant params to state
 const params = await getUrlParams()
