@@ -1,7 +1,7 @@
 import state from './state.js'
 import { actions } from './state.js'
 import Store from './store.js'
-import { getUrlParams } from './urlState.js'
+import { syncFromUrl } from './urlState.js'
 import { getCollections } from '../modules/api.js'
 
 // Fetch constants 
@@ -9,11 +9,7 @@ const collections = await getCollections()
 actions.updateCollections(state, collections)
 
 // On first load, parse URL and copy relevant params to state
-const params = await getUrlParams()
-if (params.get('item')) actions.updateItemId(state, params.get('item'))
-if (params.get('orientation')) actions.updateOrientation(state, params.get('orientation'))
-if (params.get('year')) actions.updateCollection(state, params.get('year'))
-if (params.get('center')) actions.updateCenter(state, params.get('center'))
+await syncFromUrl(state)
 
 export default new Store({
   actions,

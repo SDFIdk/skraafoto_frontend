@@ -75,12 +75,19 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   connectedCallback() {
-    this.createDOM()
+    if (store.state[this.dataset.viewportId].collection) {
+      this.createDOM()
+    }
+    window.addEventListener('collections', (event) => {
+      console.log('go go')
+      console.log('got new collections', event.details)
+      this.createDOM()
+    })
   }
 
   // methods
 
-  async createDOM() {
+  createDOM() {
     this.innerHTML = this.#template
     const yearRegex = /[0-9]{4}/g
 
@@ -95,10 +102,6 @@ export class SkraaFotoYearSelector extends HTMLElement {
       this.#selectElement.appendChild(optionElement)
     }
 
-    // If no 'year' URL param is present, set a default one
-    if (!getParam('year')) {
-      setParams({year: collections[0].match(yearRegex)[0]})
-    }
     // Setup select element value (from URL param)
     this.#selectElement.value = getParam('year')
     // Listen for user change

@@ -34,7 +34,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     inactiveClassName: 'ds-icon-icon-fullscreen'
   })
   // mousepos = new MousePosition() // For debugging
-  date_selector_element
   // styles
   adv_styles = /*css*/`
     .adv-viewport-wrapper {}
@@ -143,7 +142,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         ${ 
           config.ENABLE_YEAR_SELECTOR ? 
           `<skraafoto-year-selector data-viewport-id="${this.id}"></skraafoto-year-selector>`
-          : '<skraafoto-date-selector></skraafoto-date-selector>' 
+          : `<skraafoto-date-selector data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
         <hr>
         <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
@@ -154,15 +153,9 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     </nav>
     ${ 
       config.ENABLE_DATE_BROWSER ?
-      '<skraafoto-date-viewer></skraafoto-date-viewer>' : ''
+      `<skraafoto-date-viewer data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
     }
   `
-
-  // setters
-
-  set setParamName(name) {
-    this.date_selector_element.setParamName = name
-  }
 
 
   constructor() {
@@ -174,7 +167,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   // Methods
 
   addToDOM() {
-    // Add date selector to shadow DOM
     const div = document.createElement('div')
     div.className = 'adv-viewport-wrapper'
     div.innerHTML = this.adv_template
@@ -192,22 +184,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       const info_button = this.shadowRoot.querySelector('#info-btn')
       button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
     }
-
-    // Refer DOM elements for later use
-    if (!config.ENABLE_YEAR_SELECTOR) {
-      this.date_selector_element = this.shadowRoot.querySelector('skraafoto-date-selector')
-    }
-    if (config.ENABLE_DATE_BROWSER) {
-      this.date_viewer_element = this.shadowRoot.querySelector('skraafoto-date-viewer');
-    }
   }
 
   updatePlugins() {
     super.updatePlugins()
 
-    if (!config.ENABLE_YEAR_SELECTOR) {
-      this.updateDateSelector(this.coord_world, this.item.id, this.item.properties.direction)
-    }
     if (configuration.ENABLE_CROSSHAIR) {
       this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
     }
@@ -216,19 +197,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     }
     this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
-  }
-
-  updateDateSelector(center, image_id, direction) {
-    this.date_selector_element.setData = {
-      center: center,
-      selected: image_id,
-      orientation: direction
-    }
-    this.date_viewer_element.setData = {
-      center: center,
-      selected: image_id,
-      orientation: direction
-    }
   }
 
   displaySpinner() {

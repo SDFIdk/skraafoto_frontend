@@ -10,3 +10,17 @@ export function setParam(param, value) {
   url.searchParams.set(param, value)
   history.pushState({}, '', url)
 }
+
+export async function syncFromUrl(state) {
+  const params = await getUrlParams()
+  state['viewport-1'].itemId = params.get('item')
+  state['viewport-1'].orientation = params.get('orientation')
+  const year = params.get('year')
+  if (year) {
+    state['viewport-1'].collection = `skraafotos${ params.get('year') }`  
+  } else {
+    state['viewport-1'].collection = state.collections[0]
+  }
+  state.view.center = params.get('center')
+  return state
+}

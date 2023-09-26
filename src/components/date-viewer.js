@@ -1,10 +1,14 @@
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getParam, setParams } from '../modules/url-state.js'
+import store from '../store'
 
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
  * Enables user to select an item for view by its date
+ * @listens collection - The currently chosen collection (year).
+ * @listens itemId - The currently chosen item.
+ * @fires updateItemId - New item ID selected by user.
  */
 export class SkraaFotoDateViewer extends HTMLElement {
 
@@ -97,15 +101,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
     super()
   }
 
-  connectedCallback() {
+  connectedCallback() { 
     this.#createDOM()
-
-    this.#update()
-
-    // Listen for URL opdates and update list of available items
-    window.addEventListener('urlupdate', () => {
-      this.#update()
-    })
     
     const selectElement = this.querySelector('select');
     const buttonDown = this.querySelector('.button-down');
@@ -158,6 +155,10 @@ export class SkraaFotoDateViewer extends HTMLElement {
       }
       isOptionClicked = false // Reset the flag
     })
+
+    window.addEventListener(this.dataset.viewportId, (event) => {
+      console.log('new item is ready', event.details)
+    })
   }
 
 
@@ -170,9 +171,12 @@ export class SkraaFotoDateViewer extends HTMLElement {
   }
 
   async #update() {
-    const y = getParam('year')
-    const o = getParam('orientation')
-    const c = getParam('center')
+    const item = store.state[this.dataset.viewportId]
+    const collection = item.collection
+    console.log('dateviewer collection', collection)
+    const y = collection.substring(collection.length, collection.length - 4)
+    const o = item.orientation
+    const c = store.state.view.center
     if (y && o && c) {
       const response = await queryItems(c, o, `skraafotos${ y }`, 50)
       this.items = response.features
