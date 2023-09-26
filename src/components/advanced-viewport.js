@@ -142,7 +142,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       <div class="ds-button-group">
         ${ 
           config.ENABLE_YEAR_SELECTOR ? 
-          '<skraafoto-year-selector></skraafoto-year-selector>'
+          `<skraafoto-year-selector data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : '<skraafoto-date-selector></skraafoto-date-selector>' 
         }
         <hr>
