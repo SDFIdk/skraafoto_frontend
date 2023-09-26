@@ -49,8 +49,6 @@ function updateViewports() {
 }
 
 function updateViews() {
-
-
   updateViewports()
   if (getParam('parcels')) {
     fetchParcels(getParam('parcels')).then(parcels => {
@@ -68,25 +66,6 @@ document.addEventListener('gsearch:select', function(event) {
   queryItems(new_center, orientation, collection).then((response) => {
     setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id })
   })
-})
-
-// When the URL parameters update, update the views and collection value
-window.addEventListener('urlupdate', function(event) {
-
-  if (event.detail.center) {
-    const world_center = event.detail.center
-    getZ(world_center[0], world_center[1], configuration).then(z => {
-      world_center[2] = z
-      store.dispatch('updateView', {
-        center: world_center,
-        zoom: store.state.view.zoom
-      })
-    })
-  }
-
-  if (event.detail.item || event.detail.item2 || event.detail.center || event.detail.orientation) {
-    updateViews()
-  }
 })
 
 // Catch load errors and display to user

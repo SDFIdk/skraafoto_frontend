@@ -173,6 +173,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.append(wrapper)
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
     this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
+    
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
     }
@@ -390,7 +391,7 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   update_center_function(event) {
-    this.update({center: event.detail.center})
+    this.update({center: event.detail.view.center})
   }
 
 
@@ -399,7 +400,7 @@ export class SkraaFotoViewport extends HTMLElement {
   connectedCallback() {
 
     this.update({
-      item: store.state.itemId, 
+      item: store.state[this.id].itemId, 
       center: store.state.view.center
     })
 
