@@ -10,7 +10,7 @@ import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import Collection from 'ol/Collection'
 import { getZ, getImageXY } from '@dataforsyningen/saul'
-import { queryItem } from '../modules/api.js'
+import { queryItem, queryItems } from '../modules/api.js'
 import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
 import { getTerrainData } from '../modules/api.js'
@@ -415,8 +415,8 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     this.update_view_function = getViewSyncViewportListener(this)
+
     window.addEventListener('updateView', this.update_view_function)
-    
     window.addEventListener('item', this.update_item_function.bind(this))
     window.addEventListener('view', this.update_center_function.bind(this))
 
