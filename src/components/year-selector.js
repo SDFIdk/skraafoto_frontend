@@ -1,9 +1,13 @@
 import { getParam, setParams } from '../modules/url-state.js'
 import { getCollections } from '../modules/api.js'
+import store from '../store'
 
 /**
  * Web component that enables the user to select from a list of available years.
  * Available years are based on available collections in STAC API.
+ * @listens collections - Available collections (years).
+ * @listens collection - The currently chosen collection (year).
+ * @fires updateCollection - New collection (`skraafotos` + year) selected by user.
  */
 export class SkraaFotoYearSelector extends HTMLElement {
 
@@ -72,7 +76,6 @@ export class SkraaFotoYearSelector extends HTMLElement {
 
   connectedCallback() {
     this.createDOM()
-    
   }
 
   // methods
@@ -81,13 +84,11 @@ export class SkraaFotoYearSelector extends HTMLElement {
     this.innerHTML = this.#template
     const yearRegex = /[0-9]{4}/g
 
-    // Fetch collections from STAC API
-    const collections = await getCollections()
     this.#selectElement = this.querySelector('select')
 
     // Create the year options from the list of collections
-    for (const c of collections) {
-      const year = c.title.match(yearRegex)[0]
+    for (const c of store.state.collections) {
+      const year = c.match(yearRegex)[0]
       const optionElement = document.createElement('option')
       optionElement.value = year
       optionElement.innerText = year
@@ -96,7 +97,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
 
     // If no 'year' URL param is present, set a default one
     if (!getParam('year')) {
-      setParams({year: collections[0].title.match(yearRegex)[0]})
+      setParams({year: collections[0].match(yearRegex)[0]})
     }
     // Setup select element value (from URL param)
     this.#selectElement.value = getParam('year')
@@ -105,8 +106,8 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   selectionChangeHandler(event) {
-    // Update the 'year' URL parameter
-    setParams({year: event.target.value})
+    const collection = `skraafotos${event.target.value}`
+    store.dispatch('updateCollection', {id: this.dataset.viewportId, collection: `skraafotos${event.target.value}`})
   }
 
 }
