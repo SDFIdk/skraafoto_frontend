@@ -151,12 +151,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
     </nav>
-    <!-- 
     ${
       config.ENABLE_DATE_BROWSER ?
       `<skraafoto-date-viewer data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
     }
-    -->
   `
 
 

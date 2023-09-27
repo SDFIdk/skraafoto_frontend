@@ -1,15 +1,19 @@
 import state from './state.js'
 import { actions } from './state.js'
 import Store from './store.js'
-import { syncFromUrl } from './urlState.js'
+import { syncFromUrl, syncToUrl } from './urlState.js'
 import { getCollections } from '../modules/api.js'
 
-// Fetch constants 
+// First, parse URL and copy relevant params to state
+await syncFromUrl(state)
+
+// Fetch constants (collections)
 const collections = await getCollections()
 actions.updateCollections(state, collections)
 
-// On first load, parse URL and copy relevant params to state
-await syncFromUrl(state)
+console.log('initial state', structuredClone(state))
+
+syncToUrl(state)
 
 export default new Store({
   actions,

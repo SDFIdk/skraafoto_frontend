@@ -1,4 +1,5 @@
 import PubSub from "./pubsub"
+import { syncToUrl } from './urlState.js'
 
 export default class Store {
   constructor(params) {
@@ -16,6 +17,7 @@ export default class Store {
       set: function (state, key, value) {
         state[key] = value
         self.events.publish(key, self.state)
+        syncToUrl(self.state)
         return true
       }
     })
@@ -35,7 +37,8 @@ export default class Store {
     // Publish only the event itself and not the whole state
     self.events.publish(actionKey, payload)
 
-    console.log('state', actionKey, self.state)
+    // Update URL params
+    syncToUrl(self.state)
 
     return true
   }

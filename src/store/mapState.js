@@ -1,12 +1,11 @@
 import { configuration } from '../modules/configuration.js'
-import { setParam } from './urlState.js'
 
 /**
  * State for map data
  */
 const mapState = {
   parcels: [], // The parcels data in JSON format
-  view: { center: [], zoom: configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE } // the view, consisting of the zoom level and center of the background map
+  view: { center: [ 574764, 6220953 ], zoom: configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE } // the view, consisting of the zoom level and center of the background map
 }
 
 

@@ -96,7 +96,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
       this.#selectElement.appendChild(optionElement)
     }
     
-    // Setup select element value (from URL param)
+    // Setup select element value from state
     this.#selectElement.value = store.state[this.dataset.viewportId].collection.match(yearRegex)[0]
   }
 

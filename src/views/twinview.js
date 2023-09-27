@@ -21,40 +21,9 @@ const viewport_element_2 = document.getElementById('viewport-2')
 
 
 // Methods
-function updateViewports() {
-  if (getParam('item2')) {
-    const data = {}
-    if (getParam('center')) {
-      data.center = getParam('center')
-    }
-    queryItem(getParam('item2')).then(item => {
-      data.item = item
-      viewport_element_2.setData = data
-    })
-  }
-  if (getParam('item')) {
-    const data = {}
-    if (getParam('center')) {
-      data.center = getParam('center')
-    }
-    queryItem(getParam('item')).then(item => {
-      data.item = item
-      viewport_element_1.setData = data
-      if (!getParam('item2')) {
-        setParams({ item2: getParam('item') })
-        viewport_element_2.setData = data
-      }
-    })
-  }
-}
 
 function updateViews() {
-  updateViewports()
-  if (getParam('parcels')) {
-    fetchParcels(getParam('parcels')).then(parcels => {
-      store.dispatch('updateParcels', parcels)
-    })
-  }
+  
 }
 
 // Set up event listeners
@@ -81,16 +50,6 @@ document.addEventListener('loaderror', function(event) {
 // Initialize
 
 setupAnalytics()
-
-//updateViews()
-
-if (getParam('item')) {
-  const item = await queryItem(getParam('item'))
-  collection = item.collection
-} else if (getParam('center')) {
-  const collections = await getCollections()
-  collection = collections[0].id
-}
 
 viewport_element_1.setParamName = 'item'
 viewport_element_2.setParamName = 'item2'

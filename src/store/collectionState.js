@@ -1,5 +1,4 @@
 import { configuration } from '../modules/configuration.js'
-import { setParam } from './urlState.js'
 import { getCollections } from '../modules/api.js'
 
 /**

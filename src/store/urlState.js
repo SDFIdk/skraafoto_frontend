@@ -1,30 +1,47 @@
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
+import { fetchParcels } from "../custom-plugins/plugin-parcel"
+import { configuration } from '../modules/configuration.js'
 
-export async function getUrlParams() {
+function getUrlParams() {
   const url = new URL(window.location)
-  return await sanitizeParams(sanitizeCoords(url))
+  return sanitizeCoords(url) // Returns URLSearchParams
 }
 
-export function setParam(param, value) {
-  const url = new URL(window.location)
-  url.searchParams.set(param, value)
+async function syncFromUrl(state) {
+  
+  const params = getUrlParams()
+
+  // This is essentially what sanitizeParams should do
+  if (params.has('item')) {
+    state['viewport-1'].itemId = params.get('item')
+    state['viewport-2'].itemId = params.get('item')
+  }
+
+  if (params.has('center')) {
+    state.view.center = params.get('center').split(',').map((c) => Number(c))
+  }
+
+  if (configuration.ENABLE_PARCEL && params.has('parcels')) {
+    const parcels = await fetchParcels(params.get('parcels'))
+    state.parcels = parcels
+  }
+  
+  return state
+}
+
+function syncToUrl(state) {
+  let url = new URL(window.location)
+
+  url.searchParams.set('item', state['viewport-1'].itemId)
+  url.searchParams.set('orientation', state['viewport-1'].orientation)
+  url.searchParams.set('year', state['viewport-1'].collection.match(/\d{4}/g)[0])
+  url.searchParams.set('center', state.view.center.join(','))
+
   history.pushState({}, '', url)
 }
 
-export async function syncFromUrl(state) {
-  const params = await getUrlParams()
-  state['viewport-1'].itemId = params.get('item')
-  state['viewport-2'].itemId = params.get('item')
-  state['viewport-1'].orientation = params.get('orientation')
-  state['viewport-2'].orientation = params.get('orientation')
-  const year = params.get('year')
-  if (year) {
-    state['viewport-1'].collection = `skraafotos${ params.get('year') }`
-    state['viewport-2'].collection = `skraafotos${ params.get('year') }`  
-  } else {
-    state['viewport-1'].collection = state.collections[0]
-    state['viewport-2'].collection = state.collections[0]
-  }
-  state.view.center = params.get('center').split(',').map((c) => Number(c))
-  return state
+export {
+  getUrlParams,
+  syncFromUrl,
+  syncToUrl
 }
