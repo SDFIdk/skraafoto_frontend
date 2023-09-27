@@ -4,9 +4,7 @@ import store from '../store'
 
 /**
  * Web component that enables the user to select from a list of available years.
- * Available years are based on available collections in STAC API.
- * @listens collections - Available collections (years).
- * @listens collection - The currently chosen collection (year).
+ * Looks up `store.state[this.dataset.viewportId].collection` on connectedCallback to get available years.
  * @fires updateCollection - New collection (`skraafotos` + year) selected by user.
  */
 export class SkraaFotoYearSelector extends HTMLElement {
