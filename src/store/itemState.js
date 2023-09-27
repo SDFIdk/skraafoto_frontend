@@ -1,5 +1,5 @@
 import { configuration } from '../modules/configuration.js'
-import { queryItems } from '../modules/api.js'
+import { queryItems, queryItem } from '../modules/api.js'
 
 /**
  * Default state for STAC item data in viewports
@@ -38,8 +38,14 @@ const itemActions = {
     return state
   },
 
-  updateItemId: function(state, itemId) {
-    state.itemId = itemId
+  updateItemId: async function(state, {id, itemId}) {
+    // Update only if values are different
+    if (state[id].itemId !== itemId) {
+      // Fetch new item and update state (including udpating collection)
+      const feature = await queryItem(itemId)
+      console.log('featureCollection', feature)
+      this.updateItem(state, {id: id, item: feature})
+    }
     return state
   },
 

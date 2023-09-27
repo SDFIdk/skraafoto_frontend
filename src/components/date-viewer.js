@@ -14,8 +14,10 @@ import store from '../store'
 export class SkraaFotoDateViewer extends HTMLElement {
 
   currentItem
-  items
-  #selector_element
+  items = []
+  #selectElement
+  #buttonDown
+  #buttonUp
   #styles = `
     skraafoto-date-viewer {
       z-index: 1;
@@ -91,76 +93,79 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
   async connectedCallback() { 
 
+    this.innerHTML = this.#renderTemplate()
+
     this.currentItem = store.state[this.dataset.viewportId].item
-    await this.#update()
     
-    const selectElement = this.querySelector('select');
-    const buttonDown = this.querySelector('.button-down');
-    const buttonUp = this.querySelector('.button-up');
+    
+    this.#selectElement = this.querySelector('select')
+    this.#buttonDown = this.querySelector('.button-down')
+    this.#buttonUp = this.querySelector('.button-up')
     let isOptionClicked = false;
 
     // Add event listener to the button-down
-    buttonDown.addEventListener('click', () => {
-      const selectedIndex = selectElement.selectedIndex;
-      const lastIndex = selectElement.options.length - 1;
+    this.#buttonDown.addEventListener('click', () => {
+      const selectedIndex = this.#selectElement.selectedIndex;
+      const lastIndex = this.#selectElement.options.length - 1;
       const nextIndex = selectedIndex === lastIndex ? 0 : selectedIndex + 1;
-      selectElement.selectedIndex = nextIndex;
-      selectElement.dispatchEvent(new Event('change')); // Trigger change event manually
-    });
+      this.#selectElement.selectedIndex = nextIndex;
+      this.#selectElement.dispatchEvent(new Event('change')); // Trigger change event manually
+    })
 
     // Add event listener to the button-up
-    buttonUp.addEventListener('click', () => {
-      const selectedIndex = selectElement.selectedIndex;
-      const lastIndex = selectElement.options.length - 1;
+    this.#buttonUp.addEventListener('click', () => {
+      const selectedIndex = this.#selectElement.selectedIndex;
+      const lastIndex = this.#selectElement.options.length - 1;
       const prevIndex = selectedIndex === 0 ? lastIndex : selectedIndex - 1;
-      selectElement.selectedIndex = prevIndex;
-      selectElement.dispatchEvent(new Event('change')); // Trigger change event manually
-    });
-
-    // Add event listener to the document for arrow key navigation
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowDown') {
-        buttonDown.click();
-      } else if (event.key === 'ArrowUp') {
-        buttonUp.click();
-      }
-    });
+      this.#selectElement.selectedIndex = prevIndex;
+      this.#selectElement.dispatchEvent(new Event('change')); // Trigger change event manually
+    })
 
     // When an option is selected, send an event with the corresponding image data
-    selectElement.addEventListener('change', (event) => {
-      const item = this.items.find((item) => item.id === event.target.value)
-      setParams({ item: item.id })
-      selectElement.blur() // Remove focus from the select element
+    this.#selectElement.addEventListener('change', (event) => {
+      console.log('select a new one', event.target.value)
+      store.dispatch('updateItemId', {
+        id: this.dataset.viewportId, 
+        itemId: event.target.value 
+      })
+      this.#selectElement.blur() // Remove focus from the select element
     })
 
     // When an option is clicked, set the flag to prevent focus removal
-    selectElement.addEventListener('mousedown', () => {
+    this.#selectElement.addEventListener('mousedown', () => {
       isOptionClicked = true
     })
 
     // When the select element loses focus, remove focus if no option is selected
-    selectElement.addEventListener('blur', () => {
+    this.#selectElement.addEventListener('blur', () => {
       if (!isOptionClicked) {
-        selectElement.selectedIndex = -1 // Deselect any selected option
+        this.#selectElement.selectedIndex = -1 // Deselect any selected option
       }
       isOptionClicked = false // Reset the flag
     })
 
+    // Add event listener to the document for arrow key navigation
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        this.#buttonDown.click();
+      } else if (event.key === 'ArrowUp') {
+        this.#buttonUp.click();
+      }
+    })
+
+    // Add global listener for state changes
     window.addEventListener(this.dataset.viewportId, this.itemUpdateHandler.bind(this))
+
+    this.#update()
   }
 
-
-  // methods
-
-  itemUpdateHandler(event) {
-    console.log('new item is ready', event.detail[this.dataset.viewportId].item)
-    this.#update()
+  disconnectedCallback() {
+    window.removeEventListener(this.dataset.viewportId, this.itemUpdateHandler)
   }
 
   async #update() {
     const item = store.state[this.dataset.viewportId]
     const collection = item.collection
-    console.log('got item in update', item)
     const y = collection.match(/\d{4}/g)[0]
     const o = item.orientation
     const c = store.state.view.center
@@ -171,46 +176,41 @@ export class SkraaFotoDateViewer extends HTMLElement {
       console.error('Not enough state information to fetch items. Missing either "year", "orientation", or "center".')
       return
     }
-    this.innerHTML = this.render()
+    this.#selectElement.innerHTML = this.#renderOptions()
   }
 
-  render() { return `
-    <style>
-      ${ this.#styles }
-    </style>
-    <nav class="ds-nav-tools">
-      <div class="ds-button-group">
-        <button class="button-down ds-icon-icon-arrow-single-down"></button>
-        <hr>
-        <select class="sf-date-viewer" id="date" value="${ this.currentItem }">
-          ${ this.items.map((i) => `
-            <option value="${ i.id }">${ i.properties.datetime }</option>
-          `)}
-        </select>
-        <hr>
-        <button class=" button-up ds-icon-icon-arrow-single-up"></button>
-      </div>
-    </nav>
-  `}
+  #renderTemplate() { 
+    return `
+      <style>
+        ${ this.#styles }
+      </style>
+      <nav class="ds-nav-tools">
+        <div class="ds-button-group">
+          <button class="button-down ds-icon-icon-arrow-single-down"></button>
+          <hr>
+          <select class="sf-date-viewer" id="date" value="${ this.currentItem }">
+            ${ this.#renderOptions() }
+          </select>
+          <hr>
+          <button class=" button-up ds-icon-icon-arrow-single-up"></button>
+        </div>
+      </nav>
+    `
+  }
 
-  #buildOptionsHTML(features) {
-    this.#selector_element.innerHTML = ''
-    features.forEach((f, idx) => {
-      const datetime = new Date(f.properties.datetime)
-      const formattedDate = datetime.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric"
-      })
-      let option_el = document.createElement('option')
-      option_el.value = f.id
-      option_el.innerText = `${ formattedDate } ${ idx + 1 }/${ features.length }`
-      this.#selector_element.appendChild(option_el)
+  #renderOptions() {
+    return this.items.map((i) => {
+      return `
+        <option value="${ i.id }">
+          ${ new Date(i.properties.datetime).toLocaleString() }
+        </option>
+      `
     })
   }
 
-  disconnectedCallback() {
-    window.removeEventListener(this.dataset.viewportId, this.itemUpdateHandler)
+  itemUpdateHandler(event) {
+    this.currentItem = event.detail[this.dataset.viewportId].item.id
+    this.#update()
   }
 
 }
