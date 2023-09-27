@@ -101,34 +101,24 @@ export class SkraaFotoDateViewer extends HTMLElement {
     this.#selectElement = this.querySelector('select')
     this.#buttonDown = this.querySelector('.button-down')
     this.#buttonUp = this.querySelector('.button-up')
-    let isOptionClicked = false;
+    let isOptionClicked = false
 
     // Add event listener to the button-down
     this.#buttonDown.addEventListener('click', () => {
-      const selectedIndex = this.#selectElement.selectedIndex;
-      const lastIndex = this.#selectElement.options.length - 1;
-      const nextIndex = selectedIndex === lastIndex ? 0 : selectedIndex + 1;
-      this.#selectElement.selectedIndex = nextIndex;
-      this.#selectElement.dispatchEvent(new Event('change')); // Trigger change event manually
+      const selectedIndex = this.#selectElement.selectedIndex
+      const lastIndex = this.#selectElement.options.length - 1
+      const nextIndex = selectedIndex === lastIndex ? 0 : selectedIndex + 1
+      this.#selectElement.selectedIndex = nextIndex
+      this.#selectElement.dispatchEvent(new Event('change')) // Trigger change event manually
     })
 
     // Add event listener to the button-up
     this.#buttonUp.addEventListener('click', () => {
-      const selectedIndex = this.#selectElement.selectedIndex;
-      const lastIndex = this.#selectElement.options.length - 1;
-      const prevIndex = selectedIndex === 0 ? lastIndex : selectedIndex - 1;
-      this.#selectElement.selectedIndex = prevIndex;
-      this.#selectElement.dispatchEvent(new Event('change')); // Trigger change event manually
-    })
-
-    // When an option is selected, send an event with the corresponding image data
-    this.#selectElement.addEventListener('change', (event) => {
-      console.log('select a new one', event.target.value)
-      store.dispatch('updateItemId', {
-        id: this.dataset.viewportId, 
-        itemId: event.target.value 
-      })
-      this.#selectElement.blur() // Remove focus from the select element
+      const selectedIndex = this.#selectElement.selectedIndex
+      const lastIndex = this.#selectElement.options.length - 1
+      const prevIndex = selectedIndex === 0 ? lastIndex : selectedIndex - 1
+      this.#selectElement.selectedIndex = prevIndex
+      this.#selectElement.dispatchEvent(new Event('change')) // Trigger change event manually
     })
 
     // When an option is clicked, set the flag to prevent focus removal
@@ -145,32 +135,37 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
 
     // Add event listener to the document for arrow key navigation
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowDown') {
-        this.#buttonDown.click();
-      } else if (event.key === 'ArrowUp') {
-        this.#buttonUp.click();
-      }
-    })
+    document.addEventListener('keydown', keyDownHandler).bind(this)
 
     // Add global listener for state changes
     window.addEventListener(this.dataset.viewportId, this.itemUpdateHandler.bind(this))
+
+    // When an option is selected, update the store with the new item
+    this.#selectElement.addEventListener('change', (event) => {
+      console.log('select a new one', event.target.value)
+      store.dispatch('updateItemId', {
+        id: this.dataset.viewportId, 
+        itemId: event.target.value 
+      })
+      this.#selectElement.blur() // Remove focus from the select element
+    })
 
     this.#update()
   }
 
   disconnectedCallback() {
     window.removeEventListener(this.dataset.viewportId, this.itemUpdateHandler)
+    document.removeEventListener('keydown', keyDownHandler)
   }
 
   async #update() {
     const item = store.state[this.dataset.viewportId]
     const collection = item.collection
-    const y = collection.match(/\d{4}/g)[0]
-    const o = item.orientation
-    const c = store.state.view.center
-    if (y && o && c) {
-      const response = await queryItems(c, o, `skraafotos${ y }`, 50)
+    const year = collection.match(/\d{4}/g)[0]
+    const orientation = item.orientation
+    const center = store.state.view.center
+    if (year && orientation && center) {
+      const response = await queryItems(center, orientation, `skraafotos${ year }`, 50)
       this.items = response.features
     } else {
       console.error('Not enough state information to fetch items. Missing either "year", "orientation", or "center".')
@@ -211,6 +206,14 @@ export class SkraaFotoDateViewer extends HTMLElement {
   itemUpdateHandler(event) {
     this.currentItem = event.detail[this.dataset.viewportId].item.id
     this.#update()
+  }
+
+  keyDownHandler(event) {
+    if (event.key === 'ArrowDown') {
+      this.#buttonDown.click()
+    } else if (event.key === 'ArrowUp') {
+      this.#buttonUp.click()
+    }
   }
 
 }
