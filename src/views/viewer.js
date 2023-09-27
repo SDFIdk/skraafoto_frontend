@@ -26,7 +26,7 @@ let collection = null
 let initial_collection = null
 
 const big_map_element = document.getElementById('map-main')
-const main_viewport_element = document.getElementById('viewport-main')
+const main_viewport_element = document.getElementById('viewport-1')
 const direction_picker_element = document.querySelector('skraafoto-direction-picker')
 
 

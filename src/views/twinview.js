@@ -82,7 +82,7 @@ document.addEventListener('loaderror', function(event) {
 
 setupAnalytics()
 
-updateViews()
+//updateViews()
 
 if (getParam('item')) {
   const item = await queryItem(getParam('item'))
