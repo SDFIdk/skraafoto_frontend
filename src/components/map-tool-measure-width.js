@@ -16,7 +16,7 @@ export class MeasureWidthTool {
   // properties
   coorTranslator = createTranslator()
   viewport
-  colorSetting = configuration.COLOR_SETTINGS.heightColor
+  colorSetting = configuration.COLOR_SETTINGS.widthColor
   style = new Style({
     stroke: new Stroke({
       color: this.colorSetting,
