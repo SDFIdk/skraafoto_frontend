@@ -1,6 +1,7 @@
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
-import { fetchParcels } from "../custom-plugins/plugin-parcel"
+import { fetchParcels } from '../custom-plugins/plugin-parcel'
 import { configuration } from '../modules/configuration.js'
+import { queryItem } from '../modules/api.js'
 
 function getUrlParams() {
   const url = new URL(window.location)
@@ -14,7 +15,13 @@ async function syncFromUrl(state) {
   // This is essentially what sanitizeParams should do
   if (params.has('item')) {
     state['viewport-1'].itemId = params.get('item')
+    state['viewport-1'].item = await queryItem(params.get('item'))
     state['viewport-2'].itemId = params.get('item')
+    state['viewport-2'].item = await queryItem(params.get('item'))
+  } else {
+    // Use defaut IDs to fetch items
+    state['viewport-1'].item = await queryItem(state['viewport-1'].itemId)
+    state['viewport-2'].item = await queryItem(state['viewport-2'].itemId)
   }
 
   if (params.has('center')) {

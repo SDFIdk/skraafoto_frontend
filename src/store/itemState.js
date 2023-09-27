@@ -47,7 +47,7 @@ const itemActions = {
     // Update only if values are different
     if (state[id].collection !== collection) {
       // Fetch new item and update state (including udpating collection)
-      const featureCollection = await queryItems(state.view.center, state[id].orientation, collection)
+      const featureCollection = await queryItems(state.view.center, state[id].orientation, collection, 1)
       this.updateItem(state, {id: id, item: featureCollection.features[0]})
     }
     return state

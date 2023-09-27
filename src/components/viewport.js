@@ -175,12 +175,12 @@ export class SkraaFotoViewport extends HTMLElement {
     this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
     
     if (configuration.ENABLE_SMALL_FONT) {
-      this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem';
+      this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
     }
     // Modify this block
     if (configuration.ENABLE_COMPASSARROWS) {
-      const compassArrowsElement = wrapper.querySelector('skraafoto-compass');
-      compassArrowsElement.style.display = 'none';
+      const compassArrowsElement = wrapper.querySelector('skraafoto-compass')
+      compassArrowsElement.style.display = 'none'
     }
   }
 
@@ -194,12 +194,8 @@ export class SkraaFotoViewport extends HTMLElement {
       el.style.display = 'none'
     })
 
-    if (typeof item === 'object') {
-      this.updateImage(item)
-    } else if (typeof item === 'string') {
-      const item_obj = await queryItem(item)
-      this.updateImage(item_obj)
-    }
+    this.updateImage(item)
+
     if (center) {
       await this.updateCenter(center)
     }
@@ -386,13 +382,11 @@ export class SkraaFotoViewport extends HTMLElement {
     return view
   }
 
-  update_item_function(event) {
-    console.log('item updated', store.state[this.id], event.detail)
-    this.update({item: store.state[this.id].item})
-  }
-
-  update_center_function(event) {
-    this.update({center: event.detail.view.center})
+  update_viewport_function(event) {
+    this.update({
+      item: store.state[this.id].item,
+      center: store.state.view.center
+    })
   }
 
 
@@ -400,16 +394,16 @@ export class SkraaFotoViewport extends HTMLElement {
 
   connectedCallback() {
 
-    this.update({
-      item: store.state[this.id].itemId, 
-      center: store.state.view.center
-    })
-
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: true}),
       interactions: new Collection(),
       view: this.view
+    })
+
+    this.update({
+      item: store.state[this.id].item,
+      center: store.state.view.center
     })
 
     this.map.on('rendercomplete', () => {
@@ -419,9 +413,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.update_view_function = getViewSyncViewportListener(this)
 
     window.addEventListener('updateView', this.update_view_function)
-    window.addEventListener('collection', this.update_item_function.bind(this))
-    window.addEventListener('item', this.update_item_function.bind(this))
-    window.addEventListener('view', this.update_center_function.bind(this))
+    window.addEventListener(this.id, this.update_viewport_function.bind(this))
+    window.addEventListener('view', this.update_viewport_function.bind(this))
 
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -436,9 +429,8 @@ export class SkraaFotoViewport extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener('updateCollection', this.update_item_function)
-    window.removeEventListener('item', this.update_item_function)
-    window.removeEventListener('view', this.update_center_function)
+    window.removeEventListener(this.id, this.update_viewport_function)
+    window.removeEventListener('view', this.update_viewport_function)
   }
 
 }
