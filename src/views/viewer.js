@@ -23,7 +23,7 @@ customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 // Variables
 
 let collection = null
-let initial_collection = null;
+let initial_collection = null
 
 const big_map_element = document.getElementById('map-main')
 const main_viewport_element = document.getElementById('viewport-main')
@@ -82,60 +82,58 @@ function updateViews() {
 
 // On a new address input, update URL params
 document.addEventListener('gsearch:select', async function (event) {
-  const new_center = getGSearchCenterPoint(event.detail);
-  const orientation = getParam('orientation') ? getParam('orientation') : 'north';
+  const new_center = getGSearchCenterPoint(event.detail)
+  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
 
   if (orientation !== 'map') {
     queryItems(new_center, orientation, collection).then(async (response) => {
       if (response.features[0]) {
-        setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id });
+        setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id })
       } else {
         // Store the initial collection before switching
-        initial_collection = collection;
-
+        initial_collection = collection
         // No matches found in the current collection, switch to the next available collection
-        await switchToNextCollection();
+        await switchToNextCollection()
         queryItems(new_center, orientation, collection).then((response) => {
           if (response.features[0]) {
-            setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id });
+            setParams({ center: new_center, item: response.features[0].id, item2: response.features[0].id })
 
-            // Use initial_collection in the alert message
-            showAlert(initial_collection, collection);
+            // alert in case collection is not available
+            showAlert(initial_collection, collection)
           }
-        });
+        })
       }
-    });
+    })
   }
-});
+})
 
 // Function to switch to the next available collection
 async function switchToNextCollection() {
   if (!collection) {
     // If collection is not set, fetch the available collections
-    const collections = await getCollections();
+    const collections = await getCollections()
     if (collections.length > 0) {
-      collection = collections[0].id; // Use the first available collection
+      collection = collections[0].id // Use the first available collection
     }
   } else {
     // If collection is already set, find its index in the list of collections
-    const collections = await getCollections();
-    const currentIndex = collections.findIndex((item) => item.id === collection);
+    const collections = await getCollections()
+    const currentIndex = collections.findIndex((item) => item.id === collection)
     if (currentIndex !== -1 && currentIndex < collections.length - 1) {
       // If the current collection is not the last one, switch to the next collection
-      collection = collections[currentIndex + 1].id;
+      collection = collections[currentIndex + 1].id
     } else {
       // If the current collection is the last one, switch back to the first collection
-      collection = collections[0].id;
+      collection = collections[0].id
     }
   }
 }
 
 function showAlert(initialCollection, currentCollection) {
-  const last4Initial = initialCollection.slice(-4); // Get last 4 characters of initialCollection
-  const last4Current = currentCollection.slice(-4); // Get last 4 characters of currentCollection
-
-  const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${last4Initial}, skifter til ${last4Current}`;
-  alert(message);
+  const last4Initial = initialCollection.slice(-4) // Get last 4 characters of initialCollection
+  const last4Current = currentCollection.slice(-4) // Get last 4 characters of currentCollection
+  const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${last4Initial}, skifter til ${last4Current}`
+  alert(message)
 }
 
 // When the URL parameters update, update the views and collection value
@@ -177,59 +175,59 @@ document.addEventListener('loaderror', function(event) {
 
 // Set up shortkeys for date-selector
 if (!configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer');
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer')
 document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.options;
-  let current_idx = option_list.selectedIndex;
-  const num_options = option_list.length;
-  const current_group = option_list[current_idx].parentNode.label;
+  const option_list = dateSelector_element.options
+  let current_idx = option_list.selectedIndex
+  const num_options = option_list.length
+  const current_group = option_list[current_idx].parentNode.label
 
   // Calculate the indexes of the past and future options
-  let next_idx = (current_idx + 1) % num_options;
+  let next_idx = (current_idx + 1) % num_options
   while (option_list[next_idx].parentNode.label !== current_group) {
-    next_idx = (next_idx + 1) % option_list.length;
+    next_idx = (next_idx + 1) % option_list.length
   }
-  let previous_idx = (current_idx - 1 + num_options) % num_options;
+  let previous_idx = (current_idx - 1 + num_options) % num_options
   while (option_list[previous_idx].parentNode.label !== current_group) {
-    previous_idx = (previous_idx - 1 + num_options) % num_options;
+    previous_idx = (previous_idx - 1 + num_options) % num_options
   }
 
   // Get references to the past and future options based on their indexes
-  const previous = option_list[previous_idx];
-  const next = option_list[next_idx];
+  const previous = option_list[previous_idx]
+  const next = option_list[next_idx]
 
   if (event.key === 'ArrowUp' && event.shiftKey) {
-    setParams({item: previous.value});
+    setParams({item: previous.value})
   } else if (event.key === 'ArrowDown' && event.shiftKey) {
-    setParams({item: next.value});
+    setParams({item: next.value})
   }
-});
+})
 }
 
 // Datesquash shortkeys
 if (configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector');
+const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
 document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.selector_element.options;
-  let current_idx = option_list.selectedIndex;
+  const option_list = dateSelector_element.selector_element.options
+  let current_idx = option_list.selectedIndex
 
   // Calculate the indexes of the past and future options
-  const num_options = option_list.length;
-  const past_idx = (current_idx + 1) % num_options;
-  const future_idx = (current_idx - 1 + num_options) % num_options;
+  const num_options = option_list.length
+  const past_idx = (current_idx + 1) % num_options
+  const future_idx = (current_idx - 1 + num_options) % num_options
 
   // Get references to the past and future options based on their indexes
-  const past = option_list[past_idx];
-  const future = option_list[future_idx];
+  const past = option_list[past_idx]
+  const future = option_list[future_idx]
 
   if (event.key === 'ArrowUp' && event.shiftKey) {
-    setParams({item: future.value});
+    setParams({item: future.value})
   } else if (event.key === 'ArrowDown' && event.shiftKey) {
-    setParams({item: past.value});
+    setParams({item: past.value})
   }
-});
+})
 }
 
 

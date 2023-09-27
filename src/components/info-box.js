@@ -6,7 +6,7 @@ import { get } from '@dataforsyningen/saul'
  */
 export class SkraaFotoInfoBox extends HTMLElement {
 
-  
+
   // Properties
 
   slider_element
@@ -72,7 +72,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
   // Methods
 
   createDOM() {
-    
+
     // Create elements
     this.markup = document.createElement('div')
     this.markup.className = 'sf-slider'
@@ -88,6 +88,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
   }
 
   updateInfo(item) {
+    console.log(item.properties)
     this.slider_content.innerHTML = `
       <h2>Om billedet</h2>
       <dl>
@@ -104,6 +105,12 @@ export class SkraaFotoInfoBox extends HTMLElement {
           <span class="area-position"></span><br>
           <span class="area-name"></span>
         </dd>
+        <dt>Flytekniske Data</dt>
+        <dd>Omega: ${item.properties['pers:omega']}</dd>
+        <dd>Phi: ${item.properties['pers:phi']}</dd>
+        <dd>Kappa: ${item.properties['pers:kappa']}</dd>
+        <dd>Perspective Center: ${item.properties['pers:perspective_center']}</dd>
+        <dd>Kamera ID: ${item.properties.instruments}</dd>
       </dl>
     `
   }
