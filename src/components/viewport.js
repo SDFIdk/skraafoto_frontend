@@ -414,7 +414,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
     window.addEventListener('updateView', this.update_view_function)
     window.addEventListener(this.id, this.update_viewport_function.bind(this))
-    window.addEventListener('view', this.update_viewport_function.bind(this))
 
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -430,7 +429,6 @@ export class SkraaFotoViewport extends HTMLElement {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener(this.id, this.update_viewport_function)
-    window.removeEventListener('view', this.update_viewport_function)
   }
 
 }

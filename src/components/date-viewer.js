@@ -13,6 +13,7 @@ import store from '../store'
  */
 export class SkraaFotoDateViewer extends HTMLElement {
 
+  currentItem
   items
   #selector_element
   #styles = `
@@ -82,28 +83,16 @@ export class SkraaFotoDateViewer extends HTMLElement {
       }
 
     }
-   `
-  #template = `
-    <style>
-      ${ this.#styles }
-    </style>
-    <nav class="ds-nav-tools">
-      <div class="ds-button-group">
-        <button class="button-down ds-icon-icon-arrow-single-down"></button>
-        <hr>
-        <select class="sf-date-viewer" id="date"></select>
-        <hr>
-        <button class=" button-up ds-icon-icon-arrow-single-up"></button>
-      </div>
-    </nav>
   `
 
   constructor() {
     super()
   }
 
-  connectedCallback() { 
-    this.#createDOM()
+  async connectedCallback() { 
+
+    this.currentItem = store.state[this.dataset.viewportId].item
+    await this.#update()
     
     const selectElement = this.querySelector('select');
     const buttonDown = this.querySelector('.button-down');
@@ -157,37 +146,52 @@ export class SkraaFotoDateViewer extends HTMLElement {
       isOptionClicked = false // Reset the flag
     })
 
-    window.addEventListener(this.dataset.viewportId, (event) => {
-      console.log('new item is ready', event.details)
-    })
+    window.addEventListener(this.dataset.viewportId, this.itemUpdateHandler.bind(this))
   }
 
 
   // methods
 
-  #createDOM() {
-    this.innerHTML = this.#template
-    // save element for later use
-    this.#selector_element = this.querySelector('.sf-date-viewer')
+  itemUpdateHandler(event) {
+    console.log('new item is ready', event.detail[this.dataset.viewportId].item)
+    this.#update()
   }
 
   async #update() {
     const item = store.state[this.dataset.viewportId]
     const collection = item.collection
-    console.log('dateviewer collection', collection)
-    const y = collection.substring(collection.length, collection.length - 4)
+    console.log('got item in update', item)
+    const y = collection.match(/\d{4}/g)[0]
     const o = item.orientation
     const c = store.state.view.center
     if (y && o && c) {
       const response = await queryItems(c, o, `skraafotos${ y }`, 50)
       this.items = response.features
-      this.#buildOptionsHTML(this.items)
-      this.#setSelected(getParam('item'))
     } else {
       console.error('Not enough state information to fetch items. Missing either "year", "orientation", or "center".')
       return
     }
+    this.innerHTML = this.render()
   }
+
+  render() { return `
+    <style>
+      ${ this.#styles }
+    </style>
+    <nav class="ds-nav-tools">
+      <div class="ds-button-group">
+        <button class="button-down ds-icon-icon-arrow-single-down"></button>
+        <hr>
+        <select class="sf-date-viewer" id="date" value="${ this.currentItem }">
+          ${ this.items.map((i) => `
+            <option value="${ i.id }">${ i.properties.datetime }</option>
+          `)}
+        </select>
+        <hr>
+        <button class=" button-up ds-icon-icon-arrow-single-up"></button>
+      </div>
+    </nav>
+  `}
 
   #buildOptionsHTML(features) {
     this.#selector_element.innerHTML = ''
@@ -205,8 +209,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
   }
 
-  #setSelected(id) {
-    this.#selector_element.value = id
+  disconnectedCallback() {
+    window.removeEventListener(this.dataset.viewportId, this.itemUpdateHandler)
   }
 
 }
