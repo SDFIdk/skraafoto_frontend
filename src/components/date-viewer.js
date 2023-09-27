@@ -5,10 +5,9 @@ import store from '../store'
 
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
- * Enables user to select an item for view by its date
- * @prop {string} dataset.viewportId - `data-viewport-id` attribute used to look up state på by viewport ID.
- * @listens collection - The currently chosen collection (year).
- * @listens itemId - The currently chosen item.
+ * Enables user to select an item for view by its date.
+ * @prop {string} dataset.viewportId - `data-viewport-id` attribute used to look up state by viewport ID.
+ * @listens state.items[viewportId] - The currently chosen item for the corresponding viewport.
  * @fires updateItemId - New item ID selected by user.
  */
 export class SkraaFotoDateViewer extends HTMLElement {

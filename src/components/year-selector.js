@@ -5,6 +5,7 @@ import store from '../store'
 /**
  * Web component that enables the user to select from a list of available years.
  * Looks up `store.state[this.dataset.viewportId].collection` on connectedCallback to get available years.
+ * @prop {string} dataset.viewportId - `data-viewport-id` attribute used to look up state by viewport ID.
  * @fires updateCollection - New collection (`skraafotos` + year) selected by user.
  */
 export class SkraaFotoYearSelector extends HTMLElement {
