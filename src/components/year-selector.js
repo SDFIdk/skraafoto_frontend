@@ -76,14 +76,12 @@ export class SkraaFotoYearSelector extends HTMLElement {
 
   connectedCallback() {
     this.createDOM()
-    window.addEventListener('collection', this.collectionChangeHandler.bind(this))
+
+    // Listen for user change
+    this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))    
   }
 
   // methods
-
-  collectionChangeHandler(event) {
-    console.log('collection was changed', event.detail)
-  }
 
   createDOM() {
     this.innerHTML = this.#template
@@ -99,11 +97,9 @@ export class SkraaFotoYearSelector extends HTMLElement {
       optionElement.innerText = year
       this.#selectElement.appendChild(optionElement)
     }
-
+    
     // Setup select element value (from URL param)
-    this.#selectElement.value = getParam('year')
-    // Listen for user change
-    this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
+    this.#selectElement.value = store.state[this.dataset.viewportId].collection.match(yearRegex)[0]
   }
 
   selectionChangeHandler(event) {
