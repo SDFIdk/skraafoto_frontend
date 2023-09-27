@@ -175,59 +175,59 @@ document.addEventListener('loaderror', function(event) {
 
 // Set up shortkeys for date-selector
 if (!configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer')
-document.addEventListener('keydown', function(event) {
+  const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-viewer')
+  document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.options
-  let current_idx = option_list.selectedIndex
-  const num_options = option_list.length
-  const current_group = option_list[current_idx].parentNode.label
+    const option_list = dateSelector_element.options
+    let current_idx = option_list.selectedIndex
+    const num_options = option_list.length
+    const current_group = option_list[current_idx].parentNode.label
 
-  // Calculate the indexes of the past and future options
-  let next_idx = (current_idx + 1) % num_options
-  while (option_list[next_idx].parentNode.label !== current_group) {
-    next_idx = (next_idx + 1) % option_list.length
-  }
-  let previous_idx = (current_idx - 1 + num_options) % num_options
-  while (option_list[previous_idx].parentNode.label !== current_group) {
-    previous_idx = (previous_idx - 1 + num_options) % num_options
-  }
+    // Calculate the indexes of the past and future options
+    let next_idx = (current_idx + 1) % num_options
+    while (option_list[next_idx].parentNode.label !== current_group) {
+      next_idx = (next_idx + 1) % option_list.length
+    }
+    let previous_idx = (current_idx - 1 + num_options) % num_options
+    while (option_list[previous_idx].parentNode.label !== current_group) {
+      previous_idx = (previous_idx - 1 + num_options) % num_options
+    }
 
-  // Get references to the past and future options based on their indexes
-  const previous = option_list[previous_idx]
-  const next = option_list[next_idx]
+    // Get references to the past and future options based on their indexes
+    const previous = option_list[previous_idx]
+    const next = option_list[next_idx]
 
-  if (event.key === 'ArrowUp' && event.shiftKey) {
-    setParams({item: previous.value})
-  } else if (event.key === 'ArrowDown' && event.shiftKey) {
-    setParams({item: next.value})
-  }
-})
+    if (event.key === 'ArrowUp' && event.shiftKey) {
+      setParams({item: previous.value})
+    } else if (event.key === 'ArrowDown' && event.shiftKey) {
+      setParams({item: next.value})
+    }
+  })
 }
 
 // Datesquash shortkeys
 if (configuration.ENABLE_DATESQUASH) {
-const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
-document.addEventListener('keydown', function(event) {
+  const dateSelector_element = main_viewport_element.shadowRoot.querySelector('skraafoto-date-selector')
+  document.addEventListener('keydown', function(event) {
 
-  const option_list = dateSelector_element.selector_element.options
-  let current_idx = option_list.selectedIndex
+    const option_list = dateSelector_element.selector_element.options
+    let current_idx = option_list.selectedIndex
 
-  // Calculate the indexes of the past and future options
-  const num_options = option_list.length
-  const past_idx = (current_idx + 1) % num_options
-  const future_idx = (current_idx - 1 + num_options) % num_options
+    // Calculate the indexes of the past and future options
+    const num_options = option_list.length
+    const past_idx = (current_idx + 1) % num_options
+    const future_idx = (current_idx - 1 + num_options) % num_options
 
-  // Get references to the past and future options based on their indexes
-  const past = option_list[past_idx]
-  const future = option_list[future_idx]
+    // Get references to the past and future options based on their indexes
+    const past = option_list[past_idx]
+    const future = option_list[future_idx]
 
-  if (event.key === 'ArrowUp' && event.shiftKey) {
-    setParams({item: future.value})
-  } else if (event.key === 'ArrowDown' && event.shiftKey) {
-    setParams({item: past.value})
-  }
-})
+    if (event.key === 'ArrowUp' && event.shiftKey) {
+      setParams({item: future.value})
+    } else if (event.key === 'ArrowDown' && event.shiftKey) {
+      setParams({item: past.value})
+    }
+  })
 }
 
 
