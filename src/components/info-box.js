@@ -88,7 +88,6 @@ export class SkraaFotoInfoBox extends HTMLElement {
   }
 
   updateInfo(item) {
-    console.log(item.properties)
     this.slider_content.innerHTML = `
       <h2>Om billedet</h2>
       <dl>
