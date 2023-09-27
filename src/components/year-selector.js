@@ -101,7 +101,6 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   selectionChangeHandler(event) {
-    const collection = `skraafotos${event.target.value}`
     store.dispatch('updateCollection', {id: this.dataset.viewportId, collection: `skraafotos${event.target.value}`})
   }
 
