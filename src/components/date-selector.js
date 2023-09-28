@@ -156,22 +156,25 @@ export class SkraaFotoDateSelector extends HTMLElement {
     
     if (event.key === 'ArrowDown' && event.shiftKey) {
       nextItemIndex = nextItemIndex + 1
-      if (nextItemIndex > this.items.length) {
+      if (nextItemIndex > this.items.length - 1) {
         nextItemIndex = 0
       }
+      store.dispatch('updateItem', {
+        id: this.dataset.viewportId,
+        item: this.items[nextItemIndex]
+      })
     } else if (event.key === 'ArrowUp' && event.shiftKey) {
       nextItemIndex = nextItemIndex - 1
       if (nextItemIndex < 0) {
         nextItemIndex = this.items.length - 1
       }
+      store.dispatch('updateItem', {
+        id: this.dataset.viewportId,
+        item: this.items[nextItemIndex]
+      })
     }
 
-    console.log('new item index', nextItemIndex)
-
-    store.dispatch('updateItem', {
-      id: this.dataset.viewportId,
-      item: this.items[nextItemIndex]
-    })
+    console.log('new item index', nextItemIndex)    
   }
 
 
