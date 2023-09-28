@@ -48,6 +48,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-slider-open-wrapper {
       z-index: 1;
       position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .sf-slider-open-wrapper-higher {
+      z-index: 1;
+      position: fixed;
       bottom: 5rem;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -144,9 +152,11 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     <style>
       ${ this.styles }
     </style>
-    <nav class="sf-slider-open-wrapper">
-      <button class="sf-slider-open contrast">Vælg retning</button>
-    </nav>
+      ${
+        config.ENABLE_DATE_BROWSER ?
+        `<nav class="sf-slider-open-wrapper-higher"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
+        :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
+  }
     <section class="sf-slider-content">
       <button class="sf-slider-close ds-icon-icon-close contrast" title="Luk"></button>
       <div class="sf-slider-grid">

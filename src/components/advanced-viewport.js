@@ -142,7 +142,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
         ${ 
           config.ENABLE_YEAR_SELECTOR ? 
           `<skraafoto-year-selector data-viewport-id="${this.id}"></skraafoto-year-selector>`
-          : `<skraafoto-date-selector data-viewport-id="${this.id}"></skraafoto-date-selector>`
+          :`<skraafoto-date-selector data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
         <hr>
         <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>

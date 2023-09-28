@@ -28,12 +28,12 @@ export class SkraaFotoDateViewer extends HTMLElement {
       display: flex;
       justify-content: space-around;
     }
-    .ds-nav-tools {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
+    
+    .date-viewer {
+      left: 50%;
+      transform: translate(-50%, -10%);
     }
+    
     .ds-button-group button, .ds-button-group  {
       padding: 0;
       pointer-events: all;
@@ -90,13 +90,13 @@ export class SkraaFotoDateViewer extends HTMLElement {
     super()
   }
 
-  async connectedCallback() { 
+  async connectedCallback() {
 
     this.innerHTML = this.#renderTemplate()
 
     this.currentItem = store.state[this.dataset.viewportId].item
-    
-    
+
+
     this.#selectElement = this.querySelector('select')
     this.#buttonDown = this.querySelector('.button-down')
     this.#buttonUp = this.querySelector('.button-up')
@@ -143,8 +143,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
     this.#selectElement.addEventListener('change', (event) => {
       console.log('select a new one', event.target.value)
       store.dispatch('updateItemId', {
-        id: this.dataset.viewportId, 
-        itemId: event.target.value 
+        id: this.dataset.viewportId,
+        itemId: event.target.value
       })
       this.#selectElement.blur() // Remove focus from the select element
     })
@@ -173,12 +173,12 @@ export class SkraaFotoDateViewer extends HTMLElement {
     this.#selectElement.innerHTML = this.#renderOptions()
   }
 
-  #renderTemplate() { 
+  #renderTemplate() {
     return `
       <style>
         ${ this.#styles }
       </style>
-      <nav class="ds-nav-tools">
+      <nav class="ds-nav-tools date-viewer">
         <div class="ds-button-group">
           <button class="button-down ds-icon-icon-arrow-single-down"></button>
           <hr>
