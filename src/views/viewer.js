@@ -1,5 +1,4 @@
 import { getZ } from '@dataforsyningen/saul'
-import { getParam, setParams } from '../modules/url-state.js'
 import { getCollections, queryItem, queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
@@ -35,44 +34,26 @@ const direction_picker_element = document.querySelector('skraafoto-direction-pic
 function updateMainMap() {
   main_viewport_element.setAttribute('hidden', true)
   big_map_element.removeAttribute('hidden')
-  big_map_element.dataset.center = JSON.stringify(getParam('center'))
+  big_map_element.dataset.center = store.state.view.center
 }
 
 function updateMainViewport() {
   big_map_element.setAttribute('hidden', true)
   main_viewport_element.removeAttribute('hidden')
-  const data = {}
-  if (getParam('center')) {
-    data.center = getParam('center')
-  }
-  if (getParam('item')) {
-    queryItem(getParam('item')).then(item => {
-      data.item = item
-      main_viewport_element.setData = data
-    })
-  } else {
-    main_viewport_element.setData = data
-  }
 }
 
 function updateViews() {
-  if (getParam('orientation') === 'map') {
+  if (store.state[this.id].orientation === 'map') {
     updateMainMap()
   } else {
     updateMainViewport()
-  }
-
-  if (getParam('parcels')) {
-    fetchParcels(getParam('parcels')).then(parcels => {
-      store.dispatch('updateParcels', parcels)
-    })
   }
 
   // Update the other viewports
   if (collection) {
     direction_picker_element.setView = {
       collection: collection,
-      center: getParam('center')
+      center: store.state.view.center
     }
   }
 }
@@ -83,7 +64,7 @@ function updateViews() {
 // On a new address input, update URL params
 document.addEventListener('gsearch:select', async function (event) {
   const new_center = getGSearchCenterPoint(event.detail)
-  const orientation = getParam('orientation') ? getParam('orientation') : 'north'
+  const orientation = store.state[this.id].orientation
 
   if (orientation !== 'map') {
     queryItems(new_center, orientation, collection).then(async (response) => {
@@ -140,7 +121,7 @@ function showAlert(initialCollection, currentCollection) {
 window.addEventListener('urlupdate', function(event) {
 
   if (event.detail.item) {
-    const item = getParam('item')
+    const item = store.state[this.id].itemId
     if (item) {
       const year = item.substring(0,4)
       collection = `skraafotos${year}`
@@ -230,17 +211,8 @@ if (configuration.ENABLE_DATESQUASH) {
   })
 }
 
-
 // Initialize
 
 setupAnalytics()
-
-if (getParam('item')) {
-  const item = await queryItem(getParam('item'))
-  collection = item.collection
-} else if (getParam('center')) {
-  const collections = await getCollections()
-  collection = collections[0].id
-}
 
 updateViews()
