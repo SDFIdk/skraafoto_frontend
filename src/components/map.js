@@ -2,7 +2,6 @@
 // https://openlayers.org/en/latest/examples/wmts-layer-from-capabilities.html
 // HINT: Use setRenderReprojectionEdges(true) on WMTS tilelayer for debugging
 
-import { setParams } from '../modules/url-state.js'
 import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import Map from 'ol/Map'
@@ -58,15 +57,15 @@ export class SkraaFotoMap extends HTMLElement {
       height: 100%;
       cursor: url('./img/icons/icon_crosshair.svg') 15.5 16, crosshair;
     }
-    .ol-zoom {
+    .geographic-map .ol-zoom {
       top: auto;
       left: auto;
       bottom: 2rem;
       right: 1rem;
       position: absolute;
     }
-    .ol-zoom-in,
-    .ol-zoom-out {
+    .geographic-map .ol-zoom-in,
+    .geographic-map .ol-zoom-out {
       margin: .25rem 0 0;
       display: block;
       height: 3rem;
@@ -78,14 +77,14 @@ export class SkraaFotoMap extends HTMLElement {
       line-height: 1;
       box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
     }
-    skraafoto-compass {
+    .geographic-map skraafoto-compass {
       position: absolute;
       top: 1.5rem;
       right: 1rem;
       z-index: 1;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
     }
-    ds-spinner {
+    .geographic-map ds-spinner {
       position: absolute;
       top: 0;
       left: 0;
@@ -93,7 +92,7 @@ export class SkraaFotoMap extends HTMLElement {
       height: 100%;
       z-index: 10;
     }
-    ds-spinner > .ds-loading-svg {
+    .geographic-map ds-spinner > .ds-loading-svg {
       max-width: 5rem !important;
       background-color: var(--background-color);
       border-radius: 40px;
@@ -101,18 +100,19 @@ export class SkraaFotoMap extends HTMLElement {
     }
     @media screen and (max-width: 35rem) {
 
-      skraafoto-compass {
+      .geographic-map skraafoto-compass {
         top: 0.5rem;
         right: 0.5rem;
       }
     }
   `
   template = `
-    <link rel="stylesheet" href="./style.css">
-    <style>
-      ${ this.styles }
-    </style>
-    <skraafoto-compass direction="north"></skraafoto-compass>
+    <div class="geographic-map">
+      <style>
+        ${ this.styles }
+      </style>
+      <skraafoto-compass direction="north"></skraafoto-compass>
+    </div>
   `
 
   // getters
@@ -131,22 +131,12 @@ export class SkraaFotoMap extends HTMLElement {
     epsg25832proj(proj4)
     register(proj4)
     this.projection = getProjection('EPSG:25832')
-
-    this.createShadowDOM()
   }
 
   // methods
 
-  createShadowDOM() {
-    // Create a shadow root
-    this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    // Create div element
-    const div = document.createElement('div')
-    div.className = "geographic-map"
-    // Create some CSS to apply to the shadow DOM
-    this.shadowRoot.innerHTML = this.template
-    // attach the created elements to the shadow DOM
-    this.shadowRoot.append(div)
+  createDOM() {
+    this.innerHTML = this.template
   }
 
   generateMap(is_minimal, center, zoom) {
@@ -181,7 +171,7 @@ export class SkraaFotoMap extends HTMLElement {
             source: new WMTS(options)
           })
         ],
-        target: this.shadowRoot.querySelector('.geographic-map'),
+        target: this.querySelector('.geographic-map'),
         view: view,
         controls: controls,
         interactions: new Collection()
@@ -219,7 +209,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   rendercompleteHandler() {
     // Removes loading animation elements
-    this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
+    this.querySelectorAll('ds-spinner').forEach(function(spinner) {
       spinner.remove()
     })
   }
@@ -268,24 +258,23 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    setParams({
-      center: event.coordinate
-    })
+    store.dispatch('updateCenter', event.coordinate)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
     this.map.addLayer(this.icon_layer)
   }
 
-  async updateMap(center) {
+  async updateMap() {
+
+    const center = store.state.view.center
 
     // Attach a loading animation element while updating
     const spinner_element = document.createElement('ds-spinner')
-    this.shadowRoot.append(spinner_element)
+    this.append(spinner_element)
 
     if (!this.map) {
       this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
-      this.updatePlugins()
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
@@ -302,17 +291,20 @@ export class SkraaFotoMap extends HTMLElement {
     }
   }
 
-  updatePlugins() {
-
-  }
-
   parcelsHandler() {
     this.drawParcels()
   }
 
+
   // Lifecycle
 
   connectedCallback() {
+    
+    this.createDOM()
+    this.updateMap()
+
+    window.addEventListener('view', this.updateMap.bind(this))
+
     if (configuration.ENABLE_PARCEL) {
       this.parcels_function = this.parcelsHandler.bind(this)
       window.addEventListener('parcels', this.parcels_function)
@@ -324,15 +316,7 @@ export class SkraaFotoMap extends HTMLElement {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)
+    window.removeEventListener('view', this.updateMap)
   }
 
-  attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'data-center' && old_value !== new_value) {
-      this.center = JSON.parse(new_value)
-      this.updateMap(this.center)
-    }
-  }
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-map', SkraaFotoMap)

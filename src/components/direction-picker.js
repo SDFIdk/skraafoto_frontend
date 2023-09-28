@@ -233,13 +233,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   }
 
   highlightCurrentDirection() {
-    let url_params_orientation = (new URL(document.location)).searchParams.get('orientation')
-
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
     })
-
-    this[`${ url_params_orientation }_element`].parentNode.classList.add('active')
+    this[`${ store.state['viewport-1'].orientation }_element`].parentNode.classList.add('active')
   }
 
   updateViewHandler() {
@@ -265,9 +262,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     })
 
     // Update map
-    this.map_element.dataset.center = JSON.stringify(center)
+    this.map_element.dataset.center = center
   }
-
 
   // Lifecycle
 
@@ -284,31 +280,26 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
-    // Update views on view and collection state changes
+    // Update views on state changes
     window.addEventListener('view', this.updateViewHandler.bind(this))
     window.addEventListener('collection', this.updateViewHandler.bind(this))
 
     // When a viewport is clicked in the selector, send a signal to update the main viewport
-    this.shadowRoot.querySelector('.sf-slider-grid').addEventListener('click', (event) => {
-      let target_item
-      switch(event.target.className) {
-        case 'viewport-pick-option':
-          target_item = event.target.item
-          store.dispatch('updateOrientation', target_item.properties.direction)
-          store.dispatch('updateItemId', target_item.id)
-          break
-        case 'sf-direction-picker-btn':
-          target_item = event.target.querySelector('.viewport-pick-option').item
-          store.dispatch('updateOrientation', target_item.properties.direction)
-          store.dispatch('updateItemId', target_item.id)
-          break
-        case 'pick-map':
-          // Set orientation parameter, causing the page to reload with map open
-          store.dispatch('updateOrientation', 'map')
-          break
-        default:
-          return
-      }
+    this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        target_item = event.target.querySelector('.viewport-pick-option').item
+        store.dispatch('updateOrientation', {id: 'viewport-1', orientation: target_item.properties.direction})
+        store.dispatch('updateItemId', {id: 'viewport-1', itemId: target_item.id})
+        store.dispatch('updateMapVisibility', false)
+      })
+    })
+
+    // When the tiny map is clicked in the selector, send a signal to display the big map
+    this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
+      console.log('pick the map')
+      // Set orientation parameter, causing the page to reload with map open
+      store.dispatch('updateOrientation', {id: 'viewport-1', orientation: 'map'})
+      store.dispatch('updateMapVisibility', true)
       this.slider_element.style.transform = 'translate(0,100vh)'
       this.highlightCurrentDirection()
     })
