@@ -1,6 +1,7 @@
 import { createTranslator } from '@dataforsyningen/saul'
 import { GSearchUI } from '@dataforsyningen/gsearch-ui'
 import { configuration } from '../modules/configuration.js'
+import { queryItems } from '../modules/api.js'
 
 customElements.define('g-search', GSearchUI)
 
@@ -136,23 +137,11 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
   constructor() {
     super()
-    this.createDOM()
-  }
-
-  createDOM() {
-    const container = document.createElement('article')
-    container.innerHTML = this.template
-    // Attach the elements to the DOM
-    this.append(container)
-
-    // Register elements for later use
-    this.search_element = container
-    this.btn_open = this.querySelector('.sf-search-btn-open')
-    this.input_container = this.querySelector('.sf-input-container')
-    this.input_element = this.querySelector('g-search')
   }
 
   connectedCallback() {
+
+    this.createDOM()
 
     if (this.getAttribute('collapsible') !== null) {
       this.is_collapsible = true
@@ -182,10 +171,62 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       }
       // Attach the event listener to the document body
       document.body.addEventListener('click', outsideClickListener);
+
+      // On a new address input, update store
+      this.addEventListener('gsearch:select', function(event) {
+        const center = getGSearchCenterPoint(event.detail)
+        const orientation = store.state['viewport-1'].orientation
+        const collection = store.state['viewport-1'].collection
+        this.searchItemsInCollection({
+          collection: collection, 
+          center: center, 
+          orientation: orientation
+        })
+      })
     }
   }
 
-}
+  searchItemsInCollection({collection, center, orientation}) {
+    queryItems(center, orientation, collection).then((response) => {
+      if (response.features.length > 0) {
+        store.dispatch('updateItem', {id: 'viewport-1', item: response.features[0]})
+        return
+      } else {
+        const collections = store.state.collections
+        const collectionIndex = collections.findIndex((c) => c === collection)
+        const nextCollection = collectionIndex + 1
 
-// This is how to register the custom element:
-// customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
+        this.showAlert(collection, nextCollection)
+
+        this.searchItemsInCollection({
+          collection: nextCollection, 
+          center: center, 
+          orientation: orientation
+        })
+      }
+    }).catch((err) => {
+      console.erroe('No items were found in any collections', err)
+    })
+  }
+
+  showAlert(initialCollection, currentCollection) {
+    const last4Initial = initialCollection.slice(-4) // Get last 4 characters of initialCollection
+    const last4Current = currentCollection.slice(-4) // Get last 4 characters of currentCollection
+    const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${ last4Initial }, skifter til ${ last4Current }`
+    alert(message)
+  }
+
+  createDOM() {
+    const container = document.createElement('article')
+    container.innerHTML = this.template
+    // Attach the elements to the DOM
+    this.append(container)
+
+    // Register elements for later use
+    this.search_element = container
+    this.btn_open = this.querySelector('.sf-search-btn-open')
+    this.input_container = this.querySelector('.sf-input-container')
+    this.input_element = this.querySelector('g-search')
+  }
+
+}
