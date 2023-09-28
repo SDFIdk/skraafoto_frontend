@@ -134,7 +134,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
 
     // Add event listener to the document for arrow key navigation
-    document.addEventListener('keydown', keyDownHandler).bind(this)
+    document.addEventListener('keydown', this.keyDownHandler.bind(this))
 
     // Add global listener for state changes
     window.addEventListener(this.dataset.viewportId, this.itemUpdateHandler.bind(this))
@@ -154,7 +154,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
   disconnectedCallback() {
     window.removeEventListener(this.dataset.viewportId, this.itemUpdateHandler)
-    document.removeEventListener('keydown', keyDownHandler)
+    document.removeEventListener('keydown', this.keyDownHandler)
   }
 
   async #update() {

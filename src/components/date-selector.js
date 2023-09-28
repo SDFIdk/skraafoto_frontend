@@ -11,10 +11,8 @@ import store from '../store'
  */
 export class SkraaFotoDateSelector extends HTMLElement {
 
-
   // public properties
   items = []
-  selectedItem
   selectorElement
   isOptionClicked = false
   styles = `
@@ -91,7 +89,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
     
     const center = store.state.view.center
     const orientation = store.state[this.dataset.viewportId].orientation
-    this.selectedItem = store.state[this.dataset.viewportId].itemId
     if (orientation && center) {
       queryItems(center, orientation, false, 50).then((featureCollection) => {
         this.items = featureCollection.features
@@ -109,7 +106,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
         this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
       }
     }
-    this.selectorElement.value = this.selectedItem
+    this.selectorElement.value = store.state[this.dataset.viewportId].itemId
   }
 
   sortOptions(items) {
@@ -163,7 +160,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.createDOM()
     this.update()
 
-    // When an option is selected, send an event with the corresponding image data
+    // When an option is selected, dispatch a new item to the store
     this.selectorElement.addEventListener('change', (event) => {
       const item = this.items.find((item) => item.id === event.target.value)
       store.dispatch('updateItem', {
@@ -186,11 +183,11 @@ export class SkraaFotoDateSelector extends HTMLElement {
       this.isOptionClicked = false // Reset the flag
     })
 
-    window.addEventListener('item', this.update.bind(this))
+    window.addEventListener(this.dataset.viewportId, this.update.bind(this))
   }
 
   disconnectedCallback() {
-    window.removeEventListener('item', this.update)
+    window.removeEventListener(this.dataset.viewportId, this.update)
   }
   
 }
