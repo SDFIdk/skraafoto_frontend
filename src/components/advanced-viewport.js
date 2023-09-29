@@ -40,6 +40,11 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     .ol-viewport canvas {
       cursor: url('./img/icons/icon_crosshair.svg') 15 15, crosshair;
     }
+    
+    .adv-viewport-wrapper {
+        position: relative;
+        height: 100%;
+    }
     .image-date {
       display: none;
     }
@@ -67,10 +72,10 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
       box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
     }
     .ds-nav-tools {
-      position: absolute;
       z-index: 2;
       top: .5rem;
       left: .5rem;
+      padding: 1rem;
     }
     .ds-button-group {
       min-width: 10rem;

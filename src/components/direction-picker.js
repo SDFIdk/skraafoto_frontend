@@ -118,13 +118,12 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
 
     @media screen and (max-width: 35rem) {
-    
+
       .sf-slider-close {
         right: 1rem;
         bottom: 1rem;
         top: auto !important;
       }      
-
     }
 
     @media screen and (min-width: 80rem) {

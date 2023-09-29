@@ -60,7 +60,7 @@ export class SkraaFotoViewport extends HTMLElement {
       display: block;
     }
     .viewport-wrapper {
-      position: relative;
+      position: absolute;
       height: 100%;
       width: 100%;
       display: block;
@@ -173,7 +173,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.append(wrapper)
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
     this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
-    
+
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
     }

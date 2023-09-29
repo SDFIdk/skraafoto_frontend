@@ -20,7 +20,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
   #styles = `
     skraafoto-date-viewer {
       z-index: 1;
-      position: fixed;
+      position: absolute;
       bottom: 1rem;
       pointer-events: none;
       height: 5rem;
@@ -30,9 +30,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
     }
     .ds-nav-tools {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
     }
     .ds-button-group button, .ds-button-group  {
       padding: 0;
