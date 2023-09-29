@@ -1,12 +1,4 @@
-import Projection from 'ol/proj/Projection.js'
-import WebGLTile from 'ol/layer/WebGLTile.js'
 import OlMap from 'ol/Map.js'
-import View from 'ol/View.js'
-import VectorSource from 'ol/source/Vector'
-import VectorLayer from 'ol/layer/Vector'
-import Feature from 'ol/Feature'
-import Point from 'ol/geom/Point'
-import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import Collection from 'ol/Collection'
 import { getZ, getImageXY } from '@dataforsyningen/saul'
@@ -18,7 +10,7 @@ import { getViewSyncViewportListener } from '../modules/sync-view'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
-import { generateSource } from './shared/viewport-mixin.js'
+import { generateSource, projection, updateMap, generateLayer, adjustZoom } from '../modules/viewport-mixin.js'
 import store from '../store'
 
 
@@ -44,15 +36,6 @@ export class SkraaFotoViewport extends HTMLElement {
   compass_element
   update_pointer_function
   update_view_function
-
-
-  // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
-  // when the view resolves view properties, the map view will be updated with the HACKish projection override
-  projection = new Projection({
-    code: 'custom',
-    units: 'pixels',
-    metersPerUnit: 1
-  })
 
   styles = /*css*/`
     :host {
@@ -199,7 +182,7 @@ export class SkraaFotoViewport extends HTMLElement {
     if (center) {
       await this.updateCenter(center)
     }
-    this.updateMap()
+    updateMap(this)
     this.updateNonMap()
   }
 
@@ -208,103 +191,9 @@ export class SkraaFotoViewport extends HTMLElement {
       this.item = item
       this.source_image = generateSource(this.item.assets.data.href)
       this.map.removeLayer(this.layer_image)
-      this.layer_image = this.generateLayer(this.source_image)
+      this.layer_image = generateLayer(this.source_image)
       this.map.addLayer(this.layer_image)
     }
-  }
-
-  async updateMap() {
-
-    if (!this.item || !this.map || !this.coord_image) {
-      return
-    }
-
-    this.map.removeLayer(this.layer_icon)
-    if (configuration.ENABLE_CROSSHAIR_ICON) {
-    this.layer_icon = this.generateIconLayer(this.coord_image, '../img/icons/icon_cursor_crosshair.svg')
-    } else {
-      this.layer_icon = this.generateIconLayer(this.coord_image, '../img/icons/icon_crosshair.svg')
-    }
-    this.map.addLayer(this.layer_icon)
-
-    this.view = await this.source_image.getView()
-
-    this.view.projection = this.projection
-
-    // Set extra resolutions so we can zoom in further than the resolutions permit normally
-    this.view.resolutions = this.addResolutions(this.view.resolutions)
-
-    // Rotate nadir images relative to north
-    this.view.rotation = this.getAdjustedNadirRotation(this.item)
-
-    // this.view.center = this.coord_image
-    const center = store.state.view.center
-    if (center[0]) {
-      this.view.center = getImageXY(this.item, center[0], center[1], center[2])
-    } else {
-      this.view.center = this.coord_image
-    }
-    this.view.zoom = this.toImageZoom(store.state.view.zoom)
-
-    const view = this.createView(this.view)
-    this.map.setView(view)
-  }
-
-  /** Calculate how much to rotate a nadir image to have it north upwards */
-  getAdjustedNadirRotation(item) {
-    if (item.properties.direction === 'nadir') {
-      //return item.properties['pers:kappa'] / (360 / (2 * Math.PI))
-      return ( item.properties['pers:kappa'] * Math.PI ) / 180
-    } else {
-      return 0
-    }
-  }
-
-  generateLayer(src) {
-    return new WebGLTile({source: src, preload: 0})
-  }
-
-  generateIconLayer(center, icon_image) {
-    if (center) {
-      let icon_feature = new Feature({
-        geometry: new Point([center[0], center[1]])
-      })
-      let icon_style
-      const colorSetting = configuration.COLOR_SETTINGS.targetColor
-      if (configuration.ENABLE_CROSSHAIR_ICON) {
-        icon_style = new Style({
-          image: new Icon({
-            src: icon_image,
-            scale: 1,
-            color: colorSetting
-          })
-        })
-      } else {
-          icon_style = new Style({
-            image: new Icon({
-              src: icon_image,
-              scale: 1.5,
-              color: colorSetting
-            })
-          })
-      }
-
-      icon_feature.setStyle(icon_style)
-      return new VectorLayer({
-        source: new VectorSource({
-          features: [icon_feature]
-        })
-      })
-    }
-  }
-
-  /** Adds extra resolutions to enable deep zoom */
-  addResolutions(resolutions) {
-    let new_resolutions = Array.from(resolutions)
-    const tiniest_res = new_resolutions[new_resolutions.length - 1]
-    new_resolutions.push(tiniest_res / 2)
-    new_resolutions.push(tiniest_res / 4)
-    return new_resolutions
   }
 
   async updateCenter(coordinate) {
@@ -366,20 +255,14 @@ export class SkraaFotoViewport extends HTMLElement {
     })
   }
 
-  toImageZoom(zoom) {
-    return zoom - configuration.ZOOM_DIFFERENCE - configuration.OVERVIEW_ZOOM_DIFFERENCE
-  }
-
+  // Public method
   toMapZoom(zoom) {
     return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
-  createView(view_config) {
-    delete view_config.extent
-    const view = new View(view_config)
-    view.setMinZoom(configuration.MIN_ZOOM)
-    view.setMaxZoom(configuration.MAX_ZOOM - configuration.OVERVIEW_ZOOM_DIFFERENCE)
-    return view
+  // Public method
+  toImageZoom(zoom) {
+    return adjustZoom(zoom)
   }
 
   update_viewport_function(event) {

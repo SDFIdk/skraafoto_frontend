@@ -16,6 +16,13 @@ const itemState = {
     itemId: '2023_82_24_2_0011_00000400',
     orientation: 'north',
     collection: 'skraafotos2023'
+  },
+  items: {
+    'north': null,
+    'south': null,
+    'east': null,
+    'west': null,
+    'nadir': null
   }
 }
 

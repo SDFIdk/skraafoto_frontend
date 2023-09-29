@@ -164,19 +164,24 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
         </button>
         <button class="sf-direction-picker-btn sf-btn-nadir">
-          <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option"></skraafoto-viewport-mini>
+          <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option" data-orientation="nadir">
+          </skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-north">
-          <skraafoto-viewport-mini id="viewport-north" class="viewport-pick-option"></skraafoto-viewport-mini>
+          <skraafoto-viewport-mini id="viewport-north" class="viewport-pick-option" data-orientation="north">
+          </skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-east">
-          <skraafoto-viewport-mini id="viewport-east" class="viewport-pick-option"></skraafoto-viewport-mini>
+          <skraafoto-viewport-mini id="viewport-east" class="viewport-pick-option" data-orientation="east">
+          </skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-south">
-          <skraafoto-viewport-mini id="viewport-south" class="viewport-pick-option"></skraafoto-viewport-mini>
+          <skraafoto-viewport-mini id="viewport-south" class="viewport-pick-option" data-orientation="south">
+          </skraafoto-viewport-mini>
         </button>
         <button class="sf-direction-picker-btn sf-btn-west">
-          <skraafoto-viewport-mini id="viewport-west" class="viewport-pick-option"></skraafoto-viewport-mini>
+          <skraafoto-viewport-mini id="viewport-west" class="viewport-pick-option" data-orientation="west">
+          </skraafoto-viewport-mini>
         </button>
       </div>
     </section>
@@ -211,6 +216,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
   }
 
+  // TODO: Move to relevant component ...
   /** Checks whether center coordinate is outside image area */
   checkImage(coordinate, item) {
     if (coordinate[0] < item.bbox[0] || coordinate[0] > item.bbox[2] || coordinate[1] < item.bbox[1] || coordinate[1] > item.bbox[3]) {
@@ -224,14 +230,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
   }
 
-  updateViewport(coordinate, item) {
-    const element = this[`${item.properties.direction}_element`]
-    const data = {}
-    data.item = item
-    data.center = coordinate
-    element.setData = data
-  }
-
+  // TODO: Enable this in the correct way
   highlightCurrentDirection() {
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
@@ -239,38 +238,11 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this[`${ store.state['viewport-1'].orientation }_element`].parentNode.classList.add('active')
   }
 
-  updateViewHandler() {
-    const center = store.state.view.center
-    const collection = store.state.collection
-
-    // Update mini viewports
-    let queries = [
-      queryItems(center, 'north', collection),
-      queryItems(center, 'south', collection),
-      queryItems(center, 'east', collection),
-      queryItems(center, 'west', collection),
-      queryItems(center, 'nadir', collection)
-    ]
-    Promise.all(queries).then((responses) => {
-      let items = responses.map(function(response) {
-        return response.features[0]
-      })
-      for (let i in items) {
-        this.updateViewport(center, items[i])
-      }
-      this.highlightCurrentDirection()
-    })
-
-    // Update map
-    this.map_element.dataset.center = center
-  }
-
   // Lifecycle
 
   connectedCallback() {
 
     this.createShadowDOM()
-    this.updateViewHandler()
 
     this.btn_open_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,0)'
@@ -279,10 +251,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.btn_close_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
-
-    // Update views on state changes
-    window.addEventListener('view', this.updateViewHandler.bind(this))
-    window.addEventListener('collection', this.updateViewHandler.bind(this))
 
     // When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
@@ -303,11 +271,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
       this.highlightCurrentDirection()
     })
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('view', this.updateViewHandler)
-    window.removeEventListener('collection', this.updateViewHandler)
   }
 
 }
