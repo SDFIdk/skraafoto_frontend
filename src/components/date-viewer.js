@@ -28,12 +28,12 @@ export class SkraaFotoDateViewer extends HTMLElement {
       display: flex;
       justify-content: space-around;
     }
-    
-    .date-viewer {
-      left: 50%;
-      transform: translate(-50%, -10%);
+    .ds-nav-tools {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
     }
-    
     .ds-button-group button, .ds-button-group  {
       padding: 0;
       pointer-events: all;
@@ -178,7 +178,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
       <style>
         ${ this.#styles }
       </style>
-      <nav class="ds-nav-tools date-viewer">
+      <nav class="ds-nav-tools">
         <div class="ds-button-group">
           <button class="button-down ds-icon-icon-arrow-single-down"></button>
           <hr>

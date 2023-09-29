@@ -137,6 +137,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       }
 
       .sf-slider-open-wrapper,
+      .sf-slider-open-wrapper-higher,
       .sf-slider-close {
         display: none;
       }
