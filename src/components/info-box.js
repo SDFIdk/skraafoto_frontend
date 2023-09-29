@@ -110,6 +110,9 @@ export class SkraaFotoInfoBox extends HTMLElement {
         <dd>Kappa: ${item.properties['pers:kappa']}</dd>
         <dd>Perspective Center: ${item.properties['pers:perspective_center']}</dd>
         <dd>Kamera ID: ${item.properties.instruments}</dd>
+        <dd>Pixel Spacing: ${item.properties['pers:interior_orientation'].pixel_spacing}</dd>
+        <dd>Principal Point Offset: ${item.properties['pers:interior_orientation'].principal_point_offset}</dd>
+        <dd>Sensor Array Dimensions: ${item.properties['pers:interior_orientation'].sensor_array_dimensions}</dd>
       </dl>
     `
   }
