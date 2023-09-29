@@ -28,9 +28,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
       display: flex;
       justify-content: space-around;
     }
-    .ds-nav-tools {
-      display: flex;
-    }
     .ds-button-group button, .ds-button-group  {
       padding: 0;
       pointer-events: all;
