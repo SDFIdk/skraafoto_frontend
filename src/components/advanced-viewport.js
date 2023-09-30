@@ -228,16 +228,6 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
   }
 
   // overwrite parent function
-  toImageZoom(zoom) {
-    return zoom - configuration.ZOOM_DIFFERENCE
-  }
-
-  // overwrite parent function
-  toMapZoom(zoom) {
-    return zoom + configuration.ZOOM_DIFFERENCE
-  }
-
-  // overwrite parent function
   createView(view_config) {
     const view = new View(view_config)
     view.setMinZoom(configuration.MIN_ZOOM + configuration.OVERVIEW_ZOOM_DIFFERENCE)
@@ -296,6 +286,3 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
     this.tool_measure_height = new MeasureHeightTool(this)
   }
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)

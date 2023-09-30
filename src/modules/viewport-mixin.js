@@ -132,14 +132,6 @@ function getAdjustedNadirRotation(item) {
   }
 }
 
-function adjustImageZoom(zoom) {
-  return zoom - configuration.ZOOM_DIFFERENCE - configuration.OVERVIEW_ZOOM_DIFFERENCE
-}
-
-function adjustMapZoom(zoom) {
-  return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
-}
-
 function createView(view_config) {
   delete view_config.extent
   const view = new View(view_config)
@@ -198,8 +190,6 @@ export {
   updateMap,
   generateSource,
   generateLayer,
-  adjustImageZoom, 
-  adjustMapZoom,
   updateTextContent,
   updatePlugins,
   updateDate,

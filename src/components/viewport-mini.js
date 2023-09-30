@@ -11,8 +11,6 @@ import {
   projection, 
   updateMap, 
   generateLayer, 
-  adjustImageZoom, 
-  adjustMapZoom,
   updateTextContent,
   updatePlugins,
   updateDate,
@@ -209,12 +207,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   // Public method
   toMapZoom(zoom) {
-    return adjustMapZoom(zoom)
+    return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
   // Public method
   toImageZoom(zoom) {
-    return adjustImageZoom(zoom)
+    return zoom - configuration.ZOOM_DIFFERENCE - configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
 
