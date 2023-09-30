@@ -163,8 +163,7 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
 
   constructor() {
-    super() // Inherit stuff from SkraaFotoViewport
-    this.addToDOM()
+    super()
   }
 
 
@@ -251,6 +250,8 @@ export class SkraaFotoAdvancedViewport extends SkraaFotoViewport {
 
   connectedCallback() {
     super.connectedCallback()
+
+    this.addToDOM()
 
     // add interactions
     const interactions = defaultInteractions({ pinchRotate: false })

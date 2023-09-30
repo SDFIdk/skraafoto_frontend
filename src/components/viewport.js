@@ -1,16 +1,23 @@
 import OlMap from 'ol/Map.js'
 import { defaults as defaultControls } from 'ol/control'
 import Collection from 'ol/Collection'
-import { getZ, getImageXY } from '@dataforsyningen/saul'
-import { queryItem, queryItems } from '../modules/api.js'
-import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
-import { getTerrainData } from '../modules/api.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
-import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
-import { generateSource, projection, updateMap, generateLayer, adjustZoom } from '../modules/viewport-mixin.js'
+import { 
+  generateSource, 
+  projection,
+  updateMap, 
+  generateLayer, 
+  adjustImageZoom,
+  adjustMapZoom,
+  updateTextContent,
+  updatePlugins,
+  updateDate,
+  updateCenter,
+  rendercompleteHandler
+} from '../modules/viewport-mixin.js'
 import store from '../store'
 
 
@@ -139,7 +146,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   constructor() {
     super()
-    this.createShadowDOM()
   }
 
 
@@ -154,20 +160,32 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
+    
     this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
     this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
 
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
     }
-    // Modify this block
+    // TODO: Modify this block
     if (configuration.ENABLE_COMPASSARROWS) {
       const compassArrowsElement = wrapper.querySelector('skraafoto-compass')
       compassArrowsElement.style.display = 'none'
     }
   }
 
-  async update({item,center}) {
+  createMap() {
+    return new OlMap({
+      target: this.shadowRoot.querySelector('.viewport-map'),
+      controls: defaultControls({rotate: false, attribution: false, zoom: true}),
+      interactions: new Collection(),
+      view: this.view
+    })
+  }
+
+  async update() {
+    
+    this.item = store.state[this.id].item
 
     // Attach a loading animation element while updating
     const spinner_element = document.createElement('ds-spinner')
@@ -176,100 +194,43 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.querySelectorAll('.out-of-bounds').forEach(function(el) {
       el.style.display = 'none'
     })
-
-    this.updateImage(item)
+    
+    const center = store.state.view.center
 
     if (center) {
-      await this.updateCenter(center)
+      const newCenters = await updateCenter(center, this.item)
+      this.coord_world = newCenters.worldCoord
+      this.coord_image = newCenters.imageCoord
     }
-    updateMap(this)
-    this.updateNonMap()
-  }
 
-  updateImage(item) {
-    if (this.map && item.id !== this.item?.id) {
-      this.item = item
-      this.source_image = generateSource(this.item.assets.data.href)
-      this.map.removeLayer(this.layer_image)
-      this.layer_image = generateLayer(this.source_image)
-      this.map.addLayer(this.layer_image)
-    }
-  }
-
-  async updateCenter(coordinate) {
-    if (!this.item) {
-      return
-    }
-    if (coordinate[2] === undefined) {
-      coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)
-    }
-    this.coord_world = coordinate
-    this.coord_image = getImageXY(this.item, coordinate[0], coordinate[1], coordinate[2])
+    updateMap(this).then(() => {
+      this.updateNonMap()
+    })
   }
 
   updateNonMap() {
     if (!this.item) {
       return
     }
-    this.updateDirection(this.item)
-    this.updateDate(this.item)
-    this.updateTextContent(this.item)
-    this.updatePlugins()
+    this.compass_element.setAttribute('direction', this.item.properties.direction)
+    this.compassArrows_element.setAttribute('direction', this.item.properties.direction)
+    this.shadowRoot.querySelector('.image-date').innerText = updateDate(this.item)
+    this.innerText = updateTextContent(this.item)
+    updatePlugins(this)
   }
 
-  updateDirection(imagedata) {
-    this.compass_element.setAttribute('direction', imagedata.properties.direction)
-    this.compassArrows_element.setAttribute('direction', imagedata.properties.direction)
-  }
-
-  updateDate(imagedata) {
-    const datetime = new Date(imagedata.properties.datetime).toLocaleDateString()
-    this.shadowRoot.querySelector('.image-date').innerText = datetime
-  }
-
-  updateTextContent(imagedata) {
-    const area_x = ((imagedata.bbox[0] + imagedata.bbox[2]) / 2).toFixed(0)
-    const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
-    this.innerText = `Billede af området omkring koordinat ${area_x} øst,${area_y} nord set fra ${toDanish(imagedata.properties.direction)}.`
-  }
-
-  updatePlugins() {
-    getTerrainData(this.item).then(terrain => {
-      this.terrain = terrain
-    })
-    if (configuration.ENABLE_PARCEL) {
-      renderParcels(this)
-    }
-  }
-
-  rendercompleteHandler() {
-    // Removes loading animation elements
-    setTimeout(() => {
-      this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
-        spinner.remove()
-      })
-    }, 500)
-    // display out of bounds text if done loading
-    this.shadowRoot.querySelectorAll('.out-of-bounds').forEach(function(el) {
-      el.style.display = 'block'
-    })
+  update_viewport_function(event) {
+    this.update()
   }
 
   // Public method
   toMapZoom(zoom) {
-    return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
+    return adjustMapZoom(zoom)
   }
 
   // Public method
   toImageZoom(zoom) {
-    return adjustZoom(zoom)
-  }
-
-  update_viewport_function(event) {
-    this.update({
-      item: store.state[this.id].item,
-      center: store.state.view.center
-    })
+    return adjustImageZoom(zoom)
   }
 
 
@@ -277,25 +238,23 @@ export class SkraaFotoViewport extends HTMLElement {
 
   connectedCallback() {
 
-    this.map = new OlMap({
-      target: this.shadowRoot.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false, zoom: true}),
-      interactions: new Collection(),
-      view: this.view
-    })
+    this.createShadowDOM()
 
-    this.update({
-      item: store.state[this.id].item,
-      center: store.state.view.center
-    })
+    this.map = this.createMap()
+
+    this.update()
+
+    // Listeners
 
     this.map.on('rendercomplete', () => {
-      this.rendercompleteHandler()
+      const spinnerElements = this.shadowRoot.querySelectorAll('ds-spinner')
+      const boundsElements = this.shadowRoot.querySelectorAll('.out-of-bounds')
+      rendercompleteHandler(spinnerElements,boundsElements)
     })
 
     this.update_view_function = getViewSyncViewportListener(this)
-
     window.addEventListener('updateView', this.update_view_function)
+
     window.addEventListener(this.id, this.update_viewport_function.bind(this))
 
     if (configuration.ENABLE_POINTER) {

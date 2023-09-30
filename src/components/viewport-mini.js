@@ -1,16 +1,24 @@
 import OlMap from 'ol/Map.js'
 import { defaults as defaultControls } from 'ol/control'
 import Collection from 'ol/Collection'
-import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { queryItems } from '../modules/api.js'
-import { toDanish } from '../modules/i18n.js'
 import { configuration } from '../modules/configuration.js'
-import { getTerrainData } from '../modules/api.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
-import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
-import { generateSource, projection, updateMap, generateLayer, adjustZoom } from '../modules/viewport-mixin.js'
+import { 
+  generateSource, 
+  projection, 
+  updateMap, 
+  generateLayer, 
+  adjustImageZoom, 
+  adjustMapZoom,
+  updateTextContent,
+  updatePlugins,
+  updateDate,
+  updateCenter,
+  rendercompleteHandler
+} from '../modules/viewport-mixin.js'
 import store from '../store'
 
 /**
@@ -28,7 +36,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
   map
   layer_image
   layer_icon
-  source_image
   view
   sync = false
   self_sync = true
@@ -158,6 +165,19 @@ export class SkraaFotoViewportMini extends HTMLElement {
     }
   }
 
+  createMap() {
+    return new OlMap({
+      target: this.querySelector('.viewport-map'),
+      controls: defaultControls({rotate: false, attribution: false, zoom: false}),
+      interactions: new Collection(),
+      view: this.view
+    })
+  }
+
+  async updateItem() {
+
+  }
+
   async update({item,center}) {
 
     // Attach a loading animation element while updating
@@ -167,96 +187,34 @@ export class SkraaFotoViewportMini extends HTMLElement {
     this.querySelectorAll('.out-of-bounds').forEach(function(el) {
       el.style.display = 'none'
     })
-
-    if (typeof item === 'object') {
-      this.updateImage(item)
-    } else if (typeof item === 'string') {
-      const item_obj = await queryItem(item)
-      this.updateImage(item_obj)
-    }
+ 
     if (center) {
-      await this.updateCenter(center)
+      const newCenters = await updateCenter(center, this.item)
+      this.coord_world = newCenters[0]
+      this.coord_image = newCenters[1]
     }
-    updateMap(this)
+    await updateMap(this)
     this.updateNonMap()
-  }
-
-  updateImage(item) {
-    if (this.map && item.id !== this.item?.id) {
-      this.item = item
-      this.source_image = generateSource(this.item.assets.data.href)
-      this.map.removeLayer(this.layer_image)
-      this.layer_image = generateLayer(this.source_image)
-      this.map.addLayer(this.layer_image)
-    }
-  }
-
-  async updateCenter(coordinate) {
-    if (!this.item) {
-      return
-    }
-    if (coordinate[2] === undefined) {
-      coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)
-    }
-    this.coord_world = coordinate
-    this.coord_image = getImageXY(this.item, coordinate[0], coordinate[1], coordinate[2])
   }
 
   updateNonMap() {
     if (!this.item) {
       return
     }
-    this.updateDirection(this.item)
-    this.updateDate(this.item)
-    this.updateTextContent(this.item)
-    this.updatePlugins()
-  }
-
-  updateDirection(imagedata) {
-    this.compass_element.setAttribute('direction', imagedata.properties.direction)
-  }
-
-  updateDate(imagedata) {
-    const datetime = new Date(imagedata.properties.datetime).toLocaleDateString()
-    this.querySelector('.image-date').innerText = datetime
-  }
-
-  updateTextContent(imagedata) {
-    const area_x = ((imagedata.bbox[0] + imagedata.bbox[2]) / 2).toFixed(0)
-    const area_y = ((imagedata.bbox[1] + imagedata.bbox[3]) / 2).toFixed(0)
-    this.innerText = `Billede af området omkring koordinat ${area_x} øst,${area_y} nord set fra ${toDanish(imagedata.properties.direction)}.`
-  }
-
-  updatePlugins() {
-    getTerrainData(this.item).then(terrain => {
-      this.terrain = terrain
-    })
-    if (configuration.ENABLE_PARCEL) {
-      renderParcels(this)
-    }
-  }
-
-  rendercompleteHandler() {
-    // Removes loading animation elements
-    setTimeout(() => {
-      this.querySelectorAll('ds-spinner').forEach(function(spinner) {
-        spinner.remove()
-      })
-    }, 500)
-    // display out of bounds text if done loading
-    this.querySelectorAll('.out-of-bounds').forEach(function(el) {
-      el.style.display = 'block'
-    })
+    this.compass_element.setAttribute('direction', this.item.properties.direction)
+    this.shadowRoot.querySelector('.image-date').innerText = updateDate(this.item)
+    this.innerText = updateTextContent(this.item)
+    updatePlugins(this)
   }
 
   // Public method
   toMapZoom(zoom) {
-    return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
+    return adjustMapZoom(zoom)
   }
 
   // Public method
   toImageZoom(zoom) {
-    return adjustZoom(zoom)
+    return adjustImageZoom(zoom)
   }
 
 
@@ -264,25 +222,28 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   async connectedCallback() {
 
+    /*
+     - create dom
+     - fetch item
+     - create map
+     
+     - (view, collection) update item -> update map
+    */
+
     this.createDOM()
 
-    const center = store.state.view.center
-    const collection = store.state['viewport-1'].collection
-    const featureCollection = await queryItems(center, this.dataset.orientation, collection)
-    this.item = featureCollection.features[0]
+    this.map = this.createMap()
 
-    this.map = new OlMap({
-      target: this.querySelector('.viewport-map'),
-      controls: defaultControls({rotate: false, attribution: false, zoom: false}),
-      interactions: new Collection(),
-      view: this.view
-    })
+    if (store.state.items[this.dataset.orientation]) {
+      this.item = store.state.items[this.dataset.orientation]
+    } else {
+      const collection = store.state['viewport-1'].collection
+      const featureCollection = await queryItems(store.state.view.center, this.dataset.orientation, collection)
+      this.item = featureCollection.features[0]
+      store.state.items[this.dataset.orientation] = this.item
+    }
 
-    this.update({item: this.item, center: center})
-
-    this.map.on('rendercomplete', () => {
-      this.rendercompleteHandler()
-    })
+    this.update({item: this.item, center: store.state.view.center})
 
     this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
@@ -295,6 +256,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
     }
+
+    this.map.on('rendercomplete', () => {
+      const spinnerElements = this.shadowRoot.querySelectorAll('ds-spinner')
+      const boundsElements = this.shadowRoot.querySelectorAll('.out-of-bounds')
+      rendercompleteHandler(spinnerElements,boundsElements)
+    })
   }
 
   disconnectedCallback() {
