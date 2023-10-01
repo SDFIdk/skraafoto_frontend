@@ -107,7 +107,7 @@ async function updateMap(self) {
   } else {
     self.view.center = self.coord_image
   }
-  self.view.zoom = adjustImageZoom(store.state.view.zoom)
+  self.view.zoom = self.toImageZoom(store.state.view.zoom)
   const view = createView(self.view)
   
   // Add new view to map

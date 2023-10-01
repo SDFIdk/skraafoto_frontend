@@ -6,10 +6,7 @@ import { getViewSyncViewportListener } from '../modules/sync-view'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import { 
-  generateSource, 
-  projection,
   updateMap, 
-  generateLayer, 
   updateTextContent,
   updatePlugins,
   updateDate,
