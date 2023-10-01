@@ -76,6 +76,11 @@ export class SkraaFotoViewport extends HTMLElement {
       width: 100%;
       display: block;
     }
+    .sf-viewport-tools {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+    }
     .viewport-map { 
       width: 100%; 
       height: 100%;
@@ -129,13 +134,8 @@ export class SkraaFotoViewport extends HTMLElement {
       margin: auto;
       text-align: center;
     }
-
     .ol-viewport canvas {
       cursor: url('./img/icons/icon_crosshair.svg') 15 15, crosshair;
-    }
-    .adv-viewport-wrapper {
-      position: relative;
-      height: 100%;
     }
     .image-date {
       display: none;
@@ -248,7 +248,7 @@ export class SkraaFotoViewport extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <nav class="ds-nav-tools">
+    <nav class="ds-nav-tools sf-viewport-tools">
       <div class="ds-button-group">
         ${ 
           config.ENABLE_YEAR_SELECTOR ? 
@@ -431,7 +431,7 @@ export class SkraaFotoViewport extends HTMLElement {
       //this.map.removeLayer(this.layer_icon)
     } else {
       if (canvasElement) {
-        canvasElement.style.cursor = 'inherit'
+        canvasElement.style.cursor = "url('./img/icons/icon_crosshair.svg') 15 15, crosshair;"
       }
       // Removes loading animation elements
       setTimeout(() => {
