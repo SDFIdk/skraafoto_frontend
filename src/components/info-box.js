@@ -46,7 +46,6 @@ export class SkraaFotoInfoBox extends HTMLElement {
     </style>
     
     <button class="sf-info-btn sf-slider-open ds-icon-icon-info" title="Information om billede"></button>
-    
     <section class="sf-slider-content">
       <button class="sf-slider-close ds-icon-icon-close" title="Luk"></button>
       <div class="sf-slider-grid ds-padding">
@@ -110,6 +109,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
         <dd>Kappa: ${item.properties['pers:kappa']}</dd>
         <dd>Perspective Center: ${item.properties['pers:perspective_center']}</dd>
         <dd>Kamera ID: ${item.properties.instruments}</dd>
+        <dd>Focal Length: ${item.properties['pers:interior_orientation'].focal_length}</dd>
         <dd>Pixel Spacing: ${item.properties['pers:interior_orientation'].pixel_spacing}</dd>
         <dd>Principal Point Offset: ${item.properties['pers:interior_orientation'].principal_point_offset}</dd>
         <dd>Sensor Array Dimensions: ${item.properties['pers:interior_orientation'].sensor_array_dimensions}</dd>
