@@ -1,14 +1,12 @@
 import { getWorldXYZ } from '@dataforsyningen/saul'
 import { queryItems } from '../modules/api.js'
-import { setParams } from '../modules/url-state.js'
-import {configuration} from "../modules/configuration";
+import { configuration } from "../modules/configuration"
+import store from '../store'
 
 /**
  * Enables a user to click an image an have it centered in that location
  */
 export class CenterTool {
-
-
 
   constructor(viewport) {
     if (!configuration.ENABLE_CROSSHAIR) {
@@ -31,10 +29,6 @@ export class CenterTool {
     }
   }
 
-
-
-  // Methods
-
   checkBounds(img_shape, coordinate) {
     const bound = 500
     if (coordinate[0] < bound || coordinate[0] > (img_shape[1] - bound)) {
@@ -55,12 +49,29 @@ export class CenterTool {
       queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
       .then(response => {
         if (response.features[0].id !== viewport.item.id) {
-          setParams({ center: world_xyz, item: response.features[0].id, item2: response.features[0].id })
+          store.dispatch('updateItem', {
+            id: 'viewport-1',
+            item: response.features[0]
+          })
+          store.dispatch('updateItem', {
+            id: 'viewport-2',
+            item: response.features[0]
+          })
+          this.changeView(world_xyz)
         }
       })
     } else {
-      setParams({ center: world_xyz })
+      this.changeView(world_xyz)
     }
+
+    viewport.toggleSpinner(false)
+  }
+
+  changeView(world_xyz) {
+    const newView = structuredClone(store.state.view)
+    newView.kote = world_xyz[2]
+    newView.center = world_xyz.slice(0,2)
+    store.dispatch('updateView', newView)
   }
 
 }

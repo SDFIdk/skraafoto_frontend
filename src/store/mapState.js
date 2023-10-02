@@ -6,7 +6,10 @@ import { configuration } from '../modules/configuration.js'
 const mapState = {
   showMap: false,
   parcels: [], // The parcels data in JSON format
-  view: { center: [ 574764, 6220953 ], zoom: configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE } // the view, consisting of the zoom level and center of the background map
+  view: { 
+    center: [ 574764, 6220953 ], 
+    kote: 0,
+    zoom: configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE } // the view, consisting of the zoom level and center of the background map
 }
 
 
@@ -27,12 +30,13 @@ const mapActions = {
       // Assuming center is a comma separated string with up to 3 numbers
       let cArray = center.split(',').splice(0,2)
       const coords = cArray.map((c) => Number(c))
+      state.view.kote = coords[2]
       state.view.center = coords
     } else {
       // Assuming center is an array of up to 3 numbers
-      state.view.center = center.splice(0,2)
+      state.view.kote = center[2]
+      state.view.center = center.slice(0,2) 
     }
-    setParam('center', `${center[0]},${center[1]}`)
     return state
   },
   updateMapVisibility: function(state, isVisible) {

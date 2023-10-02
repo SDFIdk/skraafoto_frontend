@@ -18,8 +18,7 @@ import {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter,
-  rendercompleteHandler
+  updateCenter
 } from '../modules/viewport-mixin.js'
 import store from '../store'
 
