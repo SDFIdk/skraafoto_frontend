@@ -127,10 +127,6 @@ export class SkraaFotoViewport extends HTMLElement {
       width: 100%;
       -ms-transform: translateY(-50%);
       transform: translateY(-50%);
-    }
-    .out-of-bounds > p {
-      width: 50%;
-      margin: auto;
       text-align: center;
     }
     .ol-viewport canvas {
@@ -268,11 +264,9 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     <div class="viewport-map">
-      <div class="out-of-bounds">
-        <p>
+      <p class="out-of-bounds" hidden>
         Out of bounds, klik på hovedvinduet for at hente nye billeder.
-        </p>
-      </div>
+      </p>
     </div>
     
     <skraafoto-compass direction="north"></skraafoto-compass>
@@ -425,7 +419,7 @@ export class SkraaFotoViewport extends HTMLElement {
       this.shadowRoot.append(spinner_element)
       // hide out of bounds text while loading
       boundsElements.forEach(function(el) {
-        el.style.display = 'none'
+        el.hidden = true
       })
       //this.map.removeLayer(this.layer_icon)
     } else {
@@ -440,7 +434,7 @@ export class SkraaFotoViewport extends HTMLElement {
       }, 200)
       // display out of bounds text if done loading
       boundsElements.forEach(function(el) {
-        el.style.display = 'block'
+        el.hidden = false
       })
     }
   }

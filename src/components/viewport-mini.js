@@ -1,21 +1,17 @@
 import OlMap from 'ol/Map.js'
 import { defaults as defaultControls } from 'ol/control'
 import Collection from 'ol/Collection'
+import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
+import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
-import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
-import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import { 
-  generateSource, 
-  projection, 
-  updateMap, 
-  generateLayer, 
+  updateMap,
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter,
-  rendercompleteHandler
+  updateCenter
 } from '../modules/viewport-mixin.js'
 import store from '../store'
 
@@ -86,18 +82,13 @@ export class SkraaFotoViewportMini extends HTMLElement {
       padding: 0.75rem;
     }
     skraafoto-viewport-mini .out-of-bounds {
-      display: none;
       margin: 0;
       position: absolute;
       top: 50%;
       width: 100%;
+      text-align: center;
       -ms-transform: translateY(-50%);
       transform: translateY(-50%);
-    }
-    skraafoto-viewport-mini .out-of-bounds > p {
-      width: 50%;
-      margin: auto;
-      text-align: center;
     }
 
     @media screen and (max-width: 35rem) {
@@ -119,31 +110,13 @@ export class SkraaFotoViewportMini extends HTMLElement {
       ${ this.styles }
     </style>
     <div class="viewport-map">
-      <div class="out-of-bounds">
-        <p>
+      <p class="out-of-bounds" hidden>
         Out of bounds, klik på hovedvinduet for at hente nye billeder.
-        </p>
-      </div>
+      </p>
     </div>
     <skraafoto-compass direction="north"></skraafoto-compass>
     <p id="image-date" class="image-date"></p>
   `
-
-
-  // getters
-  static get observedAttributes() {
-    return [
-      'data-item',
-      'data-center'
-    ]
-  }
-
-
-  // setters
-  set setData(data) {
-    this.update(data)
-  }
-
 
   constructor() {
     super()
@@ -172,27 +145,25 @@ export class SkraaFotoViewportMini extends HTMLElement {
     })
   }
 
-  async updateItem() {
+  async update() {
 
-  }
+    this.toggleSpinner(true)
 
-  async update({item,center}) {
-
-    // Attach a loading animation element while updating
-    const spinner_element = document.createElement('ds-spinner')
-    this.append(spinner_element)
-    // hide out of bounds text while loading
-    this.querySelectorAll('.out-of-bounds').forEach(function(el) {
-      el.style.display = 'none'
-    })
+    this.item = store.state.items[this.dataset.orientation]
  
+    const center = store.state.view.center
+
     if (center) {
       const newCenters = await updateCenter(center, this.item)
-      this.coord_world = newCenters[0]
-      this.coord_image = newCenters[1]
+      this.coord_world = newCenters.worldCoord
+      this.coord_image = newCenters.imageCoord
     }
-    await updateMap(this)
-    this.updateNonMap()
+
+    updateMap(this).then(() => {
+      this.updateNonMap()
+      this.toggleSpinner(false)
+      console.log('state', store.state.items)
+    })
   }
 
   updateNonMap() {
@@ -200,9 +171,33 @@ export class SkraaFotoViewportMini extends HTMLElement {
       return
     }
     this.compass_element.setAttribute('direction', this.item.properties.direction)
-    this.shadowRoot.querySelector('.image-date').innerText = updateDate(this.item)
-    this.innerText = updateTextContent(this.item)
+    this.querySelector('.image-date').innerText = updateDate(this.item)
+    this.querySelector('.viewport-map').title = updateTextContent(this.item)
     updatePlugins(this)
+  }
+
+  toggleSpinner(bool) {
+    const boundsElements = this.querySelectorAll('.out-of-bounds')
+    if (bool) {
+      // Attach a loading animation element while updating
+      const spinner_element = document.createElement('ds-spinner')
+      this.append(spinner_element)
+      // hide out of bounds text while loading
+      boundsElements.forEach(function(el) {
+        el.hidden = true
+      })
+    } else {
+      // Removes loading animation elements
+      setTimeout(() => {
+        this.querySelectorAll('ds-spinner').forEach(function(spinner) {
+          spinner.remove()
+        })
+      }, 200)
+      // display out of bounds text if done loading
+      boundsElements.forEach(function(el) {
+        el.hidden = false
+      })
+    }
   }
 
   // Public method
@@ -220,46 +215,43 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   async connectedCallback() {
 
-    /*
-     - create dom
-     - fetch item
-     - create map
-     
-     - (view, collection) update item -> update map
-    */
-
     this.createDOM()
 
-    this.map = this.createMap()
+    this.toggleSpinner(true)
 
-    if (store.state.items[this.dataset.orientation]) {
-      this.item = store.state.items[this.dataset.orientation]
-    } else {
+    if (!store.state.items[this.dataset.orientation]) {
       const collection = store.state['viewport-1'].collection
       const featureCollection = await queryItems(store.state.view.center, this.dataset.orientation, collection)
       this.item = featureCollection.features[0]
       store.state.items[this.dataset.orientation] = this.item
     }
 
-    this.update({item: this.item, center: store.state.view.center})
+    this.map = this.createMap()
 
+    this.update()
+
+    // Listeners
+
+    // When map has finished loading, remove spinner, etc.
+    this.map.on('rendercomplete', () => {
+      this.toggleSpinner(false)
+    })
+
+    // When `view` state changes, update local view object
     this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
 
+    // When user moves the pointer over this viewport, update all other viewports
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
       this.update_pointer_function = getUpdateViewportPointerFunction(this)
       window.addEventListener('updatePointer', this.update_pointer_function)
     }
+    
+    // When user changes viewport orientation, display image footprint on the map
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
     }
-
-    this.map.on('rendercomplete', () => {
-      const spinnerElements = this.shadowRoot.querySelectorAll('ds-spinner')
-      const boundsElements = this.shadowRoot.querySelectorAll('.out-of-bounds')
-      rendercompleteHandler(spinnerElements,boundsElements)
-    })
   }
 
   disconnectedCallback() {

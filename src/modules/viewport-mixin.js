@@ -71,7 +71,6 @@ function generateLayer(src) {
 async function updateMap(self) {
 
   if (!self.item || !self.map || !self.coord_image) {
-    console.log('are we returning?', self.item, self.map, self.coord_image)
     return
   }
 
@@ -109,7 +108,7 @@ async function updateMap(self) {
   }
   self.view.zoom = self.toImageZoom(store.state.view.zoom)
   const view = createView(self.view)
-  
+
   // Add new view to map
   self.map.setView(view)
 }
@@ -138,19 +137,6 @@ function createView(view_config) {
   view.setMinZoom(configuration.MIN_ZOOM)
   view.setMaxZoom(configuration.MAX_ZOOM - configuration.OVERVIEW_ZOOM_DIFFERENCE)
   return view
-}
-
-function rendercompleteHandler(spinnerElements, boundsElements) {
-  // Removes loading animation elements
-  setTimeout(() => {
-    spinnerElements.forEach(function(spinner) {
-      spinner.remove()
-    })
-  }, 500)
-  // display out of bounds text if done loading
-  boundsElements.forEach(function(el) {
-    el.style.display = 'block'
-  })
 }
 
 function updateTextContent(imagedata) {
@@ -193,6 +179,5 @@ export {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter,
-  rendercompleteHandler
+  updateCenter
 }
