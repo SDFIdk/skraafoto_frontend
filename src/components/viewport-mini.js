@@ -162,7 +162,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
     updateMap(this).then(() => {
       this.updateNonMap()
       this.toggleSpinner(false)
-      console.log('state', store.state.items)
     })
   }
 
