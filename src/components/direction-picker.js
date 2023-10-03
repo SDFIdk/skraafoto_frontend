@@ -40,8 +40,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     .sf-slider-grid {
       display: grid;
-      grid-template-columns: auto auto;
-      grid-template-rows: auto auto auto;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
       gap: 3px;
     }
 
