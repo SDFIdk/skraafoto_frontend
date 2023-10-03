@@ -132,7 +132,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
     this.compass_element = this.querySelector('skraafoto-compass')
     if (configuration.ENABLE_SMALL_FONT) {
-      this.getElementById('image-date').style.fontSize = '0.75rem';
+      this.querySelector('#image-date').style.fontSize = '0.75rem';
     }
   }
 
@@ -161,7 +161,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
     updateMap(this).then(() => {
       this.updateNonMap()
-      this.toggleSpinner(false)
     })
   }
 
@@ -216,9 +215,8 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
     this.createDOM()
 
-    this.toggleSpinner(true)
-
     if (!store.state.items[this.dataset.orientation]) {
+      this.toggleSpinner(true)
       const collection = store.state['viewport-1'].collection
       const featureCollection = await queryItems(store.state.view.center, this.dataset.orientation, collection)
       this.item = featureCollection.features[0]

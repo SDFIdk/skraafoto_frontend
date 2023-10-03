@@ -299,15 +299,15 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     if (configuration.ENABLE_CROSSHAIR) {
-      const button_group = this.querySelector('.ds-button-group')
-      const length_button = this.querySelector('#length-btn')
+      const button_group = this.shadowRoot.querySelector('.ds-button-group')
+      const length_button = this.shadowRoot.querySelector('#length-btn')
       button_group.insertBefore(document.createElement('skraafoto-crosshair-tool'), length_button)
     }
 
     // Add button to adjust brightness to the dom if enabled
     if (configuration.ENABLE_EXPOSURE) {
-      const button_group = this.querySelector('.ds-button-group')
-      const info_button = this.querySelector('#info-btn')
+      const button_group = this.shadowRoot.querySelector('.ds-button-group')
+      const info_button = this.shadowRoot.querySelector('#info-btn')
       button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
     }
 
@@ -374,7 +374,6 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
     if (configuration.ENABLE_CROSSHAIR) {
-      customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
       this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
     }
     if (configuration.ENABLE_EXPOSURE) {

@@ -44,7 +44,7 @@ export class CenterTool {
 
     viewport.coord_world = world_xyz
 
-    // Checks if click was made near image bounds and initiate loading a new image
+    // If click was made near image bounds, initiate loading a new image
     if ( !this.checkBounds(viewport.item.properties['proj:shape'], event.coordinate) ) {
       queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
       .then(response => {
@@ -63,8 +63,6 @@ export class CenterTool {
     } else {
       this.changeView(world_xyz)
     }
-
-    viewport.toggleSpinner(false)
   }
 
   changeView(world_xyz) {
