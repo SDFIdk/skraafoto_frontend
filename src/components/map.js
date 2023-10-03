@@ -258,7 +258,9 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    store.dispatch('updateCenter', event.coordinate)
+    const newView = structuredClone(store.state.view)
+    newView.center = event.coordinate.slice(0,2)
+    store.dispatch('updateView', newView)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
