@@ -9,24 +9,19 @@ import store from '../store'
 export class CenterTool {
 
   constructor(viewport) {
-    if (!configuration.ENABLE_CROSSHAIR) {
-      
-      // Set up event listener
-      viewport.map.on('singleclick', (event) => {
-        if (viewport.mode === 'center') {
-          viewport.toggleSpinner(true)
-          getWorldXYZ({
-            image: viewport.item,
-            terrain: viewport.terrain,
-            xy: event.coordinate
-          }, 0.03).then((world_xyz) => {
-
-            this.update(event, viewport, world_xyz)
-
-          })
-        }
-      })
-    }
+    // Set up event listener
+    viewport.map.on('singleclick', (event) => {
+      if (viewport.mode === 'center') {
+        viewport.toggleSpinner(true)
+        getWorldXYZ({
+          image: viewport.item,
+          terrain: viewport.terrain,
+          xy: event.coordinate
+        }, 0.03).then((world_xyz) => {
+          this.update(event, viewport, world_xyz)
+        })
+      }
+    })
   }
 
   checkBounds(img_shape, coordinate) {

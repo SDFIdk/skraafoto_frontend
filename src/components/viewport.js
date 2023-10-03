@@ -459,7 +459,9 @@ export class SkraaFotoViewport extends HTMLElement {
 
     this.map = this.createMap()
 
-    this.tool_center = new CenterTool(this, configuration)
+    if (!configuration.ENABLE_CROSSHAIR) {
+      this.tool_center = new CenterTool(this, configuration)
+    }
     this.tool_measure_width = new MeasureWidthTool(this)
     this.tool_measure_height = new MeasureHeightTool(this)
 

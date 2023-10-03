@@ -1,7 +1,6 @@
-import WebGLTileLayer from 'ol/layer/WebGLTile'
 import { getWorldXYZ } from "@dataforsyningen/saul"
-import {queryItems} from "../modules/api"
-import {setParams} from "../modules/url-state"
+import { queryItems } from "../modules/api"
+import store from '../store'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -42,7 +41,6 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
       this.button_element.style.borderRadius = '0'
       this.button_element.blur()
 
-      this.viewport.displaySpinner()
       getWorldXYZ({
         image: this.viewport.item,
         terrain: this.viewport.terrain,
@@ -75,12 +73,28 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
       queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
         .then(response => {
           if (response.features[0].id !== viewport.item.id) {
-            setParams({ center: world_xyz, item: response.features[0].id, item2: response.features[0].id })
+
+            store.dispatch('updateItem', {
+              id: 'viewport-1',
+              item: response.features[0]
+            })
+            store.dispatch('updateItem', {
+              id: 'viewport-2',
+              item: response.features[0]
+            })
+            this.changeView(world_xyz)
           }
         })
     } else {
-      setParams({ center: world_xyz })
+      this.changeView(world_xyz)
     }
+  }
+
+  changeView(world_xyz) {
+    const newView = structuredClone(store.state.view)
+    newView.kote = world_xyz[2]
+    newView.center = world_xyz.slice(0,2)
+    store.dispatch('updateView', newView)
   }
 
   connectedCallback() {

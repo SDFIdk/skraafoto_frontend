@@ -83,6 +83,7 @@ async function updateMap(self) {
   self.layer_image = generateLayer(source_image)
   
   // Create icon layer
+  console.log('coord image', self.coord_image)
   if (configuration.ENABLE_CROSSHAIR_ICON) {
     self.layer_icon = generateIconLayer(self.coord_image, '../img/icons/icon_cursor_crosshair.svg')
   } else {
