@@ -48,9 +48,8 @@ export class SkraaFotoViewport extends HTMLElement {
   coord_image
   coord_world
   map
-  view
   sync = false
-  self_sync = true
+  self_sync
   compass_element
   update_pointer_function
   update_view_function

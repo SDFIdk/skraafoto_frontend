@@ -256,6 +256,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
+        // TODO: clean up these dispatces. Which is actually needed?
         store.dispatch('updateOrientation', {id: 'viewport-1', orientation: target_item.properties.direction})
         store.dispatch('updateItem', {id: 'viewport-1', item: target_item})
         store.dispatch('updateMapVisibility', false)
@@ -265,6 +266,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     // When the tiny map is clicked in the selector, send a signal to display the big map
     this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
       // Set orientation parameter, causing the page to reload with map open
+      // TODO: clean up these dispatces. Which is actually needed?
       store.dispatch('updateOrientation', {id: 'viewport-1', orientation: 'map'})
       store.dispatch('updateMapVisibility', true)
       this.slider_element.style.transform = 'translate(0,100vh)'
