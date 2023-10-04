@@ -69,7 +69,6 @@ function getViewSyncViewportListener(viewport, always_sync = true) {
       center: image_center,
       duration: 0
     })
-    viewport.update()
   }
 }
 

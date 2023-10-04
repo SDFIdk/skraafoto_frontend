@@ -82,20 +82,19 @@ function getLayerById(map, id) {
 }
 
 /** Updates the zoom and placement (center) values of a map */
-function updateMapView({map, zoom, center, kote, item}) {
+async function updateMapView({map, zoom, center, kote, item}) {
   // Figure out which layer has the GeoTIFF source image
   const geoTiffLayer = getLayerById(map, 'geotifflayer')
   const GeoTIFFsource = geoTiffLayer.getSource()
   // Update view based on source
-  GeoTIFFsource.getView().then((view) => {
-    view.projection = projection
-    view.resolutions = addResolutions(view.resolutions) // Set extra resolutions so we can zoom in further than the resolutions permit normally
-    view.rotation = getAdjustedNadirRotation(item) // Rotate nadir images relative to north
-    view.center = getImageXY(item, center[0], center[1], kote) // Calculate image center
-    view.zoom = zoom // Set zoom
-    const mapView = createView(view)
-    map.setView(mapView)
-  })
+  const view = await GeoTIFFsource.getView()
+  view.projection = projection
+  view.resolutions = addResolutions(view.resolutions) // Set extra resolutions so we can zoom in further than the resolutions permit normally
+  view.rotation = getAdjustedNadirRotation(item) // Rotate nadir images relative to north
+  view.center = getImageXY(item, center[0], center[1], kote) // Calculate image center
+  view.zoom = zoom // Set zoom
+  const mapView = createView(view)
+  map.setView(mapView)
 }
 
 /** Updates the image displayed in a map */
@@ -121,6 +120,7 @@ function updateMapCenterIcon(map, localCoordinate) {
   map.addLayer(newIconLayer)
 }
 
+/** Completely update an image map */
 async function updateMap(self) {
 
   if (!self.item || !self.map || !self.coord_image) {
@@ -134,7 +134,7 @@ async function updateMap(self) {
   updateMapCenterIcon(self.map, self.coord_image)
 
   // Update the map's view
-  updateMapView({
+  await updateMapView({
     map: self.map,
     zoom: self.toImageZoom(store.state.view.zoom),
     center: store.state.view.center,
@@ -189,6 +189,7 @@ function updateDate(imagedata) {
   return new Date(imagedata.properties.datetime).toLocaleDateString()
 }
 
+/** Uses world coordinate and image data to calculate an image coordinate */
 async function updateCenter(coordinate, item) {
   if (!item) {
     return
@@ -205,6 +206,9 @@ async function updateCenter(coordinate, item) {
 export {
   projection,
   updateMap,
+  updateMapView,
+  updateMapCenterIcon,
+  updateMapImage,
   generateSource,
   generateLayer,
   updateTextContent,

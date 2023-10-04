@@ -14,7 +14,10 @@ import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footpri
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener, addViewSyncViewportTrigger } from '../modules/sync-view'
 import { 
-  updateMap, 
+  updateMap,
+  updateMapView,
+  updateMapImage,
+  updateMapCenterIcon,
   updateTextContent,
   updatePlugins,
   updateDate,
@@ -32,7 +35,10 @@ if (configuration.ENABLE_EXPOSURE) {
 
 
 /**
- *  Web component that displays an image using the OpenLayers library
+ * Web component that displays an image using the OpenLayers library
+ * @listens updateView - `updateView` events from state
+ * @listens updateItem - `updateItem` events from state
+ * @fires
  */
 
 export class SkraaFotoViewport extends HTMLElement {
@@ -41,15 +47,9 @@ export class SkraaFotoViewport extends HTMLElement {
   item
   coord_image
   coord_world
-  terrain
-  api_stac_token = configuration.API_STAC_TOKEN
   map
-  layer_image
-  layer_icon
-  source_image
   view
   sync = false
-  self_sync = true
   compass_element
   update_pointer_function
   update_view_function
@@ -318,47 +318,47 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  createMap() {
+  async createMap() {
     // Initialize a map
-    const newMap = new OlMap({
+    this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: true}),
-      interactions: new Collection(),
-      view: this.view
+      interactions: new Collection()
+    })
+
+    updateMapImage(this.map, this.item)
+    updateMapCenterIcon(this.map, this.coord_image)
+    await updateMapView({
+      map: this.map,
+      item: this.item,
+      zoom: store.state.view.zoom,
+      kote: store.state.view.kote,
+      center: store.state.view.center
     })
 
     // add interactions
     const interactions = defaultInteractions({ pinchRotate: false })
     interactions.forEach(interaction => {
-      newMap.addInteraction(interaction)
+      this.map.addInteraction(interaction)
     })
 
     // Add controls
     if (configuration.ENABLE_FULLSCREEN) {
-      newMap.addControl(this.fullscreen)
+      this.map.addControl(this.fullscreen)
     }
-
-    return newMap
   }
 
-  async update() {
-    
+  async initializeMap() {
     this.toggleSpinner(true)
-
     this.item = store.state[this.id].item
-    
     const center = store.state.view.center
-
     if (center) {
       const newCenters = await updateCenter(center, this.item)
       this.coord_world = newCenters.worldCoord
       this.coord_image = newCenters.imageCoord
     }
-
-    updateMap(this).then(() => {
-      this.updateNonMap()
-      this.toggleSpinner(false)
-    })
+    this.createMap()
+    this.updateNonMap()
   }
 
   updateNonMap() {
@@ -381,9 +381,8 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  update_viewport_function(event) {
+  update_viewport_function() {
     this.toggleMode('center')
-    this.update()
   }
 
   toggleMode(mode, button_element) {
@@ -420,7 +419,6 @@ export class SkraaFotoViewport extends HTMLElement {
       boundsElements.forEach(function(el) {
         el.hidden = true
       })
-      //this.map.removeLayer(this.layer_icon)
     } else {
       if (canvasElement) {
         canvasElement.style.cursor = "url('./img/icons/icon_crosshair.svg') 15 15, crosshair;"
@@ -451,21 +449,17 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // Lifecycle callbacks
 
-  connectedCallback() {
+  async connectedCallback() {
 
     this.createShadowDOM()
 
-    this.toggleSpinner(true)
-
-    this.map = this.createMap()
+    await this.initializeMap()
 
     if (!configuration.ENABLE_CROSSHAIR) {
       this.tool_center = new CenterTool(this, configuration)
     }
     this.tool_measure_width = new MeasureWidthTool(this)
     this.tool_measure_height = new MeasureHeightTool(this)
-
-    this.update()
 
     // Listeners
 
