@@ -56,16 +56,69 @@ function generateIconLayer(center, icon_image) {
     }
 
     icon_feature.setStyle(icon_style)
-    return new VectorLayer({
+    const newVectorLayer = new VectorLayer({
       source: new VectorSource({
         features: [icon_feature]
       })
     })
+    newVectorLayer.id = 'vectoriconlayer'
+    return newVectorLayer
   }
 }
 
 function generateLayer(src) {
-  return new WebGLTile({source: src, preload: 0})
+  const layer = new WebGLTile({source: src, preload: 0})
+  layer.id = 'geotifflayer'
+  return layer
+}
+
+function getLayerById(map, id) {
+  const layerCollection = map.getLayers().getArray()
+  for (let i = 0; i < layerCollection.length; i++) {
+    if (layerCollection[i].id === id) {
+      return layerCollection[i]
+    }
+  }
+}
+
+/** Updates the zoom and placement (center) values of a map */
+function updateMapView({map, zoom, center, kote, item}) {
+  // Figure out which layer has the GeoTIFF source image
+  const geoTiffLayer = getLayerById(map, 'geotifflayer')
+  const GeoTIFFsource = geoTiffLayer.getSource()
+  // Update view based on source
+  GeoTIFFsource.getView().then((view) => {
+    view.projection = projection
+    view.resolutions = addResolutions(view.resolutions) // Set extra resolutions so we can zoom in further than the resolutions permit normally
+    view.rotation = getAdjustedNadirRotation(item) // Rotate nadir images relative to north
+    view.center = getImageXY(item, center[0], center[1], kote) // Calculate image center
+    view.zoom = zoom // Set zoom
+    const mapView = createView(view)
+    map.setView(mapView)
+  })
+}
+
+/** Updates the image displayed in a map */
+function updateMapImage(map, item) {
+  const layer = getLayerById(map, 'geotifflayer')
+  if (layer) {
+    map.removeLayer(layer)
+  }
+  const source_image = generateSource(item.assets.data.href)
+  const newLayer = generateLayer(source_image)
+  map.addLayer(newLayer)
+}
+
+/** Updates the position of the point of interest icon */
+function updateMapCenterIcon(map, localCoordinate) {
+  map.removeLayer(getLayerById(map, 'vectoriconlayer'))
+  let newIconLayer
+  if (configuration.ENABLE_CROSSHAIR_ICON) {
+    newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_cursor_crosshair.svg')
+  } else {
+    self.newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_crosshair.svg')
+  }
+  map.addLayer(newIconLayer)
 }
 
 async function updateMap(self) {
@@ -74,44 +127,20 @@ async function updateMap(self) {
     return
   }
 
-  // Remove old layers
-  self.map.removeLayer(self.layer_image)
-  self.map.removeLayer(self.layer_icon)
-
-  // Create image layer
-  const source_image = generateSource(self.item.assets.data.href)
-  self.layer_image = generateLayer(source_image)
+  // Create and add image layer
+  updateMapImage(self.map, self.item)
   
   // Create icon layer
-  console.log('coord image', self.coord_image)
-  if (configuration.ENABLE_CROSSHAIR_ICON) {
-    self.layer_icon = generateIconLayer(self.coord_image, '../img/icons/icon_cursor_crosshair.svg')
-  } else {
-    self.layer_icon = generateIconLayer(self.coord_image, '../img/icons/icon_crosshair.svg')
-  }
+  updateMapCenterIcon(self.map, self.coord_image)
 
-  // Add new layers
-  self.map.addLayer(self.layer_image)
-  self.map.addLayer(self.layer_icon)
-
-  // Create view
-  self.view = await source_image.getView()
-  self.view.projection = projection
-  // Set extra resolutions so we can zoom in further than the resolutions permit normally
-  self.view.resolutions = addResolutions(self.view.resolutions)
-  // Rotate nadir images relative to north
-  self.view.rotation = getAdjustedNadirRotation(self.item)
-  const center = store.state.view.center
-  if (center[0]) {
-    self.view.center = getImageXY(self.item, center[0], center[1], center[2])
-  } else {
-    self.view.center = self.coord_image
-  }
-  self.view.zoom = self.toImageZoom(store.state.view.zoom)
-  const view = createView(self.view)
-
-  // Add new view to map
-  self.map.setView(view)
+  // Update the map's view
+  updateMapView({
+    map: self.map,
+    zoom: self.toImageZoom(store.state.view.zoom),
+    center: store.state.view.center,
+    kote: store.state.view.kote,
+    item: self.item
+  })
 }
 
 /** Adds extra resolutions to enable deep zoom */
@@ -132,6 +161,7 @@ function getAdjustedNadirRotation(item) {
   }
 }
 
+/** Create a modified View object with min and max zoom levels */
 function createView(view_config) {
   delete view_config.extent
   const view = new View(view_config)
