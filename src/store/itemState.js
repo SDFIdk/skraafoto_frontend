@@ -33,7 +33,7 @@ const itemActions = {
 
   updateItem: function(state, {id, item}) {
     // Update only if values are different
-    if (state[id].item !== item) {
+    if (state[id].item.id !== item.id) {
       // Make a new state item and set state to dispatch update event
       const newItem = structuredClone(state[id])
       newItem.item = item

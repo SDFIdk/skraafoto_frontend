@@ -50,6 +50,7 @@ export class SkraaFotoViewport extends HTMLElement {
   map
   view
   sync = false
+  self_sync = true
   compass_element
   update_pointer_function
   update_view_function
@@ -381,8 +382,24 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  update_viewport_function() {
+  async update_viewport_function() {
     this.toggleMode('center')
+    this.item = store.state[this.id].item
+    const center = store.state.view.center
+    if (center) {
+      const newCenters = await updateCenter(center, this.item)
+      this.coord_world = newCenters.worldCoord
+      this.coord_image = newCenters.imageCoord
+    }
+    updateMapImage(this.map, this.item)
+    updateMapCenterIcon(this.map, this.coord_image)
+    await updateMapView({
+      map: this.map,
+      item: this.item,
+      zoom: store.state.view.zoom,
+      kote: store.state.view.kote,
+      center: store.state.view.center
+    }) 
   }
 
   toggleMode(mode, button_element) {
@@ -476,7 +493,7 @@ export class SkraaFotoViewport extends HTMLElement {
     window.addEventListener('updateView', this.update_view_function)
 
     // When viewport state changes, load new image
-    window.addEventListener(this.id, this.update_viewport_function.bind(this))
+    window.addEventListener('updateItem', this.update_viewport_function.bind(this))
 
     // When user cliks toolbar buttons, change mode
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
@@ -516,7 +533,7 @@ export class SkraaFotoViewport extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener(this.id, this.update_viewport_function)
+    window.removeEventListener('updateItem', this.update_viewport_function)
   }
 
 }

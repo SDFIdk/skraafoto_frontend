@@ -257,7 +257,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
         store.dispatch('updateOrientation', {id: 'viewport-1', orientation: target_item.properties.direction})
-        store.dispatch('updateItemId', {id: 'viewport-1', itemId: target_item.id})
+        store.dispatch('updateItem', {id: 'viewport-1', item: target_item})
         store.dispatch('updateMapVisibility', false)
       })
     })
