@@ -36,8 +36,8 @@ if (configuration.ENABLE_EXPOSURE) {
 
 /**
  * Web component that displays an image using the OpenLayers library
- * @listens updateView - `updateView` events from state
- * @listens updateItem - `updateItem` events from state
+ * @listens updateView - Updates image focus and zoom on `updateView` events from state
+ * @listens updateItem - Changes the image on `updateItem` events from state
  * @fires
  */
 
@@ -318,6 +318,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  /** Creates a map object and adds interactions, image data, etc. to it */
   async createMap() {
     // Initialize a map
     this.map = new OlMap({
@@ -348,6 +349,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  /** Initializes the image map */
   async initializeMap() {
     this.toggleSpinner(true)
     this.item = store.state[this.id].item
@@ -361,6 +363,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.updateNonMap()
   }
 
+  /** Updates various items not directly related to the image map */
   updateNonMap() {
     if (!this.item) {
       return
@@ -381,6 +384,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  /** Handler to update the relevant parts of the image map when an item is updated */
   async update_viewport_function() {
     this.toggleMode('center')
     this.item = store.state[this.id].item
