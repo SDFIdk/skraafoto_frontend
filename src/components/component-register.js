@@ -29,11 +29,11 @@ export async function registerComponents() {
     const { SkraaFotoCompassArrows } = await import("./compass-arrows.js")
     customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
   }
-  if (config.ENABLE_YEAR_SELECTOR) {
+  if (configuration.ENABLE_YEAR_SELECTOR) {
     const { SkraaFotoYearSelector } = await import("./year-selector.js")
     customElements.define('skraafoto-year-selector', SkraaFotoYearSelector)
   }
-  if (config.ENABLE_DATE_BROWSER) {
+  if (configuration.ENABLE_DATE_BROWSER) {
     const { SkraaFotoDateViewer } = await import("./date-viewer.js")
     customElements.define('skraafoto-date-viewer', SkraaFotoDateViewer)
   }

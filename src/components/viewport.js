@@ -247,7 +247,7 @@ export class SkraaFotoViewport extends HTMLElement {
     <nav class="ds-nav-tools sf-viewport-tools">
       <div class="ds-button-group">
         ${ 
-          config.ENABLE_YEAR_SELECTOR ? 
+          configuration.ENABLE_YEAR_SELECTOR ?
           `<skraafoto-year-selector data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : `<skraafoto-date-selector data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
@@ -260,7 +260,7 @@ export class SkraaFotoViewport extends HTMLElement {
     </nav>
     
     ${
-      config.ENABLE_DATE_BROWSER ?
+      configuration.ENABLE_DATE_BROWSER ?
       `<skraafoto-date-viewer data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
     }
 

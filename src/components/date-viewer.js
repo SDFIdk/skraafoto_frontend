@@ -12,7 +12,6 @@ import store from '../store'
  */
 export class SkraaFotoDateViewer extends HTMLElement {
 
-  currentItem
   items = []
   #selectElement
   #buttonDown
@@ -84,12 +83,9 @@ export class SkraaFotoDateViewer extends HTMLElement {
     super()
   }
 
-  async connectedCallback() {
+  connectedCallback() {
 
     this.innerHTML = this.#renderTemplate()
-
-    this.currentItem = store.state[this.dataset.viewportId].item
-
 
     this.#selectElement = this.querySelector('select')
     this.#buttonDown = this.querySelector('.button-down')
@@ -127,11 +123,11 @@ export class SkraaFotoDateViewer extends HTMLElement {
       isOptionClicked = false // Reset the flag
     })
 
-    // Add event listener to the document for arrow key navigation
-    document.addEventListener('keydown', this.keyDownHandler.bind(this))
-
     // Add global listener for state changes
-    window.addEventListener(this.dataset.viewportId, this.itemUpdateHandler.bind(this))
+    window.addEventListener(this.dataset.viewportId, this.#update.bind(this))
+
+    // Add event listener to the document for arrow key navigation
+    window.addEventListener('imageshift', this.shiftItemHandler.bind(this))
 
     // When an option is selected, update the store with the new item
     this.#selectElement.addEventListener('change', (event) => {
@@ -146,8 +142,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
   }
 
   disconnectedCallback() {
-    window.removeEventListener(this.dataset.viewportId, this.itemUpdateHandler)
-    document.removeEventListener('keydown', this.keyDownHandler)
+    window.removeEventListener(this.dataset.viewportId, this.#update)
+    window.removeEventListener('imageshift', this.shiftItemHandler)
   }
 
   async #update() {
@@ -164,6 +160,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
       return
     }
     this.#selectElement.innerHTML = this.#renderOptions()
+    this.#selectElement.value = item.itemId
   }
 
   #renderTemplate() {
@@ -175,7 +172,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
         <div class="ds-button-group">
           <button class="button-down ds-icon-icon-arrow-single-down"></button>
           <hr>
-          <select class="sf-date-viewer" id="date" value="${ this.currentItem }">
+          <select class="sf-date-viewer" id="date">
             ${ this.#renderOptions() }
           </select>
           <hr>
@@ -195,15 +192,10 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
   }
 
-  itemUpdateHandler(event) {
-    this.currentItem = event.detail[this.dataset.viewportId].item.id
-    this.#update()
-  }
-
-  keyDownHandler(event) {
-    if (event.key === 'ArrowDown') {
+  shiftItemHandler(event) {
+    if (event.detail === -1) {
       this.#buttonDown.click()
-    } else if (event.key === 'ArrowUp') {
+    } else if (event.detail === 1) {
       this.#buttonUp.click()
     }
   }

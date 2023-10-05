@@ -157,7 +157,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       ${ this.styles }
     </style>
       ${
-        config.ENABLE_DATE_BROWSER ?
+        configuration.ENABLE_DATE_BROWSER ?
         `<nav class="sf-slider-open-wrapper-higher"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
         :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
   }

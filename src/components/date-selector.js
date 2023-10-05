@@ -1,4 +1,5 @@
 import { queryItems } from '../modules/api.js'
+import { configuration } from '../modules/configuration.js'
 import store from '../store'
 
 /**
@@ -151,8 +152,8 @@ export class SkraaFotoDateSelector extends HTMLElement {
     this.selectorElement.querySelector(`[label="${item.collection}"]`).appendChild(option_el)
   }
 
-  keyDownHandler(event) {
-    if (event.key === 'ArrowDown' && event.shiftKey) {
+  shiftItemHandler(event) {
+    if (event.detail === -1) {
 
       let nextItemIndex = this.items.findIndex((i) => i.id === store.state[this.dataset.viewportId].itemId) + 1
       if (nextItemIndex > this.items.length - 1) {
@@ -163,7 +164,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
         item: this.items[nextItemIndex]
       })
 
-    } else if (event.key === 'ArrowUp' && event.shiftKey) {
+    } else if (event.detail === 1) {
 
       let nextItemIndex = this.items.findIndex((i) => i.id === store.state[this.dataset.viewportId].itemId) - 1
       if (nextItemIndex < 0) {
@@ -176,7 +177,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
       
     }
   }
-
 
   connectedCallback() {
     
@@ -206,16 +206,18 @@ export class SkraaFotoDateSelector extends HTMLElement {
       this.isOptionClicked = false // Reset the flag
     })
 
-    // Set up shortkeys
-    window.addEventListener('keydown', this.keyDownHandler.bind(this))
-
     // React on changes to viewport item in store
     window.addEventListener(this.dataset.viewportId, this.update.bind(this))
+
+    // Set up shortkeys
+    if (!configuration.ENABLE_DATE_BROWSER) {
+      window.addEventListener('imageshift', this.shiftItemHandler.bind(this))
+    }
   }
 
   disconnectedCallback() {
     window.removeEventListener(this.dataset.viewportId, this.update)
-    window.removeEventListener('keydown', this.keyDownHandler)
+    window.removeEventListener('imageshift', this.shiftItemHandler)
   }
   
 }
