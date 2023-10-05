@@ -135,7 +135,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
     // When an option is selected, update the store with the new item
     this.#selectElement.addEventListener('change', (event) => {
-      console.log('select a new one', event.target.value)
       store.dispatch('updateItemId', {
         id: this.dataset.viewportId,
         itemId: event.target.value

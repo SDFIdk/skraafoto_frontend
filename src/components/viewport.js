@@ -389,7 +389,7 @@ export class SkraaFotoViewport extends HTMLElement {
   async update_viewport_function() {
     this.toggleMode('center')
     this.item = store.state[this.id].item
-    const newCenters = await updateCenter(store.state.view.center, this.item, store.state.view.kote)
+    const newCenters = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
     this.coord_world = newCenters.worldCoord
     this.coord_image = newCenters.imageCoord
     updateMapImage(this.map, this.item)
@@ -398,8 +398,8 @@ export class SkraaFotoViewport extends HTMLElement {
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      kote: store.state.view.kote,
-      center: store.state.view.center
+      kote: store.state.marker.kote,
+      center: store.state.marker.center
     }) 
   }
 

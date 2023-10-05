@@ -50,7 +50,6 @@ const itemActions = {
     if (state[id].itemId !== itemId) {
       // Fetch new item and update state (including udpating collection)
       const feature = await queryItem(itemId)
-      console.log('featureCollection', feature)
       this.updateItem(state, {id: id, item: feature})
     }
     return state

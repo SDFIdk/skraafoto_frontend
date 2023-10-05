@@ -256,7 +256,6 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    console.log('single click event', event)
     const newMarker = structuredClone(store.state.marker)
     newMarker.center = event.coordinate
     store.dispatch('updateMarker', newMarker)
@@ -292,7 +291,6 @@ export class SkraaFotoMap extends HTMLElement {
 
   /** Re-renders the icon layer when marker (crosshair) position changes in state. */
   updateMap(event) {
-    console.log('upMap', event.detail)
     if (this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }

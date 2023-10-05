@@ -11,8 +11,6 @@ await syncFromUrl(state)
 const collections = await getCollections()
 actions.updateCollections(state, collections)
 
-console.log('initial state', structuredClone(state))
-
 syncToUrl(state)
 
 export default new Store({

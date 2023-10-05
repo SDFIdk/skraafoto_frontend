@@ -109,11 +109,13 @@ function updateMapImage(map, item) {
 function updateMapCenterIcon(map, localCoordinate) {
   map.removeLayer(getLayerById(map, 'vectoriconlayer'))
   let newIconLayer
+  let iconImage
   if (configuration.ENABLE_CROSSHAIR_ICON) {
-    newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_cursor_crosshair.svg')
+    iconImage = '../img/icons/icon_cursor_crosshair.svg'
   } else {
-    newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_crosshair.svg')
+    iconImage = '../img/icons/icon_crosshair.svg'
   }
+  newIconLayer = generateIconLayer(localCoordinate, iconImage)
   map.addLayer(newIconLayer)
 }
 

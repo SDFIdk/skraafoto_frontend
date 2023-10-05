@@ -18,7 +18,6 @@ const mapElement = document.querySelector('#map-main')
 // Initialize
 
 window.addEventListener('showMap', (event) => {
-  console.log('showMap', event.detail)
   if (event.detail.showMap) {
     viewportElement.hidden = true
     mapElement.hidden = false
