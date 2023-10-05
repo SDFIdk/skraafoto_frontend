@@ -12,7 +12,7 @@ export class CenterTool {
     // Set up event listener
     viewport.map.on('singleclick', (event) => {
       if (viewport.mode === 'center') {
-        viewport.toggleSpinner(true)
+        //viewport.toggleSpinner(true)
         getWorldXYZ({
           image: viewport.item,
           terrain: viewport.terrain,

@@ -25,7 +25,9 @@ async function syncFromUrl(state) {
   }
 
   if (params.has('center')) {
-    state.view.center = params.get('center').split(',').map((c) => Number(c))
+    const center = params.get('center').split(',').map((c) => Number(c))
+    state.marker.center = center
+    state.view.center = center
   }
 
   if (configuration.ENABLE_PARCEL && params.has('parcels')) {
@@ -42,7 +44,7 @@ function syncToUrl(state) {
   url.searchParams.set('item', state['viewport-1'].itemId)
   url.searchParams.set('orientation', state['viewport-1'].orientation)
   url.searchParams.set('year', state['viewport-1'].collection.match(/\d{4}/g)[0])
-  url.searchParams.set('center', state.view.center.join(','))
+  url.searchParams.set('center', state.marker.center.join(','))
 
   history.pushState({}, '', url)
 }

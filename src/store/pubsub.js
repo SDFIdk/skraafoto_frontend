@@ -9,6 +9,5 @@ export default class PubSub {
   publish (eventName, data) {
     const event = new CustomEvent(eventName, { detail: data })
     window.dispatchEvent(event)
-    console.log('State changed', eventName, data)
   }
 }

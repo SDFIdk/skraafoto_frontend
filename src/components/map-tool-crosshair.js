@@ -82,19 +82,19 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
               id: 'viewport-2',
               item: response.features[0]
             })
-            this.changeView(world_xyz)
+            this.changeMarker(world_xyz)
           }
         })
     } else {
-      this.changeView(world_xyz)
+      this.changeMarker(world_xyz)
     }
   }
 
-  changeView(world_xyz) {
-    const newView = structuredClone(store.state.view)
-    newView.kote = world_xyz[2]
-    newView.center = world_xyz.slice(0,2)
-    store.dispatch('updateView', newView)
+  changeMarker(world_xyz) {
+    const newMarker = structuredClone(store.state.view)
+    newMarker.kote = world_xyz[2]
+    newMarker.center = world_xyz.slice(0,2)
+    store.dispatch('updateMarker', newMarker)
   }
 
   connectedCallback() {
