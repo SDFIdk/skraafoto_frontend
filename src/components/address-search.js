@@ -2,6 +2,8 @@ import { createTranslator } from '@dataforsyningen/saul'
 import { GSearchUI } from '@dataforsyningen/gsearch-ui'
 import { configuration } from '../modules/configuration.js'
 import { queryItems } from '../modules/api.js'
+import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
+import store from '../store'
 
 customElements.define('g-search', GSearchUI)
 
@@ -189,7 +191,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   searchItemsInCollection({collection, center, orientation}) {
     queryItems(center, orientation, collection).then((response) => {
       if (response.features.length > 0) {
+        store.state.view.center = center
+        store.state.marker.center = center
         store.dispatch('updateItem', {id: 'viewport-1', item: response.features[0]})
+        store.dispatch('updateCollection', {id: 'viewport-1', collection: response.features[0].collection})
         return
       } else {
         const collections = store.state.collections
@@ -205,7 +210,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         })
       }
     }).catch((err) => {
-      console.erroe('No items were found in any collections', err)
+      console.error('No items were found in any collections', err)
     })
   }
 

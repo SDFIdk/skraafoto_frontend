@@ -1,6 +1,3 @@
-import { getGSearchCenterPoint } from './gsearch-util.js'
-import store from '../store'
-
 export function setupListeners() {
 
   // Catch load errors and display to user

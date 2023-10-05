@@ -152,8 +152,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
   async update() {
 
     this.toggleSpinner(true)
-
-    this.item = store.state.items[this.dataset.orientation]
  
     const center = store.state.view.center
 
@@ -182,6 +180,14 @@ export class SkraaFotoViewportMini extends HTMLElement {
   async update_marker_function(event) {
     const newMarkerCoords = await updateCenter(event.detail.center, this.item, event.detail.kote)
     updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
+  }
+
+  /** Handler to update the image when the collection state is updated */
+  async update_collection_function(event) {
+    const featureCollection = await queryItems(store.state.view.center, this.dataset.orientation, store.state['viewport-1'].collection)
+    this.item = featureCollection.features[0]
+    store.state.items[this.dataset.orientation] = this.item
+    this.update()
   }
 
   toggleSpinner(bool) {
@@ -251,6 +257,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
     // When `marker` state changes, update crosshair position
     window.addEventListener('updateMarker', this.update_marker_function.bind(this))
 
+    // When a `collection` changes, reload an image of the new collection
+    window.addEventListener('updateCollection', this.update_collection_function.bind(this))
+
     // When user moves the pointer over this viewport, update all other viewports
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -268,6 +277,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener('updateMarker', this.update_marker_function)
+    window.revmoeEventListener('updateCollection', this.update_collection_function)
   }
 
 }
