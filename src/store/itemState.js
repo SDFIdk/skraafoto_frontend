@@ -61,6 +61,7 @@ const itemActions = {
       // Fetch new item and update state (including udpating collection)
       const featureCollection = await queryItems(state.view.center, state[id].orientation, collection, 1)
       this.updateItem(state, {id: id, item: featureCollection.features[0]})
+      window.dispatchEvent(new CustomEvent('updateItem'))
     }
     return state
   },

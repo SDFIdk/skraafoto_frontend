@@ -502,7 +502,7 @@ export class SkraaFotoViewport extends HTMLElement {
     // When `marker` state changes, update crosshair position
     window.addEventListener('updateMarker', this.update_marker_function.bind(this))
 
-    // When viewport state changes, load new image
+    // When viewport item changes, load new image
     window.addEventListener('updateItem', this.update_viewport_function.bind(this))
 
     // When user cliks toolbar buttons, change mode
