@@ -89,7 +89,8 @@ function addViewSyncMapTrigger(viewport, map) {
     getZ(center[0], center[1], configuration).then(z => {
       center[2] = z
       store.dispatch('updateView', {
-        center: center,
+        kote: center[2],
+        center: center.slice(0,2),
         zoom: view.getZoom()
       })
     })

@@ -8,6 +8,7 @@ import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
 import { 
   updateMap,
+  updateMapCenterIcon,
   updateTextContent,
   updatePlugins,
   updateDate,
@@ -16,7 +17,10 @@ import {
 import store from '../store'
 
 /**
- *  Web component that displays an image using the OpenLayers library
+ * Web component that displays an image using the OpenLayers library.
+ * @listens updateView - Updates image focus and zoom on `updateView` events from state.
+ * @listens updateMarker - Updates crosshair position on `updateMarker` events from state.
+ * @listens updateCollection - Fetches an new image based whenever an `updateCollection` event occurs in state.
  */
 
 export class SkraaFotoViewportMini extends HTMLElement {
@@ -174,6 +178,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
     updatePlugins(this)
   }
 
+  /** Handler to update the position of the marker (crosshair) when the marker state is updated */
+  async update_marker_function(event) {
+    const newMarkerCoords = await updateCenter(event.detail.center, this.item, event.detail.kote)
+    updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
+  }
+
   toggleSpinner(bool) {
     const boundsElements = this.querySelectorAll('.out-of-bounds')
     if (bool) {
@@ -238,6 +248,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
     this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
 
+    // When `marker` state changes, update crosshair position
+    window.addEventListener('updateMarker', this.update_marker_function.bind(this))
+
     // When user moves the pointer over this viewport, update all other viewports
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -254,6 +267,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
+    window.removeEventListener('updateMarker', this.update_marker_function)
   }
 
 }

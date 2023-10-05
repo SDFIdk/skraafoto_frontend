@@ -37,6 +37,7 @@ if (configuration.ENABLE_EXPOSURE) {
 /**
  * Web component that displays an image using the OpenLayers library
  * @listens updateView - Updates image focus and zoom on `updateView` events from state
+ * @listens updateMarker - Updates crosshair position on `updateMarker` events from state
  * @listens updateItem - Changes the image on `updateItem` events from state
  * @fires
  */
@@ -388,12 +389,9 @@ export class SkraaFotoViewport extends HTMLElement {
   async update_viewport_function() {
     this.toggleMode('center')
     this.item = store.state[this.id].item
-    const center = store.state.view.center
-    if (center) {
-      const newCenters = await updateCenter(center, this.item)
-      this.coord_world = newCenters.worldCoord
-      this.coord_image = newCenters.imageCoord
-    }
+    const newCenters = await updateCenter(store.state.view.center, this.item, store.state.view.kote)
+    this.coord_world = newCenters.worldCoord
+    this.coord_image = newCenters.imageCoord
     updateMapImage(this.map, this.item)
     updateMapCenterIcon(this.map, this.coord_image)
     await updateMapView({
@@ -403,6 +401,12 @@ export class SkraaFotoViewport extends HTMLElement {
       kote: store.state.view.kote,
       center: store.state.view.center
     }) 
+  }
+
+  /** Handler to update the position of the marker (crosshair) when the marker state is updated */
+  async update_marker_function(event) {
+    const newMarkerCoords = await updateCenter(event.detail.center, this.item, event.detail.kote)
+    updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
   }
 
   toggleMode(mode, button_element) {
@@ -495,6 +499,9 @@ export class SkraaFotoViewport extends HTMLElement {
     this.update_view_function = getViewSyncViewportListener(this)
     window.addEventListener('updateView', this.update_view_function)
 
+    // When `marker` state changes, update crosshair position
+    window.addEventListener('updateMarker', this.update_marker_function.bind(this))
+
     // When viewport state changes, load new image
     window.addEventListener('updateItem', this.update_viewport_function.bind(this))
 
@@ -536,6 +543,7 @@ export class SkraaFotoViewport extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
+    window.removeEventListener('updateMarker', this.update_marker_function)
     window.removeEventListener('updateItem', this.update_viewport_function)
   }
 

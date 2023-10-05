@@ -35,25 +35,22 @@ function generateIconLayer(center, icon_image) {
     let icon_feature = new Feature({
       geometry: new Point([center[0], center[1]])
     })
-    let icon_style
     const colorSetting = configuration.COLOR_SETTINGS.targetColor
+    let icon
     if (configuration.ENABLE_CROSSHAIR_ICON) {
-      icon_style = new Style({
-        image: new Icon({
-          src: icon_image,
-          scale: 1,
-          color: colorSetting
-        })
+      icon = new Icon({
+        src: icon_image,
+        scale: 1,
+        color: colorSetting
       })
     } else {
-        icon_style = new Style({
-          image: new Icon({
-            src: icon_image,
-            scale: 1.5,
-            color: colorSetting
-          })
-        })
+      icon = new Icon({
+        src: icon_image,
+        scale: 1.5,
+        color: colorSetting
+      })
     }
+    const icon_style = new Style({ image: icon })
 
     icon_feature.setStyle(icon_style)
     const newVectorLayer = new VectorLayer({
@@ -115,7 +112,7 @@ function updateMapCenterIcon(map, localCoordinate) {
   if (configuration.ENABLE_CROSSHAIR_ICON) {
     newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_cursor_crosshair.svg')
   } else {
-    self.newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_crosshair.svg')
+    newIconLayer = generateIconLayer(localCoordinate, '../img/icons/icon_crosshair.svg')
   }
   map.addLayer(newIconLayer)
 }
@@ -190,16 +187,16 @@ function updateDate(imagedata) {
 }
 
 /** Uses world coordinate and image data to calculate an image coordinate */
-async function updateCenter(coordinate, item) {
+async function updateCenter(coordinate, item, kote) {
   if (!item) {
     return
   }
-  if (coordinate[2] === undefined) {
-    coordinate[2] = await getZ(coordinate[0], coordinate[1], configuration)
+  if (!kote) {
+    kote = await getZ(coordinate[0], coordinate[1], configuration)
   }
   return {
-    worldCoord: coordinate,
-    imageCoord: getImageXY(item, coordinate[0], coordinate[1], coordinate[2])
+    worldCoord: [...coordinate, kote],
+    imageCoord: getImageXY(item, coordinate[0], coordinate[1], kote)
   }
 }
 
