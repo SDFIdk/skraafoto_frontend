@@ -74,7 +74,10 @@ let configuration = {
       contrast: 0.0,
       saturation: 0
     }
-  ]
+  ],
+
+  DEFAULT_ITEM_ID: '2023_82_24_2_0011_00000400',
+  DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ]
 }
 
 // We assume a global variable `config` has been declared

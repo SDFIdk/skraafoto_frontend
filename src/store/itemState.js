@@ -7,15 +7,15 @@ import { queryItems, queryItem } from '../modules/api.js'
 const itemState = {
   'viewport-1': {
     item: null,
-    itemId: '2023_82_24_2_0011_00000400',
-    orientation: 'north',
-    collection: 'skraafotos2023'
+    itemId: null,
+    orientation: null,
+    collection: null
   },
   'viewport-2': {
     item: null,
-    itemId: '2023_82_24_2_0011_00000400',
-    orientation: 'north',
-    collection: 'skraafotos2023'
+    itemId: null,
+    orientation: null,
+    collection: null
   },
   items: {
     'north': null,

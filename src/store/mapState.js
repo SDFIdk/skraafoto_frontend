@@ -7,11 +7,11 @@ const mapState = {
   showMap: false,
   parcels: [], // The parcels data in JSON format
   marker: {
-    center: [ 574764, 6220953 ],
+    center: configuration.DEFAULT_WORLD_COORDINATE,
     kote: 0
   },
   view: {
-    center: [ 574764, 6220953 ],
+    center: configuration.DEFAULT_WORLD_COORDINATE,
     kote: 0,
     zoom: configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE // the view, consisting of the zoom level and center of the background map
   }

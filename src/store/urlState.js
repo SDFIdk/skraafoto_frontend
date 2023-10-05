@@ -14,17 +14,22 @@ async function syncFromUrl(state) {
 
   // This is essentially what sanitizeParams should do
   
+  let item
   if (params.has('item')) {
-    state['viewport-1'].itemId = params.get('item')
-    state['viewport-1'].item = await queryItem(params.get('item'))
-    state['viewport-1'].orientation = state['viewport-1'].item.properties.direction
-    state['viewport-1'].collection = state['viewport-1'].item.collection
-    
-    state['viewport-2'].itemId = params.get('item')
-    state['viewport-2'].item = await queryItem(params.get('item'))
-    state['viewport-2'].orientation = state['viewport-2'].item.properties.direction
-    state['viewport-2'].collection = state['viewport-2'].item.collection
+    item = await queryItem(params.get('item'))
+  } else {
+    // Load default item
+    item = await queryItem(configuration.DEFAULT_ITEM_ID)
   }
+  state['viewport-1'].itemId = item.id
+  state['viewport-1'].item = item
+  state['viewport-1'].orientation = item.properties.direction
+  state['viewport-1'].collection = item.collection
+  
+  state['viewport-2'].itemId = item.id
+  state['viewport-2'].item = item
+  state['viewport-2'].orientation = item.properties.direction
+  state['viewport-2'].collection = item.collection
 
   if (params.get('orientation') === 'map') {
     state.showMap = true
