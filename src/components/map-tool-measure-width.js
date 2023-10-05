@@ -6,7 +6,9 @@ import { getDistance } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
-import { configuration } from "../modules/configuration";
+import { configuration } from "../modules/configuration"
+
+const featureIdentifiers = []
 
 /**
  * Enables user to measure horizontal distances in an image
@@ -14,6 +16,7 @@ import { configuration } from "../modules/configuration";
 export class MeasureWidthTool {
 
   // properties
+  overlayIdCounter = 1
   coorTranslator = createTranslator()
   viewport
   colorSetting = configuration.COLOR_SETTINGS.widthColor
@@ -73,8 +76,6 @@ export class MeasureWidthTool {
 
 
   constructor(viewport) {
-
-    const self = this
 
     this.viewport = viewport
     this.insertStyle(this.viewport.shadowRoot, this.css)
@@ -146,8 +147,17 @@ export class MeasureWidthTool {
     this.createMeasureTooltip()
 
     this.draw.on('drawstart', (event) => {
-      // set sketch
+      // Set sketch
       this.sketch = event.feature
+
+      // Store references to the feature and overlay
+      const tooltipId = `tooltip-${this.overlayIdCounter++}`
+      this.measureTooltipElement.setAttribute('data-tooltip-id', tooltipId)
+      const featureOverlayPair = {
+        feature: this.sketch,
+        overlay: this.measureTooltip,
+      }
+      featureIdentifiers[tooltipId] = featureOverlayPair
 
       let tooltipCoord = event.coordinate
       listener = this.sketch.getGeometry().on('change', async (ev) => {
@@ -158,18 +168,18 @@ export class MeasureWidthTool {
         this.measureTooltipElement.innerHTML = output
         this.measureTooltip.setPosition(tooltipCoord)
       })
-
     })
 
     this.draw.on('drawend', async () => {
       const geom = this.sketch.getGeometry()
       this.measureTooltipElement.innerHTML = await this.calculateDistance(geom.flatCoordinates)
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
+      this.measureTooltipElement.title = 'Klik for at slette måling'
       this.measureTooltip.setOffset([0, -7])
       this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
-      // unset sketch
+      // Unset sketch
       this.sketch = null
-      // unset tooltip so that a new one can be created
+      // Unset tooltip so that a new one can be created
       this.measureTooltipElement = null
       this.createMeasureTooltip()
       unByKey(listener)
@@ -198,11 +208,17 @@ export class MeasureWidthTool {
    * Creates a new measure tooltip
    */
   createMeasureTooltip() {
+    // Generate a unique identifier for the tooltip
+    const tooltipId = `tooltip-${this.overlayIdCounter++}`
+
     if (this.measureTooltipElement) {
       this.measureTooltipElement.remove()
     }
+
     this.measureTooltipElement = document.createElement('div')
     this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure'
+    this.measureTooltipElement.setAttribute('data-tooltip-id', tooltipId)
+
     this.measureTooltip = new Overlay({
       element: this.measureTooltipElement,
       offset: [0, -15],
@@ -210,9 +226,26 @@ export class MeasureWidthTool {
       stopEvent: false,
       insertFirst: false
     })
+
+    this.measureTooltipElement.addEventListener('click', (event) => {
+      event.stopPropagation() // Prevent the click event from propagating to the map
+
+      // Remove the current drawing associated with the clicked tooltip
+      const clickedTooltipId = event.currentTarget.getAttribute('data-tooltip-id')
+      const featureToRemove = featureIdentifiers[clickedTooltipId]
+      if (featureToRemove) {
+        this.source.removeFeature(featureToRemove.feature) // Remove the feature from the source
+        this.viewport.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
+        this.draw.setActive(false) // Re-enable the draw interaction
+      }
+      this.draw.setActive(true) // Re-enable the draw interaction
+    })
+
+    // Store references to the feature and overlay
+    featureIdentifiers[tooltipId] = this.measureTooltip
+
     this.viewport.map.addOverlay(this.measureTooltip)
   }
-
   calcTooltipPosition(geometry) {
     return geometry.getFlatMidpoint()
   }
@@ -230,9 +263,16 @@ export class MeasureWidthTool {
   }
 
   clearDrawings() {
-    // Clear drawings and tooltips from layer
+    // Clear tooltips from layer
+    const overlays = this.viewport.map.getOverlays()
+    overlays.forEach((overlay) => {
+      if (overlay.getElement().className === 'ol-tooltip ol-tooltip-measure') {
+        this.viewport.map.removeOverlay(overlay)
+      }
+    })
+
+    // Clear line features
     this.source.clear()
-    this.viewport.map.getOverlays().clear()
   }
 
   async calculateDistance(coords) {

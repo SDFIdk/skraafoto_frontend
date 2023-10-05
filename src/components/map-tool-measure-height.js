@@ -8,13 +8,15 @@ import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 import { configuration } from "../modules/configuration";
 
+const featureIdentifiers = []
+
 /**
  * Enables user to measure vertical distances in an image
  */
 export class MeasureHeightTool {
 
   // properties
-  coorTranslator = createTranslator()
+  overlayIdCounter = 1
   viewport
   colorSetting = configuration.COLOR_SETTINGS.heightColor
   style = new Style({
@@ -169,7 +171,17 @@ export class MeasureHeightTool {
       this.sketch = event.feature
       this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], this.viewport.item)
 
+      // Store references to the feature and overlay
+      const tooltipId = `tooltip-${this.overlayIdCounter++}`
+      this.measureTooltipElement.setAttribute('data-tooltip-id', tooltipId)
+      const featureOverlayPair = {
+        feature: this.sketch,
+        overlay: this.measureTooltip,
+      }
+      featureIdentifiers[tooltipId] = featureOverlayPair
+
       this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
+      this.measureTooltipElement.title = 'Klik for at slette måling'
       listener = this.sketch.getGeometry().on('change', (ev) => {
         const geom = ev.target
         const new_coords = geom.getCoordinates()
@@ -234,11 +246,17 @@ export class MeasureHeightTool {
    * Creates a new measure tooltip
    */
   createMeasureTooltip() {
+    // Generate a unique identifier for the tooltip
+    const tooltipId = `tooltip-${this.overlayIdCounter++}`
+
     if (this.measureTooltipElement) {
       this.measureTooltipElement.remove()
     }
+
     this.measureTooltipElement = document.createElement('div')
     this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure'
+    this.measureTooltipElement.setAttribute('data-tooltip-id', tooltipId)
+
     this.measureTooltip = new Overlay({
       element: this.measureTooltipElement,
       offset: [0, -15],
@@ -246,6 +264,24 @@ export class MeasureHeightTool {
       stopEvent: false,
       insertFirst: false
     })
+
+    this.measureTooltipElement.addEventListener('click', (event) => {
+      event.stopPropagation() // Prevent the click event from propagating to the map
+
+      // Remove the current drawing associated with the clicked tooltip
+      const clickedTooltipId = event.currentTarget.getAttribute('data-tooltip-id')
+      const featureToRemove = featureIdentifiers[clickedTooltipId]
+      if (featureToRemove) {
+        this.source.removeFeature(featureToRemove.feature) // Remove the feature from the source
+        this.viewport.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
+        this.draw.setActive(false) // Re-enable the draw interaction
+      }
+      this.draw.setActive(true) // Re-enable the draw interaction
+    })
+
+    // Store references to the feature and overlay
+    featureIdentifiers[tooltipId] = this.measureTooltip
+
     this.viewport.map.addOverlay(this.measureTooltip)
   }
 
@@ -266,9 +302,16 @@ export class MeasureHeightTool {
   }
 
   clearDrawings() {
-    // Clear drawings and tooltips from layer
+    // Clear tooltips from layer
+    const overlays = this.viewport.map.getOverlays()
+    overlays.forEach((overlay) => {
+      if (overlay.getElement().className === 'ol-tooltip ol-tooltip-measure') {
+        this.viewport.map.removeOverlay(overlay)
+      }
+    })
+
+    // Clear line features
     this.source.clear()
-    this.viewport.map.getOverlays().clear()
   }
 
   generateVerticalAxisFunction(coord, image_item) {
