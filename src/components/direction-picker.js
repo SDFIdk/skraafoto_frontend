@@ -87,6 +87,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       position: relative;
     }
 
+    .sf-map-picker-btn .geographic-map {
+      cursor: pointer;
+    }
+
     .sf-direction-picker-btn.active::after,
     .sf-map-picker-btn.active::after,
     .sf-direction-picker-btn:hover::after,

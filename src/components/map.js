@@ -27,7 +27,8 @@ import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom
 import store from '../store'
 
 /**
- * Web component that displays a map
+ * Web component that displays a map.
+ * @listens updateMarker - Re-position the crosshairs icon on `updateMarker` event in state.
  */
 export class SkraaFotoMap extends HTMLElement {
 
@@ -208,10 +209,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   rendercompleteHandler() {
-    // Removes loading animation elements
-    this.querySelectorAll('ds-spinner').forEach(function(spinner) {
-      spinner.remove()
-    })
+    this.toggleSpinner(false)
   }
 
   drawParcels() {
@@ -258,22 +256,21 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    const newView = structuredClone(store.state.view)
-    newView.center = event.coordinate.slice(0,2)
-    store.dispatch('updateView', newView)
+    console.log('single click event', event)
+    const newMarker = structuredClone(store.state.marker)
+    newMarker.center = event.coordinate
+    store.dispatch('updateMarker', newMarker)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
     this.map.addLayer(this.icon_layer)
   }
 
-  async updateMap() {
+  async createMap() {
 
-    const center = store.state.view.center
+    this.toggleSpinner(true)
 
-    // Attach a loading animation element while updating
-    const spinner_element = document.createElement('ds-spinner')
-    this.append(spinner_element)
+    const center = store.state.marker.center
 
     if (!this.map) {
       this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
@@ -293,8 +290,36 @@ export class SkraaFotoMap extends HTMLElement {
     }
   }
 
+  /** Re-renders the icon layer when marker (crosshair) position changes in state. */
+  updateMap(event) {
+    console.log('upMap', event.detail)
+    if (this.icon_layer) {
+      this.map.removeLayer(this.icon_layer)
+    }
+    const center = event.detail.center
+    const view = this.map.getView()
+    view.setCenter(center)
+    this.map.setView(view)
+    this.icon_layer = this.generateIconLayer(center)
+    this.map.addLayer(this.icon_layer)
+  }
+
   parcelsHandler() {
     this.drawParcels()
+  }
+
+  /** Toggles displaying the loading spinner */
+  toggleSpinner(isLoading) {
+    if (isLoading) {
+      // Attach a loading animation element while updating
+      const spinner_element = document.createElement('ds-spinner')
+      this.append(spinner_element)
+    } else {
+      // Removes loading animation elements
+      this.querySelectorAll('ds-spinner').forEach(function(spinner) {
+        spinner.remove()
+      })
+    }
   }
 
 
@@ -303,9 +328,10 @@ export class SkraaFotoMap extends HTMLElement {
   connectedCallback() {
     
     this.createDOM()
-    this.updateMap()
+    this.createMap()
 
-    window.addEventListener('view', this.updateMap.bind(this))
+    // When marker (crosshair) position changes in state, re-render the icon layer
+    window.addEventListener('updateMarker', this.updateMap.bind(this))
 
     if (configuration.ENABLE_PARCEL) {
       this.parcels_function = this.parcelsHandler.bind(this)
@@ -318,7 +344,7 @@ export class SkraaFotoMap extends HTMLElement {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener('view', this.updateMap)
+    window.removeEventListener('updateMarker', this.updateMap)
   }
 
 }
