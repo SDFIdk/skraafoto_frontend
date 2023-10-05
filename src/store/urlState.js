@@ -13,15 +13,21 @@ async function syncFromUrl(state) {
   const params = getUrlParams()
 
   // This is essentially what sanitizeParams should do
+  
   if (params.has('item')) {
     state['viewport-1'].itemId = params.get('item')
     state['viewport-1'].item = await queryItem(params.get('item'))
+    state['viewport-1'].orientation = state['viewport-1'].item.properties.direction
+    state['viewport-1'].collection = state['viewport-1'].item.collection
+    
     state['viewport-2'].itemId = params.get('item')
     state['viewport-2'].item = await queryItem(params.get('item'))
-  } else {
-    // Use defaut IDs to fetch items
-    state['viewport-1'].item = await queryItem(state['viewport-1'].itemId)
-    state['viewport-2'].item = await queryItem(state['viewport-2'].itemId)
+    state['viewport-2'].orientation = state['viewport-2'].item.properties.direction
+    state['viewport-2'].collection = state['viewport-2'].item.collection
+  }
+
+  if (params.get('orientation') === 'map') {
+    state.showMap = true
   }
 
   if (params.has('center')) {
@@ -42,9 +48,13 @@ function syncToUrl(state) {
   let url = new URL(window.location)
 
   url.searchParams.set('item', state['viewport-1'].itemId)
-  url.searchParams.set('orientation', state['viewport-1'].orientation)
   url.searchParams.set('year', state['viewport-1'].collection.match(/\d{4}/g)[0])
   url.searchParams.set('center', state.marker.center.join(','))
+  if (state.showMap) {
+    url.searchParams.set('orientation', 'map')
+  } else {
+    url.searchParams.set('orientation', state['viewport-1'].orientation)
+  }
 
   history.pushState({}, '', url)
 }
