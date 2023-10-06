@@ -152,6 +152,8 @@ export class SkraaFotoViewportMini extends HTMLElement {
   async update() {
 
     this.toggleSpinner(true)
+
+    console.log('are you updating?', this.dataset.orientation)
  
     const center = store.state.view.center
 
