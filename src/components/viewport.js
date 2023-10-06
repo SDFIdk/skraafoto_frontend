@@ -14,7 +14,6 @@ import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footpri
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener, addViewSyncViewportTrigger } from '../modules/sync-view'
 import { 
-  updateMap,
   updateMapView,
   updateMapImage,
   updateMapCenterIcon,
@@ -87,17 +86,18 @@ export class SkraaFotoViewport extends HTMLElement {
       position: relative;
       background-color: var(--background-color);
     }
-    skraafoto-compass {
-      position: absolute;
-      top: 1.5rem;
-      right: 2rem;
-      -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
-    }
+    skraafoto-compass,
     skraafoto-compass-arrows {
       position: absolute;
+      -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
+    }
+    skraafoto-compass {
+      top: 1.5rem;
+      right: 2rem;
+    }
+    skraafoto-compass-arrows {
       top: 0.5rem;
       right: 3rem;
-      -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
     }
     .image-date {
       position: absolute;
@@ -269,9 +269,11 @@ export class SkraaFotoViewport extends HTMLElement {
         Out of bounds, klik på hovedvinduet for at hente nye billeder.
       </p>
     </div>
-    
-    <skraafoto-compass direction="north"></skraafoto-compass>
-    <skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>
+    ${
+      configuration.ENABLE_COMPASSARROWS ?
+      `<skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>`:
+      `<skraafoto-compass direction="north"></skraafoto-compass>`
+    }
     <p id="image-date" class="image-date"></p>
   `
 
@@ -292,8 +294,7 @@ export class SkraaFotoViewport extends HTMLElement {
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
     
-    this.compass_element = this.shadowRoot.querySelector('skraafoto-compass')
-    this.compassArrows_element = this.shadowRoot.querySelector('skraafoto-compass-arrows')
+    this.compass_element = configuration.ENABLE_COMPASSARROWS ? this.shadowRoot.querySelector('skraafoto-compass-arrows') : this.shadowRoot.querySelector('skraafoto-compass')
 
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
@@ -310,12 +311,6 @@ export class SkraaFotoViewport extends HTMLElement {
       const button_group = this.shadowRoot.querySelector('.ds-button-group')
       const info_button = this.shadowRoot.querySelector('#info-btn')
       button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
-    }
-
-    // TODO: Modify this block
-    if (configuration.ENABLE_COMPASSARROWS) {
-      const compassArrowsElement = wrapper.querySelector('skraafoto-compass')
-      compassArrowsElement.style.display = 'none'
     }
   }
 
@@ -366,11 +361,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   /** Updates various items not directly related to the image map */
   updateNonMap() {
-    if (!this.item) {
-      return
-    }
     this.compass_element.setAttribute('direction', this.item.properties.direction)
-    this.compassArrows_element.setAttribute('direction', this.item.properties.direction)
     this.shadowRoot.querySelector('.image-date').innerText = updateDate(this.item)
     this.innerText = updateTextContent(this.item)
     updatePlugins(this)
@@ -400,7 +391,8 @@ export class SkraaFotoViewport extends HTMLElement {
       zoom: store.state.view.zoom,
       kote: store.state.marker.kote,
       center: store.state.marker.center
-    }) 
+    })
+    this.updateNonMap()
   }
 
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */

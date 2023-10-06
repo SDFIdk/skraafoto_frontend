@@ -21,7 +21,7 @@ function shiftItemOrientation(direction) {
   if (direction === 1) {
     newOrientation = lookup.counterclockwise[store.state['viewport-1'].orientation]
   } else if (direction === -1) {
-    newOrientation = lookup.counterclockwise[store.state['viewport-1'].orientation]
+    newOrientation = lookup.clockwise[store.state['viewport-1'].orientation]
   }
   
   store.dispatch('updateItem', {
@@ -41,11 +41,9 @@ function keyDownHandler(event) {
     } else if (event.key === 'ArrowUp') {
       shiftItemTime(1)
     } else if (event.key === 'ArrowLeft') {
-      console.log('arr shift+left')
       shiftItemOrientation(-1)
     } else if (event.key === 'ArrowRight') {
       shiftItemOrientation(1)
-      console.log('arr shift+right')
     }
   }
 }
@@ -67,5 +65,6 @@ function setupListeners() {
 }
 
 export {
-  setupListeners
+  setupListeners,
+  shiftItemOrientation
 }

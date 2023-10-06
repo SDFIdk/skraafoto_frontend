@@ -4,7 +4,6 @@ import { toDanish } from '../modules/i18n.js'
  * Web component that displays a compass 
  */
 export class SkraaFotoCompass extends HTMLElement {
-
   
   // Properties
 
@@ -126,6 +125,3 @@ export class SkraaFotoCompass extends HTMLElement {
   }
 
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-compass', SkraaFotoCompass)
