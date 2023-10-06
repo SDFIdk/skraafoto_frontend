@@ -1,5 +1,5 @@
 import { getWorldXYZ } from "@dataforsyningen/saul"
-import { checkBoundsAndRecenter } from "../modules/viewport-mixin.js"
+import store from '../store'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -44,17 +44,16 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
         image: this.viewport.item,
         terrain: this.viewport.terrain,
         xy: event.coordinate
-      }, 0.03).then((world_xyz) => {
-        this.update(event, this.viewport, world_xyz)
+      }, 0.06).then((world_xyz) => {
+
+        this.viewport.coord_world = world_xyz
+        const newMarker = store.state.marker
+        newMarker.kote = world_xyz[2]
+        newMarker.center = world_xyz.slice(0,2)
+        store.dispatch('updateMarker', newMarker)
+
       })
     }
-  }
-
-  // Methods
-
-  async update(event, viewport, world_xyz) {
-    viewport.coord_world = world_xyz
-    checkBoundsAndRecenter(viewport, event.coordinate)
   }
 
   connectedCallback() {

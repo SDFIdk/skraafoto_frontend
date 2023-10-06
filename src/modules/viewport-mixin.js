@@ -202,35 +202,13 @@ async function updateCenter(coordinate, item, kote) {
   }
 }
 
-function isOutOfBounds(img_shape, coordinate) {
-  const bound = 500
-  if (coordinate[0] < bound || coordinate[0] > (img_shape[1] - bound)) {
+function isOutOfBounds(img_shape, img_coordinate, bound = 500) {
+  if (img_coordinate[0] < bound || img_coordinate[0] > (img_shape[1] - bound)) {
     return true
-  } else if (coordinate[1] < bound || coordinate[1] > (img_shape[0] - bound)) {
+  } else if (img_coordinate[1] < bound || img_coordinate[1] > (img_shape[0] - bound)) {
     return true
   } else {
     return false
-  }
-}
-
-function checkBoundsAndRecenter(viewport, coordinate) {
-  // If click was made near image bounds, initiate loading a new image
-  if ( !isOutOfBounds(viewport.item.properties['proj:shape'], coordinate) ) {
-    const newMarker = store.state.marker
-    newMarker.kote = viewport.coord_world[2]
-    newMarker.center = viewport.coord_world.slice(0,2)
-    store.dispatch('updateMarker', newMarker)
-  } else {
-    queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1).then((response) => {
-      if (response.features[0].id !== viewport.item.id) {
-        store.state.marker.kote = viewport.coord_world[2]
-        store.state.marker.center = viewport.coord_world.slice(0,2)
-        store.dispatch('updateItem', {
-          id: viewport.id,
-          item: response.features[0]
-        })
-      }
-    })
   }
 }
 
@@ -246,5 +224,5 @@ export {
   updatePlugins,
   updateDate,
   updateCenter,
-  checkBoundsAndRecenter
+  isOutOfBounds
 }

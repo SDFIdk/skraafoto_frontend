@@ -11,6 +11,7 @@ import { MeasureWidthTool } from './map-tool-measure-width.js'
 import { MeasureHeightTool } from './map-tool-measure-height.js'
 import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
+import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener, addViewSyncViewportTrigger } from '../modules/sync-view'
 import { 
@@ -20,7 +21,8 @@ import {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter
+  updateCenter,
+  isOutOfBounds
 } from '../modules/viewport-mixin.js'
 import store from '../store'
 
@@ -399,6 +401,17 @@ export class SkraaFotoViewport extends HTMLElement {
   async update_marker_function(event) {
     const newMarkerCoords = await updateCenter(event.detail.center, this.item, event.detail.kote)
     updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
+    
+    if (isOutOfBounds(this.item.properties['proj:shape'], newMarkerCoords.imageCoord)) {
+      // If the marker is outside the image, load a new image item
+      queryItems(newMarkerCoords.worldCoord, this.item.properties.direction, this.item.collection).then((featureCollection) => {
+        console.log('new features', featureCollection)
+        store.dispatch('updateItem', {
+          id: this.id,
+          item: featureCollection.features[0]
+        })
+      })
+    }
   }
 
   toggleMode(mode, button_element) {

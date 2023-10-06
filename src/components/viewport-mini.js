@@ -12,7 +12,8 @@ import {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter
+  updateCenter,
+  isOutOfBounds
 } from '../modules/viewport-mixin.js'
 import store from '../store'
 
@@ -152,8 +153,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
   async update() {
 
     this.toggleSpinner(true)
-
-    console.log('are you updating?', this.dataset.orientation)
  
     const center = store.state.view.center
 
@@ -180,13 +179,17 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
   async update_marker_function(event) {
-    const newMarkerCoords = await updateCenter(event.detail.center, this.item, event.detail.kote)
+    const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+    if (isOutOfBounds(this.item.properties['proj:shape'], newMarkerCoords.imageCoord), 250) {
+      // If the marker is outside the image, load a new image item
+      await this.update_collection_function()
+    }
     updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
   }
 
   /** Handler to update the image when the collection state is updated */
   async update_collection_function(event) {
-    const featureCollection = await queryItems(store.state.view.center, this.dataset.orientation, store.state['viewport-1'].collection)
+    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, store.state['viewport-1'].collection)
     this.item = featureCollection.features[0]
     store.state.items[this.dataset.orientation] = this.item
     this.update()

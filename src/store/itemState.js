@@ -46,7 +46,6 @@ const itemActions = {
   },
 
   updateItemId: async function(state, {id, itemId}) {
-    console.log('updating item', itemId, state[id].itemId)
     // Update only if values are different
     if (state[id].itemId !== itemId) {
       // Fetch new item and update state (including udpating collection)
