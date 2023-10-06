@@ -1,6 +1,5 @@
 import { getWorldXYZ } from "@dataforsyningen/saul"
-import { checkBounds } from "../modules/viewport-mixin.js"
-import store from '../store'
+import { checkBoundsAndRecenter } from "../modules/viewport-mixin.js"
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -55,15 +54,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
 
   async update(event, viewport, world_xyz) {
     viewport.coord_world = world_xyz
-    await checkBounds(viewport, event.coordinate)
-    this.changeMarker(world_xyz)
-  }
-
-  changeMarker(world_xyz) {
-    const newMarker = structuredClone(store.state.marker)
-    newMarker.kote = world_xyz[2]
-    newMarker.center = world_xyz.slice(0,2)
-    store.dispatch('updateMarker', newMarker)
+    checkBoundsAndRecenter(viewport, event.coordinate)
   }
 
   connectedCallback() {
@@ -73,6 +64,3 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
     })
   }
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)

@@ -1,6 +1,5 @@
 import { getWorldXYZ } from '@dataforsyningen/saul'
-import { checkBounds } from '../modules/viewport-mixin.js'
-import store from '../store'
+import { checkBoundsAndRecenter } from '../modules/viewport-mixin.js'
 
 /**
  * Enables a user to click an image an have it centered in that location
@@ -24,15 +23,6 @@ export class CenterTool {
 
   async update(event, viewport, world_xyz) {
     viewport.coord_world = world_xyz
-    await checkBounds(viewport, event.coordinate)
-    this.changeMarker(world_xyz)
+    checkBoundsAndRecenter(viewport, event.coordinate)
   }
-
-  changeMarker(world_xyz) {
-    const newMarker = structuredClone(store.state.marker)
-    newMarker.kote = world_xyz[2]
-    newMarker.center = world_xyz.slice(0,2)
-    store.dispatch('updateMarker', newMarker)
-  }
-
 }

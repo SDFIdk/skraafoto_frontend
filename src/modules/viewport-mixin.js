@@ -213,18 +213,23 @@ function isOutOfBounds(img_shape, coordinate) {
   }
 }
 
-async function checkBounds(viewport, coordinate) {
+function checkBoundsAndRecenter(viewport, coordinate) {
   // If click was made near image bounds, initiate loading a new image
   if ( !isOutOfBounds(viewport.item.properties['proj:shape'], coordinate) ) {
-    console.log('click was NOT out of bounds')
-    return
-  }
-  console.log('click was out of bounds')
-  const response = await queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
-  if (response.features[0].id !== viewport.item.id) {
-    store.dispatch('updateItem', {
-      id: viewport.id,
-      item: response.features[0]
+    const newMarker = store.state.marker
+    newMarker.kote = viewport.coord_world[2]
+    newMarker.center = viewport.coord_world.slice(0,2)
+    store.dispatch('updateMarker', newMarker)
+  } else {
+    queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1).then((response) => {
+      if (response.features[0].id !== viewport.item.id) {
+        store.state.marker.kote = viewport.coord_world[2]
+        store.state.marker.center = viewport.coord_world.slice(0,2)
+        store.dispatch('updateItem', {
+          id: viewport.id,
+          item: response.features[0]
+        })
+      }
     })
   }
 }
@@ -241,5 +246,5 @@ export {
   updatePlugins,
   updateDate,
   updateCenter,
-  checkBounds
+  checkBoundsAndRecenter
 }
