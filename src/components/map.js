@@ -290,11 +290,11 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   /** Re-renders the icon layer when marker (crosshair) position changes in state. */
-  updateMap(event) {
+  updateMap() {
     if (this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
-    const center = event.detail.center
+    const center = store.state.marker.center
     const view = this.map.getView()
     view.setCenter(center)
     this.map.setView(view)
@@ -330,6 +330,7 @@ export class SkraaFotoMap extends HTMLElement {
 
     // When marker (crosshair) position changes in state, re-render the icon layer
     window.addEventListener('updateMarker', this.updateMap.bind(this))
+    window.addEventListener('updateItem', this.updateMap.bind(this))
 
     if (configuration.ENABLE_PARCEL) {
       this.parcels_function = this.parcelsHandler.bind(this)
@@ -343,6 +344,7 @@ export class SkraaFotoMap extends HTMLElement {
     window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener('updateMarker', this.updateMap)
+    window.removeEventListener('updateItem', this.updateMap)
   }
 
 }
