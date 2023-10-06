@@ -11,7 +11,7 @@ import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { configuration } from './configuration.js'
 import store from '../store'
 import { toDanish } from '../modules/i18n.js'
-import { getTerrainData } from '../modules/api.js'
+import { getTerrainData, queryItems } from '../modules/api.js'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -202,6 +202,33 @@ async function updateCenter(coordinate, item, kote) {
   }
 }
 
+function isOutOfBounds(img_shape, coordinate) {
+  const bound = 500
+  if (coordinate[0] < bound || coordinate[0] > (img_shape[1] - bound)) {
+    return true
+  } else if (coordinate[1] < bound || coordinate[1] > (img_shape[0] - bound)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+async function checkBounds(viewport, coordinate) {
+  // If click was made near image bounds, initiate loading a new image
+  if ( !isOutOfBounds(viewport.item.properties['proj:shape'], coordinate) ) {
+    console.log('click was NOT out of bounds')
+    return
+  }
+  console.log('click was out of bounds')
+  const response = await queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
+  if (response.features[0].id !== viewport.item.id) {
+    store.dispatch('updateItem', {
+      id: viewport.id,
+      item: response.features[0]
+    })
+  }
+}
+
 export {
   projection,
   updateMap,
@@ -213,5 +240,6 @@ export {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter
+  updateCenter,
+  checkBounds
 }

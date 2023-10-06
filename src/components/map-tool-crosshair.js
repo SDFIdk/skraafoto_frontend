@@ -1,5 +1,5 @@
 import { getWorldXYZ } from "@dataforsyningen/saul"
-import { queryItems } from "../modules/api"
+import { checkBounds } from "../modules/viewport-mixin.js"
 import store from '../store'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
@@ -53,45 +53,14 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
 
   // Methods
 
-  checkBounds(img_shape, coordinate) {
-    const bound = 500
-    if (coordinate[0] < bound || coordinate[0] > (img_shape[1] - bound)) {
-      return false
-    } else if (coordinate[1] < bound || coordinate[1] > (img_shape[0] - bound)) {
-      return false
-    } else {
-      return true
-    }
-  }
-
-  update(event, viewport, world_xyz) {
-
+  async update(event, viewport, world_xyz) {
     viewport.coord_world = world_xyz
-
-    // Checks if click was made near image bounds and initiate loading a new image
-    if ( !this.checkBounds(viewport.item.properties['proj:shape'], event.coordinate) ) {
-      queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
-        .then(response => {
-          if (response.features[0].id !== viewport.item.id) {
-
-            store.dispatch('updateItem', {
-              id: 'viewport-1',
-              item: response.features[0]
-            })
-            store.dispatch('updateItem', {
-              id: 'viewport-2',
-              item: response.features[0]
-            })
-            this.changeMarker(world_xyz)
-          }
-        })
-    } else {
-      this.changeMarker(world_xyz)
-    }
+    await checkBounds(viewport, event.coordinate)
+    this.changeMarker(world_xyz)
   }
 
   changeMarker(world_xyz) {
-    const newMarker = structuredClone(store.state.view)
+    const newMarker = structuredClone(store.state.marker)
     newMarker.kote = world_xyz[2]
     newMarker.center = world_xyz.slice(0,2)
     store.dispatch('updateMarker', newMarker)
