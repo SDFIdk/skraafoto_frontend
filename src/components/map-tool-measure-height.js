@@ -274,7 +274,7 @@ export class MeasureHeightTool {
       if (featureToRemove) {
         this.source.removeFeature(featureToRemove.feature) // Remove the feature from the source
         this.viewport.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
-        this.draw.setActive(false) // Re-enable the draw interaction
+        this.draw.setActive(false) // Disable the draw interaction
       }
       this.draw.setActive(true) // Re-enable the draw interaction
     })

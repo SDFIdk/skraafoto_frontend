@@ -227,6 +227,18 @@ export class MeasureWidthTool {
       insertFirst: false
     })
 
+    // Add a mouseenter event listener to show a cross when hovering over the tooltip
+    this.measureTooltipElement.addEventListener('mouseenter', () => {
+      this.measureTooltipElement.innerHTML = 'X'; // Display a cross or any other symbol you prefer
+      this.measureTooltipElement.style.cursor = 'pointer';
+    });
+
+    // Add a mouseleave event listener to revert to the measurement text when mouse leaves
+    this.measureTooltipElement.addEventListener('mouseleave', () => {
+      this.measureTooltipElement.innerHTML = 'Click to remove measurement';
+      this.measureTooltipElement.style.cursor = 'auto';
+    });
+
     this.measureTooltipElement.addEventListener('click', (event) => {
       event.stopPropagation() // Prevent the click event from propagating to the map
 
@@ -236,7 +248,7 @@ export class MeasureWidthTool {
       if (featureToRemove) {
         this.source.removeFeature(featureToRemove.feature) // Remove the feature from the source
         this.viewport.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
-        this.draw.setActive(false) // Re-enable the draw interaction
+        this.draw.setActive(false) // Disable the draw interaction
       }
       this.draw.setActive(true) // Re-enable the draw interaction
     })
