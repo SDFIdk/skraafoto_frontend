@@ -93,7 +93,7 @@ function generateParcelVectorLayer() {
   const colorSetting = configuration.COLOR_SETTINGS.parcelColorStroke
   const stroke = new Stroke({
     color: colorSetting, // highlight
-    width: 1,
+    width: 2,
   })
   const style = new Style({
     fill: fill,
