@@ -40,7 +40,6 @@ if (configuration.ENABLE_EXPOSURE) {
  * @listens updateView - Updates image focus and zoom on `updateView` events from state
  * @listens updateMarker - Updates crosshair position on `updateMarker` events from state
  * @listens updateItem - Changes the image on `updateItem` events from state
- * @fires
  */
 
 export class SkraaFotoViewport extends HTMLElement {
