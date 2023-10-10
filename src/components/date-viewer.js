@@ -184,21 +184,21 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
   #renderOptions() {
     return this.items.map((i) => {
-      const datetime = new Date(i.properties.datetime);
+      const datetime = new Date(i.properties.datetime)
       const options = {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
-      };
-      const europeanDatetime = datetime.toLocaleString('en-GB', options); // Use 'en-GB' for European formatting
+      }
+      const europeanDatetime = datetime.toLocaleString('en-GB', options)
       return `
       <option value="${i.id}">
         ${europeanDatetime}
       </option>
-    `;
-    });
+    `
+    })
   }
 
   shiftItemHandler(event) {
