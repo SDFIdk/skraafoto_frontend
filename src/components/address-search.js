@@ -1,8 +1,8 @@
-import { createTranslator } from '@dataforsyningen/saul'
-import { GSearchUI } from '@dataforsyningen/gsearch-ui'
-import { configuration } from '../modules/configuration.js'
-import { queryItems } from '../modules/api.js'
-import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
+import {createTranslator} from '@dataforsyningen/saul'
+import {GSearchUI} from '@dataforsyningen/gsearch-ui'
+import {configuration} from '../modules/configuration.js'
+import {queryItems} from '../modules/api.js'
+import {getGSearchCenterPoint} from '../modules/gsearch-util.js'
 import store from '../store'
 
 customElements.define('g-search', GSearchUI)
@@ -180,45 +180,52 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         const orientation = store.state['viewport-1'].orientation
         const collection = store.state['viewport-1'].collection
         this.searchItemsInCollection({
-          collection: collection, 
-          center: center, 
+          collection: collection,
+          center: center,
           orientation: orientation
         })
       })
     }
   }
 
-  searchItemsInCollection({collection, center, orientation}) {
-    queryItems(center, orientation, collection).then((response) => {
-      if (response.features.length > 0) {
-        store.state.view.center = center
-        store.state.marker.center = center
-        store.dispatch('updateItem', {id: 'viewport-1', item: response.features[0]})
-        store.dispatch('updateCollection', {id: 'viewport-1', collection: response.features[0].collection})
-        return
-      } else {
-        const collections = store.state.collections
-        const collectionIndex = collections.findIndex((c) => c === collection)
-        const nextCollection = collectionIndex + 1
+  searchItemsInCollection({ collection, center, orientation }) {
+    queryItems(center, orientation, collection)
+      .then((response) => {
+        if (response.features.length > 0) {
+          store.state.view.center = center;
+          store.state.marker.center = center;
+          store.dispatch('updateItem', { id: 'viewport-1', item: response.features[0] });
+          store.dispatch('updateCollection', { id: 'viewport-1', collection: response.features[0].collection });
+          return;
+        } else {
+          const collections = store.state.collections;
+          const collectionIndex = collections.findIndex((c) => c === collection);
 
-        this.showAlert(collection, nextCollection)
+          if (collectionIndex !== -1) { // Check if the collection was found
+            const nextCollectionIndex = (collectionIndex + 1) % collections.length; // Wrap around to the first collection if necessary
+            const nextCollection = collections[nextCollectionIndex];
+            this.showAlert(collection, nextCollection);
 
-        this.searchItemsInCollection({
-          collection: nextCollection, 
-          center: center, 
-          orientation: orientation
-        })
-      }
-    }).catch((err) => {
-      console.error('No items were found in any collections', err)
-    })
+            this.searchItemsInCollection({
+              collection: nextCollection,
+              center: center,
+              orientation: orientation
+            });
+          } else {
+            console.log("Requested collection not found.");
+          }
+        }
+      })
+      .catch((err) => {
+        console.error('No items were found in any collections', err);
+      });
   }
 
-  showAlert(initialCollection, currentCollection) {
-    const last4Initial = initialCollection.slice(-4) // Get last 4 characters of initialCollection
-    const last4Current = currentCollection.slice(-4) // Get last 4 characters of currentCollection
-    const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${ last4Initial }, skifter til ${ last4Current }`
-    alert(message)
+  showAlert(collection, nextCollection) {
+    const last4Initial = collection.slice(-4); // Get last 4 characters of initialCollection
+    const last4Current = nextCollection.slice(-4); // Convert to string and get last 4 characters of currentCollection
+    const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${last4Initial}, skifter til ${last4Current}`;
+    alert(message);
   }
 
   createDOM() {
