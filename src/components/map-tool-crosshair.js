@@ -50,8 +50,11 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
         const newMarker = store.state.marker
         newMarker.kote = world_xyz[2]
         newMarker.center = world_xyz.slice(0,2)
+        const newView = store.state.view
+        newView.kote = world_xyz[2]
+        newView.center = world_xyz.slice(0,2)
         store.dispatch('updateMarker', newMarker)
-
+        store.dispatch('updateView', newView)
       })
     }
   }
