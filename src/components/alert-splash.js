@@ -76,7 +76,7 @@ export class AlertSplash extends HTMLElement {
     });
     if (navigator.userAgent.indexOf("Firefox") !== -1) {
       // User is using Firefox
-      console.log("User is using Firefox.");
+      console.info("User is using Firefox.");
       const firefoxTitle = this.shadowRoot.querySelector('#firefox-title');
       const firefoxMessage = this.shadowRoot.querySelector('#firefox-message');
       if (firefoxTitle && firefoxMessage) {

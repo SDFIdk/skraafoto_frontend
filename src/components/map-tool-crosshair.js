@@ -1,7 +1,5 @@
-import WebGLTileLayer from 'ol/layer/WebGLTile'
 import { getWorldXYZ } from "@dataforsyningen/saul"
-import {queryItems} from "../modules/api"
-import {setParams} from "../modules/url-state"
+import store from '../store'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -42,44 +40,22 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
       this.button_element.style.borderRadius = '0'
       this.button_element.blur()
 
-      this.viewport.displaySpinner()
       getWorldXYZ({
         image: this.viewport.item,
         terrain: this.viewport.terrain,
         xy: event.coordinate
-      }, 0.03).then((world_xyz) => {
-        this.update(event, this.viewport, world_xyz)
+      }, 0.06).then((world_xyz) => {
+
+        this.viewport.coord_world = world_xyz
+        const newMarker = store.state.marker
+        newMarker.kote = world_xyz[2]
+        newMarker.center = world_xyz.slice(0,2)
+        const newView = store.state.view
+        newView.kote = world_xyz[2]
+        newView.center = world_xyz.slice(0,2)
+        store.dispatch('updateMarker', newMarker)
+        store.dispatch('updateView', newView)
       })
-    }
-  }
-
-  // Methods
-
-  checkBounds(img_shape, coordinate) {
-    const bound = 500
-    if (coordinate[0] < bound || coordinate[0] > (img_shape[1] - bound)) {
-      return false
-    } else if (coordinate[1] < bound || coordinate[1] > (img_shape[0] - bound)) {
-      return false
-    } else {
-      return true
-    }
-  }
-
-  update(event, viewport, world_xyz) {
-
-    viewport.coord_world = world_xyz
-
-    // Checks if click was made near image bounds and initiate loading a new image
-    if ( !this.checkBounds(viewport.item.properties['proj:shape'], event.coordinate) ) {
-      queryItems(viewport.coord_world, viewport.item.properties.direction, viewport.item.collection, 1)
-        .then(response => {
-          if (response.features[0].id !== viewport.item.id) {
-            setParams({ center: world_xyz, item: response.features[0].id, item2: response.features[0].id })
-          }
-        })
-    } else {
-      setParams({ center: world_xyz })
     }
   }
 
@@ -90,6 +66,3 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
     })
   }
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)

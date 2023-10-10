@@ -134,10 +134,6 @@ async function sanitizeParams(searchparams) {
     return params
   }
 
-  // Default
-  params.set('orientation', 'north')
-  params.set('center', [574764,6220953])
-  params.set('item', '2023_82_24_2_0011_00000400')
   return params
 }
 

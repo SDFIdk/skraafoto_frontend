@@ -52,9 +52,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
     }
     const new_vars = configuration.EXPOSURE_SETTINGS[this.exposure_index]
     this.copySettingsToVariables(configuration.EXPOSURE_SETTINGS[this.exposure_index])
-    console.log(this.variables)
     this.viewport.map.render()
-    console.log(this.viewport.map)
     this.button_element.blur()
   }
 

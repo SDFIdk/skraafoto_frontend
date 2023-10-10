@@ -1,11 +1,15 @@
-import { mapState, mapActions} from './mapState'
+import { mapState, mapActions } from './mapState.js'
+import { itemState, itemActions } from './itemState.js'
+import { collectionState, collectionActions } from './collectionState.js'
 
 export default {
-  ...mapState
+  ...mapState,
+  ...itemState,
+  ...collectionState
 }
 
-const actions = {
-  ...mapActions
+export const actions = {
+  ...mapActions,
+  ...itemActions,
+  ...collectionActions
 }
-
-export { actions }

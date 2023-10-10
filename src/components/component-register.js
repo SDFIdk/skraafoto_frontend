@@ -2,32 +2,40 @@
 
 import { Spinner } from '@dataforsyningen/css/assets/designsystem'
 import { AlertSplash } from './alert-splash.js'
-import { SkraaFotoAdvancedViewport } from './advanced-viewport.js'
+import { SkraaFotoViewport } from './viewport.js'
 import { SkraaFotoAdvancedMap } from './advanced-map.js'
 import { SkraaFotoDateSelector } from './date-selector.js'
-import { SkraaFotoDateViewer } from "./date-viewer"
 import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
-import { SkraaFotoCompassArrows } from "./compass-arrows"
 import { SkraaFotoCompass } from "./compass"
 import { FirstTimeVisit } from './first-time-visitor.js'
 import { configuration } from "../modules/configuration"
 
 
-export function registerComponents() {
+export async function registerComponents() {
+
   customElements.define('ds-spinner', Spinner)
   customElements.define('skraafoto-alert-splash', AlertSplash)
-  customElements.define('skraafoto-advanced-viewport', SkraaFotoAdvancedViewport)
+  customElements.define('skraafoto-viewport', SkraaFotoViewport)
   customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)
   customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
-  customElements.define('skraafoto-date-viewer', SkraaFotoDateViewer)
   customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
   customElements.define('skraafoto-header', SkraaFotoHeader)
   customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
   customElements.define('skraafoto-compass', SkraaFotoCompass)
 
+  // Load web components by configuration
   if (configuration.ENABLE_COMPASSARROWS) {
+    const { SkraaFotoCompassArrows } = await import("./compass-arrows.js")
     customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
+  }
+  if (configuration.ENABLE_YEAR_SELECTOR) {
+    const { SkraaFotoYearSelector } = await import("./year-selector.js")
+    customElements.define('skraafoto-year-selector', SkraaFotoYearSelector)
+  }
+  if (configuration.ENABLE_DATE_BROWSER) {
+    const { SkraaFotoDateViewer } = await import("./date-viewer.js")
+    customElements.define('skraafoto-date-viewer', SkraaFotoDateViewer)
   }
 
 }

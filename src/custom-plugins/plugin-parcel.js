@@ -86,17 +86,18 @@ function generateParcelVectorLayer() {
   const source = new VectorSource({
     features: []
   })
+  const colorsetting2 = configuration.COLOR_SETTINGS.parcelColorFill
   const fill = new Fill({
-    color: 'transparent',
+    color: colorsetting2,
   })
-  const colorSetting = configuration.COLOR_SETTINGS.footprintColor
+  const colorSetting = configuration.COLOR_SETTINGS.parcelColorStroke
   const stroke = new Stroke({
     color: colorSetting, // highlight
     width: 2,
   })
   const style = new Style({
     fill: fill,
-    stroke: stroke
+    stroke: stroke,
   })
   const layer = new VectorLayer({
     source: source,

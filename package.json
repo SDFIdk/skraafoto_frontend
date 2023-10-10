@@ -1,6 +1,6 @@
 {
   "name": "skraafoto-frontend",
-  "version": "1.7.4",
+  "version": "2.0.0",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "scripts": {
@@ -35,7 +35,6 @@
     "@dataforsyningen/gsearch-ui": "^1.2.0",
     "@dataforsyningen/icons": "^0.7.0",
     "@dataforsyningen/saul": "^3.3.4",
-    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "ol": "^8.1.0",
     "proj4": "^2.9.0"

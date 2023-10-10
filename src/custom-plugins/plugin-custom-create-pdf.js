@@ -1,7 +1,6 @@
 /** @module */
 
 import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
 import { getParam } from '../modules/url-state.js'
 
 const dimentions = {
@@ -174,14 +173,18 @@ function createPdf(map, item, callback, resolution=300, format='a4', rotation='l
   ctx.fillStyle = '#fff'
   ctx.fillRect(0, 0, canvas_width, canvas_height)
 
-  html2canvas(map.getViewport(), exportOptions).then(function (i_canvas) {
-    ctx.drawImage(i_canvas, margin + x, margin + y, new_width, new_height)
-    ctx.drawImage(drawFooterContent(footer_height, image_max_width, item), margin, canvas_height - footer_height - margin)
-    const pdf = new jsPDF(rotation, undefined, format)
-    pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dimention[isLandscape ? 0 : 1], dimention[isLandscape ? 1 : 0])
-    const file_name = generateFileName(item)
-    callback(pdf, file_name)
+  // Find the viewport's canvas elements and draw their contont on top of each other
+  const canvases = map.getViewport().querySelectorAll('canvas')
+  canvases.forEach((canvas) => {
+    ctx.drawImage(canvas, margin + x, margin + y, new_width, new_height)
   })
+
+  // Draw rest of image and generate the PDF
+  ctx.drawImage(drawFooterContent(footer_height, image_max_width, item), margin, canvas_height - footer_height - margin)
+  const pdf = new jsPDF(rotation, undefined, format)
+  pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dimention[isLandscape ? 0 : 1], dimention[isLandscape ? 1 : 0])
+  const file_name = generateFileName(item)
+  callback(pdf, file_name)
 }
 
 export {

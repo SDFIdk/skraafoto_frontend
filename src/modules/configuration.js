@@ -26,6 +26,8 @@ let configuration = {
   ENABLE_CROSSHAIR_ICON: false,
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
   ENABLE_ALERT: false,
+  ENABLE_YEAR_SELECTOR: true, // Display a collection selector in toolbar.
+  ENABLE_DATE_BROWSER: true, // Display a selection of other image items for the same collection (year).
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
   ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
@@ -39,13 +41,14 @@ let configuration = {
 
   COLOR_SETTINGS:
     {
-      cursorColor: 'icon_crosshair.svg', // cursor                        / Default outer:'fill:#808080', inner:'fill:#ffffff' black/white
-      targetColor: '#FFF', // cursor-target viewport.js                   / Default '#FFF' white
-      heightColor: '#FF5252', // map-tool-measure-height.js line          / Default '#FF5252' red
-      widthColor: '#3EDDC6', // map-tool-measure-length.js line           / Default '#3EDDC6' cyan
-      pointerColor: 'hsl(0,100%,66%)', //plugin-pointer.js circle         / Default 'hsl(0,100%,66%)' red
-      parcelColor: 'hsl(26,80%,56%)', // plugin-parcel.js square          / Default 'hsl(26,80%,56%)' orange
-      footprintColor: 'hsl(186,100%,12%)', // plugin-footprint.js square  / Default 'hsl(186,100%,12%)' dark blue
+      cursorColor: 'icon_crosshair.svg', // cursor                            / Default outer:'fill:#808080', inner:'fill:#ffffff' black/white
+      targetColor: '#FFF', // cursor-target viewport.js line                  / Default '#FFF' white
+      heightColor: '#FF5252', // map-tool-measure-height.js line              / Default '#FF5252' red
+      widthColor: '#3EDDC6', // map-tool-measure-length.js line               / Default '#3EDDC6' cyan
+      pointerColor: 'hsl(0,100%,66%)', //plugin-pointer.js circle             / Default 'hsl(0,100%,66%)' red
+      parcelColorStroke: 'hsl(26,80%,56%)', // plugin-parcel.js stroke        / Default 'hsl(26,80%,56%)' orange
+      parcelColorFill: 'hsla(186,100%,12%,0.2)', // plugin-parcel.js fill   / Default 'hsl(186,100%,12%)' dark blue
+      footprintColor: 'hsl(186,100%,12%)', // plugin-footprint.js square      / Default 'hsl(186,100%,12%)' dark blue
     },
 
   // options for lighting to cycle through when clicking the light button
@@ -74,7 +77,10 @@ let configuration = {
       contrast: 0.0,
       saturation: 0
     }
-  ]
+  ],
+
+  DEFAULT_ITEM_ID: '2023_82_24_2_0011_00000400',
+  DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ]
 }
 
 // We assume a global variable `config` has been declared

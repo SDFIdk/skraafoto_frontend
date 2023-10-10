@@ -47,7 +47,7 @@ function addViewSyncViewportTrigger(viewport) {
  * @returns {function} The view sync update function.
  */
 function getViewSyncViewportListener(viewport, always_sync = true) {
-  return event => {
+  return (event) => {
     if (!always_sync && !viewport.self_sync) {
       viewport.self_sync = true
       return
@@ -89,7 +89,8 @@ function addViewSyncMapTrigger(viewport, map) {
     getZ(center[0], center[1], configuration).then(z => {
       center[2] = z
       store.dispatch('updateView', {
-        center: center,
+        kote: center[2],
+        center: center.slice(0,2),
         zoom: view.getZoom()
       })
     })
