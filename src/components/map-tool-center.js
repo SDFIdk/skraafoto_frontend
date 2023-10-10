@@ -17,11 +17,17 @@ export class CenterTool {
         }, 0.06).then((world_xyz) => {
 
           viewport.coord_world = world_xyz
+          const newKote = world_xyz[2]
+          const newCoordinate = world_xyz.slice(0,2)
           const newMarker = store.state.marker
-          newMarker.kote = world_xyz[2]
-          newMarker.center = world_xyz.slice(0,2)
+          newMarker.kote = newKote
+          newMarker.center = newCoordinate
+          const newView = store.state.view
+          newView.kote = newKote
+          newView.center = newCoordinate
           store.dispatch('updateMarker', newMarker)
-          
+          store.dispatch('updateView', newView)
+
         })
       }
     })
