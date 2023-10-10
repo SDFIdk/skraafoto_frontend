@@ -11,6 +11,7 @@ import store from '../store'
 export class SkraaFotoYearSelector extends HTMLElement {
 
   // private properties
+  yearRegex = /[0-9]{4}/g
   #selectElement
   #styles = `
     select {
@@ -78,19 +79,20 @@ export class SkraaFotoYearSelector extends HTMLElement {
 
     // Listen for user change
     this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))    
+
+    window.addEventListener('updateCollection', this.collectionUpdatedHandler.bind(this))
   }
 
   // methods
 
   createDOM() {
     this.innerHTML = this.#template
-    const yearRegex = /[0-9]{4}/g
 
     this.#selectElement = this.querySelector('select')
 
     // Create the year options from the list of collections
     for (const c of store.state.collections) {
-      const year = c.match(yearRegex)[0]
+      const year = c.match(this.yearRegex)[0]
       const optionElement = document.createElement('option')
       optionElement.value = year
       optionElement.innerText = year
@@ -98,7 +100,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
     }
     
     // Setup select element value from state
-    this.#selectElement.value = store.state[this.dataset.viewportId].collection.match(yearRegex)[0]
+    this.#selectElement.value = store.state[this.dataset.viewportId].collection.match(this.yearRegex)[0]
   }
 
   selectionChangeHandler(event) {
@@ -106,6 +108,15 @@ export class SkraaFotoYearSelector extends HTMLElement {
       id: this.dataset.viewportId, 
       collection: `skraafotos${event.target.value}`
     })
+  }
+
+  collectionUpdatedHandler(event) {
+    console.log('collectionupdated',event)
+    this.#selectElement.value = event.detail.collection.match(this.yearRegex)[0]
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('updateCollection', this.collectionUpdatedHandler)
   }
 
 }
