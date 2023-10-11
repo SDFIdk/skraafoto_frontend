@@ -16,7 +16,7 @@ const lookup = {
   }
 }
 
-function shiftItemOrientation(direction, viewportIndex) {
+async function shiftItemOrientation(direction, viewportIndex) {
 
   let viewPortIdentifier
   if (viewportIndex === 1) {
@@ -27,28 +27,22 @@ function shiftItemOrientation(direction, viewportIndex) {
 
   let newOrientation
   if (direction === 1) {
-    newOrientation = lookup.counterclockwise[store.state[viewPortIdentifier].orientation]
+    newOrientation = lookup.counterclockwise[store.state['viewport-1'].orientation]
   } else if (direction === -1) {
-    newOrientation = lookup.clockwise[store.state[viewPortIdentifier].orientation]
+    newOrientation = lookup.clockwise[store.state['viewport-1'].orientation]
   }
 
+  let newItem
   if (!store.state.items[newOrientation]) {
-    queryItems(store.state.marker.center, newOrientation, store.state[viewPortIdentifier].collection).then((featureCollection) => {
-      const newItem = featureCollection.features[0]
-      store.state.items[newOrientation] = newItem
-      document.dispatchEvent(new CustomEvent('directionchange', {detail: newOrientation, bubbles: true}))
-      store.dispatch('updateItem', {
-        id: viewPortIdentifier,
-        item: newItem
-      })
-    })
-  } else {
-    document.dispatchEvent(new CustomEvent('directionchange', {detail: newOrientation, bubbles: true}))
-    store.dispatch('updateItem', {
-      id: viewPortIdentifier,
-      item: store.state.items[newOrientation]
-    })
+    const featureCollection = await queryItems(store.state.marker.center, newOrientation, store.state['viewport-1'].collection)
+    newItem = featureCollection.features[0]
+    store.state.items[newOrientation] = newItem
   }
+
+  store.dispatch('updateMultipleItems', {
+    'viewport-1': store.state.items[newOrientation],
+    'viewport-2': store.state.items[newOrientation]
+  })
 }
 
 function shiftItemTime(direction) {
