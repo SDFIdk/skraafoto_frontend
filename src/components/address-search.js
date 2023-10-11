@@ -194,7 +194,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         if (response.features.length > 0) {
           store.state.view.center = center;
           store.state.marker.center = center;
-          store.dispatch('updateItem', { id: 'viewport-1', item: response.features[0] });
+          store.dispatch('updateMultipleItems', { 
+            'viewport-1': response.features[0],
+            'viewport-2': response.features[0]
+          })
           store.dispatch('updateCollection', { id: 'viewport-1', collection: response.features[0].collection });
           return;
         } else {

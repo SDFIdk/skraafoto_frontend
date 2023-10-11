@@ -111,7 +111,10 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   collectionUpdatedHandler(event) {
-    this.#selectElement.value = event.detail.collection.match(this.yearRegex)[0]
+    // Only update if the right viewport state was updated
+    if (event.detail.id === this.dataset.viewportId) {
+      this.#selectElement.value = event.detail.collection.match(this.yearRegex)[0]
+    }
   }
 
   disconnectedCallback() {
