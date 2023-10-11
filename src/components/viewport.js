@@ -385,14 +385,14 @@ export class SkraaFotoViewport extends HTMLElement {
     this.coord_world = newCenters.worldCoord
     this.coord_image = newCenters.imageCoord
     updateMapImage(this.map, this.item)
-    updateMapCenterIcon(this.map, this.coord_image)
     await updateMapView({
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      kote: store.state.marker.kote,
-      center: store.state.marker.center
+      kote: newCenters.worldCoord[2],
+      center: newCenters.worldCoord.slice(0,2)
     })
+    updateMapCenterIcon(this.map, this.coord_image)
     this.updateNonMap()
   }
 
