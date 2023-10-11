@@ -385,26 +385,24 @@ export class SkraaFotoViewport extends HTMLElement {
     this.coord_world = newCenters.worldCoord
     this.coord_image = newCenters.imageCoord
     updateMapImage(this.map, this.item)
-    updateMapCenterIcon(this.map, this.coord_image)
     await updateMapView({
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      kote: store.state.marker.kote,
-      center: store.state.marker.center
+      kote: newCenters.worldCoord[2],
+      center: newCenters.worldCoord.slice(0,2)
     })
+    updateMapCenterIcon(this.map, this.coord_image)
     this.updateNonMap()
+    return newCenters
   }
 
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
   async update_marker_function(event) {
-    const newMarkerCoords = await updateCenter(event.detail.center, this.item, event.detail.kote)
-    updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
-    
+    const newMarkerCoords = await this.update_viewport_function()
     if (isOutOfBounds(this.item.properties['proj:shape'], newMarkerCoords.imageCoord)) {
       // If the marker is outside the image, load a new image item
       queryItems(newMarkerCoords.worldCoord, this.item.properties.direction, this.item.collection).then((featureCollection) => {
-        console.log('new features', featureCollection)
         store.dispatch('updateItem', {
           id: this.id,
           item: featureCollection.features[0]

@@ -20,14 +20,13 @@ export class CenterTool {
           const newKote = world_xyz[2]
           const newCoordinate = world_xyz.slice(0,2)
           const newMarker = store.state.marker
+          const newView = store.state.view
           newMarker.kote = newKote
           newMarker.center = newCoordinate
-          const newView = store.state.view
           newView.kote = newKote
           newView.center = newCoordinate
-          store.dispatch('updateMarker', newMarker)
           store.dispatch('updateView', newView)
-
+          store.dispatch('updateMarker', newMarker)
         })
       }
     })
