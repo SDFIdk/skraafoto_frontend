@@ -19,12 +19,9 @@ const lookup = {
 function shiftItemOrientation(direction, viewportIndex) {
 
   let viewPortIdentifier
-  if (viewportIndex === 0) {
-    viewPortIdentifier = 'viewport-1'
-  } else if (viewportIndex === 1) {
+  if (viewportIndex === 1) {
     viewPortIdentifier = 'viewport-2'
   } else {
-    // Try to figure out the currently active viewport
     viewPortIdentifier = 'viewport-1'
   }
 
