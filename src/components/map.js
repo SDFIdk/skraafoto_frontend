@@ -18,7 +18,7 @@ import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
-import Collection from 'ol/Collection'
+import { defaults as defaultInteractions } from 'ol/interaction/defaults'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncMapListener } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
@@ -45,7 +45,6 @@ export class SkraaFotoMap extends HTMLElement {
   update_footprint_function
   update_view_function
   parcels_function
-
 
   styles = `
     :root {
@@ -159,6 +158,13 @@ export class SkraaFotoMap extends HTMLElement {
         controls = defaultControls({rotate: false, attribution: false})
       }
 
+      let interactions 
+      if (is_minimal !== null) {
+        interactions = defaultInteractions({dragPan: false, pinchZoom: false, mouseWheelZoom: false})
+      } else {
+        interactions = defaultInteractions()
+      }
+
       const view = new View({
         projection: this.projection,
         center: center,
@@ -175,7 +181,7 @@ export class SkraaFotoMap extends HTMLElement {
         target: this.querySelector('.geographic-map'),
         view: view,
         controls: controls,
-        interactions: new Collection()
+        interactions: interactions
       })
 
       if (is_minimal === null) {
