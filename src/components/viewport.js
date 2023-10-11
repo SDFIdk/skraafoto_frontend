@@ -325,14 +325,14 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     updateMapImage(this.map, this.item)
-    updateMapCenterIcon(this.map, this.coord_image)
+    console.log('cw vs state', this.coord_world, store.state.view.center)
     await updateMapView({
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      kote: store.state.view.kote,
-      center: store.state.view.center
+      center: this.coord_image
     })
+    updateMapCenterIcon(this.map, this.coord_image)
 
     // add interactions
     const interactions = defaultInteractions({ pinchRotate: false })
@@ -351,11 +351,9 @@ export class SkraaFotoViewport extends HTMLElement {
     this.toggleSpinner(true)
     this.item = store.state[this.id].item
     const center = store.state.view.center
-    if (center) {
-      const newCenters = await updateCenter(center, this.item)
-      this.coord_world = newCenters.worldCoord
-      this.coord_image = newCenters.imageCoord
-    }
+    const newCenters = await updateCenter(center, this.item)
+    this.coord_world = newCenters.worldCoord
+    this.coord_image = newCenters.imageCoord
     this.createMap()
     this.updateNonMap()
   }
@@ -389,8 +387,7 @@ export class SkraaFotoViewport extends HTMLElement {
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      kote: newCenters.worldCoord[2],
-      center: newCenters.worldCoord.slice(0,2)
+      center: this.coord_image
     })
     updateMapCenterIcon(this.map, this.coord_image)
     this.updateNonMap()

@@ -79,7 +79,8 @@ function getLayerById(map, id) {
 }
 
 /** Updates the zoom and placement (center) values of a map */
-async function updateMapView({map, zoom, center, kote, item}) {
+async function updateMapView({map, zoom, center, item}) {
+  console.log('updating map view')
   // Figure out which layer has the GeoTIFF source image
   const geoTiffLayer = getLayerById(map, 'geotifflayer')
   const GeoTIFFsource = geoTiffLayer.getSource()
@@ -88,7 +89,7 @@ async function updateMapView({map, zoom, center, kote, item}) {
   view.projection = projection
   view.resolutions = addResolutions(view.resolutions) // Set extra resolutions so we can zoom in further than the resolutions permit normally
   view.rotation = getAdjustedNadirRotation(item) // Rotate nadir images relative to north
-  view.center = getImageXY(item, center[0], center[1], kote) // Calculate image center
+  view.center = center // Set center position in image
   view.zoom = zoom // Set zoom
   const mapView = createView(view)
   map.setView(mapView)
@@ -131,13 +132,12 @@ async function updateMap(self) {
   
   // Create icon layer
   updateMapCenterIcon(self.map, self.coord_image)
-
+  
   // Update the map's view
   await updateMapView({
     map: self.map,
     zoom: self.toImageZoom(store.state.view.zoom),
-    center: store.state.view.center,
-    kote: store.state.view.kote,
+    center: self.coord_image,
     item: self.item
   })
 }
