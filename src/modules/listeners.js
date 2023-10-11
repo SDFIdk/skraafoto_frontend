@@ -16,27 +16,39 @@ const lookup = {
   }
 }
 
-function shiftItemOrientation(direction) {
+function shiftItemOrientation(direction, viewportIndex) {
+
+  let viewPortIdentifier
+  if (viewportIndex === 0) {
+    viewPortIdentifier = 'viewport-1'
+  } else if (viewportIndex === 1) {
+    viewPortIdentifier = 'viewport-2'
+  } else {
+    // Try to figure out the currently active viewport
+    viewPortIdentifier = 'viewport-1'
+  }
 
   let newOrientation
   if (direction === 1) {
-    newOrientation = lookup.counterclockwise[store.state['viewport-1'].orientation]
+    newOrientation = lookup.counterclockwise[store.state[viewPortIdentifier].orientation]
   } else if (direction === -1) {
-    newOrientation = lookup.clockwise[store.state['viewport-1'].orientation]
+    newOrientation = lookup.clockwise[store.state[viewPortIdentifier].orientation]
   }
 
   if (!store.state.items[newOrientation]) {
-    queryItems(store.state.marker.center, newOrientation, store.state['viewport-1'].collection).then((featureCollection) => {
+    queryItems(store.state.marker.center, newOrientation, store.state[viewPortIdentifier].collection).then((featureCollection) => {
       const newItem = featureCollection.features[0]
       store.state.items[newOrientation] = newItem
+      document.dispatchEvent(new CustomEvent('directionchange', {detail: newOrientation, bubbles: true}))
       store.dispatch('updateItem', {
-        id: 'viewport-1',
+        id: viewPortIdentifier,
         item: newItem
       })
     })
   } else {
+    document.dispatchEvent(new CustomEvent('directionchange', {detail: newOrientation, bubbles: true}))
     store.dispatch('updateItem', {
-      id: 'viewport-1',
+      id: viewPortIdentifier,
       item: store.state.items[newOrientation]
     })
   }
