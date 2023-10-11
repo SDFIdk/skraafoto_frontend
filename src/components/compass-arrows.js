@@ -1,5 +1,4 @@
 import { toDanish } from '../modules/i18n.js'
-import { shiftItemOrientation } from '../modules/listeners.js'
 
 /**
  * Web component that displays a compass with arrow buttons
@@ -150,15 +149,6 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     this.button_right = this.markup.querySelector('.button-right')
   }
 
-  connectedCallback() {
-    // Clickable buttons on the sides of the compass
-    this.button_left.addEventListener('click', function(event) {
-      shiftItemOrientation(1)
-    });
-    this.button_right.addEventListener('click', function(event) {
-      shiftItemOrientation(-1)
-    });
-  }
 
   // Lifecycle
 

@@ -47,7 +47,7 @@ function addViewSyncViewportTrigger(viewport) {
  * @returns {function} The view sync update function.
  */
 function getViewSyncViewportListener(viewport, always_sync = true) {
-  return (event) => {
+  return (event) => {    
     if (!always_sync && !viewport.self_sync) {
       viewport.self_sync = true
       return
