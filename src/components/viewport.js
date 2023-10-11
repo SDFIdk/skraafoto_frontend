@@ -323,9 +323,7 @@ export class SkraaFotoViewport extends HTMLElement {
       controls: defaultControls({rotate: false, attribution: false, zoom: true}),
       interactions: new Collection()
     })
-
     updateMapImage(this.map, this.item)
-    console.log('cw vs state', this.coord_world, store.state.view.center)
     await updateMapView({
       map: this.map,
       item: this.item,

@@ -80,7 +80,6 @@ function getLayerById(map, id) {
 
 /** Updates the zoom and placement (center) values of a map */
 async function updateMapView({map, zoom, center, item}) {
-  console.log('updating map view')
   // Figure out which layer has the GeoTIFF source image
   const geoTiffLayer = getLayerById(map, 'geotifflayer')
   const GeoTIFFsource = geoTiffLayer.getSource()

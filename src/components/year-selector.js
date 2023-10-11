@@ -111,7 +111,6 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   collectionUpdatedHandler(event) {
-    console.log('collectionupdated',event)
     this.#selectElement.value = event.detail.collection.match(this.yearRegex)[0]
   }
 

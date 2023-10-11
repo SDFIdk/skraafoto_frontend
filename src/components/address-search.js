@@ -212,7 +212,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
               orientation: orientation
             });
           } else {
-            console.log("Requested collection not found.");
+            console.error("Requested collection not found.");
           }
         }
       })
