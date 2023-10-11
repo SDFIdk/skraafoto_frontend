@@ -46,8 +46,8 @@ let configuration = {
       heightColor: '#FF5252', // map-tool-measure-height.js line              / Default '#FF5252' red
       widthColor: '#3EDDC6', // map-tool-measure-length.js line               / Default '#3EDDC6' cyan
       pointerColor: 'hsl(0,100%,66%)', //plugin-pointer.js circle             / Default 'hsl(0,100%,66%)' red
-      parcelColorStroke: 'hsl(26,80%,56%)', // plugin-parcel.js stroke        / Default 'hsl(26,80%,56%)' orange
-      parcelColorFill: 'hsla(186,100%,12%,0.2)', // plugin-parcel.js fill   / Default 'hsl(186,100%,12%)' dark blue
+      parcelColorStroke: 'hsl(53, 100%, 50%)', // plugin-parcel.js stroke        / Default 'hsl(26,80%,56%)' orange
+      parcelColorFill: 'transparent', // plugin-parcel.js fill   / Default 'hsl(186,100%,12%)' dark blue
       footprintColor: 'hsl(186,100%,12%)', // plugin-footprint.js square      / Default 'hsl(186,100%,12%)' dark blue
     },
 
