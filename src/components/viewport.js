@@ -457,16 +457,7 @@ export class SkraaFotoViewport extends HTMLElement {
       })
     }
   }
-
-  compassChangeHandler(event) {
-    const viewportIndex = Number(this.id.substring(this.id.length, this.id.length - 1)) - 1
-    if (event.originalTarget.classList.contains('button-right')) {
-      shiftItemOrientation(-1, viewportIndex)
-    } else if (event.originalTarget.classList.contains('button-left')){
-      shiftItemOrientation(1, viewportIndex)
-    }
-  }
-
+  
   // Public method
   toMapZoom(zoom) {
     return zoom + configuration.ZOOM_DIFFERENCE
@@ -542,10 +533,6 @@ export class SkraaFotoViewport extends HTMLElement {
     // When user changes viewport orientation, display image footprint on the map
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
-    }
-
-    if (configuration.ENABLE_COMPASSARROWS) {
-      this.shadowRoot.querySelector('skraafoto-compass-arrows').addEventListener('click', this.compassChangeHandler.bind(this))
     }
 
   }

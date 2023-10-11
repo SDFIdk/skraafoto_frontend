@@ -45,6 +45,19 @@ const itemActions = {
     return state
   },
 
+  updateMultipleItems: function(state, itemsObject) {
+    for (const item in itemsObject) {
+      const newItem = structuredClone(state[item])
+      newItem.item = itemsObject[item]
+      newItem.itemId = itemsObject[item].id
+      newItem.orientation = itemsObject[item].properties.direction
+      newItem.collection = itemsObject[item].collection
+      state[item] = newItem
+    }
+    window.dispatchEvent(new CustomEvent('updateItem'))
+    return state
+  },
+
   updateItemId: async function(state, {id, itemId}) {
     // Update only if values are different
     if (state[id].itemId !== itemId) {
@@ -64,11 +77,6 @@ const itemActions = {
       this.updateItem(state, {id: id, item: featureCollection.features[0]})
       window.dispatchEvent(new CustomEvent('updateItem'))
     }
-    return state
-  },
-
-  updateOrientation: function(state, orientation) {
-    state.orientation = orientation
     return state
   }
 
