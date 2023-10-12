@@ -116,7 +116,7 @@ function getViewSyncMapListener(viewport, map, always_sync = true) {
       return
     }
     viewport.sync = false
-    const zoom = event.detail.zoom
+    const zoom = event.detail.zoom + configuration.ZOOM_DIFFERENCE
     const center = event.detail.center
     const view = map.getView()
     if (!view) {
@@ -135,5 +135,4 @@ export {
   getViewSyncViewportListener,
   addViewSyncMapTrigger,
   getViewSyncMapListener
-
 }

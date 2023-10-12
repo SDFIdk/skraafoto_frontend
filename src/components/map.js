@@ -278,7 +278,8 @@ export class SkraaFotoMap extends HTMLElement {
     const center = store.state.marker.center
 
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center, store.state.view.zoom)
+      console.log('got map zoom', store.state.view.zoom)
+      this.map = await this.generateMap(this.getAttribute('minimal'), center, (store.state.view.zoom + configuration.ZOOM_DIFFERENCE))
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
