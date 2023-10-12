@@ -3,7 +3,7 @@ import { checkMapParcels } from './shared.js'
 
 test('Load viewer with URL params 1', async ({ page }) => {
   // Go to page and check that it renders in the correct position
-  await page.goto('/?project=denmark&parcels=270554-15ax&address=Gartnervænget 3, 4160 Herlufmagle&ejendomsid=815465&x=674480.0132781528&y=6133107.9439362185&width=40&mode=4&token=e74200f9b819b0c96a656dce7e0d8850&year=2019', { waitUntil: 'networkidle' })
+  await page.goto('/viewer.html?project=denmark&parcels=270554-15ax&address=Gartnervænget 3, 4160 Herlufmagle&ejendomsid=815465&x=674480.0132781528&y=6133107.9439362185&width=40&mode=4&token=e74200f9b819b0c96a656dce7e0d8850&year=2019', { waitUntil: 'networkidle' })
   await expect(page.locator('css=#viewport-1')).toContainText('Billede af området omkring koordinat 674728 Ø, 6133230 N set fra nord.')
   // Check that a parcel layer has been rendered
   const hasParcels = await checkMapParcels(page, '#viewport-1')
