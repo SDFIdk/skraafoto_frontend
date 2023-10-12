@@ -153,10 +153,10 @@ export class SkraaFotoCompassArrows extends HTMLElement {
   connectedCallback() {
     // Clickable buttons on the sides of the compass
     this.button_left.addEventListener('click', function(event) {
-      shiftItemOrientation(1)
+      shiftItemOrientation(-1)
     })
     this.button_right.addEventListener('click', function(event) {
-      shiftItemOrientation(-1)
+      shiftItemOrientation(+1)
     })
   }
 
