@@ -1,4 +1,4 @@
-export async function test(title, testFunc) {
+export async function unittest(title, testFunc) {
   try {
     await testFunc()
     console.info(`👍 Test ${title} passed`)
