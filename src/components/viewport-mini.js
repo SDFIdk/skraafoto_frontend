@@ -221,12 +221,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   // Public method
   toMapZoom(zoom) {
-    return zoom + configuration.OVERVIEW_ZOOM_DIFFERENCE
+    return zoom + configuration.MINI_ZOOM_DIFFERENCE
   }
 
   // Public method
   toImageZoom(zoom) {
-    return zoom - configuration.OVERVIEW_ZOOM_DIFFERENCE
+    return zoom - configuration.MINI_ZOOM_DIFFERENCE
   }
 
 

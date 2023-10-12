@@ -30,9 +30,9 @@ let configuration = {
   ENABLE_DATE_BROWSER: true, // Display a selection of other image items for the same collection (year).
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
-  ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
+  MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
   DEFAULT_ZOOM: 5, // the default zoom level for main view skraafoto.
-  OVERVIEW_ZOOM_DIFFERENCE: 2, // how much further the small overviews should be zoomed out compared to the main view.
+  MINI_ZOOM_DIFFERENCE: 2, // how much further the small overviews should be zoomed out compared to the main view.
   MAX_ZOOM: 10, // the maximum zoom for skraafotos.
   MIN_ZOOM: 0, // the minimum zoom for skraafotos.
 

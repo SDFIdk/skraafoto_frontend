@@ -163,7 +163,7 @@ function getAdjustedNadirRotation(item) {
 function createView(view_config) {
   const view = new View(view_config)
   view.setMinZoom(configuration.MIN_ZOOM)
-  view.setMaxZoom(configuration.MAX_ZOOM - configuration.OVERVIEW_ZOOM_DIFFERENCE)
+  view.setMaxZoom(configuration.MAX_ZOOM - configuration.MINI_ZOOM_DIFFERENCE)
   return view
 }
 
