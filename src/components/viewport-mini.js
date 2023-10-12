@@ -282,7 +282,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener('updateMarker', this.update_marker_function)
-    window.revmoeEventListener('updateCollection', this.update_collection_function)
+    window.removeEventListener('updateCollection', this.update_collection_function)
   }
 
 }
