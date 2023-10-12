@@ -378,9 +378,7 @@ export class SkraaFotoViewport extends HTMLElement {
   async update_viewport_function() {
     this.toggleMode('center')
     this.item = store.state[this.id].item
-    const newCenters = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
-    this.coord_world = newCenters.worldCoord
-    this.coord_image = newCenters.imageCoord
+    await this.updateCenterProxy()
     updateMapImage(this.map, this.item)
     await updateMapView({
       map: this.map,
@@ -390,21 +388,33 @@ export class SkraaFotoViewport extends HTMLElement {
     })
     updateMapCenterIcon(this.map, this.coord_image)
     this.updateNonMap()
-    return newCenters
   }
 
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
   async update_marker_function(event) {
-    const newMarkerCoords = await this.update_viewport_function()
-    if (isOutOfBounds(this.item.properties['proj:shape'], newMarkerCoords.imageCoord)) {
+    await this.updateCenterProxy()
+    await updateMapView({
+      map: this.map,
+      item: this.item,
+      zoom: store.state.view.zoom,
+      center: this.coord_image
+    })
+    updateMapCenterIcon(this.map, this.coord_image)
+    if (isOutOfBounds(this.item.properties['proj:shape'], this.coord_image)) {
       // If the marker is outside the image, load a new image item
-      queryItems(newMarkerCoords.worldCoord, this.item.properties.direction, this.item.collection).then((featureCollection) => {
+      queryItems(this.coord_world, this.item.properties.direction, this.item.collection).then((featureCollection) => {
         store.dispatch('updateItem', {
           id: this.id,
           item: featureCollection.features[0]
         })
       })
     }
+  }
+
+  async updateCenterProxy() {
+    const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+    this.coord_world = newMarkerCoords.worldCoord
+    this.coord_image = newMarkerCoords.imageCoord
   }
 
   toggleMode(mode, button_element) {
