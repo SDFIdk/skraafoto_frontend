@@ -10,7 +10,7 @@
     "test": "npx playwright test",
     "test-e2e-remote": "export BASEURL=https://test16.dataforsyningen.dk && npx playwright test",
     "test-update": "npx playwright test --update-snapshots",
-    "test-unit": "node test/unittest/api.test.mjs",
+    "test-unit": "node test/unit/api.test.mjs",
     "serve-docs": "python3 -m http.server 8001 --directory docs/api"
   },
   "repository": {
