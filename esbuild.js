@@ -1,3 +1,4 @@
+import {build, analyzeMetafile, serve} from 'esbuild'
 
 const entry_points = {
   splash: 'src/views/splash.js',
@@ -11,7 +12,7 @@ const entry_points = {
 if (process.env.NODE_ENV === 'production') {
 
   // Production build
-  require('esbuild').build({
+  build({
     entryPoints: entry_points,
     outdir: 'dist',
     bundle: true,
@@ -25,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
   })
   .then((result) => {
     
-    require('esbuild').analyzeMetafile(result.metafile).then((analysis) => {
+    analyzeMetafile(result.metafile).then((analysis) => {
       console.log(analysis)
       console.log('Build finished 👍')
     })
@@ -36,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
 
   // Development mode watches for file changes and rebuilds
-  require('esbuild').serve({
+  serve({
     servedir: 'public',
   }, {
     entryPoints: entry_points,

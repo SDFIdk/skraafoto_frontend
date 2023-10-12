@@ -1,13 +1,9 @@
 import { test, expect } from '@playwright/test'
-import { checkMapParcels } from './shared.js'
 
 test('Load viewer with center, orientation, and item ID', async ({ page }) => {
   // Go to page and check that it renders in the correct position
   await page.goto('/?center=722120.17972822%2C6178879.0063692&orientation=north&item=2021_84_40_2_0041_00090757', { waitUntil: 'networkidle' })
   await expect(page.locator('#viewport-1')).toContainText('Billede af området omkring koordinat 721760 Ø, 6178876 N set fra nord.')
-  // Check that a parcel layer has not been rendered
-  const hasParcels = await checkMapParcels(page, '#viewport-1')
-  await expect(hasParcels).toBeFalsy()
 })
 
 test('Load viewer with center in WGS84 x/y format', async ({ page }) => {

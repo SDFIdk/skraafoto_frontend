@@ -1,11 +1,11 @@
 // @ts-check
-const { devices } = require('@playwright/test');
+import { devices } from '@playwright/test'
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
-const config = {
+export default {
   testDir: './test/e2e',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -99,5 +99,3 @@ const config = {
   //  port: 8000,
   //}
 }
-
-module.exports = config;
