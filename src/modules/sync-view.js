@@ -19,7 +19,7 @@ function addViewSyncViewportTrigger(viewport) {
     viewport.self_sync = false
     const view = viewport.map.getView()
     const center = view.getCenter()
-    const world_zoom = viewport.toMapZoom(view.getZoom())
+    const world_zoom = viewport.toImageZoom(view.getZoom())
     /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
     * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
     * vary. If there are big differences in elevation between the selected center and the zoom center this
@@ -30,9 +30,9 @@ function addViewSyncViewportTrigger(viewport) {
     }
     const world_center = image2world(viewport.item, center[0], center[1], viewport.coord_world[2])
     getZ(world_center[0], world_center[1], configuration).then(z => {
-      world_center[2] = z
       store.dispatch('updateView', {
         center: world_center,
+        kote: z,
         zoom: world_zoom
       })
     })
@@ -62,7 +62,7 @@ function getViewSyncViewportListener(viewport, always_sync = true) {
     if (!view) {
       return
     }
-    const image_zoom = zoom
+    const image_zoom = viewport.toImageZoom(zoom)
     const image_center = getImageXY(viewport.item, center[0], center[1], center[2])
     view.animate({
       zoom: image_zoom,
