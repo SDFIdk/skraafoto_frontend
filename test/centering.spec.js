@@ -7,8 +7,10 @@ import { test, expect } from '@playwright/test'
   - center viewport when using crosshair tool
   - center viewport when selecting another direction
   - center viewport when selecting another collection
-*/
+
 
 test('center viewport when no URL center was given', async ({ page }) => {
 
 })
+
+*/

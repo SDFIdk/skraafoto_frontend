@@ -9,5 +9,5 @@ test('Search for an address from start page', async ({ page }) => {
   await page.getByText('Rentemestervej 8, 2400 København NV').click()
 
   // Expect viewport to contain data
-  await expect(page.locator('#viewport-1')).toContainText("Billede af området omkring koordinat 574243 øst,6221024 nord set fra nord.")
+  await expect(page.locator('#viewport-1')).toContainText("Billede af området omkring koordinat 574243 Ø, 6221024 N set fra nord.")
 })
