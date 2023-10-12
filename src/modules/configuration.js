@@ -31,13 +31,13 @@ let configuration = {
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
   MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
-  DEFAULT_ZOOM: 5, // the default zoom level for main view skraafoto.
+  DEFAULT_ZOOM: 4, // the default zoom level for main view skraafoto.
   MINI_ZOOM_DIFFERENCE: 2, // how much further the small overviews should be zoomed out compared to the main view.
   MAX_ZOOM: 10, // the maximum zoom for skraafotos.
   MIN_ZOOM: 0, // the minimum zoom for skraafotos.
 
   SITEIMPROVE_SCRIPT: '',
-  DOWNLOAD_TYPE: 'default', // 'default' | 'currentview'
+  DOWNLOAD_TYPE: 'currentview', // 'default' | 'currentview'
 
   COLOR_SETTINGS:
     {
