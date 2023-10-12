@@ -42,12 +42,12 @@ function addViewSyncViewportTrigger(viewport) {
 /**
  * Gets a function for updating the viewport to be synchronized with other viewports.
  * @param {*} viewport The viewport.
- * @param {*} always_sync Whether or not the viewport should always synchronize. Set to true when the viewport 
+ * @param {*} always_sync Whether or not the viewport should always synchronize. Set to true when the viewport
  * does not have a SyncMapTrigger.
  * @returns {function} The view sync update function.
  */
 function getViewSyncViewportListener(viewport, always_sync = true) {
-  return (event) => {    
+  return (event) => {
     if (!always_sync && !viewport.self_sync) {
       viewport.self_sync = true
       return
@@ -62,7 +62,7 @@ function getViewSyncViewportListener(viewport, always_sync = true) {
     if (!view) {
       return
     }
-    const image_zoom = viewport.toImageZoom(zoom)
+    const image_zoom = zoom
     const image_center = getImageXY(viewport.item, center[0], center[1], center[2])
     view.animate({
       zoom: image_zoom,
@@ -101,7 +101,7 @@ function addViewSyncMapTrigger(viewport, map) {
  * Gets a function for updating the map to be synchronized with other viewports.
  * @param {*} viewport The viewport.
  * @param {ol.Map} The Openlayers map.
- * @param {*} always_sync Whether or not the viewport should always synchronize. Set to true when the map 
+ * @param {*} always_sync Whether or not the viewport should always synchronize. Set to true when the map
  * does not have a SyncMapTrigger.
  * @returns {function} The view sync update function.
  */

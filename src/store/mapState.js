@@ -8,12 +8,14 @@ const mapState = {
   parcels: [], // The parcels data in JSON format
   marker: {
     center: configuration.DEFAULT_WORLD_COORDINATE,
-    kote: 0
+    kote: 0,
+    zoom: configuration.DEFAULT_ZOOM
   },
   view: {
     center: configuration.DEFAULT_WORLD_COORDINATE,
     kote: 0,
-    zoom: configuration.DEFAULT_ZOOM + configuration.ZOOM_DIFFERENCE // the view, consisting of the zoom level and center of the background map
+    zoom: configuration.DEFAULT_ZOOM, // the view, consisting of the zoom level and center of the background map
+    maxZoom: configuration.MAX_ZOOM
   }
 }
 
@@ -44,7 +46,7 @@ const mapActions = {
     } else {
       // Assuming center is an array of up to 3 numbers
       state.view.kote = center[2]
-      state.view.center = center.slice(0,2) 
+      state.view.center = center.slice(0,2)
     }
     return state
   },

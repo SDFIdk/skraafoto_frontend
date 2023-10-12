@@ -21,6 +21,7 @@ export class CenterTool {
           const newCoordinate = world_xyz.slice(0,2)
           const newMarker = store.state.marker
           const newView = store.state.view
+          console.log(store.state.view)
           newMarker.kote = newKote
           newMarker.center = newCoordinate
           newView.kote = newKote

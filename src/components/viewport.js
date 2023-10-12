@@ -15,7 +15,7 @@ import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { shiftItemOrientation } from '../modules/listeners.js'
 import { getViewSyncViewportListener, addViewSyncViewportTrigger } from '../modules/sync-view'
-import { 
+import {
   updateMapView,
   updateMapImage,
   updateMapCenterIcon,
@@ -295,7 +295,7 @@ export class SkraaFotoViewport extends HTMLElement {
     wrapper.innerHTML = this.template
     // attach the created elements to the shadow DOM
     this.shadowRoot.append(wrapper)
-    
+
     this.compass_element = configuration.ENABLE_COMPASSARROWS ? this.shadowRoot.querySelector('skraafoto-compass-arrows') : this.shadowRoot.querySelector('skraafoto-compass')
 
     if (configuration.ENABLE_SMALL_FONT) {
@@ -457,15 +457,15 @@ export class SkraaFotoViewport extends HTMLElement {
       })
     }
   }
-  
+
   // Public method
   toMapZoom(zoom) {
-    return zoom + configuration.ZOOM_DIFFERENCE
+    return zoom
   }
 
   // Public method
   toImageZoom(zoom) {
-    return zoom - configuration.ZOOM_DIFFERENCE
+    return zoom
   }
 
 
@@ -518,7 +518,7 @@ export class SkraaFotoViewport extends HTMLElement {
     document.addEventListener('gsearch:select', () => {
       this.toggleMode('center')
     })
-    
+
     window.addEventListener('urlupdate', () => {
       this.toggleMode('center')
     })

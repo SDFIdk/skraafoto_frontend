@@ -6,7 +6,7 @@ import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footpri
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
-import { 
+import {
   updateMap,
   updateMapCenterIcon,
   updateTextContent,
@@ -153,7 +153,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
   async update() {
 
     this.toggleSpinner(true)
- 
+
     const center = store.state.view.center
 
     if (center) {
@@ -221,12 +221,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   // Public method
   toMapZoom(zoom) {
-    return zoom + configuration.ZOOM_DIFFERENCE + configuration.OVERVIEW_ZOOM_DIFFERENCE
+    return zoom + configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
   // Public method
   toImageZoom(zoom) {
-    return zoom - configuration.ZOOM_DIFFERENCE - configuration.OVERVIEW_ZOOM_DIFFERENCE
+    return zoom - configuration.OVERVIEW_ZOOM_DIFFERENCE
   }
 
 
@@ -271,7 +271,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
       this.update_pointer_function = getUpdateViewportPointerFunction(this)
       window.addEventListener('updatePointer', this.update_pointer_function)
     }
-    
+
     // When user changes viewport orientation, display image footprint on the map
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
