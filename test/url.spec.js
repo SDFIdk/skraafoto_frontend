@@ -70,6 +70,18 @@ test('Load viewer with URL params 5', async ({ page }) => {
   await expect(hasParcels).toBeTruthy()
 })
 
+test('Load viewer with center in WGS84 x/y format', async ({ page }) => {
+  // Go to page and check that it renders in the correct position
+  await page.goto('/?x=10.252991&y=55.541065', { waitUntil: 'networkidle' })
+  await expect(page.locator('css=#viewport-1')).toContainText('Billede af området omkring koordinat 579021 Ø, 6155717 N set fra nord.')
+})
+
+test('Load viewer with center in EPSG:25832 x/y format', async ({ page }) => {
+  // Go to page and check that it renders in the correct position
+  await page.goto('/?x=726302&y=6096616', { waitUntil: 'networkidle' })
+  await expect(page.locator('css=#viewport-1')).toContainText('Billede af området omkring koordinat 726302 Ø, 6096616 N set fra nord.')
+})
+
 /*
 test('Load viewer with center and item ID', async ({ page }) => {
   await page.goto('/viewer.html?center=514279.05%2C6188146.08%2C84.4&item=2021_83_28_3_0014_00003297', { waitUntil: 'networkidle' })
