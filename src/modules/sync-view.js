@@ -31,7 +31,7 @@ function addViewSyncViewportTrigger(viewport) {
     const world_center = image2world(viewport.item, center[0], center[1], viewport.coord_world[2])
     getZ(world_center[0], world_center[1], configuration).then(z => {
       store.state.marker = {
-        center: world_center,
+        center: store.state.marker.center,
         kote: z
       }
       store.dispatch('updateView', {
