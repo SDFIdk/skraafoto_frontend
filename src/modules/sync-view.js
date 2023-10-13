@@ -13,7 +13,7 @@ import store from '../store'
 function addViewSyncViewportTrigger(viewport) {
   viewport.map.on('moveend', () => {
     if (!viewport.sync) {
-      viewport.sync = false
+      viewport.sync = true
       return
     }
     viewport.self_sync = false
