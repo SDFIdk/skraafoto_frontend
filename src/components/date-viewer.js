@@ -151,7 +151,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     const collection = item.collection
     const year = collection.match(/\d{4}/g)[0]
     const orientation = item.orientation
-    const center = store.state.view.center
+    const center = store.state.marker.center
     if (year && orientation && center) {
       const response = await queryItems(center, orientation, `skraafotos${ year }`, 50)
       this.items = response.features
