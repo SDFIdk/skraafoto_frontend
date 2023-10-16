@@ -159,10 +159,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
       if (nextItemIndex > this.items.length - 1) {
         nextItemIndex = 0
       }
-      store.dispatch('updateItem', {
-        id: this.dataset.viewportId,
-        item: this.items[nextItemIndex]
-      })
+      this.dispatchUpdate(this.items[nextItemIndex])
 
     } else if (event.detail === 1) {
 
@@ -170,11 +167,26 @@ export class SkraaFotoDateSelector extends HTMLElement {
       if (nextItemIndex < 0) {
         nextItemIndex = this.items.length - 1
       }
+      this.dispatchUpdate(this.items[nextItemIndex])
+    }
+  }
+
+  dispatchUpdate(item) {
+    if (store.state[this.dataset.viewportId].item.collection !== item.collection) {
+      // Make sure item is updated before collection
       store.dispatch('updateItem', {
         id: this.dataset.viewportId,
-        item: this.items[nextItemIndex]
+        item: item
       })
-      
+      store.dispatch('updateCollection', {
+        id: this.dataset.viewportId,
+        collection: item.collection
+      })
+    } else {
+      store.dispatch('updateItem', {
+        id: this.dataset.viewportId,
+        item: item
+      })
     }
   }
 
@@ -186,10 +198,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
     // When an option is selected, dispatch a new item to the store
     this.selectorElement.addEventListener('change', (event) => {
       const item = this.items.find((item) => item.id === event.target.value)
-      store.dispatch('updateItem', {
-        id: this.dataset.viewportId,
-        item: item
-      })
+      this.dispatchUpdate(item)
       this.selectorElement.blur() // Remove focus from the select element
     })
 
