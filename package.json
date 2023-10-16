@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js || : && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
-    "docs": "jsdoc --configure docs/jsdoc-conf.js && cp -r docs/images docs/api/",
+    "docs": "jsdoc --configure docs/jsdoc-conf.json && cp -r docs/images docs/api/",
     "test": "npx playwright test",
     "test-e2e-remote": "export BASEURL=https://test16.dataforsyningen.dk && npx playwright test",
     "test-update": "npx playwright test --update-snapshots",
