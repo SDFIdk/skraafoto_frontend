@@ -1,5 +1,4 @@
-import { getParam, setParams } from '../modules/url-state.js'
-import { getCollections } from '../modules/api.js'
+import { getYearFromCollection } from '../modules/utilities.js'
 import store from '../store'
 
 /**
@@ -11,7 +10,6 @@ import store from '../store'
 export class SkraaFotoYearSelector extends HTMLElement {
 
   // private properties
-  yearRegex = /[0-9]{4}/g
   #selectElement
   #styles = `
     select {
@@ -92,7 +90,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
 
     // Create the year options from the list of collections
     for (const c of store.state.collections) {
-      const year = c.match(this.yearRegex)[0]
+      const year = getYearFromCollection(c)
       const optionElement = document.createElement('option')
       optionElement.value = year
       optionElement.innerText = year
@@ -100,11 +98,11 @@ export class SkraaFotoYearSelector extends HTMLElement {
     }
     
     // Setup select element value from state
-    this.#selectElement.value = store.state[this.dataset.viewportId].collection.match(this.yearRegex)[0]
+    this.#selectElement.value = getYearFromCollection(store.state[this.dataset.viewportId].collection)
   }
 
   selectionChangeHandler(event) {
-    const response = store.dispatch('updateCollection', {
+    store.dispatch('updateCollection', {
       id: this.dataset.viewportId, 
       collection: `skraafotos${event.target.value}`
     })
@@ -113,7 +111,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
   collectionUpdatedHandler(event) {
     // Only update if the right viewport state was updated
     if (event.detail.id === this.dataset.viewportId) {
-      this.#selectElement.value = event.detail.collection.match(this.yearRegex)[0]
+      this.#selectElement.value = getYearFromCollection(event.detail.collection)
     }
   }
 
