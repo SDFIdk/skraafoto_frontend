@@ -16,70 +16,65 @@ const lookup = {
   }
 }
 
-async function shiftItemOrientation(direction, viewportIndex) {
+// Create separate variables to track the state and items for each viewport
+const viewport1 = 'viewport-1'
+const viewport2 = 'viewport-2'
 
-  let viewPortIdentifier
-  if (viewportIndex === 1) {
-    viewPortIdentifier = 'viewport-2'
-  } else {
-    viewPortIdentifier = 'viewport-1'
-  }
+async function shiftItemOrientation(viewport, direction) {
+  const newOrientation = direction === 1
+    ? lookup.counterclockwise[store.state[viewport].orientation]
+    : lookup.clockwise[store.state[viewport].orientation]
 
-  let newOrientation
-  if (direction === 1) {
-    newOrientation = lookup.counterclockwise[store.state['viewport-1'].orientation]
-  } else if (direction === -1) {
-    newOrientation = lookup.clockwise[store.state['viewport-1'].orientation]
-  }
-
-  let newItem
   if (!store.state.items[newOrientation]) {
-    const featureCollection = await queryItems(store.state.marker.center, newOrientation, store.state['viewport-1'].collection)
-    newItem = featureCollection.features[0]
+    const featureCollection = await queryItems(store.state.marker.center, newOrientation, store.state[viewport].collection);
+    const newItem = featureCollection.features[0]
     store.state.items[newOrientation] = newItem
   }
 
-  store.dispatch('updateMultipleItems', {
-    'viewport-1': store.state.items[newOrientation],
-    'viewport-2': store.state.items[newOrientation]
-  })
+  const updateItems = {}
+  updateItems[viewport] = store.state.items[newOrientation]
+  store.dispatch('updateMultipleItems', updateItems)
 }
 
-function shiftItemTime(direction) {
-  document.dispatchEvent(new CustomEvent('imageshift', {detail: direction, bubbles: true}))
+function shiftItemTime(viewport, direction) {
+  document.dispatchEvent(new CustomEvent('imageshift', { detail: direction, bubbles: true, viewport }))
 }
 
-function keyDownHandler(event) {
+function keyDownHandler(event, viewport) {
   if (event.shiftKey) {
     if (event.key === 'ArrowDown') {
-      shiftItemTime(-1)
+      shiftItemTime(viewport, -1)
     } else if (event.key === 'ArrowUp') {
-      shiftItemTime(1)
+      shiftItemTime(viewport, 1)
     } else if (event.key === 'ArrowLeft') {
-      shiftItemOrientation(-1)
+      shiftItemOrientation(viewport, -1)
     } else if (event.key === 'ArrowRight') {
-      shiftItemOrientation(1)
+      shiftItemOrientation(viewport, 1)
     }
   }
 }
 
 function setupListeners() {
-
   // Catch load errors and display to user
-  window.addEventListener('offline', function(ev) {
+  window.addEventListener('offline', function (ev) {
     alert('Du er ikke længere online. Prøv igen senere.')
   })
 
-  document.addEventListener('loaderror', function(ev) {
-    console.error('Network error: ', ev.details)
+  document.addEventListener('loaderror', function (ev) {
+    console.error('Network error: ', ev.details);
     alert('Der var et problem med at hente data fra serveren.')
   })
 
-  // Listen and react on shortkey use
-  document.addEventListener('keydown', keyDownHandler)
+  // Listen and react on shortcut use for viewport-1
+  document.addEventListener('keydown', (event) => keyDownHandler(event, viewport1));
+
+  // Listen and react on shortcut use for viewport-2
+  document.addEventListener('keydown', (event) => keyDownHandler(event, viewport2));
 }
 
 export {
   setupListeners,
-  shiftItemOrientation
+  shiftItemOrientation,
+  viewport1,
+  viewport2
 }
