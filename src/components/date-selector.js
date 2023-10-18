@@ -88,7 +88,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   update() {
     
     const center = store.state.view.center
-    const orientation = store.state[this.dataset.viewportId].orientation
+    const orientation = store.state.viewports[this.dataset.index].orientation
     if (orientation && center) {
       queryItems(center, orientation, false, 50).then((featureCollection) => {
         this.items = featureCollection.features
@@ -106,7 +106,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
         this.buildOptionHTML(sorted_collections[c].items[i], i, sorted_collections[c].items.length)
       }
     }
-    this.selectorElement.value = store.state[this.dataset.viewportId].itemId
+    this.selectorElement.value = store.state.viewports[this.dataset.index].itemId
   }
 
   sortOptions(items) {
@@ -155,7 +155,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   shiftItemHandler(event) {
     if (event.detail === -1) {
 
-      let nextItemIndex = this.items.findIndex((i) => i.id === store.state[this.dataset.viewportId].itemId) + 1
+      let nextItemIndex = this.items.findIndex((i) => i.id === store.state.viewports[this.dataset.index].itemId) + 1
       if (nextItemIndex > this.items.length - 1) {
         nextItemIndex = 0
       }
@@ -163,7 +163,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
 
     } else if (event.detail === 1) {
 
-      let nextItemIndex = this.items.findIndex((i) => i.id === store.state[this.dataset.viewportId].itemId) - 1
+      let nextItemIndex = this.items.findIndex((i) => i.id === store.state.viewports[this.dataset.index].itemId) - 1
       if (nextItemIndex < 0) {
         nextItemIndex = this.items.length - 1
       }
@@ -172,7 +172,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   dispatchUpdate(item) {
-    if (store.state[this.dataset.viewportId].item.collection !== item.collection) {
+    if (store.state.viewports[this.dataset.index].item.collection !== item.collection) {
       // Make sure item is updated before collection
       store.dispatch('updateItem', {
         id: this.dataset.viewportId,

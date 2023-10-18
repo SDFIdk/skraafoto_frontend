@@ -13,7 +13,6 @@ import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
-import { shiftItemOrientation } from '../modules/listeners.js'
 import { getViewSyncViewportListener, addViewSyncViewportTrigger } from '../modules/sync-view'
 import {
   updateMapView,
@@ -250,8 +249,8 @@ export class SkraaFotoViewport extends HTMLElement {
       <div class="ds-button-group">
         ${ 
           configuration.ENABLE_YEAR_SELECTOR ?
-          `<skraafoto-year-selector data-viewport-id="${this.id}"></skraafoto-year-selector>`
-          : `<skraafoto-date-selector data-viewport-id="${this.id}"></skraafoto-date-selector>`
+          `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
+          : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
         <hr>
         <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
@@ -263,7 +262,7 @@ export class SkraaFotoViewport extends HTMLElement {
     
     ${
       configuration.ENABLE_DATE_BROWSER ?
-      `<skraafoto-date-viewer data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
+      `<skraafoto-date-viewer data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
     }
 
     <div class="viewport-map">
@@ -348,7 +347,7 @@ export class SkraaFotoViewport extends HTMLElement {
   /** Initializes the image map */
   async initializeMap() {
     this.toggleSpinner(true)
-    this.item = store.state[this.id].item
+    this.item = store.state.viewports[this.dataset.index].item
     const center = store.state.view.center
     const newCenters = await updateCenter(center, this.item)
     this.coord_world = newCenters.worldCoord
@@ -377,7 +376,7 @@ export class SkraaFotoViewport extends HTMLElement {
   /** Handler to update the relevant parts of the image map when an item is updated */
   async update_viewport_function() {
     this.toggleMode('center')
-    this.item = store.state[this.id].item
+    this.item = store.state.viewports[this.dataset.index].item
     await this.updateCenterProxy()
     updateMapImage(this.map, this.item)
     await updateMapView({
@@ -404,7 +403,7 @@ export class SkraaFotoViewport extends HTMLElement {
       // If the marker is outside the image, load a new image item
       queryItems(this.coord_world, this.item.properties.direction, this.item.collection).then((featureCollection) => {
         store.dispatch('updateItem', {
-          id: this.id,
+          index: this.dataset.index,
           item: featureCollection.features[0]
         })
       })

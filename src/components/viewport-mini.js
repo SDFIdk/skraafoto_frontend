@@ -6,7 +6,6 @@ import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footpri
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
-import { getYearFromCollection } from '../modules/utilities.js'
 import {
   updateMap,
   updateMapCenterIcon,
@@ -190,9 +189,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
   /** Handler to update the image when the collection state is updated */
   async update_collection_function(event) {
-    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, event.detail.collection)
+    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, event.detail.collection, 1)
     this.item = featureCollection.features[0]
-    store.state.items[this.dataset.orientation] = featureCollection.features[0]
+    store.state.viewports[0].items[this.dataset.orientation] = featureCollection.features[0]
     this.update()
   }
 
@@ -237,12 +236,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
     this.createDOM()
 
-    if (!store.state.items[this.dataset.orientation]) {
+    if (!store.state.viewports[0].items[this.dataset.orientation]) {
       this.toggleSpinner(true)
-      const collection = store.state['viewport-1'].collection
+      const collection = store.state.viewports[0].collection
       const featureCollection = await queryItems(store.state.view.center, this.dataset.orientation, collection)
       this.item = featureCollection.features[0]
-      store.state.items[this.dataset.orientation] = this.item
+      store.state.viewports[0].items[this.dataset.orientation] = this.item
     }
 
     this.map = this.createMap()

@@ -23,7 +23,7 @@ export default class Store {
     })
   }
 
-  dispatch(actionKey, payload) {
+  async dispatch(actionKey, payload) {
     let self = this
 
     if (typeof self.actions[actionKey] !== 'function') {
@@ -32,7 +32,7 @@ export default class Store {
     }
 
     // Set the state
-    self.actions[actionKey](self.state, payload)
+    await self.actions[actionKey](self.state, payload)
 
     // Publish only the event itself and not the whole state
     self.events.publish(actionKey, payload)
