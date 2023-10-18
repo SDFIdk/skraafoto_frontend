@@ -159,7 +159,7 @@ function getAdjustedNadirRotation(item) {
   }
 }
 
-let extentAdjusted = false // Add a flag to track if extent is already adjusted
+let extentAdjusted = null // Add a flag to track if extent is already adjusted
 
 /** Create a modified View object with min and max zoom levels */
 function createView(view_config) {
@@ -174,7 +174,9 @@ function createView(view_config) {
     extent[2] + (extent[2] - extent[0]) * extentPadding, // maxx
     extent[3] + (extent[3] - extent[1]) * extentPadding  // maxy
   ] // Set the new extent in the view configuration
-  extentAdjusted = true
+  extentAdjusted = false
+  } else if (self.item) {
+    extentAdjusted = true
   }
 
   const view = new View(view_config)
