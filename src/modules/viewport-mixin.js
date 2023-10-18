@@ -6,13 +6,13 @@ import VectorSource from 'ol/source/Vector'
 import Projection from 'ol/proj/Projection.js'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
-import { Icon, Style } from 'ol/style'
-import { getZ, getImageXY } from '@dataforsyningen/saul'
-import { configuration } from './configuration.js'
+import {Icon, Style} from 'ol/style'
+import {getImageXY, getZ} from '@dataforsyningen/saul'
+import {configuration} from './configuration.js'
 import store from '../store'
-import { toDanish } from '../modules/i18n.js'
-import { getTerrainData, queryItems } from '../modules/api.js'
-import { renderParcels } from '../custom-plugins/plugin-parcel.js'
+import {toDanish} from '../modules/i18n.js'
+import {getTerrainData} from '../modules/api.js'
+import {renderParcels} from '../custom-plugins/plugin-parcel.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
 // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -159,8 +159,24 @@ function getAdjustedNadirRotation(item) {
   }
 }
 
+let extentAdjusted = false // Add a flag to track if extent is already adjusted
+
 /** Create a modified View object with min and max zoom levels */
 function createView(view_config) {
+  if (!extentAdjusted) {
+  const extent = view_config.extent // Get the existing extent
+  const extentPadding = 0.1 // Adjust this value to control the extent padding
+
+  // Calculate the new extent with padding
+  view_config.extent = [
+    extent[0] - (extent[2] - extent[0]) * extentPadding, // minx
+    extent[1] - (extent[3] - extent[1]) * extentPadding, // miny
+    extent[2] + (extent[2] - extent[0]) * extentPadding, // maxx
+    extent[3] + (extent[3] - extent[1]) * extentPadding  // maxy
+  ] // Set the new extent in the view configuration
+  extentAdjusted = true
+  }
+
   const view = new View(view_config)
   view.setMinZoom(configuration.MIN_ZOOM)
   view.setMaxZoom(configuration.MAX_ZOOM - configuration.MINI_ZOOM_DIFFERENCE)
