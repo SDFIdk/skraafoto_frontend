@@ -55,14 +55,9 @@ const itemActions = {
 
   updateMultipleItems: function(state, itemsArray) {
     for (let itemIdx in itemsArray) {
-      const newItem = structuredClone(state.viewports[itemIdx])
-      newItem.item = itemsArray[itemIdx]
-      newItem.itemId = itemsArray[itemIdx].id
-      newItem.orientation = itemsArray[itemIdx].properties.direction
-      newItem.collection = itemsArray[itemIdx].collection
-      state.viewports[itemIdx] = newItem
+      this.updateItem(state, {index: itemIdx, item: itemsArray[itemIdx]})
+      window.dispatchEvent(new CustomEvent('updateItem', {detail: itemsArray[itemIdx]}))
     }
-    window.dispatchEvent(new CustomEvent('updateItem'))
     return state
   },
 
@@ -72,7 +67,7 @@ const itemActions = {
       // Fetch new item and update state (including udpating collection)
       const feature = await queryItem(itemId)
       this.updateItem(state, {index: index, item: feature})
-      window.dispatchEvent(new CustomEvent('updateItem'))
+      window.dispatchEvent(new CustomEvent('updateItem', {detail: feature}))
     }
     return state
   },
@@ -83,33 +78,31 @@ const itemActions = {
       // Fetch new item and update state (including udpating collection)
       const featureCollection = await queryItems(state.view.center, state.viewports[index].orientation, collection, 1)
       this.updateItem(state, {index: index, item: featureCollection.features[0]})
-      window.dispatchEvent(new CustomEvent('updateItem'))
+      window.dispatchEvent(new CustomEvent('updateItem', {detail: featureCollection.features[0]}))
     }
     return state
   },
 
-  updateOrientation: async function(state, orientation) {
+  updateOrientation: function(state, orientation) {
     
-    await state.viewports.forEach(async (viewport) => {
+    state.viewports.forEach(async (viewport, index) => {
       
       let newItem
 
       if (!viewport.items[orientation] || viewport.items[orientation].collection !== viewport.collection) {
-        const featureCollection = await queryItems(state.marker.center, orientation, viewport.collection)
-        newItem = featureCollection.features[0]
-        viewport.items[orientation] = featureCollection.features[0]
+        queryItems(state.marker.center, orientation, viewport.collection).then((featureCollection) => {
+          newItem = featureCollection.features[0]
+          viewport.items[orientation] = featureCollection.features[0]
+          this.updateItem(state, {index: index, item: newItem})
+          window.dispatchEvent(new CustomEvent('updateItem', {detail: newItem}))
+        })
       } else {
         newItem = viewport.items[orientation]
+        this.updateItem(state, {index: index, item: newItem})
+        window.dispatchEvent(new CustomEvent('updateItem', {detail: newItem}))
       }
-      
-      viewport.item = newItem
-      viewport.itemId = newItem.id
-      viewport.orientation = newItem.properties.direction
-      viewport.collection = newItem.collection
-      
     })
-    window.dispatchEvent(new CustomEvent('updateItem'))
-    return state  
+    return state
   }
 
 }

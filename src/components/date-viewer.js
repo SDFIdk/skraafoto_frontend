@@ -9,7 +9,6 @@ import store from '../store'
  */
 export class SkraaFotoDateViewer extends HTMLElement {
 
-  items = []
   #selectElement
   #buttonDown
   #buttonUp
@@ -120,6 +119,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
       isOptionClicked = false // Reset the flag
     })
 
+    
     // Add global listener for state changes
     window.addEventListener('updateItem', this.#update.bind(this))
 
@@ -135,25 +135,27 @@ export class SkraaFotoDateViewer extends HTMLElement {
       this.#selectElement.blur() // Remove focus from the select element
     })
 
-    this.#update()
+    this.#fetchIds(store.state.viewports[this.dataset.index])
   }
 
   disconnectedCallback() {
-    window.removeEventListener(this.dataset.viewportId, this.#update)
+    window.removeEventListener('updateItem', this.#update)
     window.removeEventListener('imageshift', this.shiftItemHandler)
   }
 
-  #update() {
+  #update(event) {
     const item = store.state.viewports[this.dataset.index]
-    const collection = item.collection
-    const year = collection.match(/\d{4}/g)[0]
-    const orientation = item.orientation
+    // If there is no event (meaning this is the first time loading)changed item is the same as related state item, go through with the update
+    if (event.detail.id === item.item.id) {
+      this.#fetchIds(item)
+    }
+  }
+
+  #fetchIds(item) {
     const center = store.state.marker.center
-    
-    queryItems(center, orientation, `skraafotos${ year }`, 50).then((response) => {
-      this.items = response.features
-      this.#selectElement.innerHTML = this.#renderOptions()
-      this.#selectElement.value = item.itemId
+    queryItems(center, item.orientation, item.collection, 50).then((response) => {
+      this.#selectElement.innerHTML = this.#renderOptions(response.features)
+      this.#selectElement.value = store.state.viewports[this.dataset.index].itemId  
     })
   }
 
@@ -166,9 +168,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
         <div class="ds-button-group">
           <button class="button-down ds-icon-icon-arrow-single-down"></button>
           <hr>
-          <select class="sf-date-viewer" id="date">
-            ${ this.#renderOptions() }
-          </select>
+          <select class="sf-date-viewer" id="date"></select>
           <hr>
           <button class=" button-up ds-icon-icon-arrow-single-up"></button>
         </div>
@@ -176,8 +176,9 @@ export class SkraaFotoDateViewer extends HTMLElement {
     `
   }
 
-  #renderOptions() {
-    return this.items.map((i) => {
+  #renderOptions(features) {
+    let templateString = ''
+    features.map((i) => {
       const datetime = new Date(i.properties.datetime)
       const options = {
         day: '2-digit',
@@ -187,12 +188,13 @@ export class SkraaFotoDateViewer extends HTMLElement {
         minute: '2-digit',
       }
       const europeanDatetime = datetime.toLocaleString('en-GB', options)
-      return `
-      <option value="${i.id}">
-        ${europeanDatetime}
-      </option>
-    `
+      templateString += `
+        <option value="${i.id}">
+          ${europeanDatetime}
+        </option>
+      `
     })
+    return templateString
   }
 
   shiftItemHandler(event) {
