@@ -143,21 +143,18 @@ export class SkraaFotoDateViewer extends HTMLElement {
     window.removeEventListener('imageshift', this.shiftItemHandler)
   }
 
-  async #update() {
+  #update() {
     const item = store.state.viewports[this.dataset.index]
     const collection = item.collection
     const year = collection.match(/\d{4}/g)[0]
     const orientation = item.orientation
     const center = store.state.marker.center
-    if (year && orientation && center) {
-      const response = await queryItems(center, orientation, `skraafotos${ year }`, 50)
+    
+    queryItems(center, orientation, `skraafotos${ year }`, 50).then((response) => {
       this.items = response.features
-    } else {
-      console.error('Not enough state information to fetch items. Missing either "year", "orientation", or "center".')
-      return
-    }
-    this.#selectElement.innerHTML = this.#renderOptions()
-    this.#selectElement.value = item.itemId
+      this.#selectElement.innerHTML = this.#renderOptions()
+      this.#selectElement.value = item.itemId
+    })
   }
 
   #renderTemplate() {
