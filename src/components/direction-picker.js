@@ -239,7 +239,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
     })
-    this[`${ store.state['viewport-1'].orientation }_element`].parentNode.classList.add('active')
+    this[`${ store.state.viewports[0].orientation }_element`].parentNode.classList.add('active')
   }
 
   // Lifecycle
@@ -261,7 +261,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
         store.dispatch('updateMapVisibility', false)
-        store.dispatch('updateItem', {id: 'viewport-1', item: target_item})
+        store.dispatch('updateItem', {index: 0, item: target_item})
       })
     })
 

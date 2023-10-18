@@ -3,8 +3,8 @@ import store from '../store'
 
 /**
  * Web component that enables the user to select from a list of available years.
- * Looks up `store.state[this.dataset.viewportId].collection` on connectedCallback to get available years.
- * @prop {string} dataset.viewportId - `data-viewport-id` attribute used to look up state by viewport ID.
+ * Looks up `store.state.viewports[this.dataset.index].collection` on connectedCallback to get available years.
+ * @prop {string} dataset.index - `data-index` attribute used to look up state by viewport index.
  * @fires updateCollection - New collection (`skraafotos` + year) selected by user.
  */
 export class SkraaFotoYearSelector extends HTMLElement {
@@ -98,19 +98,19 @@ export class SkraaFotoYearSelector extends HTMLElement {
     }
     
     // Setup select element value from state
-    this.#selectElement.value = getYearFromCollection(store.state[this.dataset.viewportId].collection)
+    this.#selectElement.value = getYearFromCollection(store.state.viewports[this.dataset.index].collection)
   }
 
   selectionChangeHandler(event) {
     store.dispatch('updateCollection', {
-      id: this.dataset.viewportId, 
+      index: this.dataset.index, 
       collection: `skraafotos${event.target.value}`
     })
   }
 
   collectionUpdatedHandler(event) {
     // Only update if the right viewport state was updated
-    if (event.detail.id === this.dataset.viewportId) {
+    if (event.detail.index === this.dataset.index) {
       this.#selectElement.value = getYearFromCollection(event.detail.collection)
     }
   }

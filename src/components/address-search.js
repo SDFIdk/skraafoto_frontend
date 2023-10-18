@@ -177,8 +177,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       // On a new address input, update store
       this.addEventListener('gsearch:select', function(event) {
         const center = getGSearchCenterPoint(event.detail)
-        const orientation = store.state['viewport-1'].orientation
-        const collection = store.state['viewport-1'].collection
+        const orientation = store.state.viewports[0].orientation
+        const collection = store.state.viewports[0].collection
         this.searchItemsInCollection({
           collection: collection,
           center: center,
@@ -194,10 +194,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         if (response.features.length > 0) {
           store.state.view.center = center;
           store.state.marker.center = center;
-          store.dispatch('updateMultipleItems', { 
-            'viewport-1': response.features[0],
-            'viewport-2': response.features[0]
-          })
+          store.dispatch('updateMultipleItems', [
+            response.features[0], 
+            response.features[0]
+          ])
           store.dispatch('updateCollection', { id: 'viewport-1', collection: response.features[0].collection });
           return;
         } else {

@@ -1,13 +1,10 @@
 import { queryItems } from '../modules/api.js'
-import { configuration } from '../modules/configuration.js'
-import { getParam, setParams } from '../modules/url-state.js'
 import store from '../store'
 
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
  * Enables user to select an item for view by its date.
- * @prop {string} dataset.viewportId - `data-viewport-id` attribute used to look up state by viewport ID.
- * @listens state.items[viewportId] - The currently chosen item for the corresponding viewport.
+ * @prop {string} dataset.index - `data-index` attribute used to look up state by viewport index.
  * @fires updateItemId - New item ID selected by user.
  */
 export class SkraaFotoDateViewer extends HTMLElement {
@@ -124,7 +121,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
 
     // Add global listener for state changes
-    window.addEventListener(this.dataset.viewportId, this.#update.bind(this))
+    window.addEventListener('updateItem', this.#update.bind(this))
 
     // Add event listener to the document for arrow key navigation
     window.addEventListener('imageshift', this.shiftItemHandler.bind(this))
@@ -132,7 +129,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     // When an option is selected, update the store with the new item
     this.#selectElement.addEventListener('change', (event) => {
       store.dispatch('updateItemId', {
-        id: this.dataset.viewportId,
+        index: this.dataset.index,
         itemId: event.target.value
       })
       this.#selectElement.blur() // Remove focus from the select element
@@ -147,7 +144,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
   }
 
   async #update() {
-    const item = store.state[this.dataset.viewportId]
+    const item = store.state.viewports[this.dataset.index]
     const collection = item.collection
     const year = collection.match(/\d{4}/g)[0]
     const orientation = item.orientation
