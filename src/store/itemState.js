@@ -88,25 +88,28 @@ const itemActions = {
     return state
   },
 
-  updateOrientation: function(state, orientation) {
-    state.viewports.forEach(async (viewport) => {
-
+  updateOrientation: async function(state, orientation) {
+    
+    await state.viewports.forEach(async (viewport) => {
+      
       let newItem
+
       if (!viewport.items[orientation] || viewport.items[orientation].collection !== viewport.collection) {
         const featureCollection = await queryItems(state.marker.center, orientation, viewport.collection)
         newItem = featureCollection.features[0]
-        viewport.items[orientation] = newItem
+        viewport.items[orientation] = featureCollection.features[0]
       } else {
         newItem = viewport.items[orientation]
       }
-
+      
       viewport.item = newItem
       viewport.itemId = newItem.id
       viewport.orientation = newItem.properties.direction
       viewport.collection = newItem.collection
+      
     })
     window.dispatchEvent(new CustomEvent('updateItem'))
-    return state
+    return state  
   }
 
 }

@@ -30,8 +30,8 @@ function shiftItemTime(viewportIndex, direction) {
 }
 
 function keyDownHandler(event) {
-
   if (event.shiftKey) {
+    event.preventDefault()
     if (event.key === 'ArrowDown') {
       shiftItemTime(0, -1)
     } else if (event.key === 'ArrowUp') {

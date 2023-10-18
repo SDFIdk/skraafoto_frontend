@@ -198,7 +198,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
             response.features[0], 
             response.features[0]
           ])
-          store.dispatch('updateCollection', { id: 'viewport-1', collection: response.features[0].collection });
+          store.dispatch('updateCollection', { index: 0, collection: response.features[0].collection });
           return;
         } else {
           const collections = store.state.collections;
