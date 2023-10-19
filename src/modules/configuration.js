@@ -33,7 +33,7 @@ let configuration = {
   DEFAULT_ZOOM: 4, // the default zoom level for main view skraafoto.
   MINI_ZOOM_DIFFERENCE: 2, // how much further the small overviews should be zoomed out compared to the main view.
   MAX_ZOOM: 10, // the maximum zoom for skraafotos.
-  MIN_ZOOM: 0, // the minimum zoom for skraafotos.
+  MIN_ZOOM: 1, // the minimum zoom for skraafotos.
 
   SITEIMPROVE_SCRIPT: '',
   DOWNLOAD_TYPE: 'currentview', // 'default' | 'currentview'
