@@ -94,8 +94,8 @@ export default {
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
-  //webServer: {
-  //  command: 'npm run dev',
-  //  port: 8000,
-  //}
+  webServer: {
+    command: 'npm run dev',
+    port: 8000,
+  }
 }
