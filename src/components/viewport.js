@@ -98,7 +98,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     skraafoto-compass-arrows {
       top: 0.5rem;
-      right: 3rem;
+      right: 1rem;
     }
     .image-date {
       position: absolute;
@@ -164,7 +164,6 @@ export class SkraaFotoViewport extends HTMLElement {
       z-index: 2;
       top: .5rem;
       left: .5rem;
-      padding: 1rem;
     }
     .ds-button-group {
       min-width: 10rem;
@@ -206,8 +205,13 @@ export class SkraaFotoViewport extends HTMLElement {
 
     @media screen and (max-width: 35rem) {
       .ol-full-screen {
-        top: 0.5rem;
-        right: 1rem;
+        top: auto;
+        bottom: 1.6rem;
+        right: 2rem;
+      }
+      
+      .ol-zoom {
+        display: none;
       }
 
       skraafoto-compass {
@@ -215,8 +219,9 @@ export class SkraaFotoViewport extends HTMLElement {
         right: 1.5rem;
       }
       skraafoto-compass-arrows {
-        top: 5.5rem;
-        right: 2.5rem;
+        top: auto;
+        bottom: 6.5rem;
+        right: 1.5rem;
       }
       .image-date {
         bottom: 0.5rem;
