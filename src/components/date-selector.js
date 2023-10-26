@@ -182,10 +182,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
         index: this.dataset.index,
         collection: item.collection
       })
-      // store.dispatch('updateCollection', {
-      //   id: this.dataset.viewportId,
-      //   collection: item.collection
-      // })
     } else {
       store.dispatch('updateItem', {
         index: this.dataset.index,
