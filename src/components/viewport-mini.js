@@ -180,16 +180,22 @@ export class SkraaFotoViewportMini extends HTMLElement {
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
   async update_marker_function(event) {
     const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+
     if (isOutOfBounds(this.item.properties['proj:shape'], newMarkerCoords.imageCoord)) {
       // If the marker is outside the image, load a new image item
-      await this.update_collection_function()
+      this.update_item(this.item.collection)
     }
+
     updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
   }
 
   /** Handler to update the image when the collection state is updated */
-  async update_collection_function(event) {
-    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, event.detail.collection, 1)
+  update_collection_function(event) {
+    this.update_item(event.detail.collection)
+  }
+
+  async update_item(collection) {
+    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, collection, 1)
     this.item = featureCollection.features[0]
     store.state.viewports[0].items[this.dataset.orientation] = featureCollection.features[0]
     this.update()
