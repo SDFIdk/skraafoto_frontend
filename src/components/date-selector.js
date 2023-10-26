@@ -86,7 +86,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   update() {
-    
+
     const center = store.state.view.center
     const orientation = store.state.viewports[this.dataset.index].orientation
     if (orientation && center) {
@@ -175,23 +175,27 @@ export class SkraaFotoDateSelector extends HTMLElement {
     if (store.state.viewports[this.dataset.index].item.collection !== item.collection) {
       // Make sure item is updated before collection
       store.dispatch('updateItem', {
-        id: this.dataset.viewportId,
+        index: this.dataset.index,
         item: item
       })
       store.dispatch('updateCollection', {
-        id: this.dataset.viewportId,
+        index: this.dataset.index,
         collection: item.collection
       })
+      // store.dispatch('updateCollection', {
+      //   id: this.dataset.viewportId,
+      //   collection: item.collection
+      // })
     } else {
       store.dispatch('updateItem', {
-        id: this.dataset.viewportId,
+        index: this.dataset.index,
         item: item
       })
     }
   }
 
   connectedCallback() {
-    
+
     this.createDOM()
     this.update()
 
@@ -228,5 +232,5 @@ export class SkraaFotoDateSelector extends HTMLElement {
     window.removeEventListener(this.dataset.viewportId, this.update)
     window.removeEventListener('imageshift', this.shiftItemHandler)
   }
-  
+
 }
