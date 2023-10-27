@@ -42,6 +42,7 @@ if (configuration.ENABLE_EXPOSURE) {
  * @listens updateView - Updates image focus and zoom on `updateView` events from state
  * @listens updateMarker - Updates crosshair position on `updateMarker` events from state
  * @listens updateItem - Changes the image on `updateItem` events from state
+ * @listens updatePointer - Change display coordinate of a pointer when a user hovers the mouse over a different viewport.
  * @fires SkraaFotoViewport#modechange
  */
 
@@ -481,11 +482,13 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  // TODO: Is this method in use?
   // Public method
   toMapZoom(zoom) {
     return zoom
   }
 
+  // TODO: Is this method in use?
   // Public method
   toImageZoom(zoom) {
     return zoom
@@ -537,15 +540,6 @@ export class SkraaFotoViewport extends HTMLElement {
       }
     })
 
-    // When changing the image, reset mode
-    document.addEventListener('gsearch:select', () => {
-      this.toggleMode('center')
-    })
-
-    window.addEventListener('urlupdate', () => {
-      this.toggleMode('center')
-    })
-
     // When user moves the pointer, update all other viewports
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -561,7 +555,9 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   disconnectedCallback() {
-    window.removeEventListener('updatePointer', this.update_pointer_function)
+    if (configuration.ENABLE_POINTER) {
+      window.removeEventListener('updatePointer', this.update_pointer_function)
+    }
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener('updateMarker', this.update_marker_function)
     window.removeEventListener('updateItem', this.update_viewport_function)
