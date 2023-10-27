@@ -36,13 +36,24 @@ if (configuration.ENABLE_EXPOSURE) {
 
 
 /**
- * Web component that displays an image using the OpenLayers library
+ * HTML web component that displays an image using the OpenLayers library. 
+ * This is the main component of the Skraafoto application.
+ * It provides methods, event listeners, and UI tools for handling interactions with the image.
  * @listens updateView - Updates image focus and zoom on `updateView` events from state
  * @listens updateMarker - Updates crosshair position on `updateMarker` events from state
  * @listens updateItem - Changes the image on `updateItem` events from state
+ * @fires SkraaFotoViewport#modechange
  */
 
 export class SkraaFotoViewport extends HTMLElement {
+
+  /**
+   * Event dispatched when the mode of the viewport changes.
+   *
+   * @event SkraaFotoViewport#modechange
+   * @type {CustomEvent}
+   * @property {string} detail - The new mode of the viewport (default: 'center').
+   */
 
   // properties
   item
@@ -315,7 +326,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  /** Creates a map object and adds interactions, image data, etc. to it */
+  /** Creates an OpenLayers map object and adds interactions, image data, etc. to it */
   async createMap() {
     // Initialize a map
     this.map = new OlMap({
@@ -410,12 +421,14 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  /** Proxy method that calculates new center values from store before updating them. */
   async updateCenterProxy() {
     const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
     this.coord_world = newMarkerCoords.worldCoord
     this.coord_image = newMarkerCoords.imageCoord
   }
 
+  /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
   toggleMode(mode, button_element) {
     this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
       btn.classList.remove('active')
@@ -436,6 +449,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.dispatchEvent(this.modechange)
   }
 
+  /** Toggles the visibility of the loading spinner. */
   toggleSpinner(bool) {
     const canvasElement = this.shadowRoot.querySelector('.ol-viewport canvas')
     const boundsElements = this.shadowRoot.querySelectorAll('.out-of-bounds')
