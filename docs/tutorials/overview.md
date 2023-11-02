@@ -1,6 +1,6 @@
 # System overview
 
-`skraafoto_frontend` **(Skraafoto)** is an application that lets users browse **askew arial photographs (skråfotos)** in a web browser.
+`skraafoto_frontend` **(Skraafoto)** is an application that lets users browse **oblique arial photographs (skråfotos)** in a web browser.
 This section provides an overview of Skraafoto and its internal architecture.
 
 ## Services related to Skraafoto
@@ -54,7 +54,7 @@ You can add more views simply by adding a HTML file and linking to it from some 
 <em>Example:</em> The "skråfoto twinview" view is `public/twinview.html`. 
 This corresponds to "skraafoto.dataforsyningen.dk/twinview.html` in the browser.
 
-Each view imports some tailored Javascript and common style sheets (CSS).
+Each view imports some tailored Javascript and common CSS.
 
 ### View Javascripts
 
