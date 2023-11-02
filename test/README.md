@@ -1,4 +1,6 @@
-# Notes for manual testing
+# Testing
+
+This folder contains test scripts for unit tests and E2E tests.
 
 ## User scenarios for manual testing
 

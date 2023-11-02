@@ -36,13 +36,25 @@ if (configuration.ENABLE_EXPOSURE) {
 
 
 /**
- * Web component that displays an image using the OpenLayers library
+ * HTML web component that displays an image using the OpenLayers library. 
+ * This is the main component of the Skraafoto application.
+ * It provides methods, event listeners, and UI tools for handling interactions with the image.
  * @listens updateView - Updates image focus and zoom on `updateView` events from state
  * @listens updateMarker - Updates crosshair position on `updateMarker` events from state
  * @listens updateItem - Changes the image on `updateItem` events from state
+ * @listens updatePointer - Change display coordinate of a pointer when a user hovers the mouse over a different viewport.
+ * @fires SkraaFotoViewport#modechange
  */
 
 export class SkraaFotoViewport extends HTMLElement {
+
+  /**
+   * Event dispatched when the mode of the viewport changes.
+   *
+   * @event SkraaFotoViewport#modechange
+   * @type {CustomEvent}
+   * @property {string} detail - The new mode of the viewport (default: 'center').
+   */
 
   // properties
   item
@@ -315,7 +327,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  /** Creates a map object and adds interactions, image data, etc. to it */
+  /** Creates an OpenLayers map object and adds interactions, image data, etc. to it */
   async createMap() {
     // Initialize a map
     this.map = new OlMap({
@@ -410,12 +422,14 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  /** Proxy method that calculates new center values from store before updating them. */
   async updateCenterProxy() {
     const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
     this.coord_world = newMarkerCoords.worldCoord
     this.coord_image = newMarkerCoords.imageCoord
   }
 
+  /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
   toggleMode(mode, button_element) {
     this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
       btn.classList.remove('active')
@@ -436,6 +450,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.dispatchEvent(this.modechange)
   }
 
+  /** Toggles the visibility of the loading spinner. */
   toggleSpinner(bool) {
     const canvasElement = this.shadowRoot.querySelector('.ol-viewport canvas')
     const boundsElements = this.shadowRoot.querySelectorAll('.out-of-bounds')
@@ -467,11 +482,13 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  // TODO: Is this method in use?
   // Public method
   toMapZoom(zoom) {
     return zoom
   }
 
+  // TODO: Is this method in use?
   // Public method
   toImageZoom(zoom) {
     return zoom
@@ -523,15 +540,6 @@ export class SkraaFotoViewport extends HTMLElement {
       }
     })
 
-    // When changing the image, reset mode
-    document.addEventListener('gsearch:select', () => {
-      this.toggleMode('center')
-    })
-
-    window.addEventListener('urlupdate', () => {
-      this.toggleMode('center')
-    })
-
     // When user moves the pointer, update all other viewports
     if (configuration.ENABLE_POINTER) {
       addPointerLayerToViewport(this)
@@ -547,7 +555,9 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   disconnectedCallback() {
-    window.removeEventListener('updatePointer', this.update_pointer_function)
+    if (configuration.ENABLE_POINTER) {
+      window.removeEventListener('updatePointer', this.update_pointer_function)
+    }
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener('updateMarker', this.update_marker_function)
     window.removeEventListener('updateItem', this.update_viewport_function)
