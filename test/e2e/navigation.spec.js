@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/', { waitUntil: 'networkidle' })
-  await page.locator('css=.btn-welcome-close').getByText('Forstået').click()
+  await page.goto('/')
+  await page.evaluate(() => {
+    localStorage.setItem('skraafoto-virgin', false)
+  })
+  await page.goto('/')
 })
 
 test('Navigate to help page', async ({ page }) => {
