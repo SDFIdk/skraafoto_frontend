@@ -32,7 +32,9 @@ function shiftItemTime(viewportIndex, direction) {
 }
 
 function keyDownHandler(event) {
-  if (event.shiftKey) {
+  // Hijack arrow keys when holding down Shift and not being in an input field. 
+  // Kinda hacky. Could probably be better
+  if (event.shiftKey && event.target.tagName !== 'INPUT') {
     event.preventDefault()
     if (event.key === 'ArrowDown') {
       shiftItemTime(0, -1)

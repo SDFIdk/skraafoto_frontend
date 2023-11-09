@@ -70,7 +70,7 @@ export class SkraaFotoHeader extends HTMLElement {
       width: 12rem;
     }
     
-    @media screen and (max-width: 576px) {
+    @media screen and (max-width: 79.9rem) {
       .sf-header {
         --padding: 1.5rem 3rem 2rem;
       }
@@ -78,7 +78,7 @@ export class SkraaFotoHeader extends HTMLElement {
         width: 100vw;
       }
       skraafoto-view-switcher {
-      display: none;
+        display: none;
       }
     }
   `

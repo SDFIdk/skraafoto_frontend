@@ -411,6 +411,7 @@ export class SkraaFotoViewport extends HTMLElement {
       center: this.coord_image
     })
     updateMapCenterIcon(this.map, this.coord_image)
+    this.updateNonMap(this.item)
     if (isOutOfBounds(this.item.properties['proj:shape'], this.coord_image)) {
       // If the marker is outside the image, load a new image item
       queryItems(this.coord_world, this.item.properties.direction, this.item.collection).then((featureCollection) => {

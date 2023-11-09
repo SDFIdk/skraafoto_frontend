@@ -164,26 +164,26 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     <section class="sf-slider-content">
       <button class="sf-slider-close ds-icon-icon-close contrast" title="Luk"></button>
       <div class="sf-slider-grid">
-        <button class="sf-map-picker-btn sf-btn-map">
+        <button class="sf-map-picker-btn sf-btn-map" title="Skift til kortvisning">
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
         </button>
-        <button class="sf-direction-picker-btn sf-btn-nadir">
+        <button class="sf-direction-picker-btn sf-btn-nadir" title="Vis fra top">
           <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option" data-orientation="nadir">
           </skraafoto-viewport-mini>
         </button>
-        <button class="sf-direction-picker-btn sf-btn-north">
+        <button class="sf-direction-picker-btn sf-btn-north" title="Vis mod nord">
           <skraafoto-viewport-mini id="viewport-north" class="viewport-pick-option" data-orientation="north">
           </skraafoto-viewport-mini>
         </button>
-        <button class="sf-direction-picker-btn sf-btn-east">
+        <button class="sf-direction-picker-btn sf-btn-east" title="Vis mod øst">
           <skraafoto-viewport-mini id="viewport-east" class="viewport-pick-option" data-orientation="east">
           </skraafoto-viewport-mini>
         </button>
-        <button class="sf-direction-picker-btn sf-btn-south">
+        <button class="sf-direction-picker-btn sf-btn-south" title="Vis mod syd">
           <skraafoto-viewport-mini id="viewport-south" class="viewport-pick-option" data-orientation="south">
           </skraafoto-viewport-mini>
         </button>
-        <button class="sf-direction-picker-btn sf-btn-west">
+        <button class="sf-direction-picker-btn sf-btn-west" title="Vis mod vest">
           <skraafoto-viewport-mini id="viewport-west" class="viewport-pick-option" data-orientation="west">
           </skraafoto-viewport-mini>
         </button>
