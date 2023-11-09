@@ -29,3 +29,8 @@ test('Load viewer with item only', async ({ page }) => {
   await page.goto('/?item=2023_83_29_5_0025_00002157', { waitUntil: 'networkidle' })
   await expect(page.locator('css=#viewport-1')).toContainText('Billede af området omkring koordinat 535071 Ø, 6173520 N set fra vest.')
 })
+
+test('Load viewer with center, orientation, and year', async ({ page }) => {
+  await page.goto('/?orientation=south&center=548609%2C6084695&year=2019', { waitUntil: 'networkidle' })
+  await expect(page.locator('css=#viewport-1')).toContainText('koordinat 548609 Ø, 6084695 N set fra syd.')
+})
