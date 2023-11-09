@@ -51,8 +51,9 @@ function isDatafordelerDown() {
   .catch(function(error) {
     const alertDialog = document.createElement('dialog')
     alertDialog.id = 'datafordeler-down-dialog'
+    alertDialog.style = 'margin: auto auto; padding: var(--space) var(--space) var(--space-lg) var(--space-lg);'
     alertDialog.innerHTML = `
-      <header>
+      <header style="margin-bottom: var(--space-sm);git">
         <h3 tabindex="0">Skråfoto kan ikke benyttes i øjeblikket</h3>
         <button aria-controls="datafordeler-down-dialog" class="ds-icon-icon-close secondary" title="Luk dialogboks">
         </button>
