@@ -61,89 +61,46 @@ async function sanitizeParams(searchparams) {
       })
     collections = await getCollections()
 
-    if (configuration.ENABLE_CUSTOM_PARAMETER) {
-      const desiredYearParam = params.get('year')
-      const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0
+    const desiredYearParam = params.get('year')
+    const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0
 
-      // Assign a default value of '2019' if '2023' is present
-      const defaultYear = '2019'
-      const yearToUse = params.get('year') === '2023' ? defaultYear : params.get('year')
+    let yearToUse = desiredYearParam ? desiredYearParam : '2019' // Default to 2019 if no year parameter is provided
 
-      let matchingCollection
-
-      if (yearToUse) {
-        matchingCollection = collections.find(function (collection) {
-          // Extract the year parameter from the collection's ID
-          const yearPart = extractYearFromCollectionID(collection.id)
-          // Check if the year meets your conditions (modify as per your requirements)
-          return yearPart === yearToUse
-        })
-      }
-
-      if (!matchingCollection) {
-        // If no matching collection is found, find the most recent year
-        let maxYear = 0
-        collections.forEach(function (collection) {
-          const yearPart = extractYearFromCollectionID(collection.id)
-          const year = Number(yearPart)
-          if (year > maxYear) {
-            maxYear = year
-            matchingCollection = collection
-          }
-        })
-      }
-      if (matchingCollection) {
-        const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections)
-        if (response.features[0]) {
-          params.set('item', response.features[0].id)
-        } else {
-          alert('Der var ingen billeder for det valgte koordinat.')
-        }
-      } else {
-        alert('No matching collection found.')
-        return
-      }
-      return params
-      } else {
-      const desiredYearParam = params.get('year');
-      const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0;
-      // Assign a default value of 0 if desiredYearParam is null
-      let matchingCollection;
-      if (desiredYear) {
-        matchingCollection = collections.find(function (collection) {
-          // Extract the year parameter from the collection's ID
-          const yearPart = extractYearFromCollectionID(collection.id);
-          // Convert the year part to a number for comparison
-          const year = Number(yearPart);
-          // Check if the year meets your conditions (modify as per your requirements)
-          return year === desiredYear;
-        });
-      }
-      if (!matchingCollection) {
-        // If no matching collection is found, find the most recent year
-        let maxYear = 0;
-        collections.forEach(function (collection) {
-          const yearPart = extractYearFromCollectionID(collection.id);
-          const year = Number(yearPart);
-          if (year > maxYear) {
-            maxYear = year;
-            matchingCollection = collection;
-          }
-        });
-      }
-      if (matchingCollection) {
-        const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections)
-        if (response.features[0]) {
-          params.set('item', response.features[0].id);
-        } else {
-          alert('Der var ingen billeder for det valgte koordinat.');
-        }
-      } else {
-        alert('No matching collection found.');
-        return;
-      }
-      return params;
+    if (yearToUse !== '2019') {
+      yearToUse = collections.some(collection => extractYearFromCollectionID(collection.id) === yearToUse)
+        ? yearToUse
+        : '2019' // If the desired year is not found in collections, default to 2019
     }
+
+    if (desiredYearParam === '2023') {
+      yearToUse = '2019' // Explicitly switch '2023' to '2019'
+    }
+
+    if (configuration.ENABLE_CUSTOM_PARAMETER) {
+      if (yearToUse) {
+        const matchingCollection = collections
+          .filter(collection => extractYearFromCollectionID(collection.id) === yearToUse)
+          .sort((a, b) => {
+            const yearA = Number(extractYearFromCollectionID(a.id))
+            const yearB = Number(extractYearFromCollectionID(b.id))
+            return yearB - yearA
+          })[0]
+
+        if (matchingCollection) {
+          const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections);
+          if (response.features[0]) {
+            params.set('item', response.features[0].id)
+          } else {
+            alert('No images found for the selected coordinates.')
+          }
+        } else {
+          alert('No matching collection found.')
+          return
+        }
+      }
+    }
+
+    return params
   }
 
 
