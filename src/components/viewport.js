@@ -3,6 +3,7 @@ import { defaults as defaultControls } from 'ol/control'
 import FullScreen from 'ol/control/FullScreen'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import Collection from 'ol/Collection'
+import { getZ, image2world } from '@dataforsyningen/saul'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from './map-tool-crosshair.js'
 import { SkraaFotoDownloadTool } from './map-tool-download.js'
@@ -13,7 +14,7 @@ import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../
 import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footprint.js'
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
-import { getViewSyncViewportListener, addViewSyncViewportTrigger } from '../modules/sync-view'
+import { getViewSyncViewportListener } from '../modules/sync-view'
 import {
   updateMapView,
   updateMapImage,
@@ -387,47 +388,47 @@ export class SkraaFotoViewport extends HTMLElement {
 
   /** Handler to update the relevant parts of the image map when an item is updated */
   async update_viewport_function() {
+    console.log('updating viewport, v, m', store.state.view.center, store.state.marker.center)
     this.toggleMode('center')
     this.item = store.state.viewports[this.dataset.index].item
-    await this.updateCenterProxy()
+    // Recalculates this.coord_world and this.coord_image
+    const newViewCoords = await updateCenter(store.state.view.center, this.item, store.state.view.kote)
+    const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+    // Loads a new image layer in map
     updateMapImage(this.map, this.item)
+    // Updates the map's view (magic!)
     await updateMapView({
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      center: this.coord_image
+      center: newViewCoords.imageCoord
     })
-    updateMapCenterIcon(this.map, this.coord_image)
+    updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
     this.updateNonMap()
   }
 
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
   async update_marker_function(event) {
-    await this.updateCenterProxy()
+    const newCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+    newCoords.worldCoord
+    newCoords.imageCoord
     await updateMapView({
       map: this.map,
       item: this.item,
       zoom: store.state.view.zoom,
-      center: this.coord_image
+      center: newCoords.imageCoord
     })
-    updateMapCenterIcon(this.map, this.coord_image)
+    updateMapCenterIcon(this.map, newCoords.imageCoord)
     this.updateNonMap(this.item)
-    if (isOutOfBounds(this.item.properties['proj:shape'], this.coord_image)) {
+    if (isOutOfBounds(this.item.properties['proj:shape'], newCoords.imageCoord)) {
       // If the marker is outside the image, load a new image item
-      queryItems(this.coord_world, this.item.properties.direction, this.item.collection).then((featureCollection) => {
+      queryItems(newCoords.worldCoord, this.item.properties.direction, this.item.collection).then((featureCollection) => {
         store.dispatch('updateItem', {
           index: this.dataset.index,
           item: featureCollection.features[0]
         })
       })
     }
-  }
-
-  /** Proxy method that calculates new center values from store before updating them. */
-  async updateCenterProxy() {
-    const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
-    this.coord_world = newMarkerCoords.worldCoord
-    this.coord_image = newMarkerCoords.imageCoord
   }
 
   /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
@@ -483,6 +484,41 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+  /**
+   * Triggers view sync in the viewport.
+   */
+  viewSyncViewportHandler() {
+    if (!this.sync) {
+      this.sync = true
+      return
+    }
+    this.self_sync = false
+    const view = this.map.getView()
+    const center = view.getCenter()
+    const world_zoom = this.toImageZoom(view.getZoom())
+    /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
+    * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
+    * vary. If there are big differences in elevation between the selected center and the zoom center this
+    * could lead to some big inaccuracies when calculating the zoom center.
+    */
+    if (!this.coord_world) {
+      console.log('no coord_world')
+      return
+    }
+    const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
+    getZ(world_center[0], world_center[1], configuration).then(z => {
+      store.state.marker = {
+        center: store.state.marker.center,
+        kote: z
+      }
+      store.dispatch('updateView', {
+        center: world_center,
+        kote: z,
+        zoom: world_zoom
+      })
+    })
+  }
+
   // TODO: Is this method in use?
   // Public method
   toMapZoom(zoom) {
@@ -512,8 +548,8 @@ export class SkraaFotoViewport extends HTMLElement {
 
     // Listeners
 
-    // Add viewport sync trigger (?)
-    addViewSyncViewportTrigger(this)
+    // Viewport sync trigger
+    this.map.on('moveend', this.viewSyncViewportHandler.bind(this))
 
     // When map has finished loading, remove spinner, etc.
     this.map.on('rendercomplete', () => {
