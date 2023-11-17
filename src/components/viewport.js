@@ -388,7 +388,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   /** Handler to update the relevant parts of the image map when an item is updated */
   async update_viewport_function() {
-    console.log('updating viewport, v, m', store.state.view.center, store.state.marker.center)
     this.toggleMode('center')
     this.item = store.state.viewports[this.dataset.index].item
     // Recalculates this.coord_world and this.coord_image
@@ -502,7 +501,6 @@ export class SkraaFotoViewport extends HTMLElement {
     * could lead to some big inaccuracies when calculating the zoom center.
     */
     if (!this.coord_world) {
-      console.log('no coord_world')
       return
     }
     const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
