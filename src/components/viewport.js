@@ -37,7 +37,7 @@ if (configuration.ENABLE_EXPOSURE) {
 
 
 /**
- * HTML web component that displays an image using the OpenLayers library. 
+ * HTML web component that displays an image using the OpenLayers library.
  * This is the main component of the Skraafoto application.
  * It provides methods, event listeners, and UI tools for handling interactions with the image.
  * @listens updateView - Updates image focus and zoom on `updateView` events from state
@@ -220,7 +220,6 @@ export class SkraaFotoViewport extends HTMLElement {
       .ol-full-screen {
         top: auto;
         bottom: 1.6rem;
-        right: 2rem;
       }
       
       .ol-zoom {
@@ -234,7 +233,6 @@ export class SkraaFotoViewport extends HTMLElement {
       skraafoto-compass-arrows {
         top: auto;
         bottom: 6.5rem;
-        right: 1.5rem;
       }
       .image-date {
         bottom: 0.5rem;
