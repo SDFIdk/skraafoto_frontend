@@ -2,46 +2,9 @@
  * @module
  */
 
-import { getZ, image2world, getImageXY } from '@dataforsyningen/saul'
+import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { configuration } from './configuration'
 import store from '../store'
-
-/**
- * Adds a view sync trigger to the viewport.
- * @param {*} viewport The viewport.
- */
-function addViewSyncViewportTrigger(viewport) {
-  viewport.map.on('moveend', () => {
-    if (!viewport.sync) {
-      viewport.sync = true
-      return
-    }
-    viewport.self_sync = false
-    const view = viewport.map.getView()
-    const center = view.getCenter()
-    const world_zoom = viewport.toImageZoom(view.getZoom())
-    /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
-    * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
-    * vary. If there are big differences in elevation between the selected center and the zoom center this
-    * could lead to some big inaccuracies when calculating the zoom center.
-    */
-    if (!viewport.coord_world) {
-      return
-    }
-    const world_center = image2world(viewport.item, center[0], center[1], viewport.coord_world[2])
-    getZ(world_center[0], world_center[1], configuration).then(z => {
-      store.state.marker = {
-        center: store.state.marker.center,
-        kote: z
-      }
-      store.dispatch('updateView', {
-        center: world_center,
-        kote: z,
-        zoom: world_zoom
-      })
-    })
-  })
-}
 
 /**
  * Gets a function for updating the viewport to be synchronized with other viewports.
@@ -135,7 +98,6 @@ function getViewSyncMapListener(viewport, map, always_sync = true) {
 }
 
 export {
-  addViewSyncViewportTrigger,
   getViewSyncViewportListener,
   addViewSyncMapTrigger,
   getViewSyncMapListener
