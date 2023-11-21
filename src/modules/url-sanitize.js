@@ -4,6 +4,7 @@
 
 import { queryItem, queryItems, getCollections } from './api.js'
 import { createTranslator } from '@dataforsyningen/saul'
+import { configuration } from "./configuration.js";
 
 async function getLatestImages(center, orientation, collection, collections) {
   const response = await queryItems(center, orientation, collection)
@@ -50,64 +51,66 @@ async function sanitizeParams(searchparams) {
 // If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {
-      params.set('orientation', 'north');
+      params.set('orientation', 'north')
     }
     const center = params
       .get('center')
       .split(',')
       .map(function (c) {
-        return Number(c);
+        return Number(c)
       })
     collections = await getCollections()
 
-    const desiredYearParam = params.get('year');
-    const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0;
-    // Assign a default value of 0 if desiredYearParam is null
+    const desiredYearParam = params.get('year')
+    const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0
 
-    let matchingCollection;
-    if (desiredYear) {
-      matchingCollection = collections.find(function (collection) {
-        // Extract the year parameter from the collection's ID
-        const yearPart = extractYearFromCollectionID(collection.id);
-        // Convert the year part to a number for comparison
-        const year = Number(yearPart);
+    let yearToUse = desiredYearParam ? desiredYearParam : '2019' // Default to 2019 if no year parameter is provided
 
-        // Check if the year meets your conditions (modify as per your requirements)
-        return year === desiredYear;
-      });
+    if (yearToUse !== '2019') {
+      yearToUse = collections.some(collection => extractYearFromCollectionID(collection.id) === yearToUse)
+        ? yearToUse
+        : '2019' // If the desired year is not found in collections, default to 2019
     }
 
-    if (!matchingCollection) {
-      // If no matching collection is found, find the most recent year
-      let maxYear = 0;
-      collections.forEach(function (collection) {
-        const yearPart = extractYearFromCollectionID(collection.id);
-        const year = Number(yearPart);
-        if (year > maxYear) {
-          maxYear = year;
-          matchingCollection = collection;
+    if (desiredYearParam === '2023') {
+      yearToUse = '2019' // Explicitly switch '2023' to '2019'
+    }
+
+    if (configuration.ENABLE_CUSTOM_PARAMETER) {
+      if (yearToUse) {
+        const matchingCollection = collections
+          .filter(collection => extractYearFromCollectionID(collection.id) === yearToUse)
+          .sort((a, b) => {
+            const yearA = Number(extractYearFromCollectionID(a.id))
+            const yearB = Number(extractYearFromCollectionID(b.id))
+            return yearB - yearA
+          })[0]
+
+        if (matchingCollection) {
+          const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections);
+          if (response.features[0]) {
+            params.set('item', response.features[0].id)
+          } else {
+            alert('No images found for the selected coordinates.')
+          }
+        } else {
+          alert('No matching collection found.')
+          return
         }
-      });
+      }
     }
 
-    if (matchingCollection) {
-      const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections)
-      if (response.features[0]) {
-        params.set('item', response.features[0].id);
-      } else {
-        alert('Der var ingen billeder for det valgte koordinat.');
-      }
-    } else {
-      alert('No matching collection found.');
-      return;
-    }
-    return params;
+    return params
   }
+
+
+
+
 
   function extractYearFromCollectionID(collectionID) {
     // Extract the year from the collection ID
-    const yearPart = collectionID.substring(collectionID.length - 4);
-    return yearPart;
+    const yearPart = collectionID.substring(collectionID.length - 4)
+    return yearPart
   }
 
   // If we only have item

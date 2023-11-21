@@ -18,7 +18,7 @@ import {
 import store from '../store'
 
 /**
- * Web component that displays an image using the OpenLayers library.
+ * HTML web component that displays an image using the OpenLayers library.
  * @listens updateView - Updates image focus and zoom on `updateView` events from state.
  * @listens updateMarker - Updates crosshair position on `updateMarker` events from state.
  * @listens updateCollection - Fetches an new image based whenever an `updateCollection` event occurs in state.
@@ -141,6 +141,10 @@ export class SkraaFotoViewportMini extends HTMLElement {
     }
   }
 
+  /**
+   * Creates a map object for the mini image map and sets up its controls and interactions.
+   * @returns {OlMap} The created OpenLayers map object.
+   */
   createMap() {
     return new OlMap({
       target: this.querySelector('.viewport-map'),
@@ -150,6 +154,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
     })
   }
 
+  /*
+   * Updates the mini image map, including its center, loading spinner, and other elements.
+   */
   async update() {
 
     this.toggleSpinner(true)
@@ -167,6 +174,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
     })
   }
 
+  /**
+   * Updates non-map elements, such as compass direction, date, and text content.
+   */
   updateNonMap() {
     if (!this.item) {
       return
@@ -180,21 +190,28 @@ export class SkraaFotoViewportMini extends HTMLElement {
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
   async update_marker_function(event) {
     const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+
     if (isOutOfBounds(this.item.properties['proj:shape'], newMarkerCoords.imageCoord)) {
       // If the marker is outside the image, load a new image item
-      await this.update_collection_function()
+      this.update_item(this.item.collection)
     }
+
     updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
   }
 
   /** Handler to update the image when the collection state is updated */
-  async update_collection_function(event) {
-    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, event.detail.collection, 1)
+  update_collection_function(event) {
+    this.update_item(event.detail.collection)
+  }
+
+  async update_item(collection) {
+    const featureCollection = await queryItems(store.state.marker.center, this.dataset.orientation, collection, 1)
     this.item = featureCollection.features[0]
     store.state.viewports[0].items[this.dataset.orientation] = featureCollection.features[0]
     this.update()
   }
 
+  /** Toggles the visibility of the loading spinner on the mini image map. */
   toggleSpinner(bool) {
     const boundsElements = this.querySelectorAll('.out-of-bounds')
     if (bool) {
@@ -219,11 +236,13 @@ export class SkraaFotoViewportMini extends HTMLElement {
     }
   }
 
+  // TODO: Is this method in use?
   // Public method
   toMapZoom(zoom) {
     return zoom + configuration.MINI_ZOOM_DIFFERENCE
   }
 
+  // TODO: Is this method in use?
   // Public method
   toImageZoom(zoom) {
     return zoom - configuration.MINI_ZOOM_DIFFERENCE
@@ -279,7 +298,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
   }
 
   disconnectedCallback() {
-    window.removeEventListener('updatePointer', this.update_pointer_function)
+    if (configuration.ENABLE_POINTER) {
+      window.removeEventListener('updatePointer', this.update_pointer_function)
+    }
     window.removeEventListener('updateView', this.update_view_function)
     window.removeEventListener('updateMarker', this.update_marker_function)
     window.removeEventListener('updateCollection', this.update_collection_function)

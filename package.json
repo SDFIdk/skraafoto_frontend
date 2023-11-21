@@ -7,11 +7,11 @@
   "scripts": {
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js || : && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
-    "docs": "jsdoc --configure docs/jsdoc-conf.json && cp -r docs/images docs/api/",
+    "docs": "jsdoc --configure docs/jsdoc-conf.json",
     "test": "npx playwright test",
-    "test-ci": "export BASEURL=https://test16.dataforsyningen.dk && export CI=true && npx playwright test",
     "test-unit": "node test/unit/api.test.js",
-    "serve-docs": "python3 -m http.server 8001 --directory docs/api"
+    "serve-docs": "python3 -m http.server 8001 --directory docs/api",
+    "test-ci": "export BASEURL=https://test16.dataforsyningen.dk && export CI=true && npx playwright test"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
-    "@dataforsyningen/css": "^3.9.1",
+    "@dataforsyningen/css": "^3.11.0",
     "@dataforsyningen/gsearch-ui": "^1.2.0",
     "@dataforsyningen/icons": "^0.7.0",
     "@dataforsyningen/saul": "^3.3.4",

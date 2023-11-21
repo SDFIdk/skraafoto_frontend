@@ -9,7 +9,7 @@ We hope that the documentation will make you enjoy developing Skraafoto and help
 
 ## Building the system
 
-Refer to the [install and build instuctions](https://sdfidk.github.io/skraafoto_frontend/tutorial-installing.html) for details on building Skraafoto, or running a development server.
+Refer to the [install and build instuctions](https://sdfidk.github.io/skraafoto_frontend/tutorial-installing.html) for details on building Skraafoto, or running a local development server.
 
 ## Folder structure
 

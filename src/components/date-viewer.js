@@ -119,7 +119,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
       isOptionClicked = false // Reset the flag
     })
 
-    
     // Add global listener for state changes
     window.addEventListener('updateItem', this.#update.bind(this))
 
@@ -155,7 +154,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     const center = store.state.marker.center
     queryItems(center, item.orientation, item.collection, 50).then((response) => {
       this.#selectElement.innerHTML = this.#renderOptions(response.features)
-      this.#selectElement.value = store.state.viewports[this.dataset.index].itemId  
+      this.#selectElement.value = store.state.viewports[this.dataset.index].itemId
     })
   }
 
@@ -178,21 +177,14 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
   #renderOptions(features) {
     let templateString = ''
-    features.map((i) => {
+    features.map((i, idx, arr) => {
       const datetime = new Date(i.properties.datetime)
-      const options = {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      }
-      const europeanDatetime = datetime.toLocaleString('en-GB', options)
+      const seriesDate = `${datetime.toLocaleDateString()} ${idx + 1}/${arr.length}`
       templateString += `
-        <option value="${i.id}">
-          ${europeanDatetime}
-        </option>
-      `
+      <option value="${i.id}">
+        ${seriesDate}
+      </option>
+    `
     })
     return templateString
   }

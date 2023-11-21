@@ -39,3 +39,20 @@ Run `npm run dev` to start a development server running locally at `localhost:80
 
 ## Build for production
 Run `npm run build` to make a production build. The built resources are saved in `dist/` folder; ready to be hosted along with the static assets in the `public` folder.
+
+## Run tests 
+
+### Playwright E2E tests
+You'll need to install Playwright dependencies **once** before running the E2E tests. 
+Do so with `npx playwright install --with-deps`
+
+Then make sure you have a local development server running. 
+Run `npm run dev` for this.
+
+Now you can run the test using:
+`npm run test`
+
+The Playwright test suite will present you with a HTML report if some tests fail.
+
+### Unit tests
+Unit tests are run with `npm run test-unit`

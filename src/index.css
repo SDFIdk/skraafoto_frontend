@@ -18,4 +18,6 @@
 @import "@dataforsyningen/icons/css/icon-question.css";
 @import "@dataforsyningen/icons/css/icon-print.css";
 @import "@dataforsyningen/icons/css/sider-icon-lab.css"; /* Temp exposure icon, remove when new one is added */
+
+/** Custom styles for cookieinformation popup */
 @import "./styles/cookieinformation.css";
