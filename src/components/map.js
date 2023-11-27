@@ -17,6 +17,7 @@ import Feature from 'ol/Feature'
 import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
+import { Geolocation } from 'ol'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
 import { configuration } from '../modules/configuration.js'
@@ -98,6 +99,19 @@ export class SkraaFotoMap extends HTMLElement {
       border-radius: 40px;
       padding: 0.75rem;
     }
+    .ds-icon-map-icon-findonmap::before {
+      width: 2rem;
+      height: 2rem;
+    }
+    
+    .ds-icon-map-icon-findonmap {
+      position: absolute;
+      z-index: 10;
+      bottom: 9rem;
+      right: 1rem;
+      --icon-outer-size: 3rem;
+      --icon-pos: 0rem 1rem;
+    }
     @media screen and (max-width: 35rem) {
 
       .geographic-map skraafoto-compass {
@@ -112,7 +126,12 @@ export class SkraaFotoMap extends HTMLElement {
         ${ this.styles }
       </style>
       <skraafoto-compass direction="north"></skraafoto-compass>
-    </div>
+      
+      ${ this.getAttribute('minimal') === null ? `
+      <button title="Vis min lokation" id="geolocation-button" class="ds-icon-map-icon-findonmap"></button>
+      ` : ''
+      }
+      </div>
   `
 
   // getters
@@ -131,6 +150,37 @@ export class SkraaFotoMap extends HTMLElement {
     epsg25832proj(proj4)
     register(proj4)
     this.projection = getProjection('EPSG:25832')
+
+    // Initialize Geolocation
+    this.geolocation = new Geolocation({
+      tracking: true, // Start tracking the user's position
+      projection: this.projection // Set the projection of the map
+    });
+
+    // Create a vector layer for the user's position marker
+    this.userPositionLayer = new VectorLayer({
+      source: new VectorSource(),
+    });
+
+    // Initialize Geolocation
+    this.geolocation = new Geolocation({
+      tracking: true,
+      projection: this.projection,
+    });
+
+    // Event listener for geolocation change
+    this.geolocation.on('change:position', () => {
+      const position = this.geolocation.getPosition();
+      if (position) {
+        const userMarker = new Feature({
+          geometry: new Point(position),
+        });
+
+        const markerSource = this.userPositionLayer.getSource();
+        markerSource.clear(); // Clear previous marker if any
+        markerSource.addFeature(userMarker);
+      }
+    });
   }
 
   // methods
@@ -158,7 +208,7 @@ export class SkraaFotoMap extends HTMLElement {
         controls = defaultControls({rotate: false, attribution: false})
       }
 
-      let interactions 
+      let interactions
       if (is_minimal !== null) {
         interactions = defaultInteractions({dragPan: false, pinchZoom: false, mouseWheelZoom: false})
       } else {
@@ -176,7 +226,8 @@ export class SkraaFotoMap extends HTMLElement {
           new TileLayer({
             opacity: 1,
             source: new WMTS(options)
-          })
+          }),
+          this.userPositionLayer,
         ],
         target: this.querySelector('.geographic-map'),
         view: view,
@@ -269,6 +320,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
     this.map.addLayer(this.icon_layer)
+    console.log(newMarker.center)
   }
 
   async createMap() {
@@ -330,9 +382,39 @@ export class SkraaFotoMap extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
-    
+
     this.createDOM()
     this.createMap()
+
+    // Get the button element
+    const geolocationButton = this.querySelector('#geolocation-button')
+
+    if(geolocationButton) {
+      geolocationButton.addEventListener('click', (event) => {
+          const position = this.geolocation.getPosition()
+        if (position) {
+          const newMarker = structuredClone(store.state.marker)
+          newMarker.center = position
+          store.dispatch('updateMarker', newMarker)
+          const view = this.map.getView()
+          view.setCenter(position)
+          view.setZoom(15) // Set any desired zoom level
+          this.map.setView(view)
+
+          if (this.icon_layer) {
+            this.map.removeLayer(this.icon_layer)
+          }
+          this.icon_layer = this.generateIconLayer(position)
+          this.map.addLayer(this.icon_layer)
+        }
+        this.geolocation.once('error', (error) => {
+          console.error('Geolocation error:', error.message)
+          // Handle error (e.g., show a message to the user)
+        })
+
+        this.geolocation.setTracking(true)
+      })
+    }
 
     // When marker (crosshair) position changes in state, re-render the icon layer
     window.addEventListener('updateMarker', this.updateMap.bind(this))
