@@ -153,7 +153,7 @@ export class SkraaFotoMap extends HTMLElement {
 
     // Initialize Geolocation
     this.geolocation = new Geolocation({
-      tracking: true, // Start tracking the user's position
+      tracking: false, // Start tracking the user's position
       projection: this.projection // Set the projection of the map
     });
 
