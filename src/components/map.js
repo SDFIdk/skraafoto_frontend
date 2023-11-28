@@ -162,12 +162,6 @@ export class SkraaFotoMap extends HTMLElement {
       source: new VectorSource(),
     });
 
-    // Initialize Geolocation
-    this.geolocation = new Geolocation({
-      tracking: true,
-      projection: this.projection,
-    });
-
     // Event listener for geolocation change
     this.geolocation.on('change:position', () => {
       const position = this.geolocation.getPosition();
