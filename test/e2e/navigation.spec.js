@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   await page.evaluate(() => {
-    localStorage.setItem('skraafoto-virgin', false)
+    localStorage.setItem('skraafoto-splash', false)
   })
   await page.goto('/')
 })

@@ -209,7 +209,6 @@ export class SkraaFotoMap extends HTMLElement {
         this.update_footprint_function = getUpdateMapFootprintFunction(map)
         window.addEventListener('updateFootprint', this.update_footprint_function)
       }
-
       return map
     })
   }
