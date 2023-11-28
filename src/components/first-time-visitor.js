@@ -105,11 +105,12 @@ export class FirstTimeVisit extends HTMLElement {
         }, 300); // Adjust the timing to match the transition duration in milliseconds
         localStorage.setItem(this.local_storage_key, 'false')
       })
-
-      this.shadowRoot.querySelector('skraafoto-address-search').addEventListener('gsearch:select', () => {
+      /*
+        this.shadowRoot.querySelector('skraafoto-address-search').addEventListener('gsearch:select', () => {
         this.dialog.close()
         localStorage.setItem(this.local_storage_key, 'false')
       })
+      */
     }
   }
 
