@@ -205,7 +205,7 @@ function updateDate(imagedata) {
 }
 
 /** Uses world coordinate and image data to calculate an image coordinate */
-async function updateCenter(coordinate, item, kote = 0) {
+async function updateCenter(coordinate, item, kote) {
   if (!item) {
     return
   }
