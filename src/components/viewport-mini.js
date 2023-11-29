@@ -8,7 +8,6 @@ import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
 import {
   updateMap,
-  updateMapCenterIcon,
   updateTextContent,
   updatePlugins,
   updateDate,

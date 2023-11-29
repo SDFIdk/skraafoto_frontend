@@ -392,7 +392,6 @@ export class SkraaFotoViewport extends HTMLElement {
   /** Handler to update the relevant parts of the image map when an item is updated */
   async update_viewport_function() {
     this.toggleMode('center')
-    console.log(store.state.viewports[this.dataset.index].item)
     this.item = store.state.viewports[this.dataset.index].item
     // Recalculates this.coord_world and this.coord_image
     const newViewCoords = await updateCenter(store.state.view.center, this.item, store.state.view.kote)
