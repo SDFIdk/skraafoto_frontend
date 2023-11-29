@@ -9,10 +9,6 @@ customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
  */
 export class SkraaFotoHeader extends HTMLElement {
 
-
-  // Properties
-
-  markup
   styles = `
     .sf-header {
       display: flex;
@@ -50,21 +46,20 @@ export class SkraaFotoHeader extends HTMLElement {
       background-color: transparent;
       border: none;
     }
-    
-    sf-help-link {
+    ds-logo {
+      width: 3rem;
+    }
+    .ds-logo > strong {
+      padding-top: 1rem;
+    }
+    .ds-logo > :is(strong, span:last-child) {
+      margin-left: 3.75rem;
+    }
+    .sf-help-link {
       margin-left: 1rem;
     }
-    
-    ds-logo-micro {
-        margin-right: 2rem;
-    }
-    
     skraafoto-view-switcher {
       margin-right: 1rem;
-    }
-    
-    .ds-logo-micro .span {
-      text-wrap: balance;
     }
     .skat-logo {
       width: 12rem;
@@ -81,67 +76,54 @@ export class SkraaFotoHeader extends HTMLElement {
         display: none;
       }
     }
-  `
-  template = `
-    <style>
-      ${ this.styles }
-    </style>
-    <a href="/" id="sdfiLogo" class="ds-logo-micro">
-      <strong id="headline">Skråfoto</strong>
-      <span id="subline">Styrelsen for Dataforsyning og Infrastruktur</span>
-    </a>
-    <a href="/" id="skatLogo">
-      <img href="/" id="vurderingsstyrelsen" class="skat-logo" src="img/logos/logo-vurderingsstyrelsen.svg" alt="logo af Vurderingsstyrelsen"/>
-      <strong id="headline">Skråfoto</strong>
-    </a>
-    <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
-    <skraafoto-view-switcher></skraafoto-view-switcher>
-    <a role="button" class="sf-help-link ds-icon-icon-question secondary" title="Information om Skråfoto" href="/info.html"></a>
 
+    @media screen and (max-width: 40rem) {
+      .ds-logo > span:last-child {
+        display: none;
+      }
+    }
   `
-
 
   constructor() {
     super()
-    this.createDOM()
-  }
-
-
-  // Methods
-
-  createDOM() {
-
-    // Create elements
-    this.markup = document.createElement('header')
-    this.markup.className = 'sf-header'
-    this.markup.dataset.theme = 'dark'
-    this.markup.innerHTML = this.template
-    // attach the created elements to the DOM
-    this.append(this.markup)
   }
 
   connectedCallback() {
+    this.createDOM()
+  }
+
+  createDOM() {
+    // Create elements
+    const markup = document.createElement('header')
+    markup.className = 'sf-header'
+    markup.dataset.theme = 'dark'
+
+    let headerContent = `<style>${ this.styles }</style>`
+
     if (configuration.ENABLE_SKATLOGO) {
-      const sdfiLogo = document.getElementById('sdfiLogo')
-      const headline = document.getElementById('headline')
-      const subline = document.getElementById('subline')
-      const skatLogo = document.getElementById('skatLogo')
-
-      sdfiLogo.style.display = 'none'
-      headline.style.display = 'none'
-      subline.style.display = 'none'
-      skatLogo.style.display = ''
+      headerContent += `
+        <a href="/" class="ds-logo">
+          <img href="/" id="vurderingsstyrelsen" class="skat-logo" src="img/logos/logo-vurderingsstyrelsen.svg" alt="logo af Vurderingsstyrelsen"/>
+          <strong id="headline">Skråfoto</strong>
+        </a>
+      `
     } else {
-      const headline = document.getElementById('headline')
-      const subline = document.getElementById('subline')
-      const skatLogo = document.getElementById('skatLogo')
-      const sdfiLogo = document.getElementById('sdfiLogo')
-
-      sdfiLogo.style.display = ''
-      headline.style.display = '';
-      subline.style.display = '';
-      skatLogo.style.display = 'none'
+      headerContent += `
+        <a href="/" class="ds-logo">
+          <ds-logo></ds-logo>
+          <strong>Skråfoto</strong>
+          <span>Styrelsen for Dataforsyning og Infrastruktur</span>
+        </a>
+      `
     }
+
+    headerContent += `
+      <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
+      <skraafoto-view-switcher></skraafoto-view-switcher>
+      <a role="button" class="sf-help-link ds-icon-icon-question secondary" title="Information om Skråfoto" href="/info.html"></a>
+    `
+    markup.innerHTML = headerContent
+    this.append(markup)
   }
 }
 

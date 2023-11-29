@@ -77,8 +77,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       margin: 1rem;
     }
 
-    .sf-direction-picker-btn,
-    .sf-map-picker-btn {
+    button.sf-direction-picker-btn,
+    button.sf-map-picker-btn {
+      height: auto;
+      width: auto;
       border: none;
       padding: 0;
       margin: 0;
@@ -119,6 +121,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       height: 100%;
       width: 100%;
       display: block;
+      margin: 0 !important;
     }
 
     @media screen and (max-width: 35rem) {

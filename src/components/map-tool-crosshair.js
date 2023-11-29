@@ -1,4 +1,5 @@
 import { getWorldXYZ } from "@dataforsyningen/saul"
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import store from '../store'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
@@ -18,8 +19,9 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
   createDOM() {
     this.button_element = document.createElement('button')
     this.button_element.style.borderRadius = '0'
-    this.button_element.className = 'crosshair-btn ds-icon-icon-crosshair'
+    this.button_element.className = 'crosshair-btn'
     this.button_element.title = 'Aktivér sigtekorn'
+    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#crosshair"/></svg>`
     this.append(this.button_element)
   }
 
