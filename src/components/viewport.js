@@ -4,6 +4,7 @@ import FullScreen from 'ol/control/FullScreen'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import Collection from 'ol/Collection'
 import { getZ, image2world } from '@dataforsyningen/saul'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from './map-tool-crosshair.js'
 import { SkraaFotoDownloadTool } from './map-tool-download.js'
@@ -207,7 +208,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     /* Measure height tool */
-    .btn-height-measure::before {
+    .btn-height-measure > svg {
       transform: rotate(90deg);
     }
     
@@ -269,8 +270,12 @@ export class SkraaFotoViewport extends HTMLElement {
           : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
         <hr>
-        <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
-        <button id="height-btn" class="btn-height-measure ds-icon-map-icon-ruler" title="Mål højde"></button>
+        <button id="length-btn" class="btn-width-measure" title="Mål afstand">
+          <svg><use href="${ svgSprites }#map-ruler"/></svg>
+        </button>
+        <button id="height-btn" class="btn-height-measure" title="Mål højde">
+          <svg><use href="${ svgSprites }#map-ruler"/></svg>
+        </button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>

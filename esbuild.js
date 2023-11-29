@@ -21,7 +21,8 @@ if (process.env.NODE_ENV === 'production') {
     splitting: true,
     format: 'esm',
     loader: {
-      '.ttf': 'file'
+      '.ttf': 'file',
+      '.svg': 'file'
     }
   })
   .then((result) => {
@@ -42,7 +43,8 @@ if (process.env.NODE_ENV === 'production') {
   }, {
     entryPoints: entry_points,
     loader: {
-      '.ttf': 'file'
+      '.ttf': 'file',
+      '.svg': 'file'
     },
     outdir: 'public',
     bundle: true,

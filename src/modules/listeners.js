@@ -1,5 +1,4 @@
 import store from '../store'
-import { apiCheck } from '@dataforsyningen/css/assets/designsystem.js'
 import { configuration } from './configuration'
 
 const lookup = {
@@ -49,7 +48,7 @@ function keyDownHandler(event) {
 }
 
 function isDatafordelerDown() {
-  apiCheck(`https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter?geop=POINT(574763.99 6220953.04)&elevationmodel=dtm&username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }`)
+  fetch(`https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter?geop=POINT(574763.99 6220953.04)&elevationmodel=dtm&username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }`)
   .catch(function(error) {
     const alertDialog = document.createElement('dialog')
     alertDialog.id = 'datafordeler-down-dialog'

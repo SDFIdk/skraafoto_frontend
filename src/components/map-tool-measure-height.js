@@ -3,7 +3,7 @@ import { Vector as VectorLayer } from 'ol/layer'
 import { Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
 import Overlay from 'ol/Overlay'
-import { image2world, getImageXY, createTranslator } from '@dataforsyningen/saul'
+import { image2world, getImageXY } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 import { configuration } from "../modules/configuration";
