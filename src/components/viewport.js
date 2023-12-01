@@ -291,6 +291,7 @@ export class SkraaFotoViewport extends HTMLElement {
       `<skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>`:
       `<skraafoto-compass direction="north"></skraafoto-compass>`
     }
+    <skraafoto-location></skraafoto-location>
     <p id="image-date" class="image-date"></p>
   `
 
