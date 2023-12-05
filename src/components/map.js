@@ -128,7 +128,7 @@ export class SkraaFotoMap extends HTMLElement {
       <skraafoto-compass direction="north"></skraafoto-compass>
       
       ${ this.getAttribute('minimal') === null ? `
-      <button title="Vis min lokation" id="geolocation-button" class="ds-icon-map-icon-findonmap"></button>
+      <!--<button title="Vis min lokation" id="geolocation-button" class="ds-icon-map-icon-findonmap"></button>-->
       ` : ''
       }
       </div>
