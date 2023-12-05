@@ -234,7 +234,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
   }
 
-  // TODO: Enable this in the correct way
   highlightCurrentDirection() {
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
@@ -247,6 +246,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   connectedCallback() {
 
     this.createShadowDOM()
+    this.highlightInitialDirection()
 
     this.btn_open_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,0)'
@@ -256,23 +256,36 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
-    // When a viewport is clicked in the selector, send a signal to update the main viewport
+// When a viewport is clicked in the selector, send a signal to update the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
         store.dispatch('updateMapVisibility', false)
         store.dispatch('updateItem', {index: 0, item: target_item})
+        this.highlightCurrentDirection()
       })
     })
 
-    // When the tiny map is clicked in the selector, send a signal to display the big map
+// When a mini-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
       // Set orientation parameter, causing the page to reload with map open
-      // TODO: clean up these dispatces. Which is actually needed?
+      // TODO: clean up these dispatches. Which is actually needed?
       store.dispatch('updateMapVisibility', true)
       this.slider_element.style.transform = 'translate(0,100vh)'
       this.highlightCurrentDirection()
     })
   }
 
+  highlightInitialDirection() {
+    const initialDirection = store.state.viewports[0].orientation
+    const initialElement = this[`${initialDirection}_element`]
+
+    // Remove active class from all buttons
+    this.shadowRoot.querySelectorAll('button').forEach(button => {
+      button.classList.remove('active')
+    });
+
+    // Add active class to the initially selected direction button
+    initialElement.parentNode.classList.add('active')
+  }
 }
