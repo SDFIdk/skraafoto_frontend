@@ -133,9 +133,12 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     ds-spinner {
       position: absolute;
-      top: 0;
-      width: 100%;
-      height: 100%;
+      top: 50%;
+      left: 50%;
+      margin-left: -5rem;
+      margin-top: -5rem;
+      width: 10rem;
+      height: 10rem;
       z-index: 10
     }
     ds-spinner > .ds-loading-svg {
@@ -263,7 +266,6 @@ export class SkraaFotoViewport extends HTMLElement {
           `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
-        <hr>
         <button id="length-btn" class="btn-width-measure" title="Mål afstand">
           <svg><use href="${ svgSprites }#map-ruler"/></svg>
         </button>
