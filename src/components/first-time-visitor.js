@@ -5,7 +5,7 @@ export class FirstTimeVisit extends HTMLElement {
 
   // Properties
   dialog
-  local_storage_key = 'skraafoto-virgin'
+  local_storage_key = 'skraafoto-splash'
   styles = `
     dialog::backdrop {
       background-color: hsla(0, 0%, 0%, 0.6);
@@ -24,13 +24,15 @@ export class FirstTimeVisit extends HTMLElement {
       margin: 0;
     }
     .btn-welcome-close {
-      margin-top: 1rem;
+      margin-top: 4rem;
       transition: opacity 0.3s ease;
     }
     .fade-out, .fade-out::backdrop {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
+    ul li {
+      text-align: left;
   `
   template = `
     <link rel="stylesheet" href="./style.css">
@@ -45,10 +47,23 @@ export class FirstTimeVisit extends HTMLElement {
     <article>
       <h2 class="h1">Velkommen til Skråfoto</h2>
       <p>
-        Skråfoto giver dig mulighed for at finde luftfotos taget fra forskellige retninger.<br>
+        Skråfoto giver dig mulighed for at finde luftfotos taget fra forskellige retninger.
         Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
       </p>
-      <skraafoto-address-search></skraafoto-address-search>
+      <!---<skraafoto-address-search></skraafoto-address-search>--->
+      <h2>Nye Features</h2>
+      <ul>
+      <li>Verdenshjørne/nordpil i baggrundskortet</li>
+      <li>Tilføjet Genvejstaster</li>
+        <ul>
+        <li>Piletast højre/venstre for skift af retning</li>
+        <li>Piletast+Shift op/ned for skift af årgang</li>
+        </ul>
+      <li>Tilføjet knapper til kompas for skift af retning</li>
+      <li>Tilføjet knapper for zoom</li>
+      <li>Målinger kan nu fjernes ved klik på måling</li>
+      <li>Generelle forbedringer</li>
+      </ul>
       <button class="btn-welcome-close">Forstået</button>
     </article>
   `
@@ -90,11 +105,12 @@ export class FirstTimeVisit extends HTMLElement {
         }, 300); // Adjust the timing to match the transition duration in milliseconds
         localStorage.setItem(this.local_storage_key, 'false')
       })
-
-      this.shadowRoot.querySelector('skraafoto-address-search').addEventListener('gsearch:select', () => {
+      /*
+        this.shadowRoot.querySelector('skraafoto-address-search').addEventListener('gsearch:select', () => {
         this.dialog.close()
         localStorage.setItem(this.local_storage_key, 'false')
       })
+      */
     }
   }
 

@@ -55,7 +55,7 @@ export class SkraaFotoMap extends HTMLElement {
     .geographic-map { 
       width: 100%; 
       height: 100%;
-      cursor: url('./img/icons/icon_crosshair.svg') 15.5 16, crosshair;
+      cursor: crosshair;
     }
     .geographic-map .ol-zoom {
       top: auto;
@@ -229,7 +229,6 @@ export class SkraaFotoMap extends HTMLElement {
         this.update_footprint_function = getUpdateMapFootprintFunction(map)
         window.addEventListener('updateFootprint', this.update_footprint_function)
       }
-
       return map
     })
   }

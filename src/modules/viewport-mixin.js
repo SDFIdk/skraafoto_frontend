@@ -122,21 +122,23 @@ function updateMapCenterIcon(map, localCoordinate) {
 /** Completely update an image map */
 async function updateMap(self) {
 
-  if (!self.item || !self.map || !self.coord_image) {
+  if (!self.item || !self.map) {
     return
   }
+
+  const coords = await updateCenter(store.state.marker.center, self.item, store.state.marker.kote)
 
   // Create and add image layer
   updateMapImage(self.map, self.item)
 
   // Create icon layer
-  updateMapCenterIcon(self.map, self.coord_image)
+  updateMapCenterIcon(self.map, coords.imageCoord)
 
   // Update the map's view
   await updateMapView({
     map: self.map,
     zoom: self.toImageZoom(store.state.view.zoom),
-    center: self.coord_image,
+    center: coords.imageCoord,
     item: self.item
   })
 }
