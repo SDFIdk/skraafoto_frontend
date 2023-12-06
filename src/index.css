@@ -4,3 +4,10 @@
 
 /** Custom styles for cookieinformation popup */
 @import "./styles/cookieinformation.css";
+
+body {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}

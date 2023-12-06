@@ -34,6 +34,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
         <svg><use href="${ svgSprites }#sider-lab"/></svg>
       </button
     `
+    this.button_element = this.querySelector('button')
   }
 
   copySettingsToVariables(settings) {
