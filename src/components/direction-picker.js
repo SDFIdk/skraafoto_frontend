@@ -260,6 +260,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
+        // Sync view and marker positions
+        store.state.view.center = store.state.marker.center
+        store.state.view.kote = store.state.marker.kote
+        // Dispatch new item
         store.dispatch('updateMapVisibility', false)
         store.dispatch('updateItem', {index: 0, item: target_item})
         this.highlightCurrentDirection()

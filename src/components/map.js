@@ -56,7 +56,7 @@ export class SkraaFotoMap extends HTMLElement {
     .geographic-map { 
       width: 100%; 
       height: 100%;
-      cursor: url('./img/icons/icon_crosshair.svg') 15.5 16, crosshair;
+      cursor: crosshair;
     }
     .geographic-map .ol-zoom {
       top: auto;
@@ -313,7 +313,6 @@ export class SkraaFotoMap extends HTMLElement {
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
     this.map.addLayer(this.icon_layer)
-    console.log(newMarker.center)
   }
 
   async createMap() {
