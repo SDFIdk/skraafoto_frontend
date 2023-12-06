@@ -47,20 +47,13 @@ export class SkraaFotoHeader extends HTMLElement {
       background-color: transparent;
       border: none;
     }
-    ds-logo {
-      width: 3rem;
-    }
-    .ds-logo > strong {
-      padding-top: 1rem;
-    }
-    .ds-logo > :is(strong, span:last-child) {
-      margin-left: 3.75rem;
-    }
+    
     .sf-help-link {
       margin-left: 1rem;
+      flex: 0 0 auto;
     }
     skraafoto-view-switcher {
-      margin-right: 1rem;
+      
     }
     .skat-logo {
       width: 12rem;
