@@ -1,6 +1,7 @@
 import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
 import store from '../store'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions
@@ -165,7 +166,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
   }
     <section class="sf-slider-content">
-      <button class="sf-slider-close ds-icon-icon-close contrast" title="Luk"></button>
+      <button class="sf-slider-close" title="Luk">
+        <svg><use href="${ svgSprites }#close"/></svg>
+      </button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn sf-btn-map" title="Skift til kortvisning">
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
