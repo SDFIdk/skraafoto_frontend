@@ -92,8 +92,17 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .sf-viewport-tools {
       position: absolute;
-      top: 1rem;
-      left: 1rem;
+      z-index: 2;
+      top: .5rem;
+      left: .5rem;
+    }
+    .sf-viewport-tools button {
+      display: flex;
+    }
+    .sf-viewport-tools select.sf-date-selector {
+      margin: 0 !important;
+      border-radius: var(--space-lg) 0 0 var(--space-lg);
+      height: 100%;
     }
     .viewport-map { 
       width: 100%; 
@@ -174,19 +183,8 @@ export class SkraaFotoViewport extends HTMLElement {
       line-height: 1;
       box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
     }
-    .ds-nav-tools {
-      z-index: 2;
-      top: .5rem;
-      left: .5rem;
-    }
-    .ds-button-group {
-      min-width: 10rem;
-      min-height: 3rem;
-      padding: 0 0 0 0.5rem;
-      align-items: center;
-    }
-    .ds-nav-tools button.active {
-      background-color: var(--aktion) !important;
+    .sf-viewport-tools button.active {
+      background-color: var(--highlight) !important;
     }
 
     /* Download tool */
@@ -242,10 +240,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     @media screen and (max-width: 50rem) {
-
-      .ds-button-group {
-        padding-left: 0;
-      }
     
       .image-date {
         display: block;
@@ -440,7 +434,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
   toggleMode(mode, button_element) {
-    this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
+    this.shadowRoot.querySelectorAll('.sf-viewport-tools button').forEach(function(btn) {
       btn.classList.remove('active')
     })
     if (mode !== this.mode) {
@@ -573,7 +567,7 @@ export class SkraaFotoViewport extends HTMLElement {
     window.addEventListener('updateItem', this.update_viewport_function.bind(this))
 
     // When user cliks toolbar buttons, change mode
-    this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
+    this.shadowRoot.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
       if (event.target.classList.contains('btn-height-measure')) {
         this.toggleMode('measureheight', event.target)
       } else if (event.target.classList.contains('btn-width-measure')) {

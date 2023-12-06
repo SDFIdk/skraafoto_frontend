@@ -1,5 +1,6 @@
 import WebGLTileLayer from 'ol/layer/WebGLTile'
 import { configuration } from '../modules/configuration'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that enables user to change the exposure and brightness of the current image.
@@ -28,11 +29,11 @@ export class SkraaFotoExposureTool extends HTMLElement {
 
   createDOM() {
     // Add tool button to DOM
-    this.button_element = document.createElement('button')
-    this.button_element.style.borderRadius = '0';
-    this.button_element.className = 'exposure-btn ds-icon-sider-icon-lab'
-    this.button_element.title = 'Ændr lysstyrke'
-    this.append(this.button_element)
+    this.innerHTML = `
+      <button class="exposure-btn" title="Ændr lysstyrke">
+        <svg><use href="${ svgSprites }#sider-lab"/></svg>
+      </button
+    `
   }
 
   copySettingsToVariables(settings) {
