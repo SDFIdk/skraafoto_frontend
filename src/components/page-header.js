@@ -1,6 +1,7 @@
 import { SkraaFotoViewSwitcher } from './tool-view-switcher.js'
 import { SkraaFotoAddressSearch } from './address-search.js'
-import {configuration} from "../modules/configuration";
+import {configuration} from "../modules/configuration"
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 
@@ -120,7 +121,9 @@ export class SkraaFotoHeader extends HTMLElement {
     headerContent += `
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
       <skraafoto-view-switcher></skraafoto-view-switcher>
-      <a role="button" class="sf-help-link ds-icon-icon-question secondary" title="Information om Skråfoto" href="/info.html"></a>
+      <a role="button" class="sf-help-link quiet" title="Information om Skråfoto" href="/info.html">
+        <svg><use href="${ svgSprites }#info"/></svg>
+      </a>
     `
     markup.innerHTML = headerContent
     this.append(markup)

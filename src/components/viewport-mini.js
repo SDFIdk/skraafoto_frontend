@@ -74,10 +74,13 @@ export class SkraaFotoViewportMini extends HTMLElement {
     }
     skraafoto-viewport-mini ds-spinner {
       position: absolute;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10
+      top: 50%;
+      left: 50%;
+      width: 7rem;
+      height: 7rem;
+      z-index: 10;
+      margin-left: -3.5rem;
+      margin-top: -3.5rem;
     }
     skraafoto-viewport-mini ds-spinner > .ds-loading-svg {
       max-width: 5rem !important;
