@@ -145,10 +145,18 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   buildOptionHTML(item, idx, collection_length) {
-    const datetime = new Date(item.properties.datetime);
+    const datetime = new Date(item.properties.datetime)
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'Europe/Copenhagen'
+    }
+    const formattedDate = datetime.toLocaleDateString('da-DK', options)
+
     let option_el = document.createElement('option')
     option_el.value = item.id
-    option_el.innerText = `${datetime.toLocaleDateString()} ${idx + 1}/${collection_length}`
+    option_el.innerText = `${formattedDate} ${idx + 1}/${collection_length}`
     this.selectorElement.querySelector(`[label="${item.collection}"]`).appendChild(option_el)
   }
 
