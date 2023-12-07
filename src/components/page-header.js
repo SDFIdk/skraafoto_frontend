@@ -84,6 +84,10 @@ export class SkraaFotoHeader extends HTMLElement {
 
   connectedCallback() {
     this.createDOM()
+    this.querySelector('.sf-help-link').addEventListener('click', (event) => {
+      event.preventDefault()
+      location = `/info.html${ location.search }`
+    })
   }
 
   createDOM() {
