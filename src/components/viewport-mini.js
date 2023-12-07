@@ -82,12 +82,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
       margin-left: -3.5rem;
       margin-top: -3.5rem;
     }
-    skraafoto-viewport-mini ds-spinner > .ds-loading-svg {
-      max-width: 5rem !important;
-      background-color: var(--background-color);
-      border-radius: 50%;
-      padding: 0.75rem;
-    }
     skraafoto-viewport-mini .out-of-bounds {
       margin: 0;
       position: absolute;

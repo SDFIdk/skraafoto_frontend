@@ -105,15 +105,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       display: block;
       bottom: 0;
       left: 0;
-      height: 1.5rem;
+      height: 100%;
       width: 100%;
-      background-color: var(--aktion);
-      clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
+      box-shadow: inset 0 0 0 3px var(--blaa);
     }
 
     .sf-direction-picker-btn:hover::after,
     .sf-map-picker-btn:hover::after {
-      background-color: var(--highlight);
+      box-shadow: inset 0 0 0 3px var(--highlight);
     }
 
     skraafoto-map,
