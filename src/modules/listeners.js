@@ -32,18 +32,28 @@ function shiftItemTime(viewportIndex, direction) {
 }
 
 function keyDownHandler(event) {
-  // Hijack arrow keys when holding down Shift and not being in an input field. 
-  // Kinda hacky. Could probably be better
-  if (event.shiftKey && event.target.tagName !== 'INPUT') {
+  const isShiftKeyPressed = event.shiftKey;
+  const isInputField = event.target.tagName === 'INPUT'
+
+  if (isShiftKeyPressed && !isInputField) {
     event.preventDefault()
-    if (event.key === 'ArrowDown') {
-      shiftItemTime(0, -1)
-    } else if (event.key === 'ArrowUp') {
-      shiftItemTime(0, 1)
-    } else if (event.key === 'ArrowLeft') {
-      shiftItemOrientation(-1)
-    } else if (event.key === 'ArrowRight') {
-      shiftItemOrientation(1)
+
+    switch (event.key) {
+      case 'ArrowDown':
+        shiftItemTime(0, -1)
+        break
+      case 'ArrowUp':
+        shiftItemTime(0, 1)
+        break
+      case 'ArrowLeft':
+        shiftItemOrientation(-1)
+        break
+      case 'ArrowRight':
+        shiftItemOrientation(1)
+        break
+      default:
+        // Handle other keys if needed
+        break
     }
   }
 }

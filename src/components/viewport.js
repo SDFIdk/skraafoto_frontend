@@ -567,7 +567,7 @@ export class SkraaFotoViewport extends HTMLElement {
     // When viewport item changes, load new image
     window.addEventListener('updateItem', this.update_viewport_function.bind(this))
 
-    // When user cliks toolbar buttons, change mode
+    // When user clicks toolbar buttons, change mode
     this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
       if (event.target.classList.contains('btn-height-measure')) {
         this.toggleMode('measureheight', event.target)

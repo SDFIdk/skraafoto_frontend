@@ -256,7 +256,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
-// When a viewport is clicked in the selector, send a signal to update the main viewport
+    // When a mini-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
@@ -270,7 +270,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       })
     })
 
-// When a mini-viewport is clicked in the selector, display it on the main viewport
+    // When the map-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
       // Set orientation parameter, causing the page to reload with map open
       // TODO: clean up these dispatches. Which is actually needed?
@@ -278,6 +278,8 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
       this.highlightCurrentDirection()
     })
+
+    window.addEventListener('updateItem', () => { this.highlightCurrentDirection() })
   }
 
   highlightInitialDirection() {
@@ -287,7 +289,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     // Remove active class from all buttons
     this.shadowRoot.querySelectorAll('button').forEach(button => {
       button.classList.remove('active')
-    });
+    })
 
     // Add active class to the initially selected direction button
     initialElement.parentNode.classList.add('active')
