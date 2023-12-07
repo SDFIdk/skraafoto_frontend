@@ -54,7 +54,6 @@ export class SkraaFotoCompass extends HTMLElement {
 
   constructor() {
     super()
-    this.createDOM()
   }
 
 
@@ -82,8 +81,16 @@ export class SkraaFotoCompass extends HTMLElement {
   
   // Lifecycle
 
+  connectedCallback() {
+    this.createDOM()
+  }
+
   attributeChangedCallback(name, old_value, new_value) {
-    if (name === 'direction') {
+    if (old_value === new_value) {
+      return
+    }
+
+    if (name === 'direction' && this.letters && this.l_east && this.l_west && this.l_north && this.l_south) {
 
       if (new_value === 'nadir') {
         this.title = 'Set ovenfra'
