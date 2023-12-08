@@ -220,7 +220,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   disconnectedCallback() {
-    window.removeEventListener(updateItem, this.update)
+    window.removeEventListener('updateItem', this.update)
     window.removeEventListener('imageshift', this.shiftItemHandler)
   }
 
