@@ -185,12 +185,12 @@ export class SkraaFotoMap extends HTMLElement {
 
   generateMap(is_minimal, center, zoom) {
     // Switch to datafordeler might be preferable
-    // return fetch( https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }`)
-    return fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${ this.api_stac_token }`)
+    return fetch(`https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }&service=WMTS&request=GetCapabilities`)
     .then((response) => {
       return response.text()
     })
     .then((xml) => {
+      console.log(xml, configuration)
       const result = this.parser.read(xml)
       const options = optionsFromCapabilities(result, {
         layer: 'topo_skaermkort_daempet',
