@@ -86,7 +86,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   update() {
-
     const center = store.state.view.center
     const orientation = store.state.viewports[this.dataset.index].orientation
     if (orientation && center) {
@@ -180,22 +179,10 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   dispatchUpdate(item) {
-    if (store.state.viewports[this.dataset.index].item.collection !== item.collection) {
-      // Make sure item is updated before collection
-      store.dispatch('updateItem', {
-        index: this.dataset.index,
-        item: item
-      })
-      store.dispatch('updateCollection', {
-        index: this.dataset.index,
-        collection: item.collection
-      })
-    } else {
-      store.dispatch('updateItem', {
-        index: this.dataset.index,
-        item: item
-      })
-    }
+    store.dispatch('updateItem', {
+      index: this.dataset.index,
+      item: item
+    })
   }
 
   connectedCallback() {
@@ -224,7 +211,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
     })
 
     // React on changes to viewport item in store
-    window.addEventListener(this.dataset.viewportId, this.update.bind(this))
+    window.addEventListener('updateItem', this.update.bind(this))
 
     // Set up shortkeys
     if (!configuration.ENABLE_DATE_BROWSER) {
@@ -233,7 +220,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
   }
 
   disconnectedCallback() {
-    window.removeEventListener(this.dataset.viewportId, this.update)
+    window.removeEventListener('updateItem', this.update)
     window.removeEventListener('imageshift', this.shiftItemHandler)
   }
 
