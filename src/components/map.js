@@ -190,7 +190,6 @@ export class SkraaFotoMap extends HTMLElement {
       return response.text()
     })
     .then((xml) => {
-      console.log(xml, configuration)
       const result = this.parser.read(xml)
       const options = optionsFromCapabilities(result, {
         layer: 'topo_skaermkort_daempet',
