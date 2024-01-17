@@ -33,15 +33,15 @@
   },
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
-    "@dataforsyningen/designsystem": "^4.3.0",
-    "@dataforsyningen/gsearch-ui": "^1.5.1",
+    "@dataforsyningen/designsystem": "^4.5.2",
+    "@dataforsyningen/gsearch-ui": "^2.0.0",
     "@dataforsyningen/saul": "^3.3.4",
     "jspdf": "^2.5.1",
     "ol": "^8.2.0",
-    "proj4": "^2.9.2"
+    "proj4": "^2.10.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.29.2",
+    "@playwright/test": "^1.41.0",
     "esbuild": "^0.16.17",
     "jsdoc": "^4.0.2"
   }
