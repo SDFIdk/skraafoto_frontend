@@ -164,12 +164,12 @@ export class SkraaFotoDateViewer extends HTMLElement {
         ${ this.#styles }
       </style>
       <nav class="ds-nav-tools">
-        <div class="ds-button-group">
-          <button class="button-down" title="Skift billede">
+        <div class="ds-button-group" data-theme="light">
+          <button class="button-down secondary" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
           </button>
           <select class="sf-date-viewer" id="date"></select>
-          <button class="button-up" title="Skift billede">
+          <button class="button-up secondary" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-up"/></svg>
           </button>
         </div>

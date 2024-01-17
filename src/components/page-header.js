@@ -47,17 +47,17 @@ export class SkraaFotoHeader extends HTMLElement {
       background-color: transparent;
       border: none;
     }
-    
     .sf-help-link {
       margin-left: 1rem;
       flex: 0 0 auto;
     }
-    skraafoto-view-switcher {
-      
-    }
     .skat-logo {
       width: 12rem;
     }
+    #headline {
+    display: inline
+    }
+    
     
     @media screen and (max-width: 79.9rem) {
       .sf-header {
