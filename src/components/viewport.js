@@ -80,6 +80,9 @@ export class SkraaFotoViewport extends HTMLElement {
   tool_measure_height
 
   styles = /*css*/`
+    button {
+    border: none;
+    }
     :host {
       position: relative;
       display: block;
@@ -95,6 +98,7 @@ export class SkraaFotoViewport extends HTMLElement {
       z-index: 2;
       top: .5rem;
       left: .5rem;
+      border-radius: 2rem
     }
     .sf-viewport-tools button {
       display: flex;
@@ -259,17 +263,17 @@ export class SkraaFotoViewport extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <nav class="ds-nav-tools sf-viewport-tools">
+    <nav class="ds-nav-tools sf-viewport-tools" data-theme="light">
       <div class="ds-button-group">
         ${ 
           configuration.ENABLE_YEAR_SELECTOR ?
           `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
-        <button id="length-btn" class="btn-width-measure" title="Mål afstand">
+        <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
           <svg><use href="${ svgSprites }#map-ruler"/></svg>
         </button>
-        <button id="height-btn" class="btn-height-measure" title="Mål højde">
+        <button id="height-btn" class="btn-height-measure secondary" title="Mål højde">
           <svg><use href="${ svgSprites }#map-ruler"/></svg>
         </button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>

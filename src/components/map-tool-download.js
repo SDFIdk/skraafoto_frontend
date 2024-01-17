@@ -27,7 +27,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
     if (configuration.DOWNLOAD_TYPE === 'currentview') {
-      this.button_element.className = 'sf-download-tool'
+      this.button_element.className = 'sf-download-tool secondary'
       this.button_element.title = 'Print billede til PDF'
       this.button_element.innerHTML = `<svg><use href="${ svgSprites }#print"/></svg>`
     } else {
@@ -41,7 +41,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.link_element = document.createElement('a')
     this.link_element.href = '#'
   }
-  
+
   download() {
     this.link_element.href = this.viewport.item.assets.data.href
     this.link_element.click()

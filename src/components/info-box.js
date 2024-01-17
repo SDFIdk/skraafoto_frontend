@@ -46,7 +46,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button class="sf-info-btn sf-slider-open" title="Information om billede">
+    <button class="sf-info-btn sf-slider-open secondary" title="Information om billede">
       <svg><use href="${ svgSprites }#info"/></svg>
     </button>
     <section class="sf-slider-content">
