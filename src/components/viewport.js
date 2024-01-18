@@ -71,7 +71,8 @@ export class SkraaFotoViewport extends HTMLElement {
   fullscreen = new FullScreen({
     label: '',
     activeClassName: 'ds-icon-icon-close',
-    inactiveClassName: 'ds-icon-icon-fullscreen'
+    inactiveClassName: 'ds-icon-icon-fullscreen',
+    className: 'ol-full-screen'
   })
   mode = 'center'
   modechange = new CustomEvent('modechange', {detail: () => this.mode })
@@ -179,8 +180,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .ol-zoom-in,
     .ol-zoom-out {
-      margin: .25rem 0 0;
-      display: block;
+      margin: 0.25rem 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       height: 3rem;
       width: 3rem;
       font-size: 2.3rem;
@@ -188,7 +191,7 @@ export class SkraaFotoViewport extends HTMLElement {
       border-radius: 2.3rem;
       padding: 0;
       line-height: 1;
-      box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
+      box-shadow: 0 0.15rem 0.3rem hsl(0, 0%, 50%, 0.5);
     }
     .sf-viewport-tools button.active {
       background-color: var(--highlight) !important;

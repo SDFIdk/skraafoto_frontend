@@ -71,10 +71,6 @@ export class SkraaFotoCompassArrows extends HTMLElement {
       cursor: pointer;
       background: none;
     }
-
-    .button:hover {
-      background-color: hsla(0,0%,0%,0.25);
-    }
     
     .button:hover .button-left,
     .button .button-right:hover {
@@ -95,7 +91,7 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     </div>
 
     <svg width="100%" height="100%" viewBox="0 0 80 75" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="36" cy="36" r="36" transform="matrix(-1 0 0 1 76 1)" stroke="var(--blaa, blue)" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="bevel" stroke-dasharray="2 4"/>
+      <circle cx="36" cy="36" r="36" transform="matrix(-1 0 0 1 76 1)" stroke="var(--hvid, blue)" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="bevel" stroke-dasharray="4 8"/>
       <mask id="path-2-outside-1_297_41948" maskUnits="userSpaceOnUse" x="2.48633" y="37" width="75" height="20" fill="black">
         <rect fill="white" x="2.48633" y="37" width="75" height="20"/>
         <path fill-rule="evenodd" clip-rule="evenodd" d="M76.4863 38C76.3093 44.583 74.3892 50.7313 71.1708 56H69.9926C73.3132 50.7691 75.3031 44.6104 75.4859 38H76.4863ZM4.51358 38H3.5132C3.69027 44.583 5.61036 50.7313 8.82872 56H10.0069C6.68629 50.7691 4.69641 44.6104 4.51358 38Z"/>
