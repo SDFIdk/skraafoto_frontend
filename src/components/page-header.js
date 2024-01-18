@@ -55,7 +55,8 @@ export class SkraaFotoHeader extends HTMLElement {
       width: 12rem;
     }
     #headline {
-    display: inline
+    display: inline;
+    margin-left: 0;
     }
     
     

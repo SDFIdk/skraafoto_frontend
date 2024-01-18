@@ -100,19 +100,20 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-direction-picker-btn:focus::after,
     .sf-map-picker-btn:hover::after,
     .sf-map-picker-btn:focus::after {
-      content: '';
-      position: absolute;
-      display: block;
-      bottom: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      box-shadow: inset 0 0 0 3px var(--blaa);
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: 0;
+    left: 0;
+    height: 1.5rem;
+    width: 100%;
+    background-color: var(--blaa);
+    clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
     }
 
     .sf-direction-picker-btn:hover::after,
     .sf-map-picker-btn:hover::after {
-      box-shadow: inset 0 0 0 3px var(--highlight);
+      box-shadow: inset 0 0 0 1rem var(--highlight);
     }
 
     skraafoto-map,
