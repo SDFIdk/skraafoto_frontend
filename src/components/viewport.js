@@ -71,8 +71,7 @@ export class SkraaFotoViewport extends HTMLElement {
   fullscreen = new FullScreen({
     label: '',
     activeClassName: 'ds-icon-icon-close',
-    inactiveClassName: 'ds-icon-icon-fullscreen',
-    className: 'ol-full-screen'
+    inactiveClassName: 'ds-icon-icon-fullscreen'
   })
   mode = 'center'
   modechange = new CustomEvent('modechange', {detail: () => this.mode })
@@ -140,10 +139,10 @@ export class SkraaFotoViewport extends HTMLElement {
       position: absolute;
       top: 50%;
       left: 50%;
-      margin-left: -5rem;
-      margin-top: -5rem;
-      width: 10rem;
-      height: 10rem;
+      margin-left: -2rem;
+      margin-top: -2rem;
+      width: 4rem !important;
+      height: 4rem !important;
       z-index: 10
     }
     ds-spinner > .ds-loading-svg {

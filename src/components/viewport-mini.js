@@ -76,11 +76,11 @@ export class SkraaFotoViewportMini extends HTMLElement {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 7rem;
-      height: 7rem;
+      width: 4rem !important;
+      height: 4rem !important;
       z-index: 10;
-      margin-left: -3.5rem;
-      margin-top: -3.5rem;
+      margin-left: -2rem;
+      margin-top: -2rem;
     }
     skraafoto-viewport-mini .out-of-bounds {
       margin: 0;
