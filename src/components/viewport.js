@@ -70,11 +70,6 @@ export class SkraaFotoViewport extends HTMLElement {
   compass_element
   update_pointer_function
   update_view_function
-  fullscreen = new FullScreen({
-    label: '',
-    activeClassName: 'ds-icon-icon-close',
-    inactiveClassName: 'ds-icon-icon-fullscreen'
-  })
   mode = 'center'
   modechange = new CustomEvent('modechange', {detail: () => this.mode })
   tool_center
@@ -169,7 +164,7 @@ export class SkraaFotoViewport extends HTMLElement {
     .image-date {
       display: none;
     }
-    .ol-full-screen {
+    .sf-fullscreen-btn {
       position: absolute;
       top: 6rem;
       right: 1.5rem;
@@ -227,7 +222,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     @media screen and (max-width: 35rem) {
-      .ol-full-screen {
+      .sf-fullscreen-btn {
         top: auto;
         bottom: 1.6rem;
       }
@@ -360,7 +355,13 @@ export class SkraaFotoViewport extends HTMLElement {
 
     // Add controls
     if (configuration.ENABLE_FULLSCREEN) {
-      this.map.addControl(this.fullscreen)
+      this.map.addControl(new FullScreen({
+        className: 'sf-fullscreen-btn',
+        label: '',
+        tipLabel: 'Vis fuldskærm'
+      }))
+      // Add our custom fullscreen icon to fullscreen button
+      this.shadowRoot.querySelector('.sf-fullscreen-btn button').innerHTML = `<svg><use href="${ svgSprites }#fullscreen" /></svg>`
     }
   }
 
@@ -595,7 +596,6 @@ export class SkraaFotoViewport extends HTMLElement {
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
     }
-
   }
 
   disconnectedCallback() {
