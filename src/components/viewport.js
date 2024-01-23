@@ -169,6 +169,14 @@ export class SkraaFotoViewport extends HTMLElement {
       top: 6rem;
       right: 1.5rem;
     }
+    .sf-fullscreen-btn svg {
+      display: none;
+      margin: 0 !important;
+    }
+    .sf-fullscreen-btn-true svg.fullscreen-true,
+    .sf-fullscreen-btn-false svg.fullscreen-false {
+      display: flex;
+    }
     .ol-zoom {
       bottom: 2rem;
       right: 1rem;
@@ -358,10 +366,13 @@ export class SkraaFotoViewport extends HTMLElement {
       this.map.addControl(new FullScreen({
         className: 'sf-fullscreen-btn',
         label: '',
-        tipLabel: 'Vis fuldskærm'
+        tipLabel: 'Skift fuldskærmsvisning'
       }))
       // Add our custom fullscreen icon to fullscreen button
-      this.shadowRoot.querySelector('.sf-fullscreen-btn button').innerHTML = `<svg><use href="${ svgSprites }#fullscreen" /></svg>`
+      this.shadowRoot.querySelector('.sf-fullscreen-btn button').innerHTML = `
+        <svg class="fullscreen-false"><use href="${ svgSprites }#fullscreen" /></svg>
+        <svg class="fullscreen-true"><use href="${ svgSprites }#close" /></svg>
+      `
     }
   }
 
