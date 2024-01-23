@@ -186,15 +186,8 @@ export class SkraaFotoViewport extends HTMLElement {
     .ol-zoom-out {
       margin: 0.25rem 0 0;
       display: flex;
-      align-items: center;
       justify-content: center;
-      height: 3rem;
-      width: 3rem;
-      font-size: 2.3rem;
-      font-weight: 300;
-      border-radius: 2.3rem;
-      padding: 0;
-      line-height: 1;
+      align-items: center;
       box-shadow: 0 0.15rem 0.3rem hsl(0, 0%, 50%, 0.5);
     }
     .sf-viewport-tools button.active {
@@ -362,6 +355,8 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     // Add controls
+    this.shadowRoot.querySelector('.ol-zoom-out').innerHTML = `<svg><use href="${ svgSprites }#minus" /></svg>`
+    this.shadowRoot.querySelector('.ol-zoom-in').innerHTML = `<svg><use href="${ svgSprites }#plus" /></svg>`
     if (configuration.ENABLE_FULLSCREEN) {
       this.map.addControl(new FullScreen({
         className: 'sf-fullscreen-btn',
