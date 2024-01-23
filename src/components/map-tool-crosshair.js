@@ -19,7 +19,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
   createDOM() {
     this.button_element = document.createElement('button')
     this.button_element.style.borderRadius = '0'
-    this.button_element.className = 'crosshair-btn'
+    this.button_element.className = 'crosshair-btn secondary'
     this.button_element.title = 'Aktivér sigtekorn'
     this.button_element.innerHTML = `<svg><use href="${ svgSprites }#crosshair"/></svg>`
     this.append(this.button_element)
@@ -28,7 +28,6 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
   toggleCrosshair() {
     if (this.crosshairEnabled === 0) {
       this.crosshairEnabled = 1 // Set the toggle value to 1 (enabled)
-      this.button_element.style.background = 'var(--aktion)'
       this.button_element.style.borderRadius = '0'
       this.button_element.blur()
       this.viewport.map.once('singleclick', this.handleClick) // Bind the click event listener once

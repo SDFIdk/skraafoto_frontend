@@ -16,6 +16,7 @@ import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footpri
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
+import { findAncestor } from '../modules/utilities.js'
 import {
   updateMapView,
   updateMapImage,
@@ -29,6 +30,7 @@ import {
 import store from '../store'
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
+
 if (configuration.ENABLE_CROSSHAIR) {
   customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
 }
@@ -272,6 +274,7 @@ export class SkraaFotoViewport extends HTMLElement {
           `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
+        ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
         <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
           <svg><use href="${ svgSprites }#map-ruler"/></svg>
         </button>
@@ -322,12 +325,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
-    }
-
-    if (configuration.ENABLE_CROSSHAIR) {
-      const button_group = this.shadowRoot.querySelector('.ds-button-group')
-      const length_button = this.shadowRoot.querySelector('#length-btn')
-      button_group.insertBefore(document.createElement('skraafoto-crosshair-tool'), length_button)
     }
 
     // Add button to adjust brightness to the dom if enabled
@@ -576,10 +573,12 @@ export class SkraaFotoViewport extends HTMLElement {
 
     // When user cliks toolbar buttons, change mode
     this.shadowRoot.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
-      if (event.target.classList.contains('btn-height-measure')) {
-        this.toggleMode('measureheight', event.target)
-      } else if (event.target.classList.contains('btn-width-measure')) {
-        this.toggleMode('measurewidth', event.target)
+      const measureWidthBtn = findAncestor(event.target, '.btn-width-measure')
+      const measureHeightBtn = findAncestor(event.target, '.btn-height-measure')
+      if (measureHeightBtn) {
+        this.toggleMode('measureheight', measureHeightBtn)
+      } else if (measureWidthBtn) {
+        this.toggleMode('measurewidth', measureWidthBtn)
       } else {
         this.toggleMode('center')
       }

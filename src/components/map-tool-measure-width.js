@@ -45,40 +45,11 @@ export class MeasureWidthTool {
   measureTooltipElement
   measureTooltip
   draw
-  css = `
-    .ol-tooltip {
-      position: relative;
-      background: var(--mork-tyrkis);
-      border-radius: 0.5rem;
-      color: var(--hvid);
-      padding: 0.25rem 0.5rem;
-      white-space: nowrap;
-      font-size: 0.8rem;
-      cursor: default;
-      user-select: none;
-    }
-    .ol-tooltip-static {
-      background-color: var(--mork-tyrkis);
-      color: var(--hvid);
-    }
-    .ol-tooltip-measure::before,
-    .ol-tooltip-static::before {
-      border-top: 0.5rem solid var(--mork-tyrkis);
-      border-right: 0.5rem solid transparent;
-      border-left: 0.5rem solid transparent;
-      content: "";
-      position: absolute;
-      bottom: -0.4rem;
-      margin-left: -0.5rem;
-      left: 50%;
-    }
-  `
-
+  
 
   constructor(viewport) {
 
     this.viewport = viewport
-    this.insertStyle(this.viewport.shadowRoot, this.css)
     this.viewport.map.addLayer(this.layer)
 
     this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
@@ -91,12 +62,6 @@ export class MeasureWidthTool {
 
 
   // Methods
-
-  insertStyle(element, css) {
-    const style_link = document.createElement('style')
-    style_link.innerText = css
-    element.insertBefore(style_link, element.firstChild)
-  }
 
   modeChangeHandler(event) {
     // Clear previous interaction and measure drawings
