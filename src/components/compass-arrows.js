@@ -27,8 +27,8 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     .svg-icon-compass {
       display: block;
       position: absolute;
-      top: 0.66rem;
-      left: 0.9rem;
+      top: 0.72rem;
+      left: 0.92rem;
       z-index: 2;
       margin: 0;
       padding: 0;
@@ -178,7 +178,7 @@ export class SkraaFotoCompassArrows extends HTMLElement {
       } else {
         this.title = `Set mod ${ toDanish( new_value )}`
       }
-      
+
       this.letters.forEach(function(letter) {
         letter.classList.remove('active-direction')
       })
