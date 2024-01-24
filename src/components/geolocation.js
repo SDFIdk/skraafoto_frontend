@@ -1,15 +1,12 @@
-import Feature from 'ol/Feature'
-import { Geolocation } from 'ol'
-import { SkraaFotoMap } from "./map.js";
-import Point from 'ol/geom/Point'
-import {get as getProjection} from "ol/proj.js";
-import store from "../store/index.js";
-import VectorLayer from "ol/layer/Vector.js";
-import VectorSource from "ol/source/Vector.js";
+import store from '../store/index.js'
+import {Geolocation} from 'ol'
+import {get as getProjection} from 'ol/proj.js'
+import VectorLayer from 'ol/layer/Vector.js'
+import VectorSource from 'ol/source/Vector.js'
 
 
 /**
- * Web component that displays a Geolocation with the option to track current location
+ * Web component that displays a Geolocation button with the option to track and show users current location
  */
 
 export class SkraaLocation extends HTMLElement {
@@ -82,33 +79,41 @@ export class SkraaLocation extends HTMLElement {
       source: new VectorSource(),
     })
 
-    // Get the button element
+    // Get the geolocation button element
     const geolocationButton = this.querySelector('#geolocation-button')
 
-    // Initialize Geolocation
+    // Initialize Geolocation with tracking disabled and custom projection
     this.geolocation = new Geolocation({
       tracking: false, // Start tracking the user's position
-      projection: this.projection // Set the projection of the map
+      projection: this.projection, // Set the projection of the map
     })
 
-    if (geolocationButton) {
-      geolocationButton.addEventListener('click', (event) => {
-        this.geolocation.setTracking(true)
-      })
+    // Flag to prevent multiple click events
+    let clickHandled = false
 
-      this.geolocation.on('change', () => {
-        const position = this.geolocation.getPosition()
-        if (position) {
-          const newMarker = structuredClone(store.state.marker)
-          newMarker.center = position
-          store.dispatch('updateMarker', newMarker)
-        }
-      })
-
-      this.geolocation.once('error', (error) => {
-        console.error('Geolocation error:', error.message)
-        // Handle error (e.g., show a message to the user)
-      })
+    // Function to handle geolocation updates
+    const handleGeolocation = () => {
+      const newMarker = structuredClone(store.state.marker)
+      const newView = structuredClone(store.state.view)
+      // Update marker and view with user's position
+      newView.center = this.geolocation.getPosition()
+      store.dispatch('updateView', newView)
+      newMarker.center = this.geolocation.getPosition()
+      store.dispatch('updateMarker', newMarker)
+      clickHandled = true
     }
+
+    geolocationButton.addEventListener('click', () => {
+      // Reset the flag on each click
+      this.geolocation.setTracking(true)
+      setTimeout(() => {
+          handleGeolocation()
+      }, 50)
+    })
+
+    this.geolocation.once('error', (error) => {
+      console.error('Geolocation error: Something went wrong. Please try again', error.message)
+      // Handle error (e.g., show a message to the user)
+    })
   }
 }
