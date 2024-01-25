@@ -125,7 +125,7 @@ export class SkraaFotoMap extends HTMLElement {
         ${this.styles}
       </style>
       <skraafoto-compass direction="north"></skraafoto-compass>
-      ${ this.getAttribute('minimal') === null ? '<skraafoto-location></skraafoto-location>': ''}
+      ${ this.getAttribute('minimal') === null ? '<skraafoto-geolocation></skraafoto-geolocation>': ''}
     </div>
   `
 

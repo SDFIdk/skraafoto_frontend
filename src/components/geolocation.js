@@ -9,7 +9,7 @@ import VectorSource from 'ol/source/Vector.js'
  * Web component that displays a Geolocation button with the option to track and show users current location
  */
 
-export class SkraaLocation extends HTMLElement {
+export class SkraafotoGeolocation extends HTMLElement {
 
   // Properties
   geolocation
