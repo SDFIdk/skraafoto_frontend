@@ -1,105 +1,103 @@
 <!DOCTYPE html>
-<html lang="da" data-theme="light">
+<html lang="da" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes">
     <title>Information om Skråfoto</title>
     <meta name="description" content="Skråfoto er en tjeneste, hvor du kan finde skrå luftfotos fra forskellige vinkler af steder i hele Danmark. Udviklet af Styrelsen for Dataforsyning og Infrastruktur.">
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="img/logos/logo-simple-micro.svg">
+    <link rel="icon" href="img/logos/logo-small.svg">
     <script src="config.js"></script>
     <style>
       body {
         display: flex;
         flex-flow: column nowrap;
       }
+      header {
+        padding-top: var(--space);
+      }
       main {
         flex-grow: 1;
-      }
-      main,
-      article {
-        background-color: var(--lys-steel);
-      }
-      .sf-help-link {
-        display: none;
-      }
-      .sf-link-back.ds-icon-icon-close {
-        float: right;
-      }
-      .sf-link-back.ds-icon-hentdata-icon-get {
-        margin-left: -0.33rem;
-      }
-      .sf-link-back.ds-icon-hentdata-icon-get::before {
-        transform: rotate(90deg);
-      }
-      @media screen and (max-width: 576px) {
-        footer {
-          --padding: 1.5rem 3rem 2rem;
-        }
+        padding-top: var(--space-xl);
+        padding-bottom: var(--space-xl);
       }
     </style>
   </head>
   <body>
 
-    <skraafoto-header></skraafoto-header>
+    <header class="ds-container">
+      <a href="/" class="ds-logo sf-link-back">
+        <ds-logo></ds-logo>
+        <strong>Skråfoto</strong>
+        <span>Styrelsen for Dataforsyning og Infrastruktur</span>
+      </a>
+    </header>
 
-    <main style="padding: 4rem 0;">
+    <main class="ds-container">
 
-      <article class="ds-container ds-padding">
+      <a href="/" class="sf-link-back" role="button" title="Luk og gå tilbage til Skråfoto" style="float: right;">
+        <svg width="24" height="24" viewBox="0 0 24 24" class="ds-svg-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6.00011 18M6 6L17.9999 18" stroke="var(--ds-icon-color, black)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>        
+      </a>
 
-        <a href="/" class="sf-link-back secondary ds-icon-icon-close" role="button" title="Luk og gå tilbage til Skråfoto"></a>
+      <h1 style="margin-top: 0;">Information om Skråfoto</h1>
+      
+      <p>
+        Skråfoto er en webapplikation, som stilles til rådighed af Styrelsen for Dataforsyning og Infrastruktur.<br>
+        Den kan benyttes til at finde og vise skråfotos fra hele Danmark i 2017, 2019 og 2021.
+      </p>
+      
+      <h2>Vilkår og betingelser</h2>
+      <p>Brug af Skråfoto er omfattet af <a href="https://dataforsyningen.dk/Vilkaar">Dataforsyningens vilkår og betingelser.</a></p>
 
-        <h1 style="margin-top: 0;">Information om Skråfoto</h1>
-        
-        <p>
-          Skråfoto er en webapplikation, som stilles til rådighed af Styrelsen for Dataforsyning og Infrastruktur.<br>
-          Den kan benyttes til at finde og vise skråfotos fra hele Danmark i 2017, 2019 og 2021.
-        </p>
-        
-        <h2>Vilkår og betingelser</h2>
-        <p>Brug af Skråfoto er omfattet af <a href="https://dataforsyningen.dk/Vilkaar">Dataforsyningens vilkår og betingelser.</a></p>
+      <h3 class="h4">Om afstands- og højdemåling i skråfotos</h3>
+      <p>
+        Da målingen af afstand og højde fortages i et fladt foto på en jordoverflade, der er krum og afhængig af terrænet, er det vigtig, at målingen altid foretages på jorden. Ellers vil målingen være misvisende.<br>
+        I skråfotoviseren anvendes Danmarks Højdemodel til at beregne den korrekte placering. Hvis man starter oppe over terræn vil målingen blive forkert.
+      </p>
+      
+      <h2>Support</h2>
+      <p>
+        <strong>Telefon: 78 76 87 92</strong><br>
+        Har du brug for hjælp? Ring til supporten, vi har åbent alle hverdage kl. 09:00-14:00.
+      </p>
+      <p>
+        <strong>E-mail: support@sdfi.dk</strong><br>
+        Har du spørgsmål eller ændringsforslag til Dataforsyningen? Skriv til supporten. Vi vender tilbage til dig hurtigst muligt. 
+      </p>
+      
+      <h2>Tilgængelighed</h2>
+      <p>Tilgængeligheden på dette websted er omfattet af <a href="https://was.digst.dk/dataforsyningen-dk">Dataforsyningens tilgængelighedserklæring.</a></p>
+      
+      <h2>Open source</h2>
+      <p>Skråfoto webapplikationens kode er open source og stilles til rådighed under en <a href="https://github.com/SDFIdk/skraafoto_frontend/blob/main/LICENSE">MIT licens, som er beskrevet i kildekoden.</a></p>
 
-        <h3 class="h4">Om afstands- og højdemåling i skråfotos</h3>
-        <p>
-          Da målingen af afstand og højde fortages i et fladt foto på en jordoverflade, der er krum og afhængig af terrænet, er det vigtig, at målingen altid foretages på jorden. Ellers vil målingen være misvisende.<br>
-          I skråfotoviseren anvendes Danmarks Højdemodel til at beregne den korrekte placering. Hvis man starter oppe over terræn vil målingen blive forkert.
-        </p>
-        
-        <h2>Support</h2>
-        <p>
-          <strong>Telefon: 78 76 87 92</strong><br>
-          Har du brug for hjælp? Ring til supporten, vi har åbent alle hverdage kl. 09:00-14:00.
-        </p>
-        <p>
-          <strong>E-mail: support@sdfi.dk</strong><br>
-          Har du spørgsmål eller ændringsforslag til Dataforsyningen? Skriv til supporten. Vi vender tilbage til dig hurtigst muligt. 
-        </p>
-        
-        <h2>Tilgængelighed</h2>
-        <p>Tilgængeligheden på dette websted er omfattet af <a href="https://was.digst.dk/dataforsyningen-dk">Dataforsyningens tilgængelighedserklæring.</a></p>
-        
-        <h2>Open source</h2>
-        <p>Skråfoto webapplikationens kode er open source og stilles til rådighed under en <a href="https://github.com/SDFIdk/skraafoto_frontend/blob/main/LICENSE">MIT licens, som er beskrevet i kildekoden.</a></p>
+      <h2>Vil du vide mere om skråfoto?</h2>
+      <p>
+        Her finder du <a href="https://docs.dataforsyningen.dk/#skraafoto-stac-api-dokumentation">dokumentation på SkråfotoAPI.</a><br>
+        Hvis du vil vide mere om baggrunden for skråfotos finder du her <a href="https://sdfi.dk/media/6880/faq-skraafotos.pdf">FAQ om skråfotos.</a>
+      </p>
 
-        <h2>Vil du vide mere om skråfoto?</h2>
-        <p>
-          Her finder du <a href="https://docs.dataforsyningen.dk/#skraafoto-stac-api-dokumentation">dokumentation på SkråfotoAPI.</a><br>
-          Hvis du vil vide mere om baggrunden for skråfotos finder du her <a href="https://sdfi.dk/media/6880/faq-skraafotos.pdf">FAQ om skråfotos.</a>
-        </p>
-
-        <p style="margin-top: 2rem;">
-          <a href="/" class="sf-link-back ds-icon-hentdata-icon-get" role="button">Tilbage til Skråfoto</a>
-        </p>
-      </article>
+      <p style="margin-top: 2rem;">
+        <a href="/" class="sf-link-back" role="button">
+          <svg width="24" height="24" viewBox="0 0 24 24" class="ds-svg-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 6L6 12M12 18L6 12M6 12H18" stroke="var(--ds-icon-color, black)" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Tilbage til Skråfoto
+        </a>
+      </p>
 
     </main>
 
-    <footer style="background-color: var(--medium-steel);">
-      <div class="ds-container ds-padding" style="margin-bottom: 0; background-color: transparent;">
-        <h2 class="ds-logo-micro ds-logo-pull-left" style="margin-bottom: var(--typography-spacing-vertical);">
+    <footer class="ds-footer">
+      <div class="ds-container">
+        <p class="ds-logo">
+          <ds-logo></ds-logo>
           <strong>SDFI</strong>
           <span>Styrelsen for Dataforsyning og Infrastruktur</span>
-        </h2>
+        </p>
+        <hr>
         <p>
           <small>
             Rentemestervej 8<br>
@@ -110,6 +108,8 @@
             CVR-nummer: 37 28 41 14
           </small>
         </p>
+        <hr>
+        <p>© 2023 Styrelsen for Dataforsyning og Infrastruktur</p>
       </div>
     </footer>
 

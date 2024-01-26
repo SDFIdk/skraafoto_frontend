@@ -1,24 +1,16 @@
 
 /* CSS imports*/
-@import "@dataforsyningen/css/assets/designsystem.css";
-@import "@dataforsyningen/icons/css/logo-big.css";
-@import "@dataforsyningen/icons/css/logo-micro.css";
-@import "@dataforsyningen/icons/css/icon-crosshair.css";
-@import "@dataforsyningen/icons/css/hentdata-icon-get.css";
-@import "@dataforsyningen/icons/css/hentdata-icon-download.css";
-@import "@dataforsyningen/icons/css/icon-info.css";
-@import "@dataforsyningen/icons/css/map-icon-ruler.css";
-@import "@dataforsyningen/icons/css/icon-arrow-single-down.css";
-@import "@dataforsyningen/icons/css/icon-arrow-single-up.css";
-@import "@dataforsyningen/icons/css/icon-close.css";
-@import "@dataforsyningen/icons/css/icon-dropdown.css";
-@import "@dataforsyningen/icons/css/hentdata-icon-pending.css";
-@import "@dataforsyningen/icons/css/icon-search.css";
-@import "@dataforsyningen/icons/css/icon-fullscreen.css";
-@import "@dataforsyningen/icons/css/icon-question.css";
-@import "@dataforsyningen/icons/css/icon-print.css";
-@import "@dataforsyningen/icons/css/sider-icon-lab.css"; /* Temp exposure icon, remove when new one is added */
-@import "@dataforsyningen/icons/css/map-icon-findonmap.css";
+@import "@dataforsyningen/designsystem/assets/designsystem.css";
 
 /** Custom styles for cookieinformation popup */
 @import "./styles/cookieinformation.css";
+
+/* Measure tool styles*/
+@import "./styles/measure.css";
+
+body {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}

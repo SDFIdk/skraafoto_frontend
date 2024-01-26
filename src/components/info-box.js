@@ -1,5 +1,6 @@
 import { toDanish } from '../modules/i18n.js'
 import { get } from '@dataforsyningen/saul'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that displays a sliding panel with information on an image
@@ -45,9 +46,13 @@ export class SkraaFotoInfoBox extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button class="sf-info-btn sf-slider-open ds-icon-icon-info" title="Information om billede"></button>
+    <button class="sf-info-btn sf-slider-open secondary" title="Information om billede">
+      <svg><use href="${ svgSprites }#info"/></svg>
+    </button>
     <section class="sf-slider-content">
-      <button class="sf-slider-close ds-icon-icon-close" title="Luk"></button>
+      <button class="sf-slider-close quiet" title="Luk">
+        <svg><use href="${ svgSprites }#close"/></svg>
+      </button>
       <div class="sf-slider-grid ds-padding">
         <p>Ingen information tilgængelig.</p>
       </div>

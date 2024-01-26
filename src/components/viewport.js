@@ -4,6 +4,7 @@ import FullScreen from 'ol/control/FullScreen'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import Collection from 'ol/Collection'
 import { getZ, image2world } from '@dataforsyningen/saul'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { SkraaFotoExposureTool } from './map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from './map-tool-crosshair.js'
 import { SkraaFotoDownloadTool } from './map-tool-download.js'
@@ -15,6 +16,7 @@ import { addFootprintListenerToViewport } from '../custom-plugins/plugin-footpri
 import { queryItems } from '../modules/api.js'
 import { configuration } from '../modules/configuration.js'
 import { getViewSyncViewportListener } from '../modules/sync-view'
+import { findAncestor } from '../modules/utilities.js'
 import {
   updateMapView,
   updateMapImage,
@@ -28,6 +30,7 @@ import {
 import store from '../store'
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
+
 if (configuration.ENABLE_CROSSHAIR) {
   customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
 }
@@ -67,11 +70,6 @@ export class SkraaFotoViewport extends HTMLElement {
   compass_element
   update_pointer_function
   update_view_function
-  fullscreen = new FullScreen({
-    label: '',
-    activeClassName: 'ds-icon-icon-close',
-    inactiveClassName: 'ds-icon-icon-fullscreen'
-  })
   mode = 'center'
   modechange = new CustomEvent('modechange', {detail: () => this.mode })
   tool_center
@@ -79,6 +77,9 @@ export class SkraaFotoViewport extends HTMLElement {
   tool_measure_height
 
   styles = /*css*/`
+    button {
+    border: none;
+    }
     :host {
       position: relative;
       display: block;
@@ -91,10 +92,20 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .sf-viewport-tools {
       position: absolute;
-      top: 1rem;
-      left: 1rem;
+      z-index: 2;
+      top: .5rem;
+      left: .5rem;
+      border-radius: 2rem
     }
-    .viewport-map { 
+    .sf-viewport-tools button {
+      display: flex;
+    }
+    .sf-viewport-tools select.sf-date-selector {
+      margin: 0 !important;
+      border-radius: var(--space-lg) 0 0 var(--space-lg);
+      height: 100%;
+    }
+    .viewport-map {
       width: 100%; 
       height: 100%;
       position: relative;
@@ -123,9 +134,12 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     ds-spinner {
       position: absolute;
-      top: 0;
-      width: 100%;
-      height: 100%;
+      top: 50%;
+      left: 50%;
+      margin-left: -2rem;
+      margin-top: -2rem;
+      width: 4rem !important;
+      height: 4rem !important;
       z-index: 10
     }
     ds-spinner > .ds-loading-svg {
@@ -150,10 +164,18 @@ export class SkraaFotoViewport extends HTMLElement {
     .image-date {
       display: none;
     }
-    .ol-full-screen {
+    .sf-fullscreen-btn {
       position: absolute;
       top: 6rem;
       right: 1.5rem;
+    }
+    .sf-fullscreen-btn svg {
+      display: none;
+      margin: 0 !important;
+    }
+    .sf-fullscreen-btn-true svg.fullscreen-true,
+    .sf-fullscreen-btn-false svg.fullscreen-false {
+      display: flex;
     }
     .ol-zoom {
       bottom: 2rem;
@@ -162,30 +184,14 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     .ol-zoom-in,
     .ol-zoom-out {
-      margin: .25rem 0 0;
-      display: block;
-      height: 3rem;
-      width: 3rem;
-      font-size: 2.3rem;
-      font-weight: 300;
-      border-radius: 2.3rem;
-      padding: 0;
-      line-height: 1;
-      box-shadow: 0 0.15rem 0.3rem hsl(0,0%,50%,0.5);
-    }
-    .ds-nav-tools {
-      z-index: 2;
-      top: .5rem;
-      left: .5rem;
-    }
-    .ds-button-group {
-      min-width: 10rem;
-      min-height: 3rem;
-      padding: 0 0 0 0.5rem;
+      margin: 0.25rem 0 0;
+      display: flex;
+      justify-content: center;
       align-items: center;
+      box-shadow: 0 0.15rem 0.3rem hsl(0, 0%, 50%, 0.5);
     }
-    .ds-nav-tools button.active {
-      background-color: var(--aktion) !important;
+    .sf-viewport-tools button.active {
+      background-color: var(--highlight) !important;
     }
 
     /* Download tool */
@@ -207,7 +213,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     /* Measure height tool */
-    .btn-height-measure::before {
+    .btn-height-measure > svg {
       transform: rotate(90deg);
     }
     
@@ -217,7 +223,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     @media screen and (max-width: 35rem) {
-      .ol-full-screen {
+      .sf-fullscreen-btn {
         top: auto;
         bottom: 1.6rem;
       }
@@ -241,10 +247,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
 
     @media screen and (max-width: 50rem) {
-
-      .ds-button-group {
-        padding-left: 0;
-      }
     
       .image-date {
         display: block;
@@ -261,16 +263,20 @@ export class SkraaFotoViewport extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <nav class="ds-nav-tools sf-viewport-tools">
+    <nav class="ds-nav-tools sf-viewport-tools" data-theme="light">
       <div class="ds-button-group">
         ${ 
           configuration.ENABLE_YEAR_SELECTOR ?
           `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
-        <hr>
-        <button id="length-btn" class="btn-width-measure ds-icon-map-icon-ruler" title="Mål afstand"></button>
-        <button id="height-btn" class="btn-height-measure ds-icon-map-icon-ruler" title="Mål højde"></button>
+        ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
+        <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
+          <svg><use href="${ svgSprites }#map-ruler"/></svg>
+        </button>
+        <button id="height-btn" class="btn-height-measure secondary" title="Mål højde">
+          <svg><use href="${ svgSprites }#map-ruler"/></svg>
+        </button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         <skraafoto-download-tool></skraafoto-download-tool>
       </div>
@@ -317,12 +323,6 @@ export class SkraaFotoViewport extends HTMLElement {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
     }
 
-    if (configuration.ENABLE_CROSSHAIR) {
-      const button_group = this.shadowRoot.querySelector('.ds-button-group')
-      const length_button = this.shadowRoot.querySelector('#length-btn')
-      button_group.insertBefore(document.createElement('skraafoto-crosshair-tool'), length_button)
-    }
-
     // Add button to adjust brightness to the dom if enabled
     if (configuration.ENABLE_EXPOSURE) {
       const button_group = this.shadowRoot.querySelector('.ds-button-group')
@@ -355,8 +355,19 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     // Add controls
+    this.shadowRoot.querySelector('.ol-zoom-out').innerHTML = `<svg><use href="${ svgSprites }#minus" /></svg>`
+    this.shadowRoot.querySelector('.ol-zoom-in').innerHTML = `<svg><use href="${ svgSprites }#plus" /></svg>`
     if (configuration.ENABLE_FULLSCREEN) {
-      this.map.addControl(this.fullscreen)
+      this.map.addControl(new FullScreen({
+        className: 'sf-fullscreen-btn',
+        label: '',
+        tipLabel: 'Skift fuldskærmsvisning'
+      }))
+      // Add our custom fullscreen icon to fullscreen button
+      this.shadowRoot.querySelector('.sf-fullscreen-btn button').innerHTML = `
+        <svg class="fullscreen-false"><use href="${ svgSprites }#fullscreen" /></svg>
+        <svg class="fullscreen-true"><use href="${ svgSprites }#close" /></svg>
+      `
     }
   }
 
@@ -435,7 +446,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
   toggleMode(mode, button_element) {
-    this.shadowRoot.querySelectorAll('.ds-nav-tools button').forEach(function(btn) {
+    this.shadowRoot.querySelectorAll('.sf-viewport-tools button').forEach(function(btn) {
       btn.classList.remove('active')
     })
     if (mode !== this.mode) {
@@ -567,12 +578,14 @@ export class SkraaFotoViewport extends HTMLElement {
     // When viewport item changes, load new image
     window.addEventListener('updateItem', this.update_viewport_function.bind(this))
 
-    // When user clicks toolbar buttons, change mode
-    this.shadowRoot.querySelector('.ds-nav-tools').addEventListener('click', (event) => {
-      if (event.target.classList.contains('btn-height-measure')) {
-        this.toggleMode('measureheight', event.target)
-      } else if (event.target.classList.contains('btn-width-measure')) {
-        this.toggleMode('measurewidth', event.target)
+    // When user cliks toolbar buttons, change mode
+    this.shadowRoot.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
+      const measureWidthBtn = findAncestor(event.target, '.btn-width-measure')
+      const measureHeightBtn = findAncestor(event.target, '.btn-height-measure')
+      if (measureHeightBtn) {
+        this.toggleMode('measureheight', measureHeightBtn)
+      } else if (measureWidthBtn) {
+        this.toggleMode('measurewidth', measureWidthBtn)
       } else {
         this.toggleMode('center')
       }
@@ -589,7 +602,6 @@ export class SkraaFotoViewport extends HTMLElement {
     if (configuration.ENABLE_FOOTPRINT) {
       addFootprintListenerToViewport(this)
     }
-
   }
 
   disconnectedCallback() {

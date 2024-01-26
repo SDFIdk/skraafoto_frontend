@@ -1,0 +1,19 @@
+<svg class="ds-logo" width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .dsl-path {stroke: #fff; stroke-width: 0.8px;}
+    .dsl-circle {fill: hsl(198,100%,29%); stroke: hsl(198,100%,29%);}
+  </style>
+  <circle class="dsl-circle" cx="12.5" cy="12.5" r="12"/>
+  <g transform="translate(5,3.5)">
+    <path class="dsl-path" d="M7.50 0.66V1.51M7.50 3.06V3.58M9.13 2.29H8.27M6.72 2.29H5.86" stroke-linecap="round"/>
+    <path class="dsl-path" d="M2.58 14.70H12.41"/>
+    <path class="dsl-path" d="M2.58 12.63H12.41"/>
+    <ellipse class="dsl-path" cx="7.50" cy="4.87" rx="0.87" ry="0.87"/>
+    <mask id="mask0_2142_115" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="3" width="15" height="9">
+      <path d="M0 3.58H15V11.43H0V3.58Z" fill="#D9D9D9"/>
+    </mask>
+    <g mask="url(#mask0_2142_115)">
+      <path class="dsl-path" d="M7.50 12.59V6.00M7.50 6.00C8.01 5.65 8.53 4.87 10.08 4.88C11.37 4.89 12.15 5.39 12.15 6.68C12.15 8.75 10.90 10.01 8.79 12.89M7.50 6.00C6.98 5.65 6.46 4.89 4.91 4.88C3.62 4.87 2.84 5.39 2.84 6.68C2.84 8.75 4.11 10.01 6.20 12.89M12.13 6.31C13.28 6.31 13.81 6.94 13.81 7.98C13.81 9.27 12.04 11.66 10.86 12.89M2.86 6.31C1.67 6.31 1.18 6.94 1.18 7.97C1.18 9.27 2.96 11.66 4.13 12.89"/>
+    </g> 
+  </g>
+</svg>

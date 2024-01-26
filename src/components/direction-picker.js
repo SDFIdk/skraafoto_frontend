@@ -1,6 +1,7 @@
 import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
 import store from '../store'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions
@@ -77,8 +78,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       margin: 1rem;
     }
 
-    .sf-direction-picker-btn,
-    .sf-map-picker-btn {
+    button.sf-direction-picker-btn,
+    button.sf-map-picker-btn {
+      height: auto;
+      width: auto;
       border: none;
       padding: 0;
       margin: 0;
@@ -97,20 +100,20 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-direction-picker-btn:focus::after,
     .sf-map-picker-btn:hover::after,
     .sf-map-picker-btn:focus::after {
-      content: '';
-      position: absolute;
-      display: block;
-      bottom: 0;
-      left: 0;
-      height: 1.5rem;
-      width: 100%;
-      background-color: var(--aktion);
-      clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: 0;
+    left: 0;
+    height: 1.5rem;
+    width: 100%;
+    background-color: var(--blaa);
+    clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
     }
 
     .sf-direction-picker-btn:hover::after,
     .sf-map-picker-btn:hover::after {
-      background-color: var(--highlight);
+      box-shadow: inset 0 0 0 1rem var(--highlight);
     }
 
     skraafoto-map,
@@ -119,6 +122,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       height: 100%;
       width: 100%;
       display: block;
+      margin: 0 !important;
     }
 
     @media screen and (max-width: 35rem) {
@@ -162,7 +166,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
   }
     <section class="sf-slider-content">
-      <button class="sf-slider-close ds-icon-icon-close contrast" title="Luk"></button>
+      <button class="sf-slider-close" title="Luk">
+        <svg><use href="${ svgSprites }#close"/></svg>
+      </button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn sf-btn-map" title="Skift til kortvisning">
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
