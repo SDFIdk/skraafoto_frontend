@@ -120,5 +120,6 @@ export class SkraafotoGeolocation extends HTMLElement {
     store.state.view = newView
     store.dispatch('updateMarker', newMarker)
     store.dispatch('updateView', newView)
+    this.geolocation.tracking = false
   }
 }
