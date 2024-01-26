@@ -17,7 +17,6 @@ import Feature from 'ol/Feature'
 import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
-import { Geolocation } from 'ol'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
 import { configuration } from '../modules/configuration.js'
@@ -126,10 +125,7 @@ export class SkraaFotoMap extends HTMLElement {
         ${this.styles}
       </style>
       <skraafoto-compass direction="north"></skraafoto-compass>
-      ${ this.getAttribute('minimal') === null ? `
-        <skraafoto-location></skraafoto-location>
-        ` : ''
-      }
+      ${ this.getAttribute('minimal') === null ? '<skraafoto-location></skraafoto-location>': ''}
     </div>
   `
 
