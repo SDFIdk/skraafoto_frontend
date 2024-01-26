@@ -4,7 +4,8 @@ import {get as getProjection} from 'ol/proj.js'
 import VectorLayer from 'ol/layer/Vector.js'
 import VectorSource from 'ol/source/Vector.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-
+import {configuration} from '../modules/configuration.js'
+import {getZ} from '@dataforsyningen/saul'
 
 
 /**
@@ -89,36 +90,35 @@ export class SkraafotoGeolocation extends HTMLElement {
 
     // Initialize Geolocation with tracking disabled and custom projection
     this.geolocation = new Geolocation({
-      tracking: false, // Start tracking the user's position
+      tracking: true, // Start tracking the user's position
       projection: this.projection, // Set the projection of the map
     })
 
-    // Flag to prevent multiple click events
-    let clickHandled = false
-
-    // Function to handle geolocation updates
-    const handleGeolocation = () => {
-      const newMarker = structuredClone(store.state.marker)
-      const newView = structuredClone(store.state.view)
-      // Update marker and view with user's position
-      newView.center = this.geolocation.getPosition()
-      store.dispatch('updateView', newView)
-      newMarker.center = this.geolocation.getPosition()
-      store.dispatch('updateMarker', newMarker)
-      clickHandled = true
-    }
-
-    geolocationButton.addEventListener('click', () => {
-      // Reset the flag on each click
-      this.geolocation.setTracking(true)
-      setTimeout(() => {
-          handleGeolocation()
-      }, 50)
-    })
+    geolocationButton.addEventListener('click', this.handleGeolocation.bind(this))
 
     this.geolocation.once('error', (error) => {
       console.error('Geolocation error: Something went wrong. Please try again', error.message)
       // Handle error (e.g., show a message to the user)
     })
+  }
+
+  async handleGeolocation() {
+    console.log('geoloc', this.geolocation.getPosition())
+    const newCenter = this.geolocation.getPosition()
+    if (!newCenter) {
+      return
+    }
+    const newKote = await getZ(newCenter[0], newCenter[1], configuration)
+    const newMarker = structuredClone(store.state.marker)
+    const newView = structuredClone(store.state.view)
+    newMarker.center = newCenter
+    newMarker.kote = newKote
+    newView.center = newCenter
+    newView.kote = newKote
+    // Update marker and view with user's position
+    store.state.marker = newMarker
+    store.state.view = newView
+    store.dispatch('updateMarker', newMarker)
+    store.dispatch('updateView', newView)
   }
 }
