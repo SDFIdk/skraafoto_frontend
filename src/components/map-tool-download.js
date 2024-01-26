@@ -1,5 +1,6 @@
 import { configuration } from '../modules/configuration.js'
 import { createPdf } from '../custom-plugins/plugin-custom-create-pdf.js'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that enables user to download the current image
@@ -26,11 +27,13 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
     if (configuration.DOWNLOAD_TYPE === 'currentview') {
-      this.button_element.className = 'sf-download-tool ds-icon-icon-print'
+      this.button_element.className = 'sf-download-tool secondary'
       this.button_element.title = 'Print billede til PDF'
+      this.button_element.innerHTML = `<svg><use href="${ svgSprites }#print"/></svg>`
     } else {
-      this.button_element.className = 'sf-download-tool ds-icon-hentdata-icon-download'
+      this.button_element.className = 'sf-download-tool'
       this.button_element.title = 'Download billede'
+      this.button_element.innerHTML = `<svg><use href="${ svgSprites }#hentdata-download"/></svg>`
     }
     this.append(this.button_element)
 
@@ -38,7 +41,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.link_element = document.createElement('a')
     this.link_element.href = '#'
   }
-  
+
   download() {
     this.link_element.href = this.viewport.item.assets.data.href
     this.link_element.click()

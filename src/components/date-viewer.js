@@ -1,5 +1,6 @@
 import { queryItems } from '../modules/api.js'
 import store from '../store'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
@@ -32,6 +33,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
       border: none;
       cursor: pointer;
       box-shadow: none;
+      margin: 0;
+      border-radius: 0;
     }
 
     @media screen and (max-width: 50rem) {
@@ -47,8 +50,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
         background-repeat: no-repeat;
         background-position: 0.75rem center !important;
         background-color: transparent;
-        margin: 0 !important;
-        border-radius: 2.5rem 0 0 2.5rem;
       }
       select:hover,
       select:active {
@@ -65,7 +66,6 @@ export class SkraaFotoDateViewer extends HTMLElement {
       select {
         width: auto;
         background-position: center right .25rem !important;
-        margin: 6px !important;
       }
 
       select:focus {
@@ -164,12 +164,14 @@ export class SkraaFotoDateViewer extends HTMLElement {
         ${ this.#styles }
       </style>
       <nav class="ds-nav-tools">
-        <div class="ds-button-group">
-          <button class="button-down ds-icon-icon-arrow-single-down"></button>
-          <hr>
+        <div class="ds-button-group" data-theme="light">
+          <button class="button-down secondary" title="Skift billede">
+            <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
+          </button>
           <select class="sf-date-viewer" id="date"></select>
-          <hr>
-          <button class=" button-up ds-icon-icon-arrow-single-up"></button>
+          <button class="button-up secondary" title="Skift billede">
+            <svg><use href="${ svgSprites }#arrow-single-up"/></svg>
+          </button>
         </div>
       </nav>
     `

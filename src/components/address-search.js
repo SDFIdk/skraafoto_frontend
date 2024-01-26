@@ -188,26 +188,24 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
   }
 
-  searchItemsInCollection({ collection, center, orientation }) {
-    queryItems(center, orientation, collection)
-      .then((response) => {
-        if (response.features.length > 0) {
-          store.state.view.center = center;
-          store.state.marker.center = center;
-          store.dispatch('updateMultipleItems', [
-            response.features[0], 
-            response.features[0]
-          ])
-          store.dispatch('updateCollection', { index: 0, collection: response.features[0].collection });
-          return;
+  async searchItemsInCollection({ collection, center, orientation }) {
+    try {
+      const response = await queryItems(center, orientation, collection)
+
+      if (response.features.length > 0) {
+        const foundFeature = response.features[0]
+        store.state.view.center = center
+        store.state.marker.center = center
+        store.dispatch('updateMultipleItems', [foundFeature, foundFeature])
+        store.dispatch('updateCollection', { index: 0, collection: foundFeature.collection })
         } else {
-          const collections = store.state.collections;
-          const collectionIndex = collections.findIndex((c) => c === collection);
+          const collections = store.state.collections
+          const collectionIndex = collections.findIndex((c) => c === collection)
 
           if (collectionIndex !== -1) { // Check if the collection was found
             const nextCollectionIndex = (collectionIndex + 1) % collections.length; // Wrap around to the first collection if necessary
-            const nextCollection = collections[nextCollectionIndex];
-            this.showAlert(collection, nextCollection);
+            const nextCollection = collections[nextCollectionIndex]
+            this.showAlert(collection, nextCollection)
 
             this.searchItemsInCollection({
               collection: nextCollection,
@@ -215,13 +213,12 @@ export class SkraaFotoAddressSearch extends HTMLElement {
               orientation: orientation
             });
           } else {
-            console.error("Requested collection not found.");
+            console.error("Requested collection not found.")
           }
         }
-      })
-      .catch((err) => {
-        console.error('No items were found in any collections', err);
-      });
+      } catch (err) {
+        console.error('No items were found in any collections', err)
+      }
   }
 
   showAlert(collection, nextCollection) {

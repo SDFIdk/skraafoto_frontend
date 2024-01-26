@@ -1,5 +1,4 @@
 import store from '../store'
-import { apiCheck } from '@dataforsyningen/css/assets/designsystem.js'
 import { configuration } from './configuration'
 
 const lookup = {
@@ -32,24 +31,34 @@ function shiftItemTime(viewportIndex, direction) {
 }
 
 function keyDownHandler(event) {
-  // Hijack arrow keys when holding down Shift and not being in an input field. 
-  // Kinda hacky. Could probably be better
-  if (event.shiftKey && event.target.tagName !== 'INPUT') {
+  const isShiftKeyPressed = event.shiftKey;
+  const isInputField = event.target.tagName === 'INPUT'
+
+  if (isShiftKeyPressed && !isInputField) {
     event.preventDefault()
-    if (event.key === 'ArrowDown') {
-      shiftItemTime(0, -1)
-    } else if (event.key === 'ArrowUp') {
-      shiftItemTime(0, 1)
-    } else if (event.key === 'ArrowLeft') {
-      shiftItemOrientation(-1)
-    } else if (event.key === 'ArrowRight') {
-      shiftItemOrientation(1)
+
+    switch (event.key) {
+      case 'ArrowDown':
+        shiftItemTime(0, -1)
+        break
+      case 'ArrowUp':
+        shiftItemTime(0, 1)
+        break
+      case 'ArrowLeft':
+        shiftItemOrientation(-1)
+        break
+      case 'ArrowRight':
+        shiftItemOrientation(1)
+        break
+      default:
+        // Handle other keys if needed
+        break
     }
   }
 }
 
 function isDatafordelerDown() {
-  apiCheck(`https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter?geop=POINT(574763.99 6220953.04)&elevationmodel=dtm&username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }`)
+  fetch(`https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter?geop=POINT(574763.99 6220953.04)&elevationmodel=dtm&username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }`)
   .catch(function(error) {
     const alertDialog = document.createElement('dialog')
     alertDialog.id = 'datafordeler-down-dialog'

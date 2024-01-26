@@ -1,6 +1,6 @@
 /* Import and define common custom elements */
 
-import { Spinner } from '@dataforsyningen/css/assets/designsystem'
+import { Spinner } from '@dataforsyningen/designsystem'
 import { AlertSplash } from './alert-splash.js'
 import { SkraaFotoViewport } from './viewport.js'
 import { SkraaFotoAdvancedMap } from './advanced-map.js'

@@ -1,6 +1,7 @@
 import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
 import store from '../store'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions
@@ -77,8 +78,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       margin: 1rem;
     }
 
-    .sf-direction-picker-btn,
-    .sf-map-picker-btn {
+    button.sf-direction-picker-btn,
+    button.sf-map-picker-btn {
+      height: auto;
+      width: auto;
       border: none;
       padding: 0;
       margin: 0;
@@ -97,20 +100,20 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     .sf-direction-picker-btn:focus::after,
     .sf-map-picker-btn:hover::after,
     .sf-map-picker-btn:focus::after {
-      content: '';
-      position: absolute;
-      display: block;
-      bottom: 0;
-      left: 0;
-      height: 1.5rem;
-      width: 100%;
-      background-color: var(--aktion);
-      clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: 0;
+    left: 0;
+    height: 1.5rem;
+    width: 100%;
+    background-color: var(--blaa);
+    clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
     }
 
     .sf-direction-picker-btn:hover::after,
     .sf-map-picker-btn:hover::after {
-      background-color: var(--highlight);
+      box-shadow: inset 0 0 0 1rem var(--highlight);
     }
 
     skraafoto-map,
@@ -119,6 +122,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       height: 100%;
       width: 100%;
       display: block;
+      margin: 0 !important;
     }
 
     @media screen and (max-width: 35rem) {
@@ -162,7 +166,9 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
   }
     <section class="sf-slider-content">
-      <button class="sf-slider-close ds-icon-icon-close contrast" title="Luk"></button>
+      <button class="sf-slider-close" title="Luk">
+        <svg><use href="${ svgSprites }#close"/></svg>
+      </button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn sf-btn-map" title="Skift til kortvisning">
           <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
@@ -234,7 +240,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     }
   }
 
-  // TODO: Enable this in the correct way
   highlightCurrentDirection() {
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
@@ -247,6 +252,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   connectedCallback() {
 
     this.createShadowDOM()
+    this.highlightInitialDirection()
 
     this.btn_open_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,0)'
@@ -256,7 +262,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
-    // When a viewport is clicked in the selector, send a signal to update the main viewport
+    // When a mini-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
       btn.addEventListener('click', (event) => {
         const target_item = btn.querySelector('skraafoto-viewport-mini').item
@@ -266,17 +272,32 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         // Dispatch new item
         store.dispatch('updateMapVisibility', false)
         store.dispatch('updateItem', {index: 0, item: target_item})
+        this.highlightCurrentDirection()
       })
     })
 
-    // When the tiny map is clicked in the selector, send a signal to display the big map
+    // When the map-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
       // Set orientation parameter, causing the page to reload with map open
-      // TODO: clean up these dispatces. Which is actually needed?
+      // TODO: clean up these dispatches. Which is actually needed?
       store.dispatch('updateMapVisibility', true)
       this.slider_element.style.transform = 'translate(0,100vh)'
       this.highlightCurrentDirection()
     })
+
+    window.addEventListener('updateItem', () => { this.highlightCurrentDirection() })
   }
 
+  highlightInitialDirection() {
+    const initialDirection = store.state.viewports[0].orientation
+    const initialElement = this[`${initialDirection}_element`]
+
+    // Remove active class from all buttons
+    this.shadowRoot.querySelectorAll('button').forEach(button => {
+      button.classList.remove('active')
+    })
+
+    // Add active class to the initially selected direction button
+    initialElement.parentNode.classList.add('active')
+  }
 }
