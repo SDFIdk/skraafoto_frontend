@@ -3,6 +3,8 @@ import {Geolocation} from 'ol'
 import {get as getProjection} from 'ol/proj.js'
 import VectorLayer from 'ol/layer/Vector.js'
 import VectorSource from 'ol/source/Vector.js'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+
 
 
 /**
@@ -22,7 +24,7 @@ export class SkraafotoGeolocation extends HTMLElement {
     .ds-icon-map-icon-findonmap {
       position: absolute;
       z-index: 10;
-      bottom: 9rem;
+      bottom: 8rem;
       right: 1rem;
       --icon-outer-size: 3rem;
       --icon-pos: 0rem 1rem;
@@ -59,12 +61,15 @@ export class SkraafotoGeolocation extends HTMLElement {
   }
 
   createDOM() {
-
     // Create a shadow root
-    this.geolocation = document.createElement('div')
-    this.geolocation.innerHTML = this.template
-    this.append(this.geolocation)
+    this.geolocation = document.createElement('div');
+    this.geolocation.innerHTML = this.template;
+    this.append(this.geolocation);
+
+    const geolocationButton = this.querySelector('#geolocation-button');
+    geolocationButton.innerHTML = `<svg><use href="${ svgSprites }#map-findonmap" /></svg>`;
   }
+
 
   // Lifecycle
   connectedCallback() {
