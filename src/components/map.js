@@ -123,15 +123,14 @@ export class SkraaFotoMap extends HTMLElement {
   template = `
     <div class="geographic-map">
       <style>
-        ${ this.styles }
+        ${this.styles}
       </style>
       <skraafoto-compass direction="north"></skraafoto-compass>
-      
       ${ this.getAttribute('minimal') === null ? `
-      <!--<button title="Vis min lokation" id="geolocation-button" class="ds-icon-map-icon-findonmap"></button>-->
-      ` : ''
+        <skraafoto-location></skraafoto-location>
+        ` : ''
       }
-      </div>
+    </div>
   `
 
   // getters
@@ -151,29 +150,9 @@ export class SkraaFotoMap extends HTMLElement {
     register(proj4)
     this.projection = getProjection('EPSG:25832')
 
-    // Initialize Geolocation
-    this.geolocation = new Geolocation({
-      tracking: false, // Start tracking the user's position
-      projection: this.projection // Set the projection of the map
-    });
-
     // Create a vector layer for the user's position marker
     this.userPositionLayer = new VectorLayer({
       source: new VectorSource(),
-    });
-
-    // Event listener for geolocation change
-    this.geolocation.on('change:position', () => {
-      const position = this.geolocation.getPosition();
-      if (position) {
-        const userMarker = new Feature({
-          geometry: new Point(position),
-        });
-
-        const markerSource = this.userPositionLayer.getSource();
-        markerSource.clear(); // Clear previous marker if any
-        markerSource.addFeature(userMarker);
-      }
     });
   }
 
@@ -379,36 +358,6 @@ export class SkraaFotoMap extends HTMLElement {
     this.createDOM()
     this.createMap()
 
-    // Get the button element
-    const geolocationButton = this.querySelector('#geolocation-button')
-
-    if(geolocationButton) {
-      geolocationButton.addEventListener('click', (event) => {
-          const position = this.geolocation.getPosition()
-        if (position) {
-          const newMarker = structuredClone(store.state.marker)
-          newMarker.center = position
-          store.dispatch('updateMarker', newMarker)
-          const view = this.map.getView()
-          view.setCenter(position)
-          view.setZoom(15) // Set any desired zoom level
-          this.map.setView(view)
-
-          if (this.icon_layer) {
-            this.map.removeLayer(this.icon_layer)
-          }
-          this.icon_layer = this.generateIconLayer(position)
-          this.map.addLayer(this.icon_layer)
-        }
-        this.geolocation.once('error', (error) => {
-          console.error('Geolocation error:', error.message)
-          // Handle error (e.g., show a message to the user)
-        })
-
-        this.geolocation.setTracking(true)
-      })
-    }
-
     // When marker (crosshair) position changes in state, re-render the icon layer
     window.addEventListener('updateMarker', this.updateMap.bind(this))
     window.addEventListener('updateItem', this.updateMap.bind(this))
@@ -427,5 +376,4 @@ export class SkraaFotoMap extends HTMLElement {
     window.removeEventListener('updateMarker', this.updateMap)
     window.removeEventListener('updateItem', this.updateMap)
   }
-
 }
