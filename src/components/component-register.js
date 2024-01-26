@@ -40,9 +40,4 @@ export async function registerComponents() {
     const { SkraaFotoDateViewer } = await import("./date-viewer.js")
     customElements.define('skraafoto-date-viewer', SkraaFotoDateViewer)
   }
-  if (configuration.ENABLE_GEOLOCATION) {
-    const { SkraafotoGeolocation } = await import ("./geolocation.js")
-    customElements.define('skraafoto-geolocation', SkraafotoGeolocation)
-  }
-
 }
