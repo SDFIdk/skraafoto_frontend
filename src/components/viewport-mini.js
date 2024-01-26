@@ -157,7 +157,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
     this.toggleSpinner(true)
 
-    const center = store.state.view.center
+    const center = store.state.marker.center
 
     if (center) {
       const newCenters = await updateCenter(center, this.item)

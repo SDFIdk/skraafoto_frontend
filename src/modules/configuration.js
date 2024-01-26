@@ -24,10 +24,11 @@ let configuration = {
   ENABLE_CROSSHAIR: false, // Enables crosshair/movement tool
   ENABLE_CROSSHAIR_ICON: false,
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
-  ENABLE_ALERT: false,
+  ENABLE_ALERT: false, // Shows a modal with custom content
   ENABLE_YEAR_SELECTOR: true, // Display a collection selector in toolbar.
   ENABLE_DATE_BROWSER: true, // Display a selection of other image items for the same collection (year).
   ENABLE_CUSTOM_PARAMETER: true, // Enable custom year parameter for SKAT (ONLY TEMPORARY)
+  ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
 
   // The zoom difference between skraafotos and the WMTS service used for the map.
   MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.

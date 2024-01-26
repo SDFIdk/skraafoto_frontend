@@ -7,9 +7,11 @@ import { SkraaFotoAdvancedMap } from './advanced-map.js'
 import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
-import { SkraaFotoCompass } from "./compass"
+import { SkraaFotoCompass } from './compass'
+import { SkraafotoGeolocation } from './geolocation.js';
 import { FirstTimeVisit } from './first-time-visitor.js'
 import { configuration } from "../modules/configuration"
+
 
 
 export async function registerComponents() {
@@ -23,6 +25,7 @@ export async function registerComponents() {
   customElements.define('skraafoto-header', SkraaFotoHeader)
   customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
   customElements.define('skraafoto-compass', SkraaFotoCompass)
+  customElements.define('skraafoto-geolocation', SkraafotoGeolocation)
 
   // Load web components by configuration
   if (configuration.ENABLE_COMPASSARROWS) {
@@ -37,5 +40,4 @@ export async function registerComponents() {
     const { SkraaFotoDateViewer } = await import("./date-viewer.js")
     customElements.define('skraafoto-date-viewer', SkraaFotoDateViewer)
   }
-
 }
