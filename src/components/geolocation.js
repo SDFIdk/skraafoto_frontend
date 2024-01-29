@@ -36,6 +36,14 @@ export class SkraafotoGeolocation extends HTMLElement {
         top: 0.5rem;
         right: 0.5rem;
       }
+      .ds-icon-map-icon-findonmap {
+        position: absolute;
+        z-index: 10;
+        bottom: 6.11rem;
+        right: 2rem;
+        --icon-outer-size: 3rem;
+        --icon-pos: 0rem 1rem;
+      }
     }
   `
   template = `
@@ -90,11 +98,15 @@ export class SkraafotoGeolocation extends HTMLElement {
 
     // Initialize Geolocation with tracking disabled and custom projection
     this.geolocation = new Geolocation({
-      tracking: true, // Start tracking the user's position
+      tracking: false, // Start tracking the user's position
       projection: this.projection, // Set the projection of the map
     })
 
-    geolocationButton.addEventListener('click', this.handleGeolocation.bind(this))
+    geolocationButton.addEventListener('click', function() {
+      this.geolocation.setTracking(true);
+      this.handleGeolocation.bind(this)();
+    }.bind(this));
+
 
     this.geolocation.once('error', (error) => {
       console.error('Geolocation error: Something went wrong. Please try again', error.message)
@@ -103,6 +115,7 @@ export class SkraafotoGeolocation extends HTMLElement {
   }
 
   async handleGeolocation() {
+    this.geolocation.setTracking(true)
     console.log('geoloc', this.geolocation.getPosition())
     const newCenter = this.geolocation.getPosition()
     if (!newCenter) {

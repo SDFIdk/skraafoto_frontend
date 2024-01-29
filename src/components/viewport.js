@@ -225,7 +225,8 @@ export class SkraaFotoViewport extends HTMLElement {
     @media screen and (max-width: 35rem) {
       .sf-fullscreen-btn {
         top: auto;
-        bottom: 1.6rem;
+        bottom: 8.5rem;
+        right: 2rem;
       }
       
       .ol-zoom {
@@ -238,7 +239,7 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       skraafoto-compass-arrows {
         top: auto;
-        bottom: 6.5rem;
+        bottom: 1.25rem;
       }
       .image-date {
         bottom: 0.5rem;
@@ -251,8 +252,8 @@ export class SkraaFotoViewport extends HTMLElement {
       .image-date {
         display: block;
         bottom: auto;
-        top: 5rem;
-        left: 2.25rem;
+        top: 3.5rem;
+        left: 2rem;
       }
 
     }

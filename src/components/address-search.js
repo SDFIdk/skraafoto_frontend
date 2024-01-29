@@ -4,6 +4,7 @@ import {configuration} from '../modules/configuration.js'
 import {queryItems} from '../modules/api.js'
 import {getGSearchCenterPoint} from '../modules/gsearch-util.js'
 import store from '../store'
+import {search} from "@dataforsyningen/gsearch-ui/src/modules/api.js";
 
 customElements.define('g-search', GSearchUI)
 
@@ -76,7 +77,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       font-size: 0.95em;
     }
     skraafoto-address-search {
-      margin: 0 1rem 0 auto;
     }
     .gs-wrapper {
       width: 20rem
@@ -164,6 +164,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       this.input_element.addEventListener('blur', () => {
         this.input_container.classList.remove('open')
       })
+      const searchButton = this.querySelector('sf-search-btn-open');
+      searchButton.innerHTML = `<svg><use href="${ svgSprites }#map-findonmap" /></svg>`;
 
       // Event listener to hide input_container when clicked outside
       const outsideClickListener = (event) => {

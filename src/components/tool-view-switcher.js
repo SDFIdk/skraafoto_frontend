@@ -10,11 +10,18 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
 
   markup
   styles = `
+  
+  media screen 
     skraafoto-view-switcher {
       display: flex;
     }
     .switch-button {
       display: flex;
+    }
+    @media screen and (min-width: 40rem) {
+    skraafoto-view-switcher {
+    display: flex;
+    }
     }
   `
   template = `

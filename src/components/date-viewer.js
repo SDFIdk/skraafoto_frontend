@@ -27,6 +27,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     .ds-button-group button, .ds-button-group  {
       padding: 0;
       pointer-events: all;
+      align-items: center;
     }
     select {
       background-color: var(--hvid);
@@ -40,8 +41,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
     @media screen and (max-width: 50rem) {
 
       select {
-        text-indent: -10000em;
-        width: 3.25rem;
+        text-indent: 0 !important;
+        width: auto;
         height: 3rem;
         border: none;
         position: relative;

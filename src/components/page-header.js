@@ -67,13 +67,13 @@ export class SkraaFotoHeader extends HTMLElement {
       .sf-header nav {
         width: 100vw;
       }
-      skraafoto-view-switcher {
-        display: none;
-      }
     }
 
     @media screen and (max-width: 40rem) {
       .ds-logo > span:last-child {
+        display: none;
+      }
+      skraafoto-view-switcher {
         display: none;
       }
     }
