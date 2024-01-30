@@ -101,7 +101,6 @@ export class SkraaFotoViewport extends HTMLElement {
       display: flex;
     }
     .sf-viewport-tools select.sf-date-selector {
-      margin: 0 !important;
       border-radius: var(--space-lg) 0 0 var(--space-lg);
       height: 100%;
     }
@@ -271,6 +270,7 @@ export class SkraaFotoViewport extends HTMLElement {
           `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
           : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
+        <hr>
         ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
         <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
           <svg><use href="${ svgSprites }#map-ruler"/></svg>

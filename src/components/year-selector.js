@@ -1,5 +1,7 @@
 import { getYearFromCollection } from '../modules/utilities.js'
 import store from '../store'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+
 
 /**
  * Web component that enables the user to select from a list of available years.
@@ -57,6 +59,9 @@ export class SkraaFotoYearSelector extends HTMLElement {
       select:focus {
         box-shadow: 0 0 0 3px var(--highlight);
       }
+      #year-button {
+        display: none;
+      }
 
     }
   `
@@ -76,7 +81,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
     this.createDOM()
 
     // Listen for user change
-    this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))    
+    this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
 
     window.addEventListener('updateCollection', this.collectionUpdatedHandler.bind(this))
   }
@@ -96,14 +101,14 @@ export class SkraaFotoYearSelector extends HTMLElement {
       optionElement.innerText = year
       this.#selectElement.appendChild(optionElement)
     }
-    
+
     // Setup select element value from state
     this.#selectElement.value = getYearFromCollection(store.state.viewports[this.dataset.index].collection)
   }
 
   selectionChangeHandler(event) {
     store.dispatch('updateCollection', {
-      index: this.dataset.index, 
+      index: this.dataset.index,
       collection: `skraafotos${event.target.value}`
     })
   }

@@ -37,6 +37,10 @@ export class SkraaFotoDateViewer extends HTMLElement {
       margin: 0;
       border-radius: 0;
     }
+    select {
+      width: auto;
+      background-position: center right .25rem !important;
+    }
 
     @media screen and (max-width: 50rem) {
 
@@ -51,6 +55,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
         background-repeat: no-repeat;
         background-position: 0.75rem center !important;
         background-color: transparent;
+        padding: 0 1rem !important;
       }
       select:hover,
       select:active {
@@ -169,7 +174,9 @@ export class SkraaFotoDateViewer extends HTMLElement {
           <button class="button-down secondary" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
           </button>
+          <hr>
           <select class="sf-date-viewer" id="date"></select>
+          <hr>
           <button class="button-up secondary" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-up"/></svg>
           </button>

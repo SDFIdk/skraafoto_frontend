@@ -4,7 +4,7 @@ import {configuration} from '../modules/configuration.js'
 import {queryItems} from '../modules/api.js'
 import {getGSearchCenterPoint} from '../modules/gsearch-util.js'
 import store from '../store'
-import {search} from "@dataforsyningen/gsearch-ui/src/modules/api.js";
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 customElements.define('g-search', GSearchUI)
 
@@ -108,13 +108,18 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       .sf-search-collapsible .open {
         transform: translate(0,0) !important;
         margin: 0rem;
-        padding: 1.5rem 2rem;
+        padding: 1.3rem 2rem;
       }
 
       .sf-search-collapsible input.sf-search-input + div {
         left: auto;
         right: 0;
         max-width: calc(100vw - 2rem);
+      }
+      button#search-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   `
@@ -123,7 +128,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button class="sf-search-btn-open ds-icon-icon-search secondary" title="Søg efter adresse eller stednavn"></button>
+    <button id="search-button" class="sf-search-btn-open ds-icon-icon-search secondary" title="Søg efter adresse eller stednavn"></button>
     <div class="sf-input-container">
       <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="100" data-resources="husnummer,stednavn"></g-search>
     </div>
@@ -164,8 +169,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       this.input_element.addEventListener('blur', () => {
         this.input_container.classList.remove('open')
       })
-      const searchButton = this.querySelector('sf-search-btn-open');
-      searchButton.innerHTML = `<svg><use href="${ svgSprites }#map-findonmap" /></svg>`;
+      const searchButton = this.querySelector('#search-button')
+      searchButton.innerHTML = `<svg><use href="${ svgSprites }#search"/></svg>`
 
       // Event listener to hide input_container when clicked outside
       const outsideClickListener = (event) => {

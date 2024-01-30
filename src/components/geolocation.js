@@ -102,7 +102,7 @@ export class SkraafotoGeolocation extends HTMLElement {
       projection: this.projection, // Set the projection of the map
     })
 
-    geolocationButton.addEventListener('click', function() {
+    geolocationButton.addEventListener('click', async function() {
       this.geolocation.setTracking(true);
       this.handleGeolocation.bind(this)();
     }.bind(this));
@@ -115,7 +115,6 @@ export class SkraafotoGeolocation extends HTMLElement {
   }
 
   async handleGeolocation() {
-    this.geolocation.setTracking(true)
     console.log('geoloc', this.geolocation.getPosition())
     const newCenter = this.geolocation.getPosition()
     if (!newCenter) {
