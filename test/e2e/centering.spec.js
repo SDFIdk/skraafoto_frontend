@@ -18,6 +18,6 @@ test('Change position when clicking in the viewport', async ({ page }) => {
     await page.mouse.click(200,200)
   }
   await page.waitForLoadState('networkidle')
-  await expect(page.locator('css=skraafoto-viewport')).toContainText('koordinat 722102 Ø, 6178844 N set fra nord.')
-  await expect(page.getByTitle('Billede af området omkring koordinat 722102 Ø, 6178844 N set fra øst.')).toBeDefined()
+  await expect(page.locator('css=skraafoto-viewport')).toContainText('koordinat 722099 Ø, 6178844 N set fra nord.')
+  await expect(page.getByTitle('Billede af området omkring koordinat 722099 Ø, 6178844 N set fra øst.')).toBeDefined()
 })
