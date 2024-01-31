@@ -102,11 +102,14 @@ export class SkraafotoGeolocation extends HTMLElement {
       projection: this.projection, // Set the projection of the map
     })
 
-    geolocationButton.addEventListener('click', async function() {
-      this.geolocation.setTracking(true);
-      this.handleGeolocation.bind(this)();
-    }.bind(this));
+    geolocationButton.addEventListener('click', async () => {
+      this.geolocation.setTracking(true)
+    })
 
+    this.geolocation.on('change', () => {
+      console.log('geoloc', this.geolocation.getPosition())
+      this.handleGeolocation.bind(this)()
+    })
 
     this.geolocation.once('error', (error) => {
       console.error('Geolocation error: Something went wrong. Please try again', error.message)
@@ -115,7 +118,6 @@ export class SkraafotoGeolocation extends HTMLElement {
   }
 
   async handleGeolocation() {
-    console.log('geoloc', this.geolocation.getPosition())
     const newCenter = this.geolocation.getPosition()
     if (!newCenter) {
       return
