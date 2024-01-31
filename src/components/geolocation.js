@@ -107,7 +107,6 @@ export class SkraafotoGeolocation extends HTMLElement {
     })
 
     this.geolocation.on('change', () => {
-      console.log('geoloc', this.geolocation.getPosition())
       this.handleGeolocation.bind(this)()
     })
 
