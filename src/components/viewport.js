@@ -230,6 +230,7 @@ export class SkraaFotoViewport extends HTMLElement {
       
       .ol-zoom {
         display: none;
+        display: none;
       }
 
       skraafoto-compass {
@@ -238,7 +239,7 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       skraafoto-compass-arrows {
         top: auto;
-        bottom: 5rem;
+        bottom: 6rem;
       }
       .image-date {
         bottom: 0.5rem;

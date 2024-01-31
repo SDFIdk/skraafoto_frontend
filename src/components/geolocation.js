@@ -43,6 +43,7 @@ export class SkraafotoGeolocation extends HTMLElement {
         right: 2rem;
         --icon-outer-size: 3rem;
         --icon-pos: 0rem 1rem;
+        z-index: 1;
       }
     }
   `

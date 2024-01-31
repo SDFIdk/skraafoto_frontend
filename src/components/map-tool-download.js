@@ -31,7 +31,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
       this.button_element.title = 'Print billede til PDF'
       this.button_element.innerHTML = `<svg><use href="${ svgSprites }#print"/></svg>`
     } else {
-      this.button_element.className = 'sf-download-tool'
+      this.button_element.className = 'sf-download-tool secondary'
       this.button_element.title = 'Download billede'
       this.button_element.innerHTML = `<svg><use href="${ svgSprites }#hentdata-download"/></svg>`
     }
