@@ -39,7 +39,7 @@ export class SkraafotoGeolocation extends HTMLElement {
       .ds-icon-map-icon-findonmap {
         position: absolute;
         z-index: 10;
-        bottom: 6.11rem;
+        bottom: 2.5rem;
         right: 2rem;
         --icon-outer-size: 3rem;
         --icon-pos: 0rem 1rem;
