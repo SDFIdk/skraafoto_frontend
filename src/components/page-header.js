@@ -62,6 +62,12 @@ export class SkraaFotoHeader extends HTMLElement {
       rotate: 90deg;
       display: flex;
     }
+    .ds-logo > ds-logo {
+      height: 3rem;
+    }
+    .ds-logo > strong {
+    padding-top: 0.5rem;
+    }
     
     
     @media screen and (max-width: 79.9rem) {
