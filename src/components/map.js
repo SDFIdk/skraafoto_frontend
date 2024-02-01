@@ -25,6 +25,8 @@ import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
 import store from '../store'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+
 
 /**
  * Web component that displays a map.
@@ -68,6 +70,17 @@ export class SkraaFotoMap extends HTMLElement {
     .geographic-map .ol-zoom-out {
       margin: .25rem 0 0;
       display: block;
+      font-size: 2rem;
+      font-weight: 100;
+      border-radius: 2.3rem;
+      font-family: roboto;
+      box-shadow: 0 0.15rem 0.3rem 0 hsl(0,0%,50%,0.5);
+    }
+    .geographic-map .ol-zoom-in {
+      padding: 0 0 0 0;
+    }
+    .geographic-map .ol-zoom-out {
+      padding: 0 0 3px 0;
     }
     .geographic-map skraafoto-compass {
       position: absolute;

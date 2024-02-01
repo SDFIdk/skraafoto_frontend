@@ -48,7 +48,6 @@ export class SkraaFotoHeader extends HTMLElement {
       border: none;
     }
     .sf-help-link {
-      margin-left: 1rem;
       flex: 0 0 auto;
     }
     .skat-logo {
@@ -57,6 +56,11 @@ export class SkraaFotoHeader extends HTMLElement {
     #headline {
     display: inline;
     margin-left: 0;
+    }
+    hr {
+      width: 34px;
+      rotate: 90deg;
+      display: flex;
     }
     
     
@@ -124,7 +128,6 @@ export class SkraaFotoHeader extends HTMLElement {
       <a role="button" class="sf-help-link quiet" title="Information om Skråfoto" href="/info.html">
         <svg><use href="${ svgSprites }#info"/></svg>
       </a>
-      <hr>
     `
     markup.innerHTML = headerContent
     this.append(markup)
