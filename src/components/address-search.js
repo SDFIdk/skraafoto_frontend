@@ -84,6 +84,14 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     .sf-search-collapsible {
         border-radius: 15px
     }
+    
+    .sf-slider-close {
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      font-size: 1.2em;
+      color: var(--sort);
+    }
 
     @media screen and (max-width: 50rem) {
 
@@ -92,9 +100,9 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       }
 
       .sf-search-collapsible .sf-input-container {
-        height: auto;
-        background: linear-gradient(to left, var(--background-color) 93%, transparent 95%);
-        width: calc(90vw - 4.25rem);
+        height: 4rem;
+        background: linear-gradient(to left, var(--background-color) 100%, transparent 100%);
+        width: 100%
         max-width: 30rem;
         position: fixed;
         top: 0;
@@ -102,13 +110,14 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         z-index: 1000;
         transition: transform .5s;
         transform: translate(100vw,0);
-        padding: 1.5rem 2rem;
+        padding: 1.5rem 1rem;
+        display: flex;
       }
 
       .sf-search-collapsible .open {
         transform: translate(0,0) !important;
         margin: 0rem;
-        padding: 1.3rem 2rem;
+        height: 4rem;
       }
 
       .sf-search-collapsible input.sf-search-input + div {
@@ -122,6 +131,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         justify-content: center;
       }
     }
+    @media screen and (min-width: 50rem) {
+      .sf-slider-close {
+        display: none;
+    }
   `
   template = `
     <style>
@@ -130,7 +143,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     
     <button id="search-button" class="sf-search-btn-open ds-icon-icon-search secondary" title="Søg efter adresse eller stednavn"></button>
     <div class="sf-input-container">
-      <g-search data-placeholder="Søg adresse eller stednavn" data-token="${ configuration.API_STAC_TOKEN }" data-limit="100" data-resources="husnummer,stednavn"></g-search>
+      <g-search data-placeholder="Søg adresse eller stednavn" data-token="${configuration.API_STAC_TOKEN}" data-limit="100" data-resources="husnummer,stednavn"></g-search>
+      <button class="sf-slider-close quiet" title="Luk">
+        <svg><use href="${ svgSprites }#close"/></svg>
+      </button>
     </div>
   `
 
@@ -246,6 +262,11 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     this.btn_open = this.querySelector('.sf-search-btn-open')
     this.input_container = this.querySelector('.sf-input-container')
     this.input_element = this.querySelector('g-search')
-  }
+    this.btn_close = this.querySelector('.sf-slider-close')
 
+    // Add "x" button after g-search element
+    this.btn_close.addEventListener('click', () => {
+      this.input_container.classList.remove('open');
+    })
+  }
 }

@@ -58,7 +58,7 @@ export class SkraaFotoHeader extends HTMLElement {
     margin-left: 0;
     }
     hr {
-      width: 34px;
+      width: 30px;
       rotate: 90deg;
       display: flex;
     }
@@ -66,7 +66,12 @@ export class SkraaFotoHeader extends HTMLElement {
       height: 3rem;
     }
     .ds-logo > strong {
-    padding-top: 0.5rem;
+      padding: 0.33rem;
+      margin-left: auto !important;
+    }
+    .ds-logo > :is(strong, span:last-child) {
+      margin-left: auto !important;
+      display: table-header-group;
     }
     
     
@@ -128,9 +133,7 @@ export class SkraaFotoHeader extends HTMLElement {
 
     headerContent += `
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
-      <hr>
       <skraafoto-view-switcher></skraafoto-view-switcher>
-      <hr>
       <a role="button" class="sf-help-link quiet" title="Information om Skråfoto" href="/info.html">
         <svg><use href="${ svgSprites }#info"/></svg>
       </a>

@@ -29,6 +29,7 @@ export class SkraafotoGeolocation extends HTMLElement {
       right: 1rem;
       --icon-outer-size: 3rem;
       --icon-pos: 0rem 1rem;
+      z-index: 1;
     }
     @media screen and (max-width: 35rem) {
 

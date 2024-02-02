@@ -21,6 +21,7 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
     @media screen and (min-width: 40rem) {
     skraafoto-view-switcher {
     display: flex;
+        align-items: center;
     }
     }
   `
@@ -28,7 +29,7 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
     <style>
       ${ this.styles }
     </style>
-
+    <hr>
     <button class="switch-view-1 quiet switch-button" title="Vis ét stort billede">
       <svg><use href="${ svgSprites }#frame-single"/></svg>
     </button>
@@ -40,6 +41,7 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
     <button class="switch-view-5 quiet switch-button" title="Vis 1 stort og 5 små billeder">
       <svg><use href="${ svgSprites }#frame-multi"/></svg>
     </button>
+    <hr>
   `
 
 
