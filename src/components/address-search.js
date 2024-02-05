@@ -94,6 +94,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
 
     @media screen and (max-width: 50rem) {
+    
+      .sf-header {
+        height: 4rem;
+      }
 
       .sf-search-collapsible .sf-search-btn-open {
         display: block;
@@ -102,16 +106,17 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       .sf-search-collapsible .sf-input-container {
         height: 4rem;
         background: linear-gradient(to left, var(--background-color) 100%, transparent 100%);
-        width: 100%
-        max-width: 30rem;
+        width: 100%;
         position: fixed;
         top: 0;
         right: 0;
-        z-index: 1000;
+        z-index: 1;
         transition: transform .5s;
         transform: translate(100vw,0);
         padding: 1.5rem 1rem;
         display: flex;
+        align-items: center;
+        justify-content: flex-end
       }
 
       .sf-search-collapsible .open {

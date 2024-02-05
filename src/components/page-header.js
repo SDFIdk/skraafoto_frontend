@@ -62,17 +62,19 @@ export class SkraaFotoHeader extends HTMLElement {
       rotate: 90deg;
       display: flex;
     }
+    .ds-logo {
+    }
     .ds-logo > ds-logo {
       height: 3rem;
     }
     .ds-logo > strong {
-      padding: 0.33rem;
-      margin-left: auto !important;
+      padding-top: 0.25rem;
     }
-    .ds-logo > :is(strong, span:last-child) {
-      margin-left: auto !important;
-      display: table-header-group;
+    .ds-logo > span:last-child {
+      display: flex;
+      align-items: end;
     }
+
     
     
     @media screen and (max-width: 79.9rem) {
@@ -85,6 +87,7 @@ export class SkraaFotoHeader extends HTMLElement {
     }
 
     @media screen and (max-width: 40rem) {
+    
       .ds-logo > span:last-child {
         display: none;
       }
