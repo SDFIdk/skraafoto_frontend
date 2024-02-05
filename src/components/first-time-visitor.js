@@ -47,21 +47,23 @@ export class FirstTimeVisit extends HTMLElement {
     <article>
       <h2 class="h1">Velkommen til Skråfoto</h2>
       <p>
-        Skråfoto giver dig mulighed for at finde luftfotos taget fra forskellige retninger.
+        Skråfoto giver dig mulighed for at se luftfotos taget fra forskellige retninger.
         Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
       </p>
       <!---<skraafoto-address-search></skraafoto-address-search>--->
       <h2>Nye Features</h2>
       <ul>
+      <li>GPS Knap - Find din lokalitet</li>
       <li>Verdenshjørne/nordpil i baggrundskortet</li>
+      <li>Tilføjet knapper til kompas for skift af retning</li>
+      <li>Tilføjet knapper for zoom</li>
+      <li>Målinger kan nu fjernes ved klik på måling</li>
+      <li>Nyt design og tema</li>
       <li>Tilføjet Genvejstaster</li>
         <ul>
         <li>Piletast højre/venstre for skift af retning</li>
         <li>Piletast+Shift op/ned for skift af årgang</li>
         </ul>
-      <li>Tilføjet knapper til kompas for skift af retning</li>
-      <li>Tilføjet knapper for zoom</li>
-      <li>Målinger kan nu fjernes ved klik på måling</li>
       <li>Generelle forbedringer</li>
       </ul>
       <button class="btn-welcome-close">Forstået</button>
