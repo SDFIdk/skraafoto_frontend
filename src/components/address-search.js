@@ -83,6 +83,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
     .sf-search-collapsible {
         border-radius: 15px
+        z-index: 3;
     }
     
     .sf-slider-close {
