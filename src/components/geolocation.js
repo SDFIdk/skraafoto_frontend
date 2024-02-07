@@ -106,6 +106,7 @@ export class SkraafotoGeolocation extends HTMLElement {
 
     geolocationButton.addEventListener('click', async () => {
       this.geolocation.setTracking(true)
+      this.toggleSpinner(true)
     })
 
     this.geolocation.on('change', () => {
@@ -116,6 +117,19 @@ export class SkraafotoGeolocation extends HTMLElement {
       console.error('Geolocation error: Something went wrong. Please try again', error.message)
       // Handle error (e.g., show a message to the user)
     })
+  }
+
+  toggleSpinner(isLoading) {
+    if (isLoading) {
+      // Attach a loading animation element while updating
+      const spinner_element = document.createElement('ds-spinner')
+      this.append(spinner_element)
+    } else {
+      // Removes loading animation elements
+      this.querySelectorAll('ds-spinner').forEach(function (spinner) {
+        spinner.remove()
+      })
+    }
   }
 
   async handleGeolocation() {
