@@ -150,10 +150,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
   #update(event) {
     const item = store.state.viewports[this.dataset.index]
-    // If there is no event (meaning this is the first time loading)changed item is the same as related state item, go through with the update
-    if (event.detail.id === item.item.id) {
-      this.#fetchIds(item)
-    }
+    this.#fetchIds(item)
   }
 
   #fetchIds(item) {
