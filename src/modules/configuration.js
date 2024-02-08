@@ -27,7 +27,8 @@ let configuration = {
   ENABLE_ALERT: false, // Shows a modal with custom content
   ENABLE_YEAR_SELECTOR: true, // Display a collection selector in toolbar.
   ENABLE_DATE_BROWSER: true, // Display a selection of other image items for the same collection (year).
-  ENABLE_CUSTOM_PARAMETER: true, // Enable custom year parameter for SKAT (ONLY TEMPORARY)
+  ENABLE_CUSTOM_PARAMETER: true, // Enable custom year parameter for SKAT (REMOVE - DEPRECATED)
+  ENABLE_CUSTOM_YEAR: true, // Enable custom year parameter for SKAT
   ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
 
   // The zoom difference between skraafotos and the WMTS service used for the map.

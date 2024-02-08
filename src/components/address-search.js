@@ -197,11 +197,11 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       // Event listener to hide input_container when clicked outside
       const outsideClickListener = (event) => {
         if (!this.input_container.contains(event.target) && !this.btn_open.contains(event.target)) {
-          this.input_container.classList.remove('open');
+          this.input_container.classList.remove('open')
         }
       }
       // Attach the event listener to the document body
-      document.body.addEventListener('click', outsideClickListener);
+      document.body.addEventListener('click', outsideClickListener)
 
       // On a new address input, update store
       this.addEventListener('gsearch:select', function(event) {
@@ -217,7 +217,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
   }
 
-  async searchItemsInCollection({ collection, center, orientation }) {
+  async searchItemsInCollection({ center, orientation, collection }) {
     try {
       const response = await queryItems(center, orientation, collection)
 
@@ -227,12 +227,12 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         store.state.marker.center = center
         store.dispatch('updateMultipleItems', [foundFeature, foundFeature])
         store.dispatch('updateCollection', { index: 0, collection: foundFeature.collection })
+        console.log(center)
         } else {
           const collections = store.state.collections
           const collectionIndex = collections.findIndex((c) => c === collection)
-
           if (collectionIndex !== -1) { // Check if the collection was found
-            const nextCollectionIndex = (collectionIndex + 1) % collections.length; // Wrap around to the first collection if necessary
+            const nextCollectionIndex = (collectionIndex + 1) % collections.length // Wrap around to the first collection if necessary
             const nextCollection = collections[nextCollectionIndex]
             this.showAlert(collection, nextCollection)
 
@@ -240,7 +240,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
               collection: nextCollection,
               center: center,
               orientation: orientation
-            });
+            })
           } else {
             console.error("Requested collection not found.")
           }
@@ -251,10 +251,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
   }
 
   showAlert(collection, nextCollection) {
-    const last4Initial = collection.slice(-4); // Get last 4 characters of initialCollection
-    const last4Current = nextCollection.slice(-4); // Convert to string and get last 4 characters of currentCollection
-    const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${last4Initial}, skifter til ${last4Current}`;
-    alert(message);
+    const last4Initial = collection.slice(-4) // Get last 4 characters of initialCollection
+    const last4Current = nextCollection.slice(-4) // Convert to string and get last 4 characters of currentCollection
+    const message = `Der kan ikke fremvises billeder af det valgte koordinat for årgang: ${last4Initial}, skifter til ${last4Current}`
+    alert(message)
   }
 
   createDOM() {
@@ -272,7 +272,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
 
     // Add "x" button after g-search element
     this.btn_close.addEventListener('click', () => {
-      this.input_container.classList.remove('open');
+      this.input_container.classList.remove('open')
     })
   }
 }

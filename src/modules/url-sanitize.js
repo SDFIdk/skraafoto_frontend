@@ -64,12 +64,12 @@ async function sanitizeParams(searchparams) {
     const desiredYearParam = params.get('year')
     const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0
 
-    let yearToUse = desiredYearParam ? desiredYearParam : '2019' // Default to 2019 if no year parameter is provided
+    let yearToUse;
 
-    if (yearToUse !== '2019') {
-      yearToUse = collections.some(collection => extractYearFromCollectionID(collection.id) === yearToUse)
-        ? yearToUse
-        : '2019' // If the desired year is not found in collections, default to 2019
+    if (configuration.ENABLE_CUSTOM_YEAR) {
+      yearToUse = '2019';
+    } else {
+      yearToUse = desiredYearParam ? desiredYearParam : getLatestYear(collections)
     }
 
     if (desiredYearParam === '2023') {
@@ -102,6 +102,18 @@ async function sanitizeParams(searchparams) {
 
     return params
   }
+
+  function getLatestYear(collections) {
+    let latestYear = 0;
+    collections.forEach(collection => {
+      const year = extractYearFromCollectionID(collection.id);
+      if (year > latestYear) {
+        latestYear = year;
+      }
+    });
+    return latestYear.toString(); // Convert to string as desired
+  }
+
 
 
 
