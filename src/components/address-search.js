@@ -197,7 +197,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       // Event listener to hide input_container when clicked outside
       const outsideClickListener = (event) => {
         if (!this.input_container.contains(event.target) && !this.btn_open.contains(event.target)) {
-          this.input_container.classList.remove('open')
+          this.input_container.classList.remove('open');
         }
       }
       // Attach the event listener to the document body
@@ -217,7 +217,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
   }
 
-  async searchItemsInCollection({ center, orientation, collection }) {
+  async searchItemsInCollection({ center, orientation, collection}) {
     try {
       const response = await queryItems(center, orientation, collection)
 

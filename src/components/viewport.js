@@ -508,6 +508,7 @@ export class SkraaFotoViewport extends HTMLElement {
    * Triggers view sync in the viewport.
    */
   viewSyncViewportHandler() {
+    console.log('viewsyncviewport')
     if (!this.sync) {
       this.sync = true
       return
@@ -530,11 +531,8 @@ export class SkraaFotoViewport extends HTMLElement {
         center: store.state.marker.center,
         kote: z
       }
-      store.dispatch('updateView', {
-        center: world_center,
-        kote: z,
-        zoom: world_zoom
-      })
+      store.state.view.kote = z
+      store.state.view.zoom = world_zoom
     })
   }
 
