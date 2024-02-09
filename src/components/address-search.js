@@ -227,7 +227,6 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         store.state.marker.center = center
         store.dispatch('updateMultipleItems', [foundFeature, foundFeature])
         store.dispatch('updateCollection', { index: 0, collection: foundFeature.collection })
-        console.log(center)
         } else {
           const collections = store.state.collections
           const collectionIndex = collections.findIndex((c) => c === collection)

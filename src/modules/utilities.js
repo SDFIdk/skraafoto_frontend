@@ -5,7 +5,7 @@ function getYearFromCollection(collection) {
 
 function findAncestor(element, selector) {
   // Base case: If the element is null or we reached the top of the DOM or shadow tree
-  console.log(element, typeof element, selector)
+  // console.log(element, typeof element, selector)
   if (!element || element === document.documentElement || element instanceof ShadowRoot) {
       return null
   }

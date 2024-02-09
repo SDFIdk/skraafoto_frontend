@@ -508,7 +508,6 @@ export class SkraaFotoViewport extends HTMLElement {
    * Triggers view sync in the viewport.
    */
   viewSyncViewportHandler() {
-    console.log('viewsyncviewport')
     if (!this.sync) {
       this.sync = true
       return
