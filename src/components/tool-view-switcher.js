@@ -62,7 +62,7 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
 
   connectedCallback() {
     this.querySelector('.switch-view-5').addEventListener('click', () => {
-      location.pathname = 'viewer.html'
+      location.pathname = '/'
     })
     this.querySelector('.switch-view-2').addEventListener('click', () => {
       location.pathname = 'twinview.html'

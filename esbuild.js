@@ -1,5 +1,6 @@
 import {build, analyzeMetafile, serve} from 'esbuild'
 import {buildHTML} from './bin/rebuild-html.js'
+import {copyFiles} from './bin/copy-to-dist.js'
 
 const outputDir = 'dist'
 const entry_points = {
@@ -31,6 +32,7 @@ if (process.env.NODE_ENV === 'production') {
   .then(async (result) => {
 
     await buildHTML(entry_points, result.metafile.outputs, outputDir)
+    await copyFiles()
     
     analyzeMetafile(result.metafile).then((analysis) => {
       //console.log(analysis)
