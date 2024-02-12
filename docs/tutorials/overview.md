@@ -73,10 +73,6 @@ Web components in turn communicate via events and a shared state store.
 `viewer.js` is built from `src/views/viewer.js` which in turn imports the web component `SkraaFotoViewport` from the `src/components/` directory.
 `SkraaFotoViewport` imports whatever classes and functions it needs from other modules, including 3rd party modules like [SAUL](https://www.npmjs.com/package/@dataforsyningen/saul) and [OpenLayers.](https://www.npmjs.com/package/ol)
 
-### View style sheets (CSS)
-
-Views import some common CSS (`style.css`) that is built with parts from these modules: [@dataforsyningen/css](https://www.npmjs.com/package/@dataforsyningen/css) and [@dataforsyningen/icons](https://www.npmjs.com/package/@dataforsyningen/icons).
-Indvidual web components include custom CSS that is bundled with the view's Javascript.
 
 ### Web components
 
