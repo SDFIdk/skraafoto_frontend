@@ -1,5 +1,6 @@
 import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
+import { getSharedStyles } from "../styles/shared-styles.js"
 import store from '../store'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
@@ -156,15 +157,15 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   `
   // Template adds link so that this component can use shared CSS
   template = `
-    <link rel="stylesheet" href="./style.css">
+    ${ getSharedStyles() }
     <style>
       ${ this.styles }
     </style>
-      ${
-        configuration.ENABLE_DATE_BROWSER ?
-        `<nav class="sf-slider-open-wrapper-higher"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
-        :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
-  }
+    ${
+      configuration.ENABLE_DATE_BROWSER ?
+      `<nav class="sf-slider-open-wrapper-higher"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
+      :`<nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>`
+    }
     <section class="sf-slider-content">
       <button class="sf-slider-close" title="Luk">
         <svg><use href="${ svgSprites }#close"/></svg>

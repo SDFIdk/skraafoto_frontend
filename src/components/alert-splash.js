@@ -1,4 +1,5 @@
-import { configuration } from "../modules/configuration";
+import { configuration } from "../modules/configuration"
+import { getSharedStyles } from "../styles/shared-styles.js"
 
 export class AlertSplash extends HTMLElement {
   dialog
@@ -32,7 +33,7 @@ export class AlertSplash extends HTMLElement {
   `
 
   template = `
-    <link rel="stylesheet" href="./style.css">
+    ${ getSharedStyles() }
     <style>
       ${this.styles}
     </style>

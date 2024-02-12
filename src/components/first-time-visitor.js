@@ -1,3 +1,5 @@
+import { getSharedStyles } from "../styles/shared-styles.js"
+
 /**
  * Web component that presents a greeting to first time visitors to the site
  */
@@ -35,7 +37,7 @@ export class FirstTimeVisit extends HTMLElement {
       text-align: left;
   `
   template = `
-    <link rel="stylesheet" href="./style.css">
+    ${ getSharedStyles() }
     <style>
       ${this.styles}
       dialog {
