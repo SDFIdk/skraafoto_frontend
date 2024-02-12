@@ -27,6 +27,7 @@ import {
   updateCenter,
   isOutOfBounds
 } from '../modules/viewport-mixin.js'
+import { getSharedStyles } from "../styles/shared-styles.js"
 import store from '../store'
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
@@ -259,7 +260,7 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   `
   template = /*html*/`
-    <link rel="stylesheet" href="./style.css">
+    ${ getSharedStyles() }
     <style>
       ${ this.styles }
     </style>
