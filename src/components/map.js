@@ -185,7 +185,7 @@ export class SkraaFotoMap extends HTMLElement {
 
       let interactions
       if (is_minimal !== null) {
-        interactions = defaultInteractions({dragPan: false, pinchZoom: false, mouseWheelZoom: false})
+        interactions = defaultInteractions({dragPan: false, pinchZoom: true, mouseWheelZoom: false})
       } else {
         interactions = defaultInteractions()
       }

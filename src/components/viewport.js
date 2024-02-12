@@ -534,15 +534,7 @@ export class SkraaFotoViewport extends HTMLElement {
       store.state.view.zoom = world_zoom
     })
   }
-
-  // TODO: Is this method in use?
-  // Public method
-  toMapZoom(zoom) {
-    return zoom
-  }
-
-  // TODO: Is this method in use?
-  // Public method
+  // Maintains zoom level at new marker
   toImageZoom(zoom) {
     return zoom
   }
