@@ -34,14 +34,14 @@ export class SkraafotoGeolocation extends HTMLElement {
     @media screen and (max-width: 35rem) {
 
       .geographic-map skraafoto-compass {
-        top: 0.5rem;
+        top: 5rem;
         right: 0.5rem;
       }
       .ds-icon-map-icon-findonmap {
         position: absolute;
         z-index: 10;
-        bottom: 2.5rem;
-        right: 2rem;
+        bottom: 7.5rem;
+        right: 1rem;
         --icon-outer-size: 3rem;
         --icon-pos: 0rem 1rem;
         z-index: 1;
