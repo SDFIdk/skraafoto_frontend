@@ -273,6 +273,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         // Dispatch new item
         store.dispatch('updateMapVisibility', false)
         store.dispatch('updateItem', {index: 0, item: target_item})
+        this.slider_element.style.transform = 'translate(0,100vh)'
         this.highlightCurrentDirection()
       })
     })

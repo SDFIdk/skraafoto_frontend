@@ -240,7 +240,7 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       skraafoto-compass-arrows {
         top: auto;
-        bottom: 6rem;
+        bottom: 2rem;
       }
       .image-date {
         bottom: 0.5rem;
