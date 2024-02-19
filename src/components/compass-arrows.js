@@ -22,6 +22,8 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     .sf-compass {
       display: block;
       height: 4.5rem;
+      width: auto;
+      max-width: 4.8rem;
       cursor: pointer;
     }
     .svg-icon-compass {
