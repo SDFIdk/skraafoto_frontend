@@ -98,7 +98,9 @@ function setupListeners() {
   // Listen and react on shortkey use
   document.addEventListener('keydown', keyDownHandler)
 
-  isDatafordelerDown()
+  if (configuration.ENABLE_DATAFORDELER_PING) {
+    isDatafordelerDown()
+  }
 }
 
 export {
