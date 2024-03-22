@@ -9,6 +9,8 @@ function getRandomPosition() {
     [574764, 6220953], // Marselisborg
     [725872, 6176763], // Amalienborg,
     [721239, 6174113], // Vandflyver, Toftegårds Plads, København
+    [468482, 6322499], // Klitmøller
+    [723842, 6179667], // Sct. Kjels Gård
   ]
   return places[ Math.floor(Math.random() * places.length) ]
 }
