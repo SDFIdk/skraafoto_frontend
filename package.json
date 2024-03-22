@@ -38,7 +38,7 @@
     "@dataforsyningen/gsearch-ui": "^2.0.1",
     "@dataforsyningen/saul": "^3.4.0",
     "jspdf": "^2.5.1",
-    "ol": "^8.2.0",
+    "ol": "^9.0.0",
     "proj4": "^2.10.0"
   },
   "devDependencies": {
