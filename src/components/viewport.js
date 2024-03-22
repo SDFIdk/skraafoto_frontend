@@ -510,6 +510,7 @@ export class SkraaFotoViewport extends HTMLElement {
    */
   viewSyncViewportHandler() {
     if (!this.sync) {
+      console.log('no sync')
       this.sync = true
       return
     }
@@ -533,6 +534,7 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       store.state.view.kote = z
       store.state.view.zoom = world_zoom
+      store.dispatch('updateView', store.state.view)
     })
   }
   // Maintains zoom level at new marker
