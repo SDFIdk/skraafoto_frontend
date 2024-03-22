@@ -25,7 +25,6 @@ const mapState = {
  */
 const mapActions = {
   updateView: function(state, payload) {
-    console.log('state updateView')
     state.view = payload
     return state
   },

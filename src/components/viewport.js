@@ -510,7 +510,6 @@ export class SkraaFotoViewport extends HTMLElement {
    */
   viewSyncViewportHandler() {
     if (!this.sync) {
-      console.log('no sync')
       this.sync = true
       return
     }
