@@ -533,7 +533,8 @@ export class SkraaFotoViewport extends HTMLElement {
       }
       store.state.view.kote = z
       store.state.view.zoom = world_zoom
-      store.dispatch('updateView', store.state.view)
+      // TODO: Store should be updated, but enabling below line will screw up panning and zooming royally 
+      // store.dispatch('updateView', store.state.view)
     })
   }
   // Maintains zoom level at new marker
