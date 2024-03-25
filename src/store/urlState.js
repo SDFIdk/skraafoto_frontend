@@ -2,6 +2,7 @@ import { sanitizeCoords } from '../modules/url-sanitize.js'
 import { fetchParcels } from '../custom-plugins/plugin-parcel'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
+import { state as mobxState } from '../state/index.js'
 
 function getUrlParams() {
   const url = new URL(window.location)
@@ -30,7 +31,7 @@ async function syncFromUrl(state) {
   state.viewports[1].collection = item.collection
 
   if (params.get('orientation') === 'map') {
-    state.showMap = true
+    mobxState.mapVisible = true
   }
 
   if (params.has('center')) {
@@ -41,7 +42,7 @@ async function syncFromUrl(state) {
 
   if (configuration.ENABLE_PARCEL && params.has('parcels')) {
     const parcels = await fetchParcels(params.get('parcels'))
-    state.parcels = parcels
+    mobxState.setParcels(parcels)
   }
 
   return state
@@ -59,7 +60,7 @@ function syncToUrl(state) {
   url.searchParams.set('item-2', state.viewports[1].itemId);
   url.searchParams.set('year-2', state.viewports[1].collection.match(/\d{4}/g)[0]);
 
-  if (state.showMap) {
+  if (mobxState.mapVisible) {
     url.searchParams.set('orientation', 'map');
   } else {
     url.searchParams.set('orientation', state.viewports[0].orientation);

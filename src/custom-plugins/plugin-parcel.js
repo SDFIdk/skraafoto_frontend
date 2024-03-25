@@ -3,7 +3,7 @@
 import { getParam } from '../modules/url-state.js'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
-import store from '../store'
+import { state } from '../state/index.js'
 import { getImageXY, getElevation } from '@dataforsyningen/saul'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
@@ -114,11 +114,11 @@ function generateParcelVectorLayer() {
 
 function waitForData(viewport) {
 
-  if (!viewport.terrain || !store.state.parcels || !viewport.map) {
+  if (!viewport.terrain || state.parcels.length < 1 || !viewport.map) {
     setTimeout(() => waitForData(viewport), 600)
   } else {
     drawParcels({
-      parcels: store.state.parcels,
+      parcels: state.parcels,
       image: viewport.item.id,
       map: viewport.map,
       elevationdata: viewport.terrain

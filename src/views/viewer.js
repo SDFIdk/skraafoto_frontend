@@ -4,7 +4,7 @@ import { setupListeners } from '../modules/listeners.js'
 import { SkraaFotoDirectionPicker} from "../components/direction-picker"
 import { SkraaFotoMap } from '../components/map.js'
 import { SkraaFotoViewportMini } from "../components/viewport-mini.js"
-import store from '../store'
+import { state, autorun} from '../state/index.js'
 
 // Initialize web components
 registerComponents()
@@ -28,10 +28,9 @@ function toggleMap(show) {
 
 // Initialize
 
-toggleMap(store.state.showMap)
-
-window.addEventListener('showMap', (event) => {
-  toggleMap(event.detail.showMap)
+// React to changes in state
+autorun(() => {
+  toggleMap(state.mapVisible)
 })
 
 setupAnalytics()

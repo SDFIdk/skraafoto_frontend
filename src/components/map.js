@@ -25,8 +25,7 @@ import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
 import store from '../store'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-
+import { state, autorun } from '../state/index.js'
 
 /**
  * Web component that displays a map.
@@ -246,8 +245,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.toggleSpinner(false)
   }
 
-  drawParcels() {
-    const parcels = store.state.parcels
+  drawParcels(parcels) {
     if (!this.map || !parcels[0]) {
       return
     }
@@ -319,7 +317,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.map.addLayer(this.icon_layer)
 
     if (configuration.ENABLE_PARCEL) {
-      this.drawParcels()
+      this.drawParcels(state.parcels)
     }
   }
 
@@ -334,10 +332,6 @@ export class SkraaFotoMap extends HTMLElement {
     this.map.setView(view)
     this.icon_layer = this.generateIconLayer(center)
     this.map.addLayer(this.icon_layer)
-  }
-
-  parcelsHandler() {
-    this.drawParcels()
   }
 
   /** Toggles displaying the loading spinner */
@@ -367,13 +361,13 @@ export class SkraaFotoMap extends HTMLElement {
     window.addEventListener('updateItem', this.updateMap.bind(this))
 
     if (configuration.ENABLE_PARCEL) {
-      this.parcels_function = this.parcelsHandler.bind(this)
-      window.addEventListener('parcels', this.parcels_function)
+      autorun(() => {
+        this.drawParcels(state.parcels)
+      })
     }
   }
 
   disconnectedCallback() {
-    window.removeEventListener('parcels', this.parcels_function)
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)

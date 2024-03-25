@@ -2,6 +2,7 @@ import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
 import { getSharedStyles } from "../styles/shared-styles.js"
 import store from '../store'
+import { state } from '../state/index.js' 
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
@@ -271,7 +272,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
         store.state.view.center = store.state.marker.center
         store.state.view.kote = store.state.marker.kote
         // Dispatch new item
-        store.dispatch('updateMapVisibility', false)
+        state.setMapVisible(false)
         store.dispatch('updateItem', {index: 0, item: target_item})
         this.slider_element.style.transform = 'translate(0,100vh)'
         this.highlightCurrentDirection()
@@ -282,7 +283,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
       // Set orientation parameter, causing the page to reload with map open
       // TODO: clean up these dispatches. Which is actually needed?
-      store.dispatch('updateMapVisibility', true)
+      state.setMapVisible(true)
       this.slider_element.style.transform = 'translate(0,100vh)'
       this.highlightCurrentDirection()
     })
