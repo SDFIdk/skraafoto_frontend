@@ -1,13 +1,8 @@
 import { getYearFromCollection } from '../modules/utilities.js'
-import store from '../store'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-
+import { state, autorun } from '../state/index.js'
 
 /**
- * Web component that enables the user to select from a list of available years.
- * Looks up `store.state.viewports[this.dataset.index].collection` on connectedCallback to get available years.
- * @prop {string} dataset.index - `data-index` attribute used to look up state by viewport index.
- * @fires updateCollection - New collection (`skraafotos` + year) selected by user.
+ * Web component that enables the user to select from a list of available years (collections).
  */
 export class SkraaFotoYearSelector extends HTMLElement {
 
@@ -83,7 +78,9 @@ export class SkraaFotoYearSelector extends HTMLElement {
     // Listen for user change
     this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
 
-    window.addEventListener('updateCollection', this.collectionUpdatedHandler.bind(this))
+    autorun(() => {
+      this.collectionUpdatedHandler(state.collection)
+    })
   }
 
   // methods
@@ -94,34 +91,24 @@ export class SkraaFotoYearSelector extends HTMLElement {
     this.#selectElement = this.querySelector('select')
 
     // Create the year options from the list of collections
-    for (const c of store.state.collections) {
+    for (const c of state.collections) {
       const year = getYearFromCollection(c)
       const optionElement = document.createElement('option')
-      optionElement.value = year
+      optionElement.value = c
       optionElement.innerText = year
       this.#selectElement.appendChild(optionElement)
     }
 
     // Setup select element value from state
-    this.#selectElement.value = getYearFromCollection(store.state.viewports[this.dataset.index].collection)
+    this.#selectElement.value = state.item.collection
   }
 
   selectionChangeHandler(event) {
-    store.dispatch('updateCollection', {
-      index: this.dataset.index,
-      collection: `skraafotos${event.target.value}`
-    })
+    state.setCurrentCollection(event.target.value)
   }
 
-  collectionUpdatedHandler(event) {
-    // Only update if the right viewport state was updated
-    if (event.detail.index === this.dataset.index) {
-      this.#selectElement.value = getYearFromCollection(event.detail.collection)
-    }
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('updateCollection', this.collectionUpdatedHandler)
+  collectionUpdatedHandler(collection) {
+    this.#selectElement.value = collection
   }
 
 }

@@ -1,6 +1,6 @@
 import { makeObservable, observable, action, computed, autorun } from 'mobx'
 import { configuration } from '../modules/configuration.js'
-import { queryItem } from '../modules/api.js'
+import { queryItem, queryItems } from '../modules/api.js'
 
 class SkraafotoState {
 
@@ -63,6 +63,17 @@ class SkraafotoState {
   setCollections(collections) {
     this.collections = collections.map((c) => c.id)
   }
+  setCurrentCollection(collection) {
+    // Sync main image with collection
+    if (this.items.item.collection !== collection) {
+      queryItems(this.marker.position, this.items.item.properties.direction, collection, 1).then((data) => {
+        this.items.item = data.features[0]
+        this.collection = collection
+      })
+    } else {
+      this.collection = collection
+    }
+  }
 
   // Parcels
   parcels = []
@@ -114,6 +125,7 @@ class SkraafotoState {
       collection: observable,
       collections: observable,
       setCollections: action,
+      setCurrentCollection: action,
       parcels: observable,
       setParcels: action,
       setSyncFromURL: action

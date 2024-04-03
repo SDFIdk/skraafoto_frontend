@@ -1,6 +1,6 @@
-import { queryItems } from '../modules/api.js'
-import store from '../store'
+import { queryItems, queryItem } from '../modules/api.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import { state, autorun } from '../state/index.js'
 
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
@@ -126,38 +126,26 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
 
     // Add global listener for state changes
-    window.addEventListener('updateItem', this.#update.bind(this))
-
+    autorun(() => {
+      this.#fetchIds(state.item, state.marker)
+    })
+    
     // Add event listener to the document for arrow key navigation
     window.addEventListener('imageshift', this.shiftItemHandler.bind(this))
 
-    // When an option is selected, update the store with the new item
+    // When an option is selected, update the state with the new item
     this.#selectElement.addEventListener('change', (event) => {
-      store.dispatch('updateItemId', {
-        index: this.dataset.index,
-        itemId: event.target.value
+      queryItem(event.target.value).then((data) => {
+        state.setItem(data)
       })
       this.#selectElement.blur() // Remove focus from the select element
     })
-
-    this.#fetchIds(store.state.viewports[this.dataset.index])
   }
 
-  disconnectedCallback() {
-    window.removeEventListener('updateItem', this.#update)
-    window.removeEventListener('imageshift', this.shiftItemHandler)
-  }
-
-  #update(event) {
-    const item = store.state.viewports[this.dataset.index]
-    this.#fetchIds(item)
-  }
-
-  #fetchIds(item) {
-    const center = store.state.marker.center
-    queryItems(center, item.orientation, item.collection, 50).then((response) => {
+  #fetchIds(item, marker) {
+    queryItems(marker.position, item.properties.direction, item.collection, 50).then((response) => {
       this.#selectElement.innerHTML = this.#renderOptions(response.features)
-      this.#selectElement.value = store.state.viewports[this.dataset.index].itemId
+      this.#selectElement.value = state.item.id
     })
   }
 
