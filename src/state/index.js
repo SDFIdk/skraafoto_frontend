@@ -2,6 +2,7 @@ import { makeObservable, observable, action, computed, autorun } from 'mobx'
 import { configuration } from '../modules/configuration.js'
 import { queryItem, queryItems } from '../modules/api.js'
 import { sanitizeCoords } from '../modules/url-sanitize.js'
+import { syncToUrl } from './syncUrl.js'
 
 class SkraafotoState {
 
@@ -50,6 +51,13 @@ class SkraafotoState {
     if (this.items[key] !== item) {
       this.items[key] = item
     }
+  }
+  reloadMainItem(payload) {
+    this.items.item = payload.item
+    this.items.item2 = payload.item
+    this.collection = payload.item.collection
+    this.view.position = payload.position
+    this.marker.position = payload.position
   }
   
   // Map
@@ -101,6 +109,11 @@ class SkraafotoState {
       // Load default item
       this.items.item = await queryItem(configuration.DEFAULT_ITEM_ID)
     }
+
+    if (urlParams.has('year')) {
+      this.collection = `skraafotos${ urlParams.get('year') }`
+    }
+
     if (urlParams.has('item-2')) {
       this.items.item2 = await queryItem(urlParams.get('item-2'))
     }
@@ -112,7 +125,6 @@ class SkraafotoState {
   }
 
   constructor() {
-
     makeObservable(this, {
       marker: observable,
       setMarkerPosition: action,
@@ -129,44 +141,17 @@ class SkraafotoState {
       setCurrentCollection: action,
       parcels: observable,
       setParcels: action,
-      setSyncFromURL: action
+      setSyncFromURL: action,
+      reloadMainItem: action
     })
-
-    // Initialize state using URL search parameters
-    this.setSyncFromURL(sanitizeCoords(new URL(window.location)))
   }
-}
-
-function syncToUrl(marker, item1, item2, mapVisible) {
-  let url = new URL(window.location)
-
-  if (marker) {
-    url.searchParams.set('center', marker.position.join(','))
-  }
-
-  // Update parameters for viewport-1
-  if (item1) {
-    url.searchParams.set('item', item1.id)
-    url.searchParams.set('year', item1.collection.match(/\d{4}/g)[0])
-  }
-  
-  // Update parameters for viewport-2
-  if (item2) {
-    url.searchParams.set('item-2', item2.id)
-    url.searchParams.set('year-2', item2.collection.match(/\d{4}/g)[0])
-  }
-
-  if (mapVisible) {
-    url.searchParams.set('orientation', 'map')
-  } else if (item1) {
-    url.searchParams.set('orientation', item1.properties.direction)
-  }
-
-  history.pushState({}, '', url)
 }
 
 // Initialize state
 const state = new SkraafotoState()
+
+// Initialize state using URL search parameters
+state.setSyncFromURL(sanitizeCoords(new URL(window.location)))
 
 // Update URL on state change
 autorun(() => {

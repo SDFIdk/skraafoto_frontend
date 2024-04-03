@@ -8,7 +8,7 @@ import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 import { getImageXY, image2world } from '@dataforsyningen/saul'
-import store from '../store'
+import { state } from '../state/index.js'
 import { configuration } from "../modules/configuration";
 
 
@@ -102,7 +102,7 @@ function addPointerLayerToMap(map) {
      * It is too expensive to get the Z value for every point, so we use the most recent value stored from
      * zoom sync instead.
      */
-    const coord = [event.coordinate[0], event.coordinate[1], store.state.view.center[2] || 0]
+    const coord = [event.coordinate[0], event.coordinate[1], state.view.kote || 0]
     window.dispatchEvent(new CustomEvent("updatePointer", { detail: { coord: coord, map: map } }))
   })
 }

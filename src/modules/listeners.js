@@ -1,4 +1,4 @@
-import store from '../store'
+import { state } from '../state/index.js'
 import { configuration } from './configuration'
 
 const lookup = {
@@ -20,10 +20,10 @@ const lookup = {
 
 async function shiftItemOrientation(direction) {
   const newOrientation = direction === 1
-    ? lookup.counterclockwise[store.state.viewports[0].orientation]
-    : lookup.clockwise[store.state.viewports[0].orientation]
+    ? lookup.counterclockwise[state.item.properties.direction]
+    : lookup.clockwise[state.item.properties.direction]
 
-  store.dispatch('updateOrientation', newOrientation)
+  state.setItem(state.items[newOrientation])
 }
 
 function shiftItemTime(viewportIndex, direction) {

@@ -1,6 +1,6 @@
 import { getWorldXYZ } from "@dataforsyningen/saul"
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-import store from '../store'
+import { state } from '../state/index.js'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -46,16 +46,12 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
         terrain: this.viewport.terrain,
         xy: event.coordinate
       }, 0.06).then((world_xyz) => {
-
         this.viewport.coord_world = world_xyz
-        const newMarker = store.state.marker
-        newMarker.kote = world_xyz[2]
-        newMarker.center = world_xyz.slice(0,2)
-        const newView = store.state.view
-        newView.kote = world_xyz[2]
-        newView.center = world_xyz.slice(0,2)
-        store.dispatch('updateMarker', newMarker)
-        store.dispatch('updateView', newView)
+        state.setView({
+          point: world_xyz.slice(0,2),
+          kote: world_xyz[2]
+        })
+        state.setMarkerPosition(world_xyz.slice(0,2))
       })
     }
   }

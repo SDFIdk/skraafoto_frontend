@@ -24,7 +24,6 @@ import { getViewSyncMapListener } from '../modules/sync-view'
 import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
-import store from '../store'
 import { state, autorun } from '../state/index.js'
 
 /**
@@ -288,9 +287,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    const newMarker = structuredClone(store.state.marker)
-    newMarker.center = event.coordinate
-    store.dispatch('updateMarker', newMarker)
+    state.setMarkerPosition(event.coordinate)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
@@ -301,10 +298,10 @@ export class SkraaFotoMap extends HTMLElement {
 
     this.toggleSpinner(true)
 
-    const center = store.state.marker.center
+    const center = state.marker.position
 
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center, (store.state.view.zoom + configuration.MAP_ZOOM_DIFFERENCE))
+      this.map = await this.generateMap(this.getAttribute('minimal'), center, (state.view.zoom + configuration.MAP_ZOOM_DIFFERENCE))
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }

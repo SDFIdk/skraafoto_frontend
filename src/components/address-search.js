@@ -3,7 +3,7 @@ import {GSearchUI} from '@dataforsyningen/gsearch-ui'
 import {configuration} from '../modules/configuration.js'
 import {queryItems} from '../modules/api.js'
 import {getGSearchCenterPoint} from '../modules/gsearch-util.js'
-import store from '../store'
+import { state } from '../state/index.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 customElements.define('g-search', GSearchUI)
@@ -203,15 +203,13 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       // Attach the event listener to the document body
       document.body.addEventListener('click', outsideClickListener)
 
-      // On a new address input, update store
+      // On a new address input, update state
       this.addEventListener('gsearch:select', function(event) {
         const center = getGSearchCenterPoint(event.detail)
-        const orientation = store.state.viewports[0].orientation
-        const collection = store.state.viewports[0].collection
         this.searchItemsInCollection({
-          collection: collection,
+          collection: state.item.collection,
           center: center,
-          orientation: orientation
+          orientation: state.item.properties.direction
         })
       })
     }
@@ -222,31 +220,30 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       const response = await queryItems(center, orientation, collection)
 
       if (response.features.length > 0) {
-        const foundFeature = response.features[0]
-        store.state.view.center = center
-        store.state.marker.center = center
-        store.dispatch('updateMultipleItems', [foundFeature, foundFeature])
-        store.dispatch('updateCollection', { index: 0, collection: foundFeature.collection })
-        } else {
-          const collections = store.state.collections
-          const collectionIndex = collections.findIndex((c) => c === collection)
-          if (collectionIndex !== -1) { // Check if the collection was found
-            const nextCollectionIndex = (collectionIndex + 1) % collections.length // Wrap around to the first collection if necessary
-            const nextCollection = collections[nextCollectionIndex]
-            this.showAlert(collection, nextCollection)
+        state.reloadMainItem({
+          item: response.features[0],
+          position: center
+        })
+      } else {
+        const collections = state.collections
+        const collectionIndex = collections.findIndex((c) => c === collection)
+        if (collectionIndex !== -1) { // Check if the collection was found
+          const nextCollectionIndex = (collectionIndex + 1) % collections.length // Wrap around to the first collection if necessary
+          const nextCollection = collections[nextCollectionIndex]
+          this.showAlert(collection, nextCollection)
 
-            this.searchItemsInCollection({
-              collection: nextCollection,
-              center: center,
-              orientation: orientation
-            })
-          } else {
-            console.error("Requested collection not found.")
-          }
+          this.searchItemsInCollection({
+            collection: nextCollection,
+            center: center,
+            orientation: orientation
+          })
+        } else {
+          console.error("Requested collection not found.")
         }
-      } catch (err) {
-        console.error('No items were found in any collections', err)
       }
+    } catch (err) {
+      console.error('No items were found in any collections', err)
+    }
   }
 
   showAlert(collection, nextCollection) {

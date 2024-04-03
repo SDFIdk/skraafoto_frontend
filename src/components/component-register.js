@@ -2,7 +2,7 @@
 
 import { Spinner, DSLogo } from '@dataforsyningen/designsystem'
 import { AlertSplash } from './alert-splash.js'
-import { SkraaFotoViewport } from './viewport.js'
+import { SkraaFotoViewport } from './viewport/viewport.js'
 import { SkraaFotoAdvancedMap } from './advanced-map.js'
 import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoInfoBox } from './info-box.js'

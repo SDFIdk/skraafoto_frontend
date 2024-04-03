@@ -4,7 +4,7 @@
 
 import { getZ, getImageXY } from '@dataforsyningen/saul'
 import { configuration } from './configuration'
-import store from '../store'
+import { state } from '../state/index.js'
 
 /**
  * Gets a function for updating the viewport to be synchronized with other viewports.
@@ -55,9 +55,9 @@ function addViewSyncMapTrigger(viewport, map) {
     const center = view.getCenter()
     getZ(center[0], center[1], configuration).then(z => {
       center[2] = z
-      store.dispatch('updateView', {
+      state.setview({
+        point:center.slice(0,2),
         kote: center[2],
-        center: center.slice(0,2),
         zoom: view.getZoom()
       })
     })
