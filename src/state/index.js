@@ -1,6 +1,7 @@
 import { makeObservable, observable, action, computed, autorun } from 'mobx'
 import { configuration } from '../modules/configuration.js'
 import { queryItem, queryItems } from '../modules/api.js'
+import { sanitizeCoords } from '../modules/url-sanitize.js'
 
 class SkraafotoState {
 
@@ -95,7 +96,7 @@ class SkraafotoState {
     }
 
     if (urlParams.has('item')) {
-      this.items.item = await queryItem(urlParam.get('item'))
+      this.items.item = await queryItem(urlParams.get('item'))
     } else {
       // Load default item
       this.items.item = await queryItem(configuration.DEFAULT_ITEM_ID)
@@ -132,12 +133,47 @@ class SkraafotoState {
     })
 
     // Initialize state using URL search parameters
-    this.setSyncFromURL(new URLSearchParams())
+    this.setSyncFromURL(sanitizeCoords(new URL(window.location)))
   }
 }
 
+function syncToUrl(marker, item1, item2, mapVisible) {
+  let url = new URL(window.location)
+
+  if (marker) {
+    url.searchParams.set('center', marker.position.join(','))
+  }
+
+  // Update parameters for viewport-1
+  if (item1) {
+    url.searchParams.set('item', item1.id)
+    url.searchParams.set('year', item1.collection.match(/\d{4}/g)[0])
+  }
+  
+  // Update parameters for viewport-2
+  if (item2) {
+    url.searchParams.set('item-2', item2.id)
+    url.searchParams.set('year-2', item2.collection.match(/\d{4}/g)[0])
+  }
+
+  if (mapVisible) {
+    url.searchParams.set('orientation', 'map')
+  } else if (item1) {
+    url.searchParams.set('orientation', item1.properties.direction)
+  }
+
+  history.pushState({}, '', url)
+}
+
+// Initialize state
 const state = new SkraafotoState()
 
+// Update URL on state change
+autorun(() => {
+  syncToUrl(state.marker, state.items.item, state.items.item2, state.mapVisible)
+})
+
+// Exports
 export {
   state,
   autorun

@@ -48,7 +48,7 @@ async function sanitizeParams(searchparams) {
   }
 
 
-// If only center is given, add direction and find a matching recent item
+  // If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
@@ -113,11 +113,6 @@ async function sanitizeParams(searchparams) {
     });
     return latestYear.toString(); // Convert to string as desired
   }
-
-
-
-
-
 
   function extractYearFromCollectionID(collectionID) {
     // Extract the year from the collection ID
