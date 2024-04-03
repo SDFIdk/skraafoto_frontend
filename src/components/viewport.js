@@ -29,6 +29,7 @@ import {
 } from '../modules/viewport-mixin.js'
 import { getSharedStyles } from "../styles/shared-styles.js"
 import store from '../store'
+import { state, autorun } from '../state/index.js'
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
@@ -330,13 +331,6 @@ export class SkraaFotoViewport extends HTMLElement {
     if (configuration.ENABLE_SMALL_FONT) {
       this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
     }
-
-    // Add button to adjust brightness to the dom if enabled
-    if (configuration.ENABLE_EXPOSURE) {
-      const button_group = this.shadowRoot.querySelector('.ds-button-group')
-      const info_button = this.shadowRoot.querySelector('#info-btn')
-      button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
-    }
   }
 
   /** Creates an OpenLayers map object and adds interactions, image data, etc. to it */
@@ -351,7 +345,7 @@ export class SkraaFotoViewport extends HTMLElement {
     await updateMapView({
       map: this.map,
       item: this.item,
-      zoom: store.state.view.zoom,
+      zoom: state.view.zoom,
       center: this.coord_image
     })
     updateMapCenterIcon(this.map, this.coord_image)
@@ -380,15 +374,32 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /** Initializes the image map */
-  async initializeMap() {
+  initializeMap() {
     this.toggleSpinner(true)
     this.item = store.state.viewports[this.dataset.index].item
-    const center = store.state.view.center
-    const newCenters = await updateCenter(center, this.item)
-    this.coord_world = newCenters.worldCoord
-    this.coord_image = newCenters.imageCoord
-    this.createMap()
-    this.updateNonMap()
+    const center = state.view.position
+    updateCenter(center, this.item).then((newCenters) => {
+      this.coord_world = newCenters.worldCoord
+      this.coord_image = newCenters.imageCoord
+      this.createMap()
+      this.setupTools()
+      this.setupListeners()
+      this.updateNonMap()
+    })
+  }
+
+  setupTools() {
+    this.tool_measure_width = new MeasureWidthTool(this)
+    this.tool_measure_height = new MeasureHeightTool(this)
+    // Add button to adjust brightness to the dom if enabled
+    if (configuration.ENABLE_EXPOSURE) {
+      const button_group = this.shadowRoot.querySelector('.ds-button-group')
+      const info_button = this.shadowRoot.querySelector('#info-btn')
+      button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
+    }
+    if (!configuration.ENABLE_CROSSHAIR) {
+      this.tool_center = new CenterTool(this, configuration)
+    }
   }
 
   /** Updates various items not directly related to the image map */
@@ -409,19 +420,18 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /** Handler to update the relevant parts of the image map when an item is updated */
-  async update_viewport_function() {
+  async update_viewport_function(item) {
     this.toggleMode('center')
-    this.item = store.state.viewports[this.dataset.index].item
     // Recalculates this.coord_world and this.coord_image
-    const newViewCoords = await updateCenter(store.state.view.center, this.item, store.state.view.kote)
-    const newMarkerCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+    const newViewCoords = await updateCenter(state.view.position, item, state.view.kote)
+    const newMarkerCoords = await updateCenter(state.marker.position, item, 0)
     // Loads a new image layer in map
-    updateMapImage(this.map, this.item)
+    updateMapImage(this.map, item)
     // Updates the map's view (magic!)
     await updateMapView({
       map: this.map,
-      item: this.item,
-      zoom: store.state.view.zoom,
+      item: item,
+      zoom: state.view.zoom,
       center: newViewCoords.imageCoord
     })
     updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
@@ -429,25 +439,25 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /** Handler to update the position of the marker (crosshair) when the marker state is updated */
-  async update_marker_function(event) {
-    const newCoords = await updateCenter(store.state.marker.center, this.item, store.state.marker.kote)
+  async update_marker_function(marker, item) {
+    if (!item || !marker) {
+      return
+    }
+    const newCoords = await updateCenter(marker.position, item, 0)
     newCoords.worldCoord
     newCoords.imageCoord
     await updateMapView({
       map: this.map,
-      item: this.item,
-      zoom: store.state.view.zoom,
+      item: item,
+      zoom: state.view.zoom,
       center: newCoords.imageCoord
     })
     updateMapCenterIcon(this.map, newCoords.imageCoord)
-    this.updateNonMap(this.item)
-    if (isOutOfBounds(this.item.properties['proj:shape'], newCoords.imageCoord)) {
+    this.updateNonMap(item)
+    if (isOutOfBounds(item.properties['proj:shape'], newCoords.imageCoord)) {
       // If the marker is outside the image, load a new image item
-      queryItems(newCoords.worldCoord, this.item.properties.direction, this.item.collection).then((featureCollection) => {
-        store.dispatch('updateItem', {
-          index: this.dataset.index,
-          item: featureCollection.features[0]
-        })
+      queryItems(newCoords.worldCoord, item.properties.direction, item.collection).then((featureCollection) => {
+        state.setItem(item, 'item')
       })
     }
   }
@@ -527,37 +537,43 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
     getZ(world_center[0], world_center[1], configuration).then(z => {
-      store.state.marker = {
-        center: store.state.marker.center,
-        kote: z
-      }
-      store.state.view.kote = z
-      store.state.view.zoom = world_zoom
-      // TODO: Store should be updated, but enabling below line will screw up panning and zooming royally 
-      // store.dispatch('updateView', store.state.view)
+      const newView = structuredClone(state.view)
+      newView.kote = z
+      newView.zoom = world_zoom
+      state.setView(newView)
     })
   }
+
   // Maintains zoom level at new marker
   toImageZoom(zoom) {
     return zoom
   }
 
-
-  // Lifecycle callbacks
-
-  async connectedCallback() {
-
-    this.createShadowDOM()
-
-    await this.initializeMap()
-
-    if (!configuration.ENABLE_CROSSHAIR) {
-      this.tool_center = new CenterTool(this, configuration)
+  update_view(viewstate) {
+    if (!this.self_sync) {
+      this.self_sync = true
+      return
     }
-    this.tool_measure_width = new MeasureWidthTool(this)
-    this.tool_measure_height = new MeasureHeightTool(this)
+    this.sync = false
+    if (!this.map || !this.item) {
+      return
+    }
+    const zoom = viewstate.zoom
+    const center = viewstate.position
+    const view = this.map.getView()
+    if (!view) {
+      return
+    }
+    const image_zoom = this.toImageZoom(zoom)
+    const image_center = getImageXY(this.item, center[0], center[1], center[2])
+    view.animate({
+      zoom: image_zoom,
+      center: image_center,
+      duration: 0
+    })
+  }
 
-    // Listeners
+  setupListeners() {
 
     // Viewport sync trigger
     this.map.on('moveend', this.viewSyncViewportHandler.bind(this))
@@ -565,17 +581,22 @@ export class SkraaFotoViewport extends HTMLElement {
     // When map has finished loading, remove spinner, etc.
     this.map.on('rendercomplete', () => {
       this.toggleSpinner(false)
-    })
+    })  
 
     // When `view` state changes, update local view object
-    this.update_view_function = getViewSyncViewportListener(this)
-    window.addEventListener('updateView', this.update_view_function)
-
+    autorun(() => {
+      this.update_view(state.view)
+    })
+    
     // When `marker` state changes, update crosshair position
-    window.addEventListener('updateMarker', this.update_marker_function.bind(this))
+    autorun(() => {
+      this.update_marker_function(state.marker, this.item)
+    })
 
     // When viewport item changes, load new image
-    window.addEventListener('updateItem', this.update_viewport_function.bind(this))
+    autorun(() => {
+      this.update_viewport_function(state.item)
+    })
 
     // When user cliks toolbar buttons, change mode
     this.shadowRoot.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
@@ -603,13 +624,18 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
+
+  // Lifecycle callbacks
+
+  connectedCallback() {
+    this.createShadowDOM()
+    this.initializeMap()
+  }
+
   disconnectedCallback() {
     if (configuration.ENABLE_POINTER) {
       window.removeEventListener('updatePointer', this.update_pointer_function)
     }
-    window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener('updateMarker', this.update_marker_function)
-    window.removeEventListener('updateItem', this.update_viewport_function)
   }
 
 }

@@ -319,18 +319,34 @@ export class SkraaFotoMap extends HTMLElement {
     if (configuration.ENABLE_PARCEL) {
       this.drawParcels(state.parcels)
     }
+
+    this.setupListeners()
+  }
+
+  setupListeners() {
+    // When marker (crosshair) position changes in state, re-render the icon layer
+    autorun(() => {
+      this.updateMap(state.marker)
+    })
+    
+    window.addEventListener('updateItem', this.updateMap.bind(this))
+
+    if (configuration.ENABLE_PARCEL) {
+      autorun(() => {
+        this.drawParcels(state.parcels)
+      })
+    }
   }
 
   /** Re-renders the icon layer when marker (crosshair) position changes in state. */
-  updateMap() {
+  updateMap(markerstate) {
     if (this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
-    const center = store.state.marker.center
     const view = this.map.getView()
-    view.setCenter(center)
+    view.setCenter(markerstate.position)
     this.map.setView(view)
-    this.icon_layer = this.generateIconLayer(center)
+    this.icon_layer = this.generateIconLayer(markerstate.position)
     this.map.addLayer(this.icon_layer)
   }
 
@@ -352,26 +368,14 @@ export class SkraaFotoMap extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
-
     this.createDOM()
     this.createMap()
-
-    // When marker (crosshair) position changes in state, re-render the icon layer
-    window.addEventListener('updateMarker', this.updateMap.bind(this))
-    window.addEventListener('updateItem', this.updateMap.bind(this))
-
-    if (configuration.ENABLE_PARCEL) {
-      autorun(() => {
-        this.drawParcels(state.parcels)
-      })
-    }
   }
 
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener('updateMarker', this.updateMap)
     window.removeEventListener('updateItem', this.updateMap)
   }
 }

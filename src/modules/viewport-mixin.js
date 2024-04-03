@@ -9,7 +9,7 @@ import Point from 'ol/geom/Point'
 import {Icon, Style} from 'ol/style'
 import {getImageXY, getZ} from '@dataforsyningen/saul'
 import {configuration} from './configuration.js'
-import store from '../store'
+import { state } from '../state/index.js'
 import {toDanish} from '../modules/i18n.js'
 import {getTerrainData} from '../modules/api.js'
 import {renderParcels} from '../custom-plugins/plugin-parcel.js'
@@ -126,7 +126,7 @@ async function updateMap(self) {
     return
   }
 
-  const coords = await updateCenter(store.state.marker.center, self.item, store.state.marker.kote)
+  const coords = await updateCenter(state.marker.position, self.item, 0)
 
   // Create and add image layer
   updateMapImage(self.map, self.item)
@@ -137,7 +137,7 @@ async function updateMap(self) {
   // Update the map's view
   await updateMapView({
     map: self.map,
-    zoom: self.toImageZoom(store.state.view.zoom),
+    zoom: self.toImageZoom(state.view.zoom),
     center: coords.imageCoord,
     item: self.item
   })
@@ -188,7 +188,7 @@ function createView(view_config) {
 }
 
 function updateTextContent(imagedata) {
-  return `Billede af området omkring koordinat ${ store.state.marker.center[0].toFixed(0) } Ø, ${ store.state.marker.center[1].toFixed(0) } N set fra ${toDanish(imagedata.properties.direction)}.`
+  return `Billede af området omkring koordinat ${ state.marker.position[0].toFixed(0) } Ø, ${ state.marker.position[1].toFixed(0) } N set fra ${toDanish(imagedata.properties.direction)}.`
 }
 
 function updatePlugins(self) {
