@@ -1,5 +1,6 @@
 import { getYearFromCollection } from '../modules/utilities.js'
 import { state, autorun } from '../state/index.js'
+import { queryItems } from '../modules/api.js'
 
 /**
  * Web component that enables the user to select from a list of available years (collections).
@@ -73,42 +74,46 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   connectedCallback() {
-    this.createDOM()
+    autorun(() => {
+      this.createDOM(state.collections)
+    })    
+
+    autorun(() => {
+      this.collectionUpdatedHandler(state.items[this.dataset.itemkey])
+    })
 
     // Listen for user change
     this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
-
-    autorun(() => {
-      this.collectionUpdatedHandler(state.collection)
-    })
   }
 
   // methods
 
-  createDOM() {
+  createDOM(collections) {
     this.innerHTML = this.#template
 
     this.#selectElement = this.querySelector('select')
 
     // Create the year options from the list of collections
-    for (const c of state.collections) {
+    for (const c of collections) {
       const year = getYearFromCollection(c)
       const optionElement = document.createElement('option')
       optionElement.value = c
       optionElement.innerText = year
       this.#selectElement.appendChild(optionElement)
     }
-
-    // Setup select element value from state
-    this.#selectElement.value = state.item.collection
   }
 
   selectionChangeHandler(event) {
-    state.setCurrentCollection(event.target.value)
+    queryItems(state.marker.position, state.items[this.dataset.itemkey].properties.direction, event.target.value, 1).then((data) => {
+      state.setItem(data.features[0], this.dataset.itemkey)
+    })
   }
 
-  collectionUpdatedHandler(collection) {
-    this.#selectElement.value = collection
+  collectionUpdatedHandler(item) {
+    if (!item) {
+      return
+    }
+    this.#selectElement.value = item.collection
   }
 
 }

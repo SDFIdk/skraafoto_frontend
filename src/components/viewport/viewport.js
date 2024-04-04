@@ -11,13 +11,14 @@ import { SkraaFotoDownloadTool } from '../map-tool-download.js'
 import { CenterTool } from '../map-tool-center.js'
 import { MeasureWidthTool } from '../map-tool-measure-width.js'
 import { MeasureHeightTool } from '../map-tool-measure-height.js'
-import { addPointerLayerToViewport, getUpdateViewportPointerFunction } from '../../custom-plugins/plugin-pointer'
-import { addFootprintListenerToViewport } from '../../custom-plugins/plugin-footprint.js'
+import { updateViewportPointer, generatePointerLayer, updatePointer } from '../../custom-plugins/plugin-pointer'
+import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
 import { queryItems } from '../../modules/api.js'
 import { configuration } from '../../modules/configuration.js'
 import { getViewSyncViewportListener } from '../../modules/sync-view'
 import { findAncestor } from '../../modules/utilities.js'
 import {
+  updateViewport,
   updateMapView,
   updateMapImage,
   updateMapCenterIcon,
@@ -29,7 +30,7 @@ import {
 } from '../../modules/viewport-mixin.js'
 import { getSharedStyles } from "../../styles/shared-styles.js"
 import viewportstyles from './viewport.css.js'
-import { state, autorun } from '../../state/index.js'
+import { state, reaction, when, autorun } from '../../state/index.js'
 
 customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
 
@@ -45,9 +46,6 @@ if (configuration.ENABLE_EXPOSURE) {
  * HTML web component that displays an image using the OpenLayers library.
  * This is the main component of the Skraafoto application.
  * It provides methods, event listeners, and UI tools for handling interactions with the image.
- * @listens updateView - Updates image focus and zoom on `updateView` events from state
- * @listens updateMarker - Updates crosshair position on `updateMarker` events from state
- * @listens updateItem - Changes the image on `updateItem` events from state
  * @listens updatePointer - Change display coordinate of a pointer when a user hovers the mouse over a different viewport.
  * @fires SkraaFotoViewport#modechange
  */
@@ -63,7 +61,6 @@ export class SkraaFotoViewport extends HTMLElement {
    */
 
   // properties
-  item
   coord_image
   coord_world
   map
@@ -88,8 +85,8 @@ export class SkraaFotoViewport extends HTMLElement {
       <div class="ds-button-group">
         ${ 
           configuration.ENABLE_YEAR_SELECTOR ?
-          `<skraafoto-year-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
-          : `<skraafoto-date-selector data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
+          `<skraafoto-year-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
+          : `<skraafoto-date-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
         }
         <hr>
         ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
@@ -106,7 +103,7 @@ export class SkraaFotoViewport extends HTMLElement {
     
     ${
       configuration.ENABLE_DATE_BROWSER ?
-      `<skraafoto-date-viewer data-index="${ this.dataset.index }" data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
+      `<skraafoto-date-viewer data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
     }
 
     <div class="viewport-map">
@@ -152,17 +149,17 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /** Creates an OpenLayers map object and adds interactions, image data, etc. to it */
-  async createMap() {
+  async createMap(item) {
     // Initialize a map
     this.map = new OlMap({
       target: this.shadowRoot.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: true}),
       interactions: new Collection()
     })
-    updateMapImage(this.map, this.item)
+    updateMapImage(this.map, item)
     await updateMapView({
       map: this.map,
-      item: this.item,
+      item: item,
       zoom: state.view.zoom,
       center: this.coord_image
     })
@@ -192,17 +189,19 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /** Initializes the image map */
-  initializeMap() {
+  initializeMap(item) {
+    if (!item) {
+      return
+    }
     this.toggleSpinner(true)
-    this.item = state.item
     const center = state.view.position
-    updateCenter(center, this.item).then((newCenters) => {
+    updateCenter(center, item).then((newCenters) => {
       this.coord_world = newCenters.worldCoord
       this.coord_image = newCenters.imageCoord
-      this.createMap()
+      this.createMap(item)
       this.setupTools()
       this.setupListeners()
-      this.updateNonMap()
+      this.updateNonMap(item)
     })
   }
 
@@ -221,62 +220,19 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /** Updates various items not directly related to the image map */
-  updateNonMap() {
-    this.compass_element.setAttribute('direction', this.item.properties.direction)
-    this.shadowRoot.querySelector('.image-date').innerText = updateDate(this.item)
-    this.innerText = updateTextContent(this.item)
-    updatePlugins(this)
+  updateNonMap(item) {
+    this.compass_element.setAttribute('direction', item.properties.direction)
+    this.shadowRoot.querySelector('.image-date').innerText = updateDate(item)
+    this.innerText = updateTextContent(item)
+    updatePlugins(this, item)
 
     this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
-    this.shadowRoot.querySelector('skraafoto-info-box').setItem = this.item
+    this.shadowRoot.querySelector('skraafoto-info-box').setItem = item
     if (configuration.ENABLE_CROSSHAIR) {
       this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
     }
     if (configuration.ENABLE_EXPOSURE) {
       this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
-    }
-  }
-
-  /** Handler to update the relevant parts of the image map when an item is updated */
-  async update_viewport_function(item) {
-    this.toggleMode('center')
-    // Recalculates this.coord_world and this.coord_image
-    const newViewCoords = await updateCenter(state.view.position, item, state.view.kote)
-    const newMarkerCoords = await updateCenter(state.marker.position, item, 0)
-    // Loads a new image layer in map
-    updateMapImage(this.map, item)
-    // Updates the map's view (magic!)
-    await updateMapView({
-      map: this.map,
-      item: item,
-      zoom: state.view.zoom,
-      center: newViewCoords.imageCoord
-    })
-    updateMapCenterIcon(this.map, newMarkerCoords.imageCoord)
-    this.updateNonMap()
-  }
-
-  /** Handler to update the position of the marker (crosshair) when the marker state is updated */
-  async update_marker_function(marker, item) {
-    if (!item || !marker) {
-      return
-    }
-    const newCoords = await updateCenter(marker.position, item, 0)
-    newCoords.worldCoord
-    newCoords.imageCoord
-    await updateMapView({
-      map: this.map,
-      item: item,
-      zoom: state.view.zoom,
-      center: newCoords.imageCoord
-    })
-    updateMapCenterIcon(this.map, newCoords.imageCoord)
-    this.updateNonMap(item)
-    if (isOutOfBounds(item.properties['proj:shape'], newCoords.imageCoord)) {
-      // If the marker is outside the image, load a new image item
-      queryItems(newCoords.worldCoord, item.properties.direction, item.collection).then((featureCollection) => {
-        state.setItem(item, 'item')
-      })
     }
   }
 
@@ -336,28 +292,27 @@ export class SkraaFotoViewport extends HTMLElement {
   /**
    * Triggers view sync in the viewport.
    */
-  viewSyncViewportHandler() {
+  syncHandler() {
+    
+    // TODO What to do with this?
     if (!this.sync) {
       this.sync = true
       return
     }
     this.self_sync = false
+
     const view = this.map.getView()
     const center = view.getCenter()
-    const world_zoom = this.toImageZoom(view.getZoom())
-    /* Note that we use the coord_world Z value here as we have no way to get the Z value based on the image
-    * coordinates. This means that the world coordinate we calculate will not be exact as the elevation can
-    * vary. If there are big differences in elevation between the selected center and the zoom center this
-    * could lead to some big inaccuracies when calculating the zoom center.
-    */
-    if (!this.coord_world) {
+    if (!center || !view) {
       return
     }
-    const world_center = image2world(this.item, center[0], center[1], this.coord_world[2])
+    const world_zoom = this.toImageZoom(view.getZoom())
+    const world_center = image2world(state.items[this.dataset.itemkey], center[0], center[1], state.view.kote)
     getZ(world_center[0], world_center[1], configuration).then(z => {
       state.setView({
         kote: z,
-        zoom: world_zoom
+        zoom: world_zoom,
+        position: world_center.slice(0,2)
       })
     })
   }
@@ -367,54 +322,32 @@ export class SkraaFotoViewport extends HTMLElement {
     return zoom
   }
 
-  update_view(viewstate) {
-    if (!this.self_sync) {
-      this.self_sync = true
-      return
-    }
-    this.sync = false
-    if (!this.map || !this.item) {
-      return
-    }
-    const zoom = viewstate.zoom
-    const center = viewstate.position
-    const view = this.map.getView()
-    if (!view) {
-      return
-    }
-    const image_zoom = this.toImageZoom(zoom)
-    const image_center = getImageXY(this.item, center[0], center[1], center[2])
-    view.animate({
-      zoom: image_zoom,
-      center: image_center,
-      duration: 0
-    })
-  }
-
   setupListeners() {
 
     // Viewport sync trigger
-    this.map.on('moveend', this.viewSyncViewportHandler.bind(this))
+    this.map.on('moveend', this.syncHandler.bind(this))
 
     // When map has finished loading, remove spinner, etc.
     this.map.on('rendercomplete', () => {
       this.toggleSpinner(false)
-    })  
-
-    // When `view` state changes, update local view object
-    autorun(() => {
-      this.update_view(state.view)
-    })
-    
-    // When `marker` state changes, update crosshair position
-    autorun(() => {
-      this.update_marker_function(state.marker, this.item)
     })
 
-    // When viewport item changes, load new image
-    autorun(() => {
-      this.update_viewport_function(state.item)
-    })
+    // When state changes, update viewport
+    this.reactionHandler = reaction(
+      () => {
+        return {
+          item: state.items[this.dataset.itemkey], 
+          view: state.view, 
+          marker: state.marker
+        }
+      },
+      (newData, oldData) => {
+        this.toggleMode('center')
+        updateViewport(newData, oldData, this.map).then(() => {
+          this.updateNonMap(newData.item)
+        })
+      }
+    )
 
     // When user cliks toolbar buttons, change mode
     this.shadowRoot.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
@@ -429,17 +362,26 @@ export class SkraaFotoViewport extends HTMLElement {
       }
     })
 
-    // When user moves the pointer, update all other viewports
     if (configuration.ENABLE_POINTER) {
-      addPointerLayerToViewport(this)
-      this.update_pointer_function = getUpdateViewportPointerFunction(this)
-      window.addEventListener('updatePointer', this.update_pointer_function)
+      this.map.addLayer(generatePointerLayer())
+      this.pointerHandler = autorun(() => {
+        updateViewportPointer(this, state.pointerPosition, state.items[this.dataset.itemkey])
+      })
     }
 
-    // When user changes viewport orientation, display image footprint on the map
-    if (configuration.ENABLE_FOOTPRINT) {
-      addFootprintListenerToViewport(this)
-    }
+    this.map.on('pointermove', (event) => {
+
+      // When user moves the pointer over this viewport, update all other viewports
+      if (configuration.ENABLE_POINTER) {
+        const coord = image2world(state.items[this.dataset.itemkey], event.coordinate[0], event.coordinate[1], state.view.kote)
+        state.setPointerPosition(coord)
+      }
+      
+      // When user changes viewport orientation, display image footprint on the map
+      if (configuration.ENABLE_FOOTPRINT) {
+        footprintHandler(event, this, state.items[this.dataset.itemkey])
+      }
+    })
   }
 
 
@@ -447,10 +389,18 @@ export class SkraaFotoViewport extends HTMLElement {
 
   connectedCallback() {
     this.createShadowDOM()
-    this.initializeMap()
+    
+    // Init image map when image item is available
+    this.whenHandler = when(
+      () => state.items[this.dataset.itemkey],
+      () => {this.initializeMap(state.items[this.dataset.itemkey])}
+    )
   }
 
   disconnectedCallback() {
+    this.pointerHandler()
+    this.reactionHandler()
+    this.whenHandler()
     if (configuration.ENABLE_POINTER) {
       window.removeEventListener('updatePointer', this.update_pointer_function)
     }

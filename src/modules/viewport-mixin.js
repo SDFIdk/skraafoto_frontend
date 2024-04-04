@@ -94,6 +94,53 @@ async function updateMapView({map, zoom, center, item}) {
   map.setView(mapView)
 }
 
+/** Handler to update the relevant parts of the image map when item, view, or marker is updated */
+async function updateViewport(newData, oldData, map) {
+  console.log('updating viewport', newData)
+  if (!newData.item || !newData.view || !newData.marker) {
+    return
+  }
+
+  // On item change, load a new image layer in map and update view/marker
+  if (newData.item.id !== oldData.item?.id) {
+    updateMapImage(map, newData.item)
+    await updateView(newData, map)
+    await updateMarker(newData, map)
+    return
+  }
+  
+  // On view change, update map view
+  if (newData.view !== oldData.view) {
+    await updateView(newData, map)
+  }
+
+  // On marker change, update marker position
+  if (newData.marker !== oldData.marker) {
+    await updateMarker(newData, map)
+  }
+
+  return
+}
+
+/** Calculates new view position and updates image map view */
+async function updateView(data, map) {
+  const newViewCoords = await updateCenter(data.view.position, data.item, data.view.kote)
+  await updateMapView({
+    map: map,
+    item: data.item,
+    zoom: data.view.zoom,
+    center: newViewCoords.imageCoord
+  })
+  return
+}
+
+/** Calculates new marker position and updates marker in image map */
+async function updateMarker(data, map) {
+  const newMarkerCoords = await updateCenter(data.marker.position, data.item, 0)
+  updateMapCenterIcon(map, newMarkerCoords.imageCoord)
+  return
+}
+
 /** Updates the image displayed in a map */
 function updateMapImage(map, item) {
   const layer = getLayerById(map, 'geotifflayer')
@@ -191,8 +238,8 @@ function updateTextContent(imagedata) {
   return `Billede af området omkring koordinat ${ state.marker.position[0].toFixed(0) } Ø, ${ state.marker.position[1].toFixed(0) } N set fra ${toDanish(imagedata.properties.direction)}.`
 }
 
-function updatePlugins(self) {
-  getTerrainData(self.item).then(terrain => {
+function updatePlugins(self, item) {
+  getTerrainData(item).then(terrain => {
     self.terrain = terrain
   })
   if (configuration.ENABLE_PARCEL) {
@@ -230,6 +277,9 @@ function isOutOfBounds(img_shape, img_coordinate, bound = 500) {
 
 export {
   projection,
+  updateViewport,
+  updateView,
+  updateMarker,
   updateMap,
   updateMapView,
   updateMapCenterIcon,

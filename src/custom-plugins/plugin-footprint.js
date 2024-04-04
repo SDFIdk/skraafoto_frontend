@@ -109,18 +109,16 @@ function updateFootprint(map, bounding_box, orientation) {
  * Adds an eventlistener to the viewport for updating the footprint.
  * @param {*} viewport The viewport.
  */
-function addFootprintListenerToViewport(viewport) {
-  viewport.map.on('pointermove', event => {
-    const bbox_image = event.map.getView().calculateExtent(event.map.getSize())
-    const bl = image2world(viewport.item, bbox_image[0], bbox_image[1], viewport.coord_world[2]).slice(0, -1)
-    const br = image2world(viewport.item, bbox_image[2], bbox_image[1], viewport.coord_world[2]).slice(0, -1)
-    const tl = image2world(viewport.item, bbox_image[0], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
-    const tr = image2world(viewport.item, bbox_image[2], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
-    const bbox = [[ bl, br, tr, tl, bl]]
-    window.dispatchEvent(new CustomEvent("updateFootprint", {
-      detail: { bounding_box: bbox, orientation: viewport.item.properties.direction }
-    }))
-  })
+function footprintHandler(event, viewport, item) {
+  const bbox_image = event.map.getView().calculateExtent(event.map.getSize())
+  const bl = image2world(item, bbox_image[0], bbox_image[1], viewport.coord_world[2]).slice(0, -1)
+  const br = image2world(item, bbox_image[2], bbox_image[1], viewport.coord_world[2]).slice(0, -1)
+  const tl = image2world(item, bbox_image[0], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
+  const tr = image2world(item, bbox_image[2], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
+  const bbox = [[ bl, br, tr, tl, bl]]
+  window.dispatchEvent(new CustomEvent("updateFootprint", {
+    detail: { bounding_box: bbox, orientation: item.properties.direction }
+  }))
 }
 
 /**
@@ -143,7 +141,7 @@ function getUpdateMapFootprintFunction(map) {
 }
 
 export {
-  addFootprintListenerToViewport,
+  footprintHandler,
   addFootprintLayerToMap,
   getUpdateMapFootprintFunction
 }

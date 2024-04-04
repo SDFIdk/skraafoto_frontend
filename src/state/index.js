@@ -1,6 +1,6 @@
-import { makeObservable, observable, action, computed, autorun } from 'mobx'
+import { makeObservable, observable, action, computed, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
-import { queryItem, queryItems } from '../modules/api.js'
+import { queryItem, queryItems, getCollections } from '../modules/api.js'
 import { sanitizeCoords } from '../modules/url-sanitize.js'
 import { syncToUrl } from './syncUrl.js'
 
@@ -21,22 +21,26 @@ class SkraafotoState {
     kote: 0
   }
   setView(payload) {
-    const newView = structuredClone(this.view)
     if (payload.point) {
-      newView.position = payload.point
+      this.view.position = payload.point
     }
     if (payload.kote) {
-      newView.kote = payload.kote
+      this.view.kote = payload.kote
     }
     if (payload.zoom) {
-      newView.zoom = payload.zoom
+      this.view.zoom = payload.zoom
     }
-    this.view = newView
+  }
+
+  // Pointer
+  pointerPosition = null
+  setPointerPosition(point) {
+    this.pointerPosition = point
   }
 
   // Items
   items = {
-    item: null,
+    item1: null,
     item2: null,
     nadir: null,
     north: null,
@@ -45,19 +49,33 @@ class SkraafotoState {
     east: null
   }
   get item() {
-    return this.items['item']
+    return this.items.item1
   }
-  setItem(item, key = 'item') {
+  setItem(item, key = 'item1') {
     if (this.items[key] !== item) {
       this.items[key] = item
     }
   }
-  reloadMainItem(payload) {
-    this.items.item = payload.item
+  reloadItems(payload) {
+    this.items.item1 = payload.item
     this.items.item2 = payload.item
-    this.collection = payload.item.collection
     this.view.position = payload.position
     this.marker.position = payload.position
+    queryItems(this.view.position, 'nadir', payload.item.collection).then((data) => {
+      this.items.nadir = data.features[0]
+    })
+    queryItems(this.view.position, 'north', payload.item.collection).then((data) => {
+      this.items.north = data.features[0]
+    })
+    queryItems(this.view.position, 'east', payload.item.collection).then((data) => {
+      this.items.east = data.features[0]
+    })
+    queryItems(this.view.position, 'south', payload.item.collection).then((data) => {
+      this.items.south = data.features[0]
+    })
+    queryItems(this.view.position, 'west', payload.item.collection).then((data) => {
+      this.items.west = data.features[0]
+    })
   }
   
   // Map
@@ -66,24 +84,12 @@ class SkraafotoState {
     this.mapVisible = visibility
   }
 
-  // Collection
-  collection = 'skraafotos2023'
+  // Collections
   collections = []
   setCollections(collections) {
     this.collections = collections.map((c) => c.id)
   }
-  setCurrentCollection(collection) {
-    // Sync main image with collection
-    if (this.items.item.collection !== collection) {
-      queryItems(this.marker.position, this.items.item.properties.direction, collection, 1).then((data) => {
-        this.items.item = data.features[0]
-        this.collection = collection
-      })
-    } else {
-      this.collection = collection
-    }
-  }
-
+  
   // Parcels
   parcels = []
   setParcels(parcels) {
@@ -104,10 +110,10 @@ class SkraafotoState {
     }
 
     if (urlParams.has('item')) {
-      this.items.item = await queryItem(urlParams.get('item'))
+      this.items.item1 = await queryItem(urlParams.get('item'))
     } else {
       // Load default item
-      this.items.item = await queryItem(configuration.DEFAULT_ITEM_ID)
+      this.items.item1 = await queryItem(configuration.DEFAULT_ITEM_ID)
     }
 
     if (urlParams.has('year')) {
@@ -122,6 +128,8 @@ class SkraafotoState {
       const parcels = await fetchParcels(urlParams.get('parcels'))
       this.parcels = parcels
     }
+
+    return
   }
 
   constructor() {
@@ -133,33 +141,53 @@ class SkraafotoState {
       items: observable,
       item: computed,
       setItem: action,
+      reloadItems: action,
       mapVisible: observable,
       setMapVisible: action,
-      collection: observable,
       collections: observable,
       setCollections: action,
-      setCurrentCollection: action,
       parcels: observable,
       setParcels: action,
       setSyncFromURL: action,
-      reloadMainItem: action
+      pointerPosition: observable,
+      setPointerPosition: action
+    })
+
+    getCollections().then((collections) => {
+      this.setCollections(collections)
     })
   }
 }
 
-// Initialize state
-const state = new SkraafotoState()
-
 // Initialize state using URL search parameters
-state.setSyncFromURL(sanitizeCoords(new URL(window.location)))
+const state = new SkraafotoState()
+state.setSyncFromURL(sanitizeCoords(new URL(window.location))).then(() => {
+  queryItems(state.view.position, 'nadir', state.item.collection).then((data) => {
+    state.setItem(data.features[0], 'nadir')
+  })
+  queryItems(state.view.position, 'north', state.item.collection).then((data) => {
+    state.setItem(data.features[0], 'north')
+  })
+  queryItems(state.view.position, 'south', state.item.collection).then((data) => {
+    state.setItem(data.features[0], 'south')
+  })
+  queryItems(state.view.position, 'east', state.item.collection).then((data) => {
+    state.setItem(data.features[0], 'east')
+  })
+  queryItems(state.view.position, 'west', state.item.collection).then((data) => {
+    state.setItem(data.features[0], 'west')
+  })
+})
 
 // Update URL on state change
 autorun(() => {
-  syncToUrl(state.marker, state.items.item, state.items.item2, state.mapVisible)
+  syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
 })
 
 // Exports
 export {
   state,
-  autorun
+  autorun,
+  reaction,
+  when
 }

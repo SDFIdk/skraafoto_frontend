@@ -5,7 +5,7 @@ import { state, autorun } from '../state/index.js'
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
  * Enables user to select an item for view by its date.
- * @prop {string} dataset.index - `data-index` attribute used to look up state by viewport index.
+ * @prop {string} dataset.key - `data-key` attribute used to look up state by the viewport's image item key.
  * @fires updateItemId - New item ID selected by user.
  */
 export class SkraaFotoDateViewer extends HTMLElement {
@@ -127,7 +127,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
     // Add global listener for state changes
     autorun(() => {
-      this.#fetchIds(state.item, state.marker)
+      this.#fetchIds(state.items[this.dataset.key], state.marker)
     })
     
     // Add event listener to the document for arrow key navigation
@@ -143,6 +143,9 @@ export class SkraaFotoDateViewer extends HTMLElement {
   }
 
   #fetchIds(item, marker) {
+    if (!item || !marker) {
+      return
+    }
     queryItems(marker.position, item.properties.direction, item.collection, 50).then((response) => {
       this.#selectElement.innerHTML = this.#renderOptions(response.features)
       this.#selectElement.value = state.item.id

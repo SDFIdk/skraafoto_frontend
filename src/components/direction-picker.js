@@ -227,23 +227,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
   }
 
-  highlightCurrentDirection() {
+  highlightCurrentDirection(item) {
+    if (!item) {
+      return
+    }
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
     })
-    this[`${ state.item.properties.direction }_element`].parentNode.classList.add('active')
-  }
-
-  highlightInitialDirection(item) {
-    const initialElement = this[`${ item.properties.direction }_element`]
-
-    // Remove active class from all buttons
-    this.shadowRoot.querySelectorAll('button').forEach(button => {
-      button.classList.remove('active')
-    })
-
-    // Add active class to the initially selected direction button
-    initialElement.parentNode.classList.add('active')
+    this[`${ item.properties.direction }_element`].parentNode.classList.add('active')
   }
 
   // Lifecycle
@@ -251,7 +242,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   connectedCallback() {
 
     this.createShadowDOM()
-    this.highlightInitialDirection(state.item)
 
     this.btn_open_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,0)'
@@ -264,12 +254,11 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     // When a mini-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
       btn.addEventListener('click', (event) => {
-        const target_item = btn.querySelector('skraafoto-viewport-mini').item
+        const targetOrientation = btn.querySelector('skraafoto-viewport-mini').dataset.orientation
         // Dispatch new item
         state.setMapVisible(false)
-        state.setItem(target_item)
+        state.setItem(state.items[targetOrientation])
         this.slider_element.style.transform = 'translate(0,100vh)'
-        this.highlightCurrentDirection()
       })
     })
 
@@ -278,11 +267,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       // Set orientation parameter, causing the page to reload with map open
       state.setMapVisible(true)
       this.slider_element.style.transform = 'translate(0,100vh)'
-      this.highlightCurrentDirection()
     })
 
     autorun(() => {
-      this.highlightCurrentDirection(state.item)
+      this.highlightCurrentDirection(state.items[this.dataset.itemkey])
     })
   }
 

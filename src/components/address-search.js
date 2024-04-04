@@ -220,7 +220,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       const response = await queryItems(center, orientation, collection)
 
       if (response.features.length > 0) {
-        state.reloadMainItem({
+        state.reloadItems({
           item: response.features[0],
           position: center
         })

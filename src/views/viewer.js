@@ -3,7 +3,7 @@ import { setupAnalytics } from '../modules/tracking.js'
 import { setupListeners } from '../modules/listeners.js'
 import { SkraaFotoDirectionPicker} from "../components/direction-picker"
 import { SkraaFotoMap } from '../components/map.js'
-import { SkraaFotoViewportMini } from "../components/viewport-mini.js"
+import { SkraaFotoViewportMini } from "../components/viewport/viewport-mini.js"
 import { state, autorun} from '../state/index.js'
 
 // Initialize web components
