@@ -365,7 +365,7 @@ export class SkraaFotoViewport extends HTMLElement {
     if (configuration.ENABLE_POINTER) {
       this.map.addLayer(generatePointerLayer())
       this.pointerHandler = autorun(() => {
-        updateViewportPointer(this, state.pointerPosition, state.items[this.dataset.itemkey])
+        updateViewportPointer(this, state.pointerPosition, this.dataset.itemkey)
       })
     }
 
@@ -374,7 +374,7 @@ export class SkraaFotoViewport extends HTMLElement {
       // When user moves the pointer over this viewport, update all other viewports
       if (configuration.ENABLE_POINTER) {
         const coord = image2world(state.items[this.dataset.itemkey], event.coordinate[0], event.coordinate[1], state.view.kote)
-        state.setPointerPosition(coord)
+        state.setPointerPosition(coord, this.dataset.itemkey)
       }
       
       // When user changes viewport orientation, display image footprint on the map

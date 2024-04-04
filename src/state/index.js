@@ -34,8 +34,10 @@ class SkraafotoState {
 
   // Pointer
   pointerPosition = null
-  setPointerPosition(point) {
+  pointerItemkey = null
+  setPointerPosition(point, itemkey) {
     this.pointerPosition = point
+    this.pointerItemkey = itemkey
   }
 
   // Items
@@ -150,6 +152,7 @@ class SkraafotoState {
       setParcels: action,
       setSyncFromURL: action,
       pointerPosition: observable,
+      pointerItemkey: observable,
       setPointerPosition: action
     })
 

@@ -74,14 +74,14 @@ function addPointerLayerToViewport(viewport) {
 /**
  * Function for updating a viewport pointer.
  */
-function updateViewportPointer(viewport, coord, item) {
-  if (!coord) {
+function updateViewportPointer(viewport, coord, itemkey) {
+  if (!coord || !itemkey || !viewport) {
     return
   }
-  if (0 === viewport.map) {
+  if (state.pointerItemkey === itemkey) {
     updatePointer(viewport.map, [-9999, -9999])
   } else {
-    const position = getImageXY(item, coord[0], coord[1], state.view.kote)
+    const position = getImageXY(state.items[itemkey], coord[0], coord[1], state.view.kote)
     updatePointer(viewport.map, position)
   }
 }

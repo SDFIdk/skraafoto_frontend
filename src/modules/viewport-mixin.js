@@ -96,7 +96,6 @@ async function updateMapView({map, zoom, center, item}) {
 
 /** Handler to update the relevant parts of the image map when item, view, or marker is updated */
 async function updateViewport(newData, oldData, map) {
-  console.log('updating viewport', newData)
   if (!newData.item || !newData.view || !newData.marker) {
     return
   }
