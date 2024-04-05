@@ -110,7 +110,7 @@ function updateFootprint(map, bounding_box, orientation) {
  * @param {Object} viewport The viewport.
  * @param {Object} item Image item displayed by the viewport
  */
-function footprintHandler(event, viewport, item) {
+function footprintHandler(event, item) {
   const bbox_image = event.map.getView().calculateExtent(event.map.getSize())
   const bl = image2world(item, bbox_image[0], bbox_image[1], state.view.kote).slice(0, -1)
   const br = image2world(item, bbox_image[2], bbox_image[1], state.view.kote).slice(0, -1)

@@ -5,8 +5,7 @@ import { state, autorun } from '../state/index.js'
 /**
  * Web component that fetches a list of items covering a specific collection, coordinate, and orientation.
  * Enables user to select an item for view by its date.
- * @prop {string} dataset.key - `data-key` attribute used to look up state by the viewport's image item key.
- * @fires updateItemId - New item ID selected by user.
+ * @prop {string} dataset.itemkey - `data-itemkey` attribute used to look up state by the viewport's image item key.
  */
 export class SkraaFotoDateViewer extends HTMLElement {
 
@@ -85,6 +84,59 @@ export class SkraaFotoDateViewer extends HTMLElement {
     super()
   }
 
+  #renderTemplate() {
+    return `
+      <style>
+        ${ this.#styles }
+      </style>
+      <nav class="ds-nav-tools">
+        <div class="ds-button-group" data-theme="light">
+          <button class="button-down secondary" title="Skift billede">
+            <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
+          </button>
+          <hr>
+          <select class="sf-date-viewer" id="date"></select>
+          <hr>
+          <button class="button-up secondary" title="Skift billede">
+            <svg><use href="${ svgSprites }#arrow-single-up"/></svg>
+          </button>
+        </div>
+      </nav>
+    `
+  }
+
+  #fetchIds(item, marker) {
+    if (!item || !marker) {
+      return
+    }
+    queryItems(marker.position, item.properties.direction, item.collection, 50).then((response) => {
+      this.#selectElement.innerHTML = this.#renderOptions(response.features)
+      this.#selectElement.value = state.item.id
+    })
+  }
+
+  #renderOptions(features) {
+    let templateString = ''
+    features.map((i, idx, arr) => {
+      const datetime = new Date(i.properties.datetime)
+      const seriesDate = `${datetime.toLocaleDateString()} ${idx + 1}/${arr.length}`
+      templateString += `
+      <option value="${i.id}">
+        ${seriesDate}
+      </option>
+    `
+    })
+    return templateString
+  }
+
+  shiftItemHandler(event) {
+    if (event.detail === -1) {
+      this.#buttonDown.click()
+    } else if (event.detail === 1) {
+      this.#buttonUp.click()
+    }
+  }
+
   connectedCallback() {
 
     this.innerHTML = this.#renderTemplate()
@@ -126,8 +178,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
 
     // Add global listener for state changes
-    autorun(() => {
-      this.#fetchIds(state.items[this.dataset.key], state.marker)
+    this.autorunHandler = autorun(() => {
+      this.#fetchIds(state.items[this.dataset.itemkey], state.marker)
     })
     
     // Add event listener to the document for arrow key navigation
@@ -142,57 +194,8 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
   }
 
-  #fetchIds(item, marker) {
-    if (!item || !marker) {
-      return
-    }
-    queryItems(marker.position, item.properties.direction, item.collection, 50).then((response) => {
-      this.#selectElement.innerHTML = this.#renderOptions(response.features)
-      this.#selectElement.value = state.item.id
-    })
-  }
-
-  #renderTemplate() {
-    return `
-      <style>
-        ${ this.#styles }
-      </style>
-      <nav class="ds-nav-tools">
-        <div class="ds-button-group" data-theme="light">
-          <button class="button-down secondary" title="Skift billede">
-            <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
-          </button>
-          <hr>
-          <select class="sf-date-viewer" id="date"></select>
-          <hr>
-          <button class="button-up secondary" title="Skift billede">
-            <svg><use href="${ svgSprites }#arrow-single-up"/></svg>
-          </button>
-        </div>
-      </nav>
-    `
-  }
-
-  #renderOptions(features) {
-    let templateString = ''
-    features.map((i, idx, arr) => {
-      const datetime = new Date(i.properties.datetime)
-      const seriesDate = `${datetime.toLocaleDateString()} ${idx + 1}/${arr.length}`
-      templateString += `
-      <option value="${i.id}">
-        ${seriesDate}
-      </option>
-    `
-    })
-    return templateString
-  }
-
-  shiftItemHandler(event) {
-    if (event.detail === -1) {
-      this.#buttonDown.click()
-    } else if (event.detail === 1) {
-      this.#buttonUp.click()
-    }
+  disconnectedCallback() {
+    this.autorunHandler()
   }
 
 }

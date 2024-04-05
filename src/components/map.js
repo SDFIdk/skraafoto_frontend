@@ -287,7 +287,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   singleClickHandler(event) {
-    state.setMarkerPosition(event.coordinate)
+    state.setMarker(event.coordinate)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)

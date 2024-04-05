@@ -8,10 +8,12 @@ class SkraafotoState {
 
   // Marker
   marker = {
-    position: configuration.DEFAULT_WORLD_COORDINATE
+    position: configuration.DEFAULT_WORLD_COORDINATE,
+    kote: 0
   }
-  setMarkerPosition(point) {
+  setMarker(point, kote = 0) {
     this.marker.position = point
+    this.marker.kote = kote
   }
 
   // View
@@ -137,7 +139,7 @@ class SkraafotoState {
   constructor() {
     makeObservable(this, {
       marker: observable,
-      setMarkerPosition: action,
+      setMarker: action,
       view: observable,
       setView: action,
       items: observable,
@@ -162,7 +164,7 @@ class SkraafotoState {
   }
 }
 
-// Initialize state using URL search parameters
+// Initialize state using URL search parameters and populate items for other directions
 const state = new SkraafotoState()
 state.setSyncFromURL(sanitizeCoords(new URL(window.location))).then(() => {
   queryItems(state.view.position, 'nadir', state.item.collection).then((data) => {

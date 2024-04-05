@@ -137,7 +137,7 @@ export class SkraafotoGeolocation extends HTMLElement {
       point: newCenter,
       kote: newKote
     })
-    state.setMarkerPosition(newCenter)
+    state.setMarker(newCenter)
     this.geolocation.setTracking(false)
   }
 }

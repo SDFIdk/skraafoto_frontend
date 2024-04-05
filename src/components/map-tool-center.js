@@ -23,7 +23,7 @@ export class CenterTool {
             point: newCoordinate,
             kote: newKote
           })
-          state.setMarkerPosition(newCoordinate)
+          state.setMarker(newCoordinate, newKote)
         })
       }
     })

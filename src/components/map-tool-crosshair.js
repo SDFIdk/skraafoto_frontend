@@ -51,7 +51,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
           point: world_xyz.slice(0,2),
           kote: world_xyz[2]
         })
-        state.setMarkerPosition(world_xyz.slice(0,2))
+        state.setMarker(world_xyz.slice(0,2), world_xyz[2])
       })
     }
   }
