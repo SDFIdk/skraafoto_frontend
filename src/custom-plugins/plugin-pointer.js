@@ -75,7 +75,7 @@ function addPointerLayerToViewport(viewport) {
  * Function for updating a viewport pointer.
  */
 function updateViewportPointer(viewport, coord, itemkey) {
-  if (!coord || !itemkey || !viewport) {
+  if (!coord || !itemkey || !viewport || !state.items[itemkey]) {
     return
   }
   if (state.pointerItemkey === itemkey) {

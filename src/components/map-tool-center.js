@@ -20,7 +20,7 @@ export class CenterTool {
           const newKote = world_xyz[2]
           const newCoordinate = world_xyz.slice(0,2)
           state.setView({
-            point: newCoordinate,
+            position: newCoordinate,
             kote: newKote
           })
           state.setMarker(newCoordinate, newKote)

@@ -134,10 +134,10 @@ export class SkraafotoGeolocation extends HTMLElement {
     const newKote = await getZ(newCenter[0], newCenter[1], configuration)
     // Update marker and view with user's position
     state.setView({
-      point: newCenter,
+      position: newCenter,
       kote: newKote
     })
-    state.setMarker(newCenter)
+    state.setMarker(newCenter, newKote)
     this.geolocation.setTracking(false)
   }
 }

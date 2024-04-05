@@ -3,6 +3,7 @@ import { configuration } from '../modules/configuration.js'
 import { queryItem, queryItems, getCollections } from '../modules/api.js'
 import { sanitizeCoords } from '../modules/url-sanitize.js'
 import { syncToUrl } from './syncUrl.js'
+import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
 
@@ -11,9 +12,13 @@ class SkraafotoState {
     position: configuration.DEFAULT_WORLD_COORDINATE,
     kote: 0
   }
-  setMarker(point, kote = 0) {
-    this.marker.position = point
-    this.marker.kote = kote
+  setMarker(position, kote = 0) {
+    if (position) {
+      this.marker.position = position
+    }
+    if (kote) {
+      this.marker.kote = kote
+    }
   }
 
   // View
@@ -23,8 +28,8 @@ class SkraafotoState {
     kote: 0
   }
   setView(payload) {
-    if (payload.point) {
-      this.view.position = payload.point
+    if (payload.position) {
+      this.view.position = payload.position
     }
     if (payload.kote) {
       this.view.kote = payload.kote
@@ -111,6 +116,9 @@ class SkraafotoState {
       const center = urlParams.get('center').split(',').map((c) => Number(c))
       this.marker.position = center
       this.view.position = center
+      const z = await getZ(center[0], center[1], configuration)
+      this.marker.kote = z
+      this.view.kote = z
     }
 
     if (urlParams.has('item')) {

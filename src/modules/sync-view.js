@@ -56,7 +56,7 @@ function addViewSyncMapTrigger(viewport, map) {
     getZ(center[0], center[1], configuration).then(z => {
       center[2] = z
       state.setview({
-        point:center.slice(0,2),
+        position: center.slice(0,2),
         kote: center[2],
         zoom: view.getZoom()
       })

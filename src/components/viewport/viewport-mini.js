@@ -2,7 +2,7 @@ import OlMap from 'ol/Map.js'
 import { defaults as defaultControls } from 'ol/control'
 import Collection from 'ol/Collection'
 import { image2world } from '@dataforsyningen/saul'
-import { updateViewportPointer, generatePointerLayer, updatePointer } from '../../custom-plugins/plugin-pointer'
+import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
 import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
 import { configuration } from '../../modules/configuration.js'
 import viewportMiniStyles from './viewport-mini.css.js'
@@ -140,15 +140,25 @@ export class SkraaFotoViewportMini extends HTMLElement {
     })
 
     // When state changes, update viewport
-    this.reactionHandler = reaction(
+    this.reactionDisposer = reaction(
       () => {
         return {
           item: state.items[this.dataset.orientation], 
-          view: state.view, 
-          marker: state.marker
+          view: {
+            position: state.view.position,
+            zoom: state.view.zoom,
+            kote: state.view.kote
+          },
+          marker: {
+            position: state.marker.position,
+            kote: state.marker.kote
+          }
         }
       },
       (newData, oldData) => {
+        if (!newData.item) {
+          return
+        }
         updateViewport(newData, oldData, this.map).then(() => {
           this.updateNonMap(newData.item)
         })
@@ -157,12 +167,12 @@ export class SkraaFotoViewportMini extends HTMLElement {
 
     if (configuration.ENABLE_POINTER) {
       this.map.addLayer(generatePointerLayer())
-      this.pointerHandler = autorun(() => {
+      this.pointerDisposer = autorun(() => {
         updateViewportPointer(this, state.pointerPosition, this.dataset.orientation)
       })
     }
 
-    this.whenHandler = when(
+    this.whenDisposer = when(
       () => state.items[this.dataset.orientation],
       () => {
         this.map.on('pointermove', (event) => {
@@ -183,9 +193,9 @@ export class SkraaFotoViewportMini extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.pointerHandler()
-    this.reactionHandler()
-    this.whenHandler()
+    this.pointerDisposer()
+    this.reactionDisposer()
+    this.whenDisposer()
   }
 
 }

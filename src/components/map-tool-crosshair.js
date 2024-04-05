@@ -48,7 +48,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
       }, 0.06).then((world_xyz) => {
         this.viewport.coord_world = world_xyz
         state.setView({
-          point: world_xyz.slice(0,2),
+          position: world_xyz.slice(0,2),
           kote: world_xyz[2]
         })
         state.setMarker(world_xyz.slice(0,2), world_xyz[2])

@@ -11,11 +11,9 @@ import { SkraaFotoDownloadTool } from '../map-tool-download.js'
 import { CenterTool } from '../map-tool-center.js'
 import { MeasureWidthTool } from '../map-tool-measure-width.js'
 import { MeasureHeightTool } from '../map-tool-measure-height.js'
-import { updateViewportPointer, generatePointerLayer, updatePointer } from '../../custom-plugins/plugin-pointer'
+import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
 import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
-import { queryItems } from '../../modules/api.js'
 import { configuration } from '../../modules/configuration.js'
-import { getViewSyncViewportListener } from '../../modules/sync-view'
 import { findAncestor } from '../../modules/utilities.js'
 import {
   updateViewport,
@@ -25,8 +23,7 @@ import {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter,
-  isOutOfBounds
+  updateCenter
 } from '../../modules/viewport-mixin.js'
 import { getSharedStyles } from "../../styles/shared-styles.js"
 import viewportstyles from './viewport.css.js'
@@ -46,7 +43,6 @@ if (configuration.ENABLE_EXPOSURE) {
  * HTML web component that displays an image using the OpenLayers library.
  * This is the main component of the Skraafoto application.
  * It provides methods, event listeners, and UI tools for handling interactions with the image.
- * @listens updatePointer - Change display coordinate of a pointer when a user hovers the mouse over a different viewport.
  * @fires SkraaFotoViewport#modechange
  */
 
@@ -293,7 +289,7 @@ export class SkraaFotoViewport extends HTMLElement {
    * Triggers view sync in the viewport.
    */
   syncHandler() {
-    
+    console.log('syncing')
     // TODO What to do with this?
     if (!this.sync) {
       this.sync = true
@@ -308,12 +304,10 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     const world_zoom = this.toImageZoom(view.getZoom())
     const world_center = image2world(state.items[this.dataset.itemkey], center[0], center[1], state.view.kote)
-    getZ(world_center[0], world_center[1], configuration).then(z => {
-      state.setView({
-        kote: z,
-        zoom: world_zoom,
-        position: world_center.slice(0,2)
-      })
+    state.setView({
+      zoom: world_zoom,
+      position: world_center.slice(0,2),
+      kote: world_center[2]
     })
   }
 
@@ -333,15 +327,25 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     // When state changes, update viewport
-    this.reactionHandler = reaction(
+    this.reactionDisposer = reaction(
       () => {
         return {
-          item: state.items[this.dataset.itemkey], 
-          view: state.view, 
-          marker: state.marker
+          item: state.items[this.dataset.orientation], 
+          view: {
+            position: state.view.position,
+            kote: state.view.kote,
+            zoom: state.view.zoom
+          },
+          marker: {
+            position: state.marker.position,
+            kote: state.marker.kote
+          }
         }
       },
       (newData, oldData) => {
+        if (!newData.item) {
+          return
+        }
         this.toggleMode('center')
         updateViewport(newData, oldData, this.map).then(() => {
           this.updateNonMap(newData.item)
@@ -364,7 +368,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
     if (configuration.ENABLE_POINTER) {
       this.map.addLayer(generatePointerLayer())
-      this.pointerHandler = autorun(() => {
+      this.pointerDisposer = autorun(() => {
         updateViewportPointer(this, state.pointerPosition, this.dataset.itemkey)
       })
     }
@@ -391,19 +395,16 @@ export class SkraaFotoViewport extends HTMLElement {
     this.createShadowDOM()
     
     // Init image map when image item is available
-    this.whenHandler = when(
+    this.whenDisposer = when(
       () => state.items[this.dataset.itemkey],
       () => {this.initializeMap(state.items[this.dataset.itemkey])}
     )
   }
 
   disconnectedCallback() {
-    this.pointerHandler()
-    this.reactionHandler()
-    this.whenHandler()
-    if (configuration.ENABLE_POINTER) {
-      window.removeEventListener('updatePointer', this.update_pointer_function)
-    }
+    this.pointerDisposer()
+    this.reactionDisposer()
+    this.whenDisposer()
   }
 
 }
