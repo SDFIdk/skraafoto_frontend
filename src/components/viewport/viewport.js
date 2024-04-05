@@ -3,7 +3,7 @@ import { defaults as defaultControls } from 'ol/control'
 import FullScreen from 'ol/control/FullScreen'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import Collection from 'ol/Collection'
-import { getZ, image2world } from '@dataforsyningen/saul'
+import { image2world } from '@dataforsyningen/saul'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { SkraaFotoExposureTool } from '../map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from '../map-tool-crosshair.js'
@@ -60,8 +60,6 @@ export class SkraaFotoViewport extends HTMLElement {
   coord_image
   coord_world
   map
-  sync = false
-  self_sync
   compass_element
   update_pointer_function
   update_view_function
@@ -289,14 +287,6 @@ export class SkraaFotoViewport extends HTMLElement {
    * Triggers view sync in the viewport.
    */
   syncHandler() {
-    console.log('syncing')
-    // TODO What to do with this?
-    if (!this.sync) {
-      this.sync = true
-      return
-    }
-    this.self_sync = false
-
     const view = this.map.getView()
     const center = view.getCenter()
     if (!center || !view) {
@@ -330,7 +320,7 @@ export class SkraaFotoViewport extends HTMLElement {
     this.reactionDisposer = reaction(
       () => {
         return {
-          item: state.items[this.dataset.orientation], 
+          item: state.items[this.dataset.itemkey], 
           view: {
             position: state.view.position,
             kote: state.view.kote,

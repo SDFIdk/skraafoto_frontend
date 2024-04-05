@@ -109,7 +109,6 @@ async function updateViewport(newData, oldData, map) {
   }
   
   // On view change, update map view
-  console.log('on the cusp of updating view', newData.view, oldData.view)
   if (newData.view.position !== oldData.view.position || newData.view.zoom !== oldData.view.zoom) {
     await updateView(newData, map)
   }
@@ -125,7 +124,6 @@ async function updateViewport(newData, oldData, map) {
 /** Calculates new view position and updates image map view */
 async function updateView(data, map) {
   const newViewCoords = await updateCenter(data.view.position, data.item, data.view.kote)
-  console.log('updating view', newViewCoords)
   await updateMapView({
     map: map,
     item: data.item,

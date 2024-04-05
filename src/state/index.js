@@ -114,18 +114,21 @@ class SkraafotoState {
 
     if (urlParams.has('center')) {
       const center = urlParams.get('center').split(',').map((c) => Number(c))
-      this.marker.position = center
-      this.view.position = center
       const z = await getZ(center[0], center[1], configuration)
-      this.marker.kote = z
-      this.view.kote = z
+      this.setMarker(center, z)
+      this.setView({
+        position: center,
+        kote: z
+      })
     }
 
     if (urlParams.has('item')) {
-      this.items.item1 = await queryItem(urlParams.get('item'))
+      const item1 = await queryItem(urlParams.get('item'))
+      this.setItem(item1, 'item1')
     } else {
       // Load default item
-      this.items.item1 = await queryItem(configuration.DEFAULT_ITEM_ID)
+      const item1 = await queryItem(configuration.DEFAULT_ITEM_ID)
+      this.setItem(item1, 'item1')
     }
 
     if (urlParams.has('year')) {
@@ -133,12 +136,13 @@ class SkraafotoState {
     }
 
     if (urlParams.has('item-2')) {
-      this.items.item2 = await queryItem(urlParams.get('item-2'))
+      const item2 = await queryItem(urlParams.get('item-2'))
+      this.setItem(item2, 'item2')
     }
 
     if (configuration.ENABLE_PARCEL && urlParams.has('parcels')) {
       const parcels = await fetchParcels(urlParams.get('parcels'))
-      this.parcels = parcels
+      this.setParcels(parcels)
     }
 
     return
