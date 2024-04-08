@@ -26,23 +26,23 @@ async function shiftItemOrientation(direction) {
   state.setItem(state.items[newOrientation])
 }
 
-function shiftItemTime(viewportIndex, direction) {
+function shiftItemTime(direction) {
   document.dispatchEvent(new CustomEvent('imageshift', { detail: direction, bubbles: true }))
 }
 
 function keyDownHandler(event) {
   const isShiftKeyPressed = event.shiftKey;
-  const isInputField = event.target.tagName === 'INPUT'
+  const isViewport = event.target.tagName === 'SKRAAFOTO-VIEWPORT'
 
-  if (isShiftKeyPressed && !isInputField) {
+  if (isShiftKeyPressed && !isViewport) {
     event.preventDefault()
 
     switch (event.key) {
       case 'ArrowDown':
-        shiftItemTime(0, -1)
+        shiftItemTime(-1)
         break
       case 'ArrowUp':
-        shiftItemTime(0, 1)
+        shiftItemTime(1)
         break
       case 'ArrowLeft':
         shiftItemOrientation(-1)

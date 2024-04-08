@@ -385,7 +385,7 @@ export class SkraaFotoViewport extends HTMLElement {
     // Init image map when image item is available
     this.whenDisposer = when(
       () => state.items[this.dataset.itemkey],
-      () => {this.initializeMap(state.items[this.dataset.itemkey])}
+      () => { this.initializeMap(state.items[this.dataset.itemkey]) }
     )
   }
 
