@@ -2,7 +2,7 @@ import { makeObservable, observable, action, computed, autorun, reaction, when }
 import { configuration } from '../modules/configuration.js'
 import { queryItem, queryItems, getCollections } from '../modules/api.js'
 import { sanitizeCoords } from '../modules/url-sanitize.js'
-import { syncToUrl } from './syncUrl.js'
+import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
@@ -105,49 +105,40 @@ class SkraafotoState {
     this.parcels = parcels
   }
 
-  // URL
-  async setSyncFromURL(urlParams) {
-
-    if (urlParams.get('orientation') === 'map') {
-      this.mapVisible = true
+  // URL sync
+  syncState(payload) {
+    if (payload.mapVisible) {
+      this.mapVisible = payload.mapVisible
     }
-
-    if (urlParams.has('center')) {
-      const center = urlParams.get('center').split(',').map((c) => Number(c))
-      const z = await getZ(center[0], center[1], configuration)
-      this.setMarker(center, z)
-      this.setView({
-        position: center,
-        kote: z
-      })
+    this.view.position = payload.view.position
+    this.view.kote = payload.view.kote
+    this.marker.position = payload.marker.position
+    this.marker.kote = payload.marker.kote
+    this.items.item1 = payload.items.item1
+    if (payload.items.item2) {
+      this.items.item2 = payload.items.item2
     }
-
-    if (urlParams.has('item')) {
-      const item1 = await queryItem(urlParams.get('item'))
-      this.setItem(item1, 'item1')
-    } else {
-      // Load default item
-      const item1 = await queryItem(configuration.DEFAULT_ITEM_ID)
-      this.setItem(item1, 'item1')
+    if (payload.items.nadir) {
+      this.items.nadir = payload.items.nadir
     }
-
-    if (urlParams.has('year')) {
-      this.collection = `skraafotos${ urlParams.get('year') }`
+    if (payload.items.north) {
+      this.items.north = payload.items.north
     }
-
-    if (urlParams.has('item-2')) {
-      const item2 = await queryItem(urlParams.get('item-2'))
-      this.setItem(item2, 'item2')
+    if (payload.items.south) {
+      this.items.south = payload.items.south
     }
-
-    if (configuration.ENABLE_PARCEL && urlParams.has('parcels')) {
-      const parcels = await fetchParcels(urlParams.get('parcels'))
-      this.setParcels(parcels)
+    if (payload.items.east) {
+      this.items.east = payload.items.east
     }
-
-    return
+    if (payload.items.west) {
+      this.items.west = payload.items.west
+    }
+    if (payload.parcels) {
+      this.parcels = payload.parcels
+    }
+    console.log('state synced', this)
   }
-
+  
   constructor() {
     makeObservable(this, {
       marker: observable,
@@ -164,7 +155,7 @@ class SkraafotoState {
       setCollections: action,
       parcels: observable,
       setParcels: action,
-      setSyncFromURL: action,
+      syncState: action,
       pointerPosition: observable,
       pointerItemkey: observable,
       setPointerPosition: action
@@ -178,27 +169,14 @@ class SkraafotoState {
 
 // Initialize state using URL search parameters and populate items for other directions
 const state = new SkraafotoState()
-state.setSyncFromURL(sanitizeCoords(new URL(window.location))).then(() => {
-  queryItems(state.view.position, 'nadir', state.item.collection).then((data) => {
-    state.setItem(data.features[0], 'nadir')
-  })
-  queryItems(state.view.position, 'north', state.item.collection).then((data) => {
-    state.setItem(data.features[0], 'north')
-  })
-  queryItems(state.view.position, 'south', state.item.collection).then((data) => {
-    state.setItem(data.features[0], 'south')
-  })
-  queryItems(state.view.position, 'east', state.item.collection).then((data) => {
-    state.setItem(data.features[0], 'east')
-  })
-  queryItems(state.view.position, 'west', state.item.collection).then((data) => {
-    state.setItem(data.features[0], 'west')
-  })
-})
+syncFromURL(sanitizeCoords(new URL(window.location))).then((newState) => {
+  
+  state.syncState(newState)
 
-// Update URL on state change
-autorun(() => {
-  syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
+  // Update URL on state change
+  autorun(() => {
+    syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
+  })
 })
 
 // Exports

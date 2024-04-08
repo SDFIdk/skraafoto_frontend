@@ -95,10 +95,7 @@ export class SkraaFotoViewport extends HTMLElement {
       </div>
     </nav>
     
-    ${
-      configuration.ENABLE_DATE_BROWSER ?
-      `<skraafoto-date-viewer data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-date-viewer>` : ''
-    }
+    ${ configuration.ENABLE_DATE_BROWSER ? `<skraafoto-date-viewer data-itemkey="${ this.dataset.itemkey }"></skraafoto-date-viewer>` : '' }
 
     <div class="viewport-map">
       <p class="out-of-bounds" hidden>
@@ -194,8 +191,8 @@ export class SkraaFotoViewport extends HTMLElement {
       this.coord_image = newCenters.imageCoord
       this.createMap(item)
       this.setupTools()
-      this.setupListeners()
       this.updateNonMap(item)
+      this.setupListeners()
     })
   }
 
@@ -286,12 +283,13 @@ export class SkraaFotoViewport extends HTMLElement {
   /**
    * Triggers view sync in the viewport.
    */
-  syncHandler() {
+  syncHandler(event) {
+    console.log('moveend event')
     const view = this.map.getView()
-    const center = view.getCenter()
-    if (!center || !view) {
+    if (!view) {
       return
     }
+    const center = view.getCenter()
     const world_zoom = this.toImageZoom(view.getZoom())
     const world_center = image2world(state.items[this.dataset.itemkey], center[0], center[1], state.view.kote)
     state.setView({
@@ -307,9 +305,6 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   setupListeners() {
-
-    // Viewport sync trigger
-    this.map.on('moveend', this.syncHandler.bind(this))
 
     // When map has finished loading, remove spinner, etc.
     this.map.on('rendercomplete', () => {
@@ -376,6 +371,10 @@ export class SkraaFotoViewport extends HTMLElement {
         footprintHandler(event, state.items[this.dataset.itemkey])
       }
     })
+
+    // Viewport sync trigger
+    this.map.on('moveend', this.syncHandler.bind(this))
+
   }
 
 

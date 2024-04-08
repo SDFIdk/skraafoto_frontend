@@ -101,7 +101,7 @@ async function updateViewport(newData, oldData, map) {
   }
 
   // On item change, load a new image layer in map and update view/marker
-  if (newData.item.id !== oldData.item?.id) {
+  if (newData.item !== oldData.item) {
     updateMapImage(map, newData.item)
     await updateView(newData, map)
     await updateMarker(newData, map)
