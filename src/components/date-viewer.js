@@ -111,7 +111,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     }
     queryItems(marker.position, item.properties.direction, item.collection, 50).then((response) => {
       this.#selectElement.innerHTML = this.#renderOptions(response.features)
-      this.#selectElement.value = state.item.id
+      this.#selectElement.value = state.items[this.dataset.itemkey].id
     })
   }
 
@@ -178,7 +178,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     })
 
     // Add global listener for state changes
-    this.autorunHandler = autorun(() => {
+    this.autorunDisposer = autorun(() => {
       this.#fetchIds(state.items[this.dataset.itemkey], state.marker)
     })
     
@@ -195,7 +195,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.autorunHandler()
+    this.autorunDisposer()
   }
 
 }
