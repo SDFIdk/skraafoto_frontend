@@ -283,8 +283,7 @@ export class SkraaFotoViewport extends HTMLElement {
   /**
    * Triggers view sync in the viewport.
    */
-  syncHandler(event) {
-    console.log('moveend event')
+  syncHandler() {
     const view = this.map.getView()
     if (!view) {
       return

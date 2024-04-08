@@ -114,29 +114,14 @@ class SkraafotoState {
     this.view.kote = payload.view.kote
     this.marker.position = payload.marker.position
     this.marker.kote = payload.marker.kote
-    this.items.item1 = payload.items.item1
-    if (payload.items.item2) {
-      this.items.item2 = payload.items.item2
-    }
-    if (payload.items.nadir) {
-      this.items.nadir = payload.items.nadir
-    }
-    if (payload.items.north) {
-      this.items.north = payload.items.north
-    }
-    if (payload.items.south) {
-      this.items.south = payload.items.south
-    }
-    if (payload.items.east) {
-      this.items.east = payload.items.east
-    }
-    if (payload.items.west) {
-      this.items.west = payload.items.west
+    for (const [key, value] of Object.entries(payload.items)) {
+      if (key) {
+        this.items[key] = value
+      }
     }
     if (payload.parcels) {
       this.parcels = payload.parcels
     }
-    console.log('state synced', this)
   }
   
   constructor() {
