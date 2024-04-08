@@ -1,5 +1,5 @@
 import { getYearFromCollection } from '../modules/utilities.js'
-import { state, autorun } from '../state/index.js'
+import { state, autorun, when } from '../state/index.js'
 import { queryItems } from '../modules/api.js'
 
 /**
@@ -74,16 +74,26 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   connectedCallback() {
-    autorun(() => {
-      this.createDOM(state.collections)
-    })    
 
-    autorun(() => {
+    // When collections are available in state, build the DOM and add listeners
+    this.whendisposer = when(
+      () => state.collections.length > 0, 
+      () => {
+        this.createDOM(state.collections)
+
+        // Listen for user change
+        this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
+      }
+    )    
+
+    this.autorunDisposer = autorun(() => {
       this.collectionUpdatedHandler(state.items[this.dataset.itemkey])
     })
+  }
 
-    // Listen for user change
-    this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
+  disconectedCallback() {
+    this.whendisposer()
+    this.autorunDisposer()
   }
 
   // methods

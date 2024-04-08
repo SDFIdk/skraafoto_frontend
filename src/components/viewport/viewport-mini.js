@@ -13,6 +13,7 @@ import {
   updatePlugins,
   updateDate
 } from '../../modules/viewport-mixin.js'
+import { queryItems } from '../../modules/api.js'
 
 /**
  * HTML web component that displays an image using the OpenLayers library.
@@ -165,6 +166,19 @@ export class SkraaFotoViewportMini extends HTMLElement {
       }
     )
 
+    // If collection changes, update viewport
+    this.collectionUpdateDisposer = reaction(
+      () => state.currentCollection,
+      (newData, oldData) => {
+        if (newData === oldData) {
+          return
+        }
+        queryItems(state.view.position, this.dataset.orientation, newData).then((data) => {
+          state.setItem(data.features[0], this.dataset.orientation)
+        })
+      }
+    )
+
     if (configuration.ENABLE_POINTER) {
       this.map.addLayer(generatePointerLayer())
       this.pointerDisposer = autorun(() => {
@@ -172,6 +186,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
       })
     }
 
+    // Add event listener,when item is availble in state
     this.whenDisposer = when(
       () => state.items[this.dataset.orientation],
       () => {
@@ -196,6 +211,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
     this.pointerDisposer()
     this.reactionDisposer()
     this.whenDisposer()
+    this.collectionUpdateDisposer()
   }
 
 }

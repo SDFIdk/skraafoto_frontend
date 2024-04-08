@@ -95,6 +95,9 @@ class SkraafotoState {
 
   // Collections
   collections = []
+  get currentCollection() {
+    return this.items.item1?.collection
+  } 
   setCollections(collections) {
     this.collections = collections.map((c) => c.id)
   }
@@ -137,6 +140,7 @@ class SkraafotoState {
       mapVisible: observable,
       setMapVisible: action,
       collections: observable,
+      currentCollection: computed,
       setCollections: action,
       parcels: observable,
       setParcels: action,

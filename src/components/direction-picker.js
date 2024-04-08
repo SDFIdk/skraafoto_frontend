@@ -269,9 +269,13 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       this.slider_element.style.transform = 'translate(0,100vh)'
     })
 
-    autorun(() => {
+    this.highlightAutorunDisposer = autorun(() => {
       this.highlightCurrentDirection(state.items[this.dataset.itemkey])
     })
+  }
+
+  disconnectedCallback() {
+    this.highlightAutorunDisposer()
   }
 
 }

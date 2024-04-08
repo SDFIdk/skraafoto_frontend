@@ -289,7 +289,7 @@ export class SkraaFotoViewport extends HTMLElement {
       return
     }
     const center = view.getCenter()
-    const world_zoom = this.toImageZoom(view.getZoom())
+    const world_zoom = view.getZoom()
     const world_center = image2world(state.items[this.dataset.itemkey], center[0], center[1], state.view.kote)
     state.setView({
       zoom: world_zoom,
