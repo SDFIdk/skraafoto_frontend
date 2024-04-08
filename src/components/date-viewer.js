@@ -188,7 +188,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
     // When an option is selected, update the state with the new item
     this.#selectElement.addEventListener('change', (event) => {
       queryItem(event.target.value).then((data) => {
-        state.setItem(data)
+        state.setItem(data, this.dataset.itemkey)
       })
       this.#selectElement.blur() // Remove focus from the select element
     })

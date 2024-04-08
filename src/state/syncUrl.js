@@ -47,7 +47,9 @@ export async function syncFromURL(urlParams) {
 
   if (urlParams.has('item-2')) {
     const item2 = await queryItem(urlParams.get('item-2'))
-    newState.items.item2 = item2.features[0]
+    newState.items.item2 = item2
+  } else if (location.pathname.match('twinview.html')) {
+    newState.items.item2 = newState.items.item1
   }
 
   if (urlParams.has('parcels')) {
@@ -95,7 +97,6 @@ export function syncToUrl(marker, item1, item2, mapVisible) {
   // Update parameters for viewport-2
   if (item2) {
     url.searchParams.set('item-2', item2.id)
-    url.searchParams.set('year-2', item2.collection.match(/\d{4}/g)[0])
   }
 
   if (mapVisible) {
