@@ -42,7 +42,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
       this.button_element.blur()
 
       getWorldXYZ({
-        image: this.viewport.item,
+        image: state.items[this.viewport.dataset.itemkey],
         terrain: this.viewport.terrain,
         xy: event.coordinate
       }, 0.06).then((world_xyz) => {
