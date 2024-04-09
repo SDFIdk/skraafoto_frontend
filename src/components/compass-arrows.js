@@ -1,6 +1,5 @@
 import { toDanish } from '../modules/i18n.js'
 import { shiftItemOrientation } from '../modules/listeners.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that displays a compass with arrow buttons
@@ -153,19 +152,23 @@ export class SkraaFotoCompassArrows extends HTMLElement {
     this.button_right = this.markup.querySelector('.button-right')
   }
 
+  shiftItemLeftHandler() {
+    shiftItemOrientation(-1, this.dataset.itemkey)
+  }
+
+  shiftItemRightHandler() {
+    shiftItemOrientation(1, this.dataset.itemkey)
+  }
+
+  // Lifecycle
+
   connectedCallback() {
     this.createDOM()
 
     // Clickable buttons on the sides of the compass
-    this.button_left.addEventListener('click', function(event) {
-      shiftItemOrientation(-1)
-    })
-    this.button_right.addEventListener('click', function(event) {
-      shiftItemOrientation(+1)
-    })
+    this.button_left.addEventListener('click', this.shiftItemLeftHandler.bind(this))
+    this.button_right.addEventListener('click', this.shiftItemRightHandler.bind(this))
   }
-
-  // Lifecycle
 
   attributeChangedCallback(name, old_value, new_value) {
 

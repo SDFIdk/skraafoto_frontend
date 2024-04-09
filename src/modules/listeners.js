@@ -18,12 +18,12 @@ const lookup = {
   }
 }
 
-async function shiftItemOrientation(direction) {
+async function shiftItemOrientation(direction, viewportKey = 'item1') {
   const newOrientation = direction === 1
-    ? lookup.counterclockwise[state.item.properties.direction]
-    : lookup.clockwise[state.item.properties.direction]
+    ? lookup.counterclockwise[state.items[viewportKey].properties.direction]
+    : lookup.clockwise[state.items[viewportKey].properties.direction]
 
-  state.setItem(state.items[newOrientation])
+  state.setItem(state.items[newOrientation], viewportKey)
 }
 
 function shiftItemTime(direction) {
