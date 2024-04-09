@@ -196,6 +196,7 @@ export class SkraaFotoDateViewer extends HTMLElement {
 
   disconnectedCallback() {
     this.autorunDisposer()
+    window.removeEventListener('imageshift', this.shiftItemHandler)
   }
 
 }
