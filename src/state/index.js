@@ -1,7 +1,7 @@
 import { makeObservable, observable, action, computed, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
 import { queryItem, queryItems, getCollections } from '../modules/api.js'
-import { sanitizeCoords } from '../modules/url-sanitize.js'
+import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { getZ } from '@dataforsyningen/saul'
 
@@ -158,13 +158,16 @@ class SkraafotoState {
 
 // Initialize state using URL search parameters and populate items for other directions
 const state = new SkraafotoState()
-syncFromURL(sanitizeCoords(new URL(window.location))).then((newState) => {
-  
-  state.syncState(newState)
 
-  // Update URL on state change
-  autorun(() => {
-    syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
+sanitizeParams(sanitizeCoords(new URL(window.location))).then((urlSearchParams) => {
+  syncFromURL(urlSearchParams).then((newState) => {
+  
+    state.syncState(newState)
+  
+    // Update URL on state change
+    autorun(() => {
+      syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
+    })
   })
 })
 

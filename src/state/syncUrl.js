@@ -1,6 +1,7 @@
 import { queryItems, queryItem } from "../modules/api.js"
 import { configuration } from "../modules/configuration.js"
 import { getZ } from '@dataforsyningen/saul'
+import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
 
 export async function syncFromURL(urlParams) {
 

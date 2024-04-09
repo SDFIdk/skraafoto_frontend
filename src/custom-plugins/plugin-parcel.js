@@ -112,14 +112,14 @@ function generateParcelVectorLayer() {
  * then initiates drawing the parcel data.
  */
 
-function waitForData(viewport) {
+function waitForData(viewport, itemId) {
 
   if (!viewport.terrain || state.parcels.length < 1 || !viewport.map) {
     setTimeout(() => waitForData(viewport), 600)
   } else {
     drawParcels({
       parcels: state.parcels,
-      image: viewport.item.id,
+      imageId: itemId,
       map: viewport.map,
       elevationdata: viewport.terrain
     })
@@ -130,15 +130,15 @@ function waitForData(viewport) {
  * Fetches the parcel polygons based on the ids
  * and draws that polygon over an image in an OpenLayers map object
  */
-function drawParcels({parcels, image, map, elevationdata}) {
-  if (!parcels[0]) {
+function drawParcels({parcels, imageId, map, elevationdata}) {
+  if (!parcels[0] || !imageId) {
     return
   }
   const promises = []
   parcels.forEach((parcel) => {
     promises.push(getPolygonElevations(parcel, elevationdata)
       .then((improved_polygon) => {
-        return generateFeature(improved_polygon, image)
+        return generateFeature(improved_polygon, imageId)
           .then(function(feature) {
             return feature
           })
@@ -167,11 +167,11 @@ function drawParcels({parcels, image, map, elevationdata}) {
 /**
  * Starts fetching the relevant data to draw the parcels on map
  */
-function renderParcels(viewport) {
+function renderParcels(viewport, itemId) {
   if (!getParam('parcels')) {
     return
   }
-  waitForData(viewport)
+  waitForData(viewport, itemId)
 }
 
 export {

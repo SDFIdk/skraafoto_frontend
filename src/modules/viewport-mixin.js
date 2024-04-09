@@ -242,7 +242,7 @@ function updatePlugins(self, item) {
     self.terrain = terrain
   })
   if (configuration.ENABLE_PARCEL) {
-    renderParcels(self)
+    renderParcels(self, item.id)
   }
 }
 
