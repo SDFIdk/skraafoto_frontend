@@ -11,7 +11,7 @@ import { getImageXY, getZ } from '@dataforsyningen/saul'
 import { configuration } from './configuration.js'
 import { state } from '../state/index.js'
 import { toDanish } from '../modules/i18n.js'
-import { getTerrainData } from '../modules/api.js'
+import { getTerrainData, queryItems } from '../modules/api.js'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -98,6 +98,11 @@ async function updateMapView({map, zoom, center, item}) {
 async function updateViewport(newData, oldData, map) {
   if (!newData.item || !newData.view || !newData.marker) {
     return
+  }
+
+  // TODO: If view coordinates is outside of image, decide what to do
+  if (isOutOfBounds(newData.item.geometry.coordinates[0], newData.view.position)) {
+    console.log('view and image do not match!') 
   }
 
   // On item change, load a new image layer in map and update view/marker
@@ -264,10 +269,25 @@ async function updateCenter(coordinate, item, kote) {
   }
 }
 
-function isOutOfBounds(img_shape, img_coordinate, bound = 500) {
-  if (img_coordinate[0] < bound || img_coordinate[0] > (img_shape[1] - bound)) {
-    return true
-  } else if (img_coordinate[1] < bound || img_coordinate[1] > (img_shape[0] - bound)) {
+/** Checks if a coordinate is outside the edge coordinates of an image 
+ * @param {Array} shape array of coordinate pairs like [[x1, y1], [x2, y2], ...]
+ * @param {Array} coordinate coordinate is an XY pair like [x, y]
+*/
+function isOutOfBounds(shape, coordinate, bound = 500) {
+
+  let minX = shape[0][0]
+  let maxX = shape[0][0]
+  let minY = shape[0][1]
+  let maxY = shape[0][1]
+
+  for (let i = 1; i < shape.length; i++) {
+    minX = Math.min(minX, shape[i][0])
+    maxX = Math.max(maxX, shape[i][0])
+    minY = Math.min(minY, shape[i][1])
+    maxY = Math.max(maxY, shape[i][1])
+  }
+
+  if (coordinate[0] < minX || coordinate[0] > maxX || coordinate[1] < minY || coordinate[1] > maxY) {
     return true
   } else {
     return false

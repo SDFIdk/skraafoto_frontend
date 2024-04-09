@@ -13,7 +13,6 @@ class SkraafotoState {
     kote: 0
   }
   setMarker(position, kote = 0) {
-    console.log('marker was set')
     if (position) {
       this.marker.position = position
     }
