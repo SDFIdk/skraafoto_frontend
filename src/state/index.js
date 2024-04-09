@@ -1,9 +1,8 @@
 import { makeObservable, observable, action, computed, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
-import { queryItem, queryItems, getCollections } from '../modules/api.js'
+import { queryItems, getCollections } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
-import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
 

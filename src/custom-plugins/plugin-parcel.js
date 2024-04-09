@@ -5,6 +5,7 @@ import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
 import { state } from '../state/index.js'
 import { getImageXY, getElevation } from '@dataforsyningen/saul'
+import { toJS } from 'mobx'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import Feature from 'ol/Feature'
@@ -115,10 +116,10 @@ function generateParcelVectorLayer() {
 function waitForData(viewport, itemId) {
 
   if (!viewport.terrain || state.parcels.length < 1 || !viewport.map) {
-    setTimeout(() => waitForData(viewport), 600)
+    setTimeout(() => waitForData(viewport), 300)
   } else {
     drawParcels({
-      parcels: state.parcels,
+      parcels: toJS(state.parcels),
       imageId: itemId,
       map: viewport.map,
       elevationdata: viewport.terrain
