@@ -119,7 +119,7 @@ function waitForData(viewport, itemId) {
     setTimeout(() => waitForData(viewport), 300)
   } else {
     drawParcels({
-      parcels: toJS(state.parcels),
+      parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
       imageId: itemId,
       map: viewport.map,
       elevationdata: viewport.terrain

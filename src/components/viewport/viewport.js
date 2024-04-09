@@ -190,13 +190,13 @@ export class SkraaFotoViewport extends HTMLElement {
       this.coord_world = newCenters.worldCoord
       this.coord_image = newCenters.imageCoord
       this.createMap(item)
-      this.setupTools()
+      this.setupTools(item)
       this.updateNonMap(item)
       this.setupListeners()
     })
   }
 
-  setupTools() {
+  setupTools(item) {
     this.tool_measure_width = new MeasureWidthTool(this)
     this.tool_measure_height = new MeasureHeightTool(this)
     // Add button to adjust brightness to the dom if enabled
@@ -206,7 +206,7 @@ export class SkraaFotoViewport extends HTMLElement {
       button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
     }
     if (!configuration.ENABLE_CROSSHAIR) {
-      this.tool_center = new CenterTool(this, configuration)
+      this.tool_center = new CenterTool(this, item)
     }
   }
 

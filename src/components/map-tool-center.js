@@ -6,12 +6,12 @@ import { state } from '../state/index.js'
  */
 export class CenterTool {
 
-  constructor(viewport) {
+  constructor(viewport, item) {
     // Set up event listener
     viewport.map.on('singleclick', (event) => {
       if (viewport.mode === 'center') {
         getWorldXYZ({
-          image: viewport.item,
+          image: item,
           terrain: viewport.terrain,
           xy: event.coordinate
         }, 0.06).then((world_xyz) => {
