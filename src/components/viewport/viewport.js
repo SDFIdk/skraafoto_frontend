@@ -104,7 +104,7 @@ export class SkraaFotoViewport extends HTMLElement {
     </div>
     ${
       configuration.ENABLE_COMPASSARROWS ?
-      `<skraafoto-compass-arrows direction="north"></skraafoto-compass-arrows>`:
+      `<skraafoto-compass-arrows direction="north" data-itemkey="${ this.dataset.itemkey }"></skraafoto-compass-arrows>`:
       `<skraafoto-compass direction="north"></skraafoto-compass>`
     }
     ${

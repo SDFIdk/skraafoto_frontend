@@ -3,6 +3,7 @@ import { configuration } from '../modules/configuration.js'
 import { queryItems, getCollections } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
+import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
 
@@ -12,6 +13,7 @@ class SkraafotoState {
     kote: 0
   }
   setMarker(position, kote = 0) {
+    console.log('marker was set')
     if (position) {
       this.marker.position = position
     }
@@ -65,25 +67,39 @@ class SkraafotoState {
     }
   }
   reloadItems(payload) {
+    let promises = [
+      getZ(payload.position[0], payload.position[1], configuration),
+      queryItems(payload.position, 'nadir', payload.item.collection),
+      queryItems(payload.position, 'north', payload.item.collection),
+      queryItems(payload.position, 'south', payload.item.collection),
+      queryItems(payload.position, 'east', payload.item.collection),
+      queryItems(payload.position, 'west', payload.item.collection)  
+    ]
+    Promise.all(promises).then((values) => { 
+      this.setItems({
+        item: payload.item,
+        position: payload.position,
+        kote: values[0],
+        nadir: values[1].features[0],
+        north: values[2].features[0],
+        south: values[3].features[0],
+        east: values[4].features[0],
+        west: values[5].features[0]
+      })
+    })
+  }
+  setItems(payload) {
     this.items.item1 = payload.item
     this.items.item2 = payload.item
     this.view.position = payload.position
+    this.view.kote = payload.kote
     this.marker.position = payload.position
-    queryItems(this.view.position, 'nadir', payload.item.collection).then((data) => {
-      this.items.nadir = data.features[0]
-    })
-    queryItems(this.view.position, 'north', payload.item.collection).then((data) => {
-      this.items.north = data.features[0]
-    })
-    queryItems(this.view.position, 'east', payload.item.collection).then((data) => {
-      this.items.east = data.features[0]
-    })
-    queryItems(this.view.position, 'south', payload.item.collection).then((data) => {
-      this.items.south = data.features[0]
-    })
-    queryItems(this.view.position, 'west', payload.item.collection).then((data) => {
-      this.items.west = data.features[0]
-    })
+    this.marker.kote = payload.kote
+    this.items.nadir = payload.nadir
+    this.items.north = payload.north
+    this.items.south = payload.south
+    this.items.east = payload.east
+    this.items.west = payload.west
   }
   
   // Map
@@ -135,6 +151,7 @@ class SkraafotoState {
       items: observable,
       item: computed,
       setItem: action,
+      setItems: action,
       reloadItems: action,
       mapVisible: observable,
       setMapVisible: action,
