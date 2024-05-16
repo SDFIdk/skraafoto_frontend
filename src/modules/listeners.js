@@ -17,6 +17,7 @@ const lookup = {
     nadir: 'north'
   }
 }
+const keysPressed = {}
 
 async function shiftItemOrientation(direction) {
   const newOrientation = direction === 1
@@ -31,10 +32,13 @@ function shiftItemTime(viewportIndex, direction) {
 }
 
 function keyDownHandler(event) {
-  const isShiftKeyPressed = event.shiftKey;
+  keysPressed[event.key] = true
+
+  const isShiftKeyPressed = this.keysPressed.Shift === true;
+  const isTabKeyPressed = this.keysPressed.Tab === true;
   const isInputField = event.target.tagName === 'INPUT'
 
-  if (isShiftKeyPressed && !isInputField) {
+  if (isShiftKeyPressed && !isTabKeyPressed && !isInputField) {
     event.preventDefault()
 
     switch (event.key) {
@@ -55,6 +59,9 @@ function keyDownHandler(event) {
         break
     }
   }
+}
+function keyDownHandler(event) {
+  delete keysPressed[event.key]
 }
 
 function isDatafordelerDown() {
@@ -97,6 +104,7 @@ function setupListeners() {
 
   // Listen and react on shortkey use
   document.addEventListener('keydown', keyDownHandler)
+  document.addEventListener('keyup', keyUpHandler)
 
   if (configuration.ENABLE_DATAFORDELER_PING) {
     isDatafordelerDown()
