@@ -34,8 +34,8 @@ function shiftItemTime(viewportIndex, direction) {
 function keyDownHandler(event) {
   keysPressed[event.key] = true
 
-  const isShiftKeyPressed = this.keysPressed.Shift === true;
-  const isTabKeyPressed = this.keysPressed.Tab === true;
+  const isShiftKeyPressed = this.keysPressed.Shift === true
+  const isTabKeyPressed = this.keysPressed.Tab === true
   const isInputField = event.target.tagName === 'INPUT'
 
   if (isShiftKeyPressed && !isTabKeyPressed && !isInputField) {
