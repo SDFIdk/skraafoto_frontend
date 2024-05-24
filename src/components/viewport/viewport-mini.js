@@ -12,7 +12,7 @@ import {
   updateTextContent,
   updatePlugins,
   updateDate
-} from '../../modules/viewport-mixin.js'
+} from './viewport-mixin.js'
 import { queryItems } from '../../modules/api.js'
 
 /**
@@ -185,13 +185,13 @@ export class SkraaFotoViewportMini extends HTMLElement {
       })
     }
 
-    // Add event listener,when item is availble in state
+    // Add event listener,when item is available in state
     this.whenDisposer = when(
       () => state.items[this.dataset.orientation],
       () => {
         this.map.on('pointermove', (event) => {
 
-          // When user moves the pointer over this viewport, update all other viewports
+          // When user moves the pointer over this viewport, update the state to signal update for all other viewports
           if (configuration.ENABLE_POINTER) {
             const coord = image2world(state.items[this.dataset.orientation], event.coordinate[0], event.coordinate[1], state.view.kote)
             state.setPointerPosition(coord, this.dataset.orientation)

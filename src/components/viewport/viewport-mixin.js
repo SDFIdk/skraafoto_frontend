@@ -8,11 +8,11 @@ import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { getImageXY, getWorldXYZ, getZ } from '@dataforsyningen/saul'
-import { configuration } from './configuration.js'
-import { state } from '../state/index.js'
-import { toDanish } from '../modules/i18n.js'
-import { renderParcels } from '../custom-plugins/plugin-parcel.js'
-import { checkBounds } from '../modules/utilities.js'
+import { configuration } from './../modules/configuration.js'
+import { state } from '../../state/index.js'
+import { toDanish } from '../../modules/i18n.js'
+import { renderParcels } from '../../custom-plugins/plugin-parcel.js'
+import { checkBounds } from '../../modules/utilities.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
 // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -99,6 +99,8 @@ async function updateViewport(newData, oldData, map) {
   if (!newData.item || !newData.view || !newData.marker) {
     return
   }
+
+  console.log('update viewport')
 
   // On item change, load a new image layer in map and update view/marker
   if (newData.item !== oldData.item) {

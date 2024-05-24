@@ -14,7 +14,7 @@ import { MeasureHeightTool } from '../tools/map-tool-measure-height.js'
 import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
 import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
 import { configuration } from '../../modules/configuration.js'
-import { findAncestor, debounce } from '../../modules/utilities.js'
+import { findAncestor } from '../../modules/utilities.js'
 import {
   updateViewport,
   updateMapView,
@@ -24,7 +24,7 @@ import {
   updatePlugins,
   updateDate,
   updateCenter
-} from '../../modules/viewport-mixin.js'
+} from './viewport-mixin.js'
 import { getSharedStyles } from "../../styles/shared-styles.js"
 import viewportstyles from './viewport.css.js'
 import { state, reaction, when, autorun } from '../../state/index.js'

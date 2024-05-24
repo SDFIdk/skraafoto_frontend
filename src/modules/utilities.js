@@ -29,7 +29,7 @@ function findAncestor(element, selector) {
  * @param {Array} imageCoordinate coordinate is an XY pair like [x, y]
  * @returns {Object} Returns a new image object if coordinate falls outside the shape bounds - otherwise returns false.
 */
-async function checkBounds(imageItem, imageCoordinate, bound = 200) {
+async function checkBounds(imageItem, imageCoordinate) {
 
   const shape = imageItem.properties['proj:shape']
 
