@@ -6,7 +6,7 @@ import Overlay from 'ol/Overlay'
 import { image2world, getImageXY } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
-import { configuration } from "../modules/configuration";
+import { configuration } from "../../modules/configuration";
 
 const featureIdentifiers = []
 

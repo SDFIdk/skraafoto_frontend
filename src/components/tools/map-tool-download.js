@@ -1,5 +1,5 @@
-import { configuration } from '../modules/configuration.js'
-import { createPdf } from '../custom-plugins/plugin-custom-create-pdf.js'
+import { configuration } from '../../modules/configuration.js'
+import { createPdf } from '../../custom-plugins/plugin-custom-create-pdf.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**

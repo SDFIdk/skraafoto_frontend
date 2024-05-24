@@ -1,5 +1,5 @@
 import WebGLTileLayer from 'ol/layer/WebGLTile'
-import { configuration } from '../modules/configuration'
+import { configuration } from '../../modules/configuration'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**

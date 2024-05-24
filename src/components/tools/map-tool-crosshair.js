@@ -1,6 +1,6 @@
 import { getWorldXYZ } from "@dataforsyningen/saul"
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-import { state } from '../state/index.js'
+import { state } from '../../state/index.js'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element

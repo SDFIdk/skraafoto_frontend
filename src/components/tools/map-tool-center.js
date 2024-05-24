@@ -1,5 +1,5 @@
 import { getWorldXYZ } from '@dataforsyningen/saul'
-import { state } from '../state/index.js'
+import { state } from '../../state/index.js'
 
 /**
  * Enables a user to click an image an have it centered in that location

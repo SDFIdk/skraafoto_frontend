@@ -6,7 +6,7 @@
 @import "./styles/cookieinformation.css";
 
 /* Measure tool styles*/
-@import "./styles/measure.css";
+@import "./components/tools/measure.css";
 
 body {
   position: relative;

@@ -6,7 +6,7 @@ import { getDistance } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
-import { configuration } from "../modules/configuration"
+import { configuration } from "../../modules/configuration"
 
 const featureIdentifiers = []
 
