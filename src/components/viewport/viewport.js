@@ -14,7 +14,7 @@ import { MeasureHeightTool } from '../tools/map-tool-measure-height.js'
 import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
 import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
 import { configuration } from '../../modules/configuration.js'
-import { findAncestor } from '../../modules/utilities.js'
+import { findAncestor, debounce } from '../../modules/utilities.js'
 import {
   updateViewport,
   updateMapView,
@@ -58,7 +58,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // properties
   coord_image
-  coord_world
   map
   compass_element
   update_pointer_function
@@ -187,7 +186,6 @@ export class SkraaFotoViewport extends HTMLElement {
     this.toggleSpinner(true)
     const center = state.view.position
     updateCenter(center, item).then((newCenters) => {
-      this.coord_world = newCenters.worldCoord
       this.coord_image = newCenters.imageCoord
       this.createMap(item)
       this.setupTools(item)
@@ -284,6 +282,7 @@ export class SkraaFotoViewport extends HTMLElement {
    * Triggers view sync in the viewport.
    */
   syncHandler() {
+    console.log('handle sync', this.dataset.itemkey)
     const view = this.map.getView()
     if (!view) {
       return

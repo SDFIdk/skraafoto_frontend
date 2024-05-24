@@ -7,19 +7,12 @@ import { addViewSyncMapTrigger, getViewSyncMapListener } from '../modules/sync-v
  * @extends SkraaFotoMap
  */
 export class SkraaFotoAdvancedMap extends SkraaFotoMap {
-
-
-  // properties
-
-  // setters
   
   constructor() {
     super() // Inherit stuff from SkraaFotoMap
   }
   
-
   // Methods
-
   updatePlugins() {
     // add interactions
     const interactions = defaultInteractions({ pinchRotate: false })
@@ -33,14 +26,8 @@ export class SkraaFotoAdvancedMap extends SkraaFotoMap {
     window.addEventListener('updateView', this.update_view_function)
   }
 
-
   // Lifecycle callbacks
-
   connectedCallback() {
     super.connectedCallback()
-
   }
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)

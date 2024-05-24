@@ -115,14 +115,14 @@ function generateParcelVectorLayer() {
 
 function waitForData(viewport, itemId) {
 
-  if (!viewport.terrain || state.parcels.length < 1 || !viewport.map) {
+  if (!state.terrain[viewport.dataset.itemkey] || state.parcels.length < 1 || !viewport.map) {
     setTimeout(() => waitForData(viewport), 300)
   } else {
     drawParcels({
       parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
       imageId: itemId,
       map: viewport.map,
-      elevationdata: viewport.terrain
+      elevationdata: state.terrain[viewport.dataset.itemkey]
     })
   }
 }

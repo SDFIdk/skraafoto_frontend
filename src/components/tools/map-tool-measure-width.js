@@ -7,6 +7,7 @@ import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import { configuration } from "../../modules/configuration"
+import { state } from '../../state/index.js'
 
 const featureIdentifiers = []
 
@@ -257,7 +258,7 @@ export class MeasureWidthTool {
     for (let n = 0; coords.length > n; n = n+2) {
       const new_coord = await getWorldXYZ({
         image: this.viewport.item,
-        terrain: this.viewport.terrain,
+        terrain: state.terrain[this.viewport.dataset.itemkey],
         xy: [coords[n], coords[n + 1]]
       })
       // Since `getDistance` works with WGS84 coordinates, we must translate the coords

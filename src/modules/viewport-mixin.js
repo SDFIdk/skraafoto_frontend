@@ -7,12 +7,12 @@ import Projection from 'ol/proj/Projection.js'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
-import { getImageXY, getZ } from '@dataforsyningen/saul'
+import { getImageXY, getWorldXYZ, getZ } from '@dataforsyningen/saul'
 import { configuration } from './configuration.js'
 import { state } from '../state/index.js'
 import { toDanish } from '../modules/i18n.js'
-import { getTerrainData, queryItems } from '../modules/api.js'
 import { renderParcels } from '../custom-plugins/plugin-parcel.js'
+import { checkBounds } from '../modules/utilities.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
 // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -100,11 +100,6 @@ async function updateViewport(newData, oldData, map) {
     return
   }
 
-  // TODO: If view coordinates is outside of image, decide what to do
-  if (isOutOfBounds(newData.item.geometry.coordinates[0], newData.view.position)) {
-    console.log('view and image do not match!') 
-  }
-
   // On item change, load a new image layer in map and update view/marker
   if (newData.item !== oldData.item) {
     updateMapImage(map, newData.item)
@@ -140,7 +135,7 @@ async function updateView(data, map) {
 
 /** Calculates new marker position and updates marker in image map */
 async function updateMarker(data, map) {
-  const newMarkerCoords = await updateCenter(data.marker.position, data.item, 0)
+  const newMarkerCoords = await updateCenter(data.marker.position, data.item, data.marker.kote)
   updateMapCenterIcon(map, newMarkerCoords.imageCoord)
   return
 }
@@ -168,6 +163,7 @@ function updateMapCenterIcon(map, localCoordinate) {
   }
   newIconLayer = generateIconLayer(localCoordinate, iconImage)
   map.addLayer(newIconLayer)
+  console.log('new marker added', localCoordinate)
 }
 
 /** Completely update an image map */
@@ -243,9 +239,6 @@ function updateTextContent(imagedata) {
 }
 
 function updatePlugins(self, item) {
-  getTerrainData(item).then(terrain => {
-    self.terrain = terrain
-  })
   if (configuration.ENABLE_PARCEL) {
     renderParcels(self, item.id)
   }
@@ -269,29 +262,25 @@ async function updateCenter(coordinate, item, kote) {
   }
 }
 
-/** Checks if a coordinate is outside the edge coordinates of an image 
- * @param {Array} shape array of coordinate pairs like [[x1, y1], [x2, y2], ...]
- * @param {Array} coordinate coordinate is an XY pair like [x, y]
-*/
-function isOutOfBounds(shape, coordinate, bound = 500) {
-
-  let minX = shape[0][0]
-  let maxX = shape[0][0]
-  let minY = shape[0][1]
-  let maxY = shape[0][1]
-
-  for (let i = 1; i < shape.length; i++) {
-    minX = Math.min(minX, shape[i][0])
-    maxX = Math.max(maxX, shape[i][0])
-    minY = Math.min(minY, shape[i][1])
-    maxY = Math.max(maxY, shape[i][1])
-  }
-
-  if (coordinate[0] < minX || coordinate[0] > maxX || coordinate[1] < minY || coordinate[1] > maxY) {
-    return true
-  } else {
-    return false
-  }
+function reCenter(item, itemkey, imageCoordinate) {
+  getWorldXYZ({
+    image: item,
+    terrain: state.terrain[itemkey],
+    xy: imageCoordinate
+  }, 0.06).then(async (world_xyz) => {
+    // Check if click is outside image bounds and reload image if necessary.
+    const outOfBounds = await checkBounds(item, imageCoordinate)
+    if (outOfBounds) {
+      state.setItemAndView({
+        itemkey: itemkey,
+        item: outOfBounds,
+        position: world_xyz.slice(0,2),
+        kote: world_xyz[2]
+      })
+    } else {
+      state.setMarker(world_xyz.slice(0,2), world_xyz[2])
+    }
+  })
 }
 
 export {
@@ -299,6 +288,7 @@ export {
   updateViewport,
   updateView,
   updateMarker,
+  reCenter,
   updateMap,
   updateMapView,
   updateMapCenterIcon,
@@ -308,6 +298,5 @@ export {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter,
-  isOutOfBounds
+  updateCenter
 }

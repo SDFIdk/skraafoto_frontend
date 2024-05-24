@@ -1,6 +1,6 @@
 import { makeObservable, observable, action, computed, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
-import { queryItems, getCollections } from '../modules/api.js'
+import { queryItems, getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { getZ } from '@dataforsyningen/saul'
@@ -13,6 +13,11 @@ class SkraafotoState {
     kote: 0
   }
   setMarker(position, kote = 0) {
+    console.log('set marker', position, kote)
+    if (position[0] < 400000) {
+      console.error('Marker position is not a useful EPSG:25832 coordinate.')
+      return
+    }
     if (position) {
       this.marker.position = position
     }
@@ -28,6 +33,11 @@ class SkraafotoState {
     kote: 0
   }
   setView(payload) {
+    console.debug('set view', payload)
+    if (payload.position[0] < 400000) {
+      console.error('View position is not a useful EPSG:25832 coordinate.')
+      return
+    }
     if (payload.position) {
       this.view.position = payload.position
     }
@@ -57,15 +67,33 @@ class SkraafotoState {
     west: null,
     east: null
   }
+  terrain = {
+    item1: null,
+    item2: null,
+    nadir: null,
+    north: null,
+    south: null,
+    west: null,
+    east: null
+  }
   get item() {
     return this.items.item1
   }
   setItem(item, key = 'item1') {
-    if (this.items[key] !== item) {
-      this.items[key] = item
+    if (this.items[key]?.id !== item.id) {
+      getTerrainData(item).then(terrain => {
+        console.log('item was changed. Set item', key)
+        this.setItemAndTerrain(item, terrain, key)
+      })
     }
   }
+  setItemAndTerrain(item, terrain, key) {
+    console.log('set item and terrain', key)
+    this.terrain[key] = terrain
+    this.items[key] = item
+  }
   reloadItems(payload) {
+    console.log('reload items')
     let promises = [
       getZ(payload.position[0], payload.position[1], configuration),
       queryItems(payload.position, 'nadir', payload.item.collection),
@@ -88,22 +116,30 @@ class SkraafotoState {
     })
   }
   setItems(payload) {
-    this.items.item1 = payload.item
-    this.items.item2 = payload.item
+    console.log('set items (all)')
+    this.setItem(payload.item, 'item1')
+    this.setItem(payload.item, 'item2')
     this.view.position = payload.position
     this.view.kote = payload.kote
     this.marker.position = payload.position
     this.marker.kote = payload.kote
-    this.items.nadir = payload.nadir
-    this.items.north = payload.north
-    this.items.south = payload.south
-    this.items.east = payload.east
-    this.items.west = payload.west
+    this.setItem(payload.nadir, 'nadir')
+    this.setItem(payload.north, 'north')
+    this.setItem(payload.south, 'south')
+    this.setItem(payload.east, 'east')
+    this.setItem(payload.west, 'west')
+  }
+  setItemAndView(payload) {
+    console.log('set item and view')
+    this.setItem(payload.item, payload.itemkey)
+    this.setView({position: payload.position, kote: payload.kote})
+    this.setMarker(payload.position, payload.kote)
   }
   
   // Map
   mapVisible = false
   setMapVisible(visibility) {
+    console.debug('set map visible')
     this.mapVisible = visibility
   }
 
@@ -113,17 +149,20 @@ class SkraafotoState {
     return this.items.item1?.collection
   } 
   setCollections(collections) {
+    console.debug('set collections')
     this.collections = collections.map((c) => c.id)
   }
   
   // Parcels
   parcels = []
   setParcels(parcels) {
+    console.debug('set parcels')
     this.parcels = parcels
   }
 
   // URL sync
   syncState(payload) {
+    console.debug('syncing state')
     if (payload.mapVisible) {
       this.mapVisible = payload.mapVisible
     }
@@ -133,7 +172,7 @@ class SkraafotoState {
     this.marker.kote = payload.marker.kote
     for (const [key, value] of Object.entries(payload.items)) {
       if (key) {
-        this.items[key] = value
+        this.setItem(value, key)
       }
     }
     if (payload.parcels) {
@@ -151,7 +190,9 @@ class SkraafotoState {
       item: computed,
       setItem: action,
       setItems: action,
+      setItemAndTerrain: action,
       reloadItems: action,
+      setItemAndView: action,
       mapVisible: observable,
       setMapVisible: action,
       collections: observable,

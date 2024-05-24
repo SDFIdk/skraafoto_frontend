@@ -1,6 +1,6 @@
-import { getWorldXYZ } from "@dataforsyningen/saul"
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { state } from '../../state/index.js'
+import { reCenter } from '../../modules/viewport-mixin.js'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -40,19 +40,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
       this.button_element.style.background = ''
       this.button_element.style.borderRadius = '0'
       this.button_element.blur()
-
-      getWorldXYZ({
-        image: state.items[this.viewport.dataset.itemkey],
-        terrain: this.viewport.terrain,
-        xy: event.coordinate
-      }, 0.06).then((world_xyz) => {
-        this.viewport.coord_world = world_xyz
-        state.setView({
-          position: world_xyz.slice(0,2),
-          kote: world_xyz[2]
-        })
-        state.setMarker(world_xyz.slice(0,2), world_xyz[2])
-      })
+      reCenter(state.items[this.viewport.dataset.itemkey], this.viewport.dataset.itemkey, event.coordinate)
     }
   }
 
