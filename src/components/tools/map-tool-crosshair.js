@@ -1,6 +1,6 @@
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { state } from '../../state/index.js'
-import { reCenter } from '../../modules/viewport-mixin.js'
+import { reCenter } from '../viewport/viewport-mixin.js'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element

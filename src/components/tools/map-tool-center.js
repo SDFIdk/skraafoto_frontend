@@ -1,4 +1,4 @@
-import { reCenter } from '../../modules/viewport-mixin.js'
+import { reCenter } from '../viewport/viewport-mixin.js'
 
 /**
  * Enables a user to click an image an have it centered in that location
