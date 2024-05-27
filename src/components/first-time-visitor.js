@@ -7,7 +7,7 @@ export class FirstTimeVisit extends HTMLElement {
 
   // Properties
   dialog
-  local_storage_key = 'skraafoto-splash'
+  local_storage_key = 'skraafoto-splash-1'
   styles = `
     dialog::backdrop {
       background-color: hsla(0, 0%, 0%, 0.6);
@@ -53,21 +53,9 @@ export class FirstTimeVisit extends HTMLElement {
         Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
       </p>
       <!---<skraafoto-address-search></skraafoto-address-search>--->
-      <h2>Nye Features</h2>
-      <ul>
-      <li>GPS Knap - Find din lokalitet</li>
-      <li>Verdenshjørne/nordpil i baggrundskortet</li>
-      <li>Tilføjet knapper til kompas for skift af retning</li>
-      <li>Tilføjet knapper for zoom</li>
-      <li>Målinger kan nu fjernes ved klik på måling</li>
-      <li>Nyt design og tema</li>
-      <li>Tilføjet Genvejstaster</li>
-        <ul>
-        <li>Piletast højre/venstre for skift af retning</li>
-        <li>Piletast+Shift op/ned for skift af årgang</li>
-        </ul>
-      <li>Generelle forbedringer</li>
-      </ul>
+      <h2>Vil du hjælpe os?</h2>
+      <p>Vi vil gerne vide noget mere om, hvem der bruger Skråfoto.</p>
+      <p>Hvis du har 2 minutter, kan du hjælpe os ved at<br><a target="_blank" href="https://www.survey-xact.dk/LinkCollector?key=TJ5EARGLU292">udfylde dette korte spørgeskema.</a></p>
       <button class="btn-welcome-close">Forstået</button>
     </article>
   `
@@ -109,16 +97,7 @@ export class FirstTimeVisit extends HTMLElement {
         }, 300); // Adjust the timing to match the transition duration in milliseconds
         localStorage.setItem(this.local_storage_key, 'false')
       })
-      /*
-        this.shadowRoot.querySelector('skraafoto-address-search').addEventListener('gsearch:select', () => {
-        this.dialog.close()
-        localStorage.setItem(this.local_storage_key, 'false')
-      })
-      */
     }
   }
 
 }
-
-// This is how to initialize the custom element
-// customElements.define('first-time-visit', FirstTimeVisit)
