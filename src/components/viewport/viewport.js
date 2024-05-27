@@ -279,10 +279,9 @@ export class SkraaFotoViewport extends HTMLElement {
   }
 
   /**
-   * Triggers view sync in the viewport.
+   * Triggers view sync in all viewports by updating the `view` state.
    */
   syncHandler() {
-    console.log('handle sync', this.dataset.itemkey)
     const view = this.map.getView()
     if (!view) {
       return
@@ -361,7 +360,7 @@ export class SkraaFotoViewport extends HTMLElement {
       // When user moves the pointer over this viewport, update all other viewports
       if (configuration.ENABLE_POINTER) {
         const coord = image2world(state.items[this.dataset.itemkey], event.coordinate[0], event.coordinate[1], state.view.kote)
-        state.setPointerPosition(coord, this.dataset.itemkey)
+        state.setPointerPosition = {point: coord, itemkey: this.dataset.itemkey}
       }
       
       // When user changes viewport orientation, display image footprint on the map
@@ -381,7 +380,7 @@ export class SkraaFotoViewport extends HTMLElement {
   connectedCallback() {
     this.createShadowDOM()
     
-    // Init image map when image item is available
+    // Initialize image map when image item is available
     this.whenDisposer = when(
       () => state.items[this.dataset.itemkey],
       () => { this.initializeMap(state.items[this.dataset.itemkey]) }

@@ -1,63 +1,29 @@
-import { makeObservable, observable, action, computed, autorun, reaction, when } from 'mobx'
+import { makeAutoObservable, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
 import { queryItems, getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
-import { getZ } from '@dataforsyningen/saul'
+import { getImageXY, getZ } from '@dataforsyningen/saul'
+import { checkBounds } from '../modules/utilities.js'
 
 class SkraafotoState {
-
+ 
+  /* Properties */
   // Marker
   marker = {
     position: configuration.DEFAULT_WORLD_COORDINATE,
     kote: 0
   }
-  setMarker(position, kote = 0) {
-    console.log('set marker', position, kote)
-    if (position[0] < 400000) {
-      console.error('Marker position is not a useful EPSG:25832 coordinate.')
-      return
-    }
-    if (position) {
-      this.marker.position = position
-    }
-    if (kote) {
-      this.marker.kote = kote
-    }
-  }
-
   // View
   view = {
     position: configuration.DEFAULT_WORLD_COORDINATE,
     zoom: configuration.DEFAULT_ZOOM,
     kote: 0
   }
-  setView(payload) {
-    console.debug('set view', payload)
-    if (payload.position[0] < 400000) {
-      console.error('View position is not a useful EPSG:25832 coordinate.')
-      return
-    }
-    if (payload.position) {
-      this.view.position = payload.position
-    }
-    if (payload.kote) {
-      this.view.kote = payload.kote
-    }
-    if (payload.zoom) {
-      this.view.zoom = payload.zoom
-    }
-  }
-
   // Pointer
   pointerPosition = null
   pointerItemkey = null
-  setPointerPosition(point, itemkey) {
-    this.pointerPosition = point
-    this.pointerItemkey = itemkey
-  }
-
-  // Items
+  // Items & terrain (height info)
   items = {
     item1: null,
     item2: null,
@@ -76,23 +42,85 @@ class SkraafotoState {
     west: null,
     east: null
   }
+  // Map
+  mapVisible = false
+  // Collections
+  collections = []
+  // Parcels
+  parcels = []
+
+  /* Computed */
+  // Item (get the default item)
   get item() {
     return this.items.item1
   }
-  setItem(item, key = 'item1') {
-    if (this.items[key]?.id !== item.id) {
-      getTerrainData(item).then(terrain => {
-        console.log('item was changed. Set item', key)
-        this.setItemAndTerrain(item, terrain, key)
-      })
+  // Collections
+  get currentCollection() {
+    return this.items.item1?.collection
+  } 
+
+  /* Actions */
+  // Marker 
+  set setMarker(payload) {
+    if (payload.position[0] < 400000) {
+      console.error('Marker position is not a useful EPSG:25832 coordinate.')
+      return
+    }
+    this.marker.position = payload.position
+    this.marker.kote = payload.kote
+  }
+  // Pointer
+  set setPointerPosition(payload) {
+    this.pointerPosition = payload.point
+    if (payload.itemkey) {
+      this.pointerItemkey = payload.itemkey
     }
   }
-  setItemAndTerrain(item, terrain, key) {
-    console.log('set item and terrain', key)
-    this.terrain[key] = terrain
-    this.items[key] = item
+  // Map
+  set setMapVisible(visibility) {
+    this.mapVisible = visibility
   }
-  reloadItems(payload) {
+  // Collections 
+  set setCollections(collections) {
+    this.collections = collections.map((c) => c.id)
+  }
+  // Parcels
+  set setParcels(parcels) {
+    this.parcels = parcels
+  }
+
+  /* Flows */
+  /**
+   * Update `view` state
+   * @param {number} payload.zoom
+   * @param {array} payload.position
+   * @param {number} payload.kote 
+   */
+  setView(payload) {
+    console.debug('set view', payload)
+    if (payload.position[0] < 400000) {
+      console.error('View position is not a useful EPSG:25832 coordinate.')
+      return
+    }
+    if (payload.position) {
+      this.view.position = payload.position
+    }
+    if (payload.kote) {
+      this.view.kote = payload.kote
+    }
+    if (payload.zoom) {
+      this.view.zoom = payload.zoom
+    }
+  }
+  // Item
+  *setItem(item, key = 'item1') {
+    if (this.items[key]?.id !== item.id) { // Only update if item is new
+      const terrain = yield getTerrainData(item)
+      this.terrain[key] = terrain
+      this.items[key] = item
+    }
+  }
+  *setItems(payload) {
     console.log('reload items')
     let promises = [
       getZ(payload.position[0], payload.position[1], configuration),
@@ -102,67 +130,67 @@ class SkraafotoState {
       queryItems(payload.position, 'east', payload.item.collection),
       queryItems(payload.position, 'west', payload.item.collection)  
     ]
-    Promise.all(promises).then((values) => { 
-      this.setItems({
-        item: payload.item,
-        position: payload.position,
-        kote: values[0],
-        nadir: values[1].features[0],
-        north: values[2].features[0],
-        south: values[3].features[0],
-        east: values[4].features[0],
-        west: values[5].features[0]
-      })
-    })
-  }
-  setItems(payload) {
-    console.log('set items (all)')
-    this.setItem(payload.item, 'item1')
-    this.setItem(payload.item, 'item2')
+    const koteAndItems = yield Promise.all(promises)
+    const items = koteAndItems.slice(1)
+    
+    let morePromises = []
+    for (let data of items) {
+      morePromises.push(getTerrainData(data.features[0]))
+    }
+    const terrains = yield Promise.all(morePromises)
+    this.items['item1'] = items[1].features[0]
+    this.terrain['item1'] = terrains[1]
+    this.items['item2'] = items[1].features[0]
+    this.terrain['item2'] = terrains[1]
+    this.items['nadir'] = items[0].features[0]
+    this.terrain['nadir'] = terrains[0]
+    this.items['north'] = items[1].features[0]
+    this.terrain['north'] = terrains[1]
+    this.items['south'] = items[2].features[0]
+    this.terrain['south'] = terrains[2]
+    this.items['east'] = items[3].features[0]
+    this.terrain['east'] = terrains[3]
+    this.items['west'] = items[4].features[0]
+    this.terrain['west'] = terrains[4]
+    
     this.view.position = payload.position
-    this.view.kote = payload.kote
+    this.view.kote = koteAndItems[0]
     this.marker.position = payload.position
-    this.marker.kote = payload.kote
-    this.setItem(payload.nadir, 'nadir')
-    this.setItem(payload.north, 'north')
-    this.setItem(payload.south, 'south')
-    this.setItem(payload.east, 'east')
-    this.setItem(payload.west, 'west')
+    this.marker.kote = koteAndItems[0]
   }
-  setItemAndView(payload) {
-    console.log('set item and view')
-    this.setItem(payload.item, payload.itemkey)
-    this.setView({position: payload.position, kote: payload.kote})
-    this.setMarker(payload.position, payload.kote)
-  }
-  
-  // Map
-  mapVisible = false
-  setMapVisible(visibility) {
-    console.debug('set map visible')
-    this.mapVisible = visibility
-  }
+  /**
+   * Sets new image and reloads other images that aren't covered by view 
+   * @param {string} payload.itemkey itemkey
+   * @param {object} payload.item Image item
+   * @param {array} payload.position Position coordinate
+   * @param {number} payload.kote Elevation above sea level
+   */
+  *reCenterItems(payload) {
+    const terrain = yield getTerrainData(payload.item)
 
-  // Collections
-  collections = []
-  get currentCollection() {
-    return this.items.item1?.collection
-  } 
-  setCollections(collections) {
-    console.debug('set collections')
-    this.collections = collections.map((c) => c.id)
-  }
-  
-  // Parcels
-  parcels = []
-  setParcels(parcels) {
-    console.debug('set parcels')
-    this.parcels = parcels
+    for (const [key, item] of Object.entries(this.items)) {
+      if (item !== null) {
+        const imageXY = getImageXY(item, payload.position[0], payload.position[1])
+        const newItem = yield checkBounds(item, imageXY)
+        if (newItem) {
+          const newTerrain = yield getTerrainData(newItem)
+          this.items[key] = newItem
+          this.terrain[key] = newTerrain
+        }
+      }
+    }
+
+    this.terrain[payload.itemkey] = terrain
+    this.items[payload.itemkey] = payload.item
+
+    this.view.position = payload.position
+    this.marker.position = payload.position
+    this.view.kote = payload.kote
+    this.marker.kote = payload.kote
   }
 
   // URL sync
   syncState(payload) {
-    console.debug('syncing state')
     if (payload.mapVisible) {
       this.mapVisible = payload.mapVisible
     }
@@ -179,35 +207,12 @@ class SkraafotoState {
       this.parcels = payload.parcels
     }
   }
-  
+
   constructor() {
-    makeObservable(this, {
-      marker: observable,
-      setMarker: action,
-      view: observable,
-      setView: action,
-      items: observable,
-      item: computed,
-      setItem: action,
-      setItems: action,
-      setItemAndTerrain: action,
-      reloadItems: action,
-      setItemAndView: action,
-      mapVisible: observable,
-      setMapVisible: action,
-      collections: observable,
-      currentCollection: computed,
-      setCollections: action,
-      parcels: observable,
-      setParcels: action,
-      syncState: action,
-      pointerPosition: observable,
-      pointerItemkey: observable,
-      setPointerPosition: action
-    })
+    makeAutoObservable(this)
 
     getCollections().then((collections) => {
-      this.setCollections(collections)
+      this.setCollections = collections
     })
   }
 }

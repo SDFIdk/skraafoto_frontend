@@ -67,7 +67,7 @@ function addPointerLayerToViewport(viewport) {
   viewport.map.addLayer(generatePointerLayer())
   viewport.map.on('pointermove', event => {
     const coord = image2world(viewport.item, event.coordinate[0], event.coordinate[1], viewport.coord_world[2] = 0)
-    state.setPointerPosition(coord)
+    state.setPointerPosition = {point: coord}
   })
 }
 

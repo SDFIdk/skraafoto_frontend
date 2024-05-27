@@ -100,8 +100,6 @@ async function updateViewport(newData, oldData, map) {
     return
   }
 
-  console.log('update viewport')
-
   // On item change, load a new image layer in map and update view/marker
   if (newData.item !== oldData.item) {
     updateMapImage(map, newData.item)
@@ -175,7 +173,7 @@ async function updateMap(self) {
     return
   }
 
-  const coords = await updateCenter(state.marker.position, self.item, 0)
+  const coords = await updateCenter(state.marker.position, self.item, state.marker.kote)
 
   // Create and add image layer
   updateMapImage(self.map, self.item)
@@ -255,7 +253,7 @@ async function updateCenter(coordinate, item, kote) {
   if (!item) {
     return
   }
-  if (!kote) {
+  if (kote === undefined || kote === null) {
     kote = await getZ(coordinate[0], coordinate[1], configuration)
   }
   return {
@@ -271,16 +269,16 @@ function reCenter(item, itemkey, imageCoordinate) {
     xy: imageCoordinate
   }, 0.06).then(async (world_xyz) => {
     // Check if click is outside image bounds and reload image if necessary.
-    const outOfBounds = await checkBounds(item, imageCoordinate)
-    if (outOfBounds) {
-      state.setItemAndView({
+    const newItem = await checkBounds(item, imageCoordinate)
+    if (newItem) {
+      state.reCenterItems({
         itemkey: itemkey,
-        item: outOfBounds,
+        item: newItem,
         position: world_xyz.slice(0,2),
         kote: world_xyz[2]
       })
     } else {
-      state.setMarker(world_xyz.slice(0,2), world_xyz[2])
+      state.setMarker = {position: world_xyz.slice(0,2), kote: world_xyz[2]}
     }
   })
 }

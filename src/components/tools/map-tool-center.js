@@ -1,7 +1,7 @@
 import { reCenter } from '../viewport/viewport-mixin.js'
 
 /**
- * Enables a user to click an image an have it centered in that location
+ * Enables a user to click an image and move the center marker to that location
  */
 export class CenterTool {
 

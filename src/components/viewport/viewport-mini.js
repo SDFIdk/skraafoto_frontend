@@ -194,7 +194,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
           // When user moves the pointer over this viewport, update the state to signal update for all other viewports
           if (configuration.ENABLE_POINTER) {
             const coord = image2world(state.items[this.dataset.orientation], event.coordinate[0], event.coordinate[1], state.view.kote)
-            state.setPointerPosition(coord, this.dataset.orientation)
+            state.setPointerPosition = {point: coord, itemkey: this.dataset.orientation}
           }
           
           // When user changes viewport orientation, display image footprint on the map
