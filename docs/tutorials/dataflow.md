@@ -22,41 +22,24 @@ flowchart LR
 
 ## State store
 
-We've created a simple state management module to enable different components to share and exchange data amongst themselves.
+Skråfoto uses [MobX state management](https://mobx.js.org/) module to enable different components to share and exchange data amongst themselves.
 
-### Update state property
+You can look up `/src/state/index.js` to check what properties and actions are available.
 
-The state is updated by calling its `dispatch` method.
-When a `dispatch` has been called, the state object is updated, and a custom event is fired. 
-
-You can look up `/src/store/state.js` to see what actions are available.
-
-Example updating the `view` property with a new value:
+Here is a simple example of how state is read and updated within a component:
 ```
-import store from '@/store'
+import { state, reaction, when, autorun } from '../../state/index.js'
 
-const newView = { 
-  center: [574764, 6220953],
-  zoom: 10
-}
-store.dispatch('updateView', newView)
-```
+let viewPosition
 
-### Listen for changes to a state property
+// Reading a state property directly
+viewPosition = state.view.position
 
-When a property in the store is changed, an event is dispatched with a type that corresponds to the property name.
-You can simply add event listeners to pick up on changes to a certain property.
-
-For some dispatch events, the updated state is available from the `detail` property on the event object. You may also look up the property directly from the store.
-
-Example listening for changes to `view` property:
-```
-import store from '/src/store'
-
-window.addEventListener('updateView', (event) => {
-  // Get new value from event details
-  const newViewA = event.detail.view
-  // Get new value from store
-  const newViewB = store.state.view
+// React when a state property is changed
+autorun(() => {
+  viewPosition = state.view.position
 })
+
+// Setting state properties
+state.setView = {position: [574764,6220953]}
 ```
