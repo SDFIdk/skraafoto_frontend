@@ -23,6 +23,6 @@ Here is a quick overview of the most important folders [in the skraafoto_fronten
 
 `docs/` - Anything related to documentation.
 
-`test/` - Anything related to test. (Not much at the time of writing.)
+`test/` - Anything related to test.
 
 Most folders will have a `README.md` file with details of its contents.

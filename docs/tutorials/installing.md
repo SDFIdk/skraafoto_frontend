@@ -47,10 +47,10 @@ You'll need to install Playwright dependencies **once** before running the E2E t
 Do so with `npx playwright install --with-deps`
 
 Then make sure you have a local development server running. 
-Run `npm run dev` for this.
+Run `npm run dev`, open a browser, and point it to `localhost:8000`
 
 Now you can run the test using:
-`npm run test`
+`npm run test` or `npm run test -- --ui` (the latter opens the Playwright test UI)
 
 The Playwright test suite will present you with a HTML report if some tests fail.
 

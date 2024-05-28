@@ -67,7 +67,7 @@ The scripts in `src/views/` have the following responsibilities:
 - They add some global event listeners and methods.
 
 Individual web components may import 3rd party modules.
-Web components in turn communicate via events and a shared state store.
+Web components in turn communicate via events and a shared state using [MobX.](https://mobx.js.org/)
 
 <em>Example:</em> `index.html` loads `viewer.js` script (from `dist/` directory). 
 `viewer.js` is built from `src/views/viewer.js` which in turn imports the web component `SkraaFotoViewport` from the `src/components/` directory.
