@@ -262,33 +262,11 @@ async function updateCenter(coordinate, item, kote) {
   }
 }
 
-function reCenter(item, itemkey, imageCoordinate) {
-  getWorldXYZ({
-    image: item,
-    terrain: state.terrain[itemkey],
-    xy: imageCoordinate
-  }, 0.06).then(async (world_xyz) => {
-    // Check if click is outside image bounds and reload image if necessary.
-    const newItem = await checkBounds(item, imageCoordinate)
-    if (newItem) {
-      state.reCenterItems({
-        itemkey: itemkey,
-        item: newItem,
-        position: world_xyz.slice(0,2),
-        kote: world_xyz[2]
-      })
-    } else {
-      state.setMarker = {position: world_xyz.slice(0,2), kote: world_xyz[2]}
-    }
-  })
-}
-
 export {
   projection,
   updateViewport,
   updateView,
   updateMarker,
-  reCenter,
   updateMap,
   updateMapView,
   updateMapCenterIcon,

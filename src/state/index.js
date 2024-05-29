@@ -129,7 +129,6 @@ class SkraafotoState {
     }
   }
   *setItems(payload) {
-    console.log('reload items')
     let promises = [
       getZ(payload.position[0], payload.position[1], configuration),
       queryItems(payload.position, 'nadir', payload.item.collection),
@@ -167,37 +166,7 @@ class SkraafotoState {
     this.marker.kote = koteAndItems[0]
   }
   /**
-   * Sets new image and reloads other images that aren't covered by view 
-   * @param {string} payload.itemkey itemkey
-   * @param {object} payload.item Image item
-   * @param {array} payload.position Position coordinate
-   * @param {number} payload.kote Elevation above sea level
-   */
-  *reCenterItems(payload) {
-    const terrain = yield getTerrainData(payload.item)
-
-    for (const [key, item] of Object.entries(this.items)) {
-      if (item !== null) {
-        const imageXY = getImageXY(item, payload.position[0], payload.position[1])
-        const newItem = yield checkBounds(item, imageXY)
-        if (newItem) {
-          const newTerrain = yield getTerrainData(newItem)
-          this.items[key] = newItem
-          this.terrain[key] = newTerrain
-        }
-      }
-    }
-
-    this.terrain[payload.itemkey] = terrain
-    this.items[payload.itemkey] = payload.item
-
-    this.view.position = payload.position
-    this.marker.position = payload.position
-    this.view.kote = payload.kote
-    this.marker.kote = payload.kote
-  }
-  /**
-   * Reloads all image items based on coordinate
+   * Reloads all image items based on a coordinate
    * @param {array} position ESPG:25832 coordinate 
    */
   *refresh(position) {

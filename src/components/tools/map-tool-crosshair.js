@@ -1,6 +1,7 @@
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { state } from '../../state/index.js'
-import { reCenter } from '../viewport/viewport-mixin.js'
+import { configuration } from '../../modules/configuration.js'
+import { getWorldXYZ } from '@dataforsyningen/saul'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -34,13 +35,21 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
     }
   }
 
-  handleClick = (event) => {
+  handleClick = async (event) => {
     if (this.crosshairEnabled === 1 && this.viewport.mode === 'center') {
       this.crosshairEnabled = 0 // Set the toggle value to 0 (disabled)
       this.button_element.style.background = ''
       this.button_element.style.borderRadius = '0'
       this.button_element.blur()
-      reCenter(state.items[this.viewport.dataset.itemkey], this.viewport.dataset.itemkey, event.coordinate)
+      const worldPosition = await getWorldXYZ({
+        xy: event.coordinate,
+        image: state.items[this.viewport.dataset.itemkey], 
+        terrain: state.terrain[this.viewport.dataset.itemkey]
+      })
+      state.setMarker = {
+        position: worldPosition.slice(0,2),
+        kote: worldPosition[2]
+      }
     }
   }
 
