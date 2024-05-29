@@ -10,7 +10,7 @@ import View from 'ol/View'
 import { get as getProjection } from 'ol/proj'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
-import { epsg25832proj } from '@dataforsyningen/saul'
+import { epsg25832proj, getZ } from '@dataforsyningen/saul'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
@@ -287,8 +287,7 @@ export class SkraaFotoMap extends HTMLElement {
   }
 
   async singleClickHandler(event) {
-    const kote = await getZ(event.coordinate[0], event.coordinate[1], configuration)
-    state.setMarker = {position: event.coordinate, kote: kote}
+    await state.refresh(event.coordinate)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)

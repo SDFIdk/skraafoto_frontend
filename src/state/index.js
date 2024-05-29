@@ -3,6 +3,7 @@ import { configuration } from '../modules/configuration.js'
 import { queryItems, getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
+import { refreshItems } from './items.js'
 import { getImageXY, getZ } from '@dataforsyningen/saul'
 import { checkBounds } from '../modules/utilities.js'
 
@@ -66,6 +67,13 @@ class SkraafotoState {
       console.error('Marker position is not a useful EPSG:25832 coordinate.')
       return
     }
+    this.marker.position = payload.position
+    this.marker.kote = payload.kote
+  }
+  // Marker + view
+  set setViewMarker(payload) {
+    this.view.position = payload.position
+    this.view.kote = payload.kote
     this.marker.position = payload.position
     this.marker.kote = payload.kote
   }
@@ -187,6 +195,32 @@ class SkraafotoState {
     this.marker.position = payload.position
     this.view.kote = payload.kote
     this.marker.kote = payload.kote
+  }
+  /**
+   * Reloads all image items based on coordinate
+   * @param {array} position ESPG:25832 coordinate 
+   */
+  *refresh(position) {
+    const kote = yield getZ(position[0], position[1], configuration)
+    const itemTerrainPairs = yield refreshItems(position, this.currentCollection)
+    for (const [key, value] of Object.entries(itemTerrainPairs)) {
+      this.terrain[key] = value.terrain
+      this.items[key] = value.item
+    }
+    if (this.items['item1']) {
+      const item1direction = itemTerrainPairs[this.items['item1'].properties.direction]
+      this.terrain['item1'] = item1direction.terrain
+      this.items['item1'] = item1direction.item
+    }
+    if (this.items['item2']) {
+      const item2direction = itemTerrainPairs[this.items['item2'].properties.direction]
+      this.terrain['item2'] = item2direction.terrain
+      this.items['item2'] = item2direction.item
+    }
+    this.view.position = position
+    this.marker.position = position
+    this.view.kote = kote
+    this.marker.kote = kote
   }
 
   // URL sync
