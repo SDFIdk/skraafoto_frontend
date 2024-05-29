@@ -4,8 +4,7 @@ import { queryItems, getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { refreshItems } from './items.js'
-import { getImageXY, getZ } from '@dataforsyningen/saul'
-import { checkBounds } from '../modules/utilities.js'
+import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
  
