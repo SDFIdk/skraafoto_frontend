@@ -1,5 +1,17 @@
 /** @module */
 
+function getRandomPosition() {
+  const places = [
+    [865464, 6140049], // Hammershus
+    [574764, 6220953], // Marselisborg
+    [725872, 6176763], // Amalienborg,
+    [721239, 6174113], // Vandflyver, Toftegårds Plads, København
+    [468482, 6322499], // Klitmøller
+    [723842, 6179667], // Sct. Kjels Gård
+  ]
+  return places[ Math.floor(Math.random() * places.length) ]
+}
+
 let configuration = {
 
   API_STAC_TOKEN: '', // STAC TOKEN can be aquired from https://dataforsyningen.dk/
@@ -82,8 +94,7 @@ let configuration = {
     }
   ],
 
-  DEFAULT_ITEM_ID: '2023_82_24_2_0011_00000400',
-  DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ]
+  DEFAULT_WORLD_COORDINATE: getRandomPosition()
 }
 
 // We assume a global variable `config` has been declared
