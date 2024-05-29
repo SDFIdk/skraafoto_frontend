@@ -28,7 +28,6 @@ import { state, autorun } from '../state/index.js'
 
 /**
  * Web component that displays a map.
- * @listens updateMarker - Re-position the crosshairs icon on `updateMarker` event in state.
  */
 export class SkraaFotoMap extends HTMLElement {
 
@@ -322,17 +321,26 @@ export class SkraaFotoMap extends HTMLElement {
 
   setupListeners() {
     // When marker (crosshair) position changes in state, re-render the icon layer
-    autorun(() => {
+    this.markerUpdateDisposer = autorun(() => {
       this.updateMap(state.marker)
     })
-    
-    window.addEventListener('updateItem', this.updateMap.bind(this))
+
+    this.viewUpdateDisposer = autorun(() => {
+      this.updateMapView(state.view)
+    })
 
     if (configuration.ENABLE_PARCEL) {
       autorun(() => {
         this.drawParcels(state.parcels)
       })
     }
+  }
+
+  /** Changes the view according to state */
+  updateMapView(viewstate) {
+    const view = this.map.getView()
+    view.setCenter(viewstate.position)
+    this.map.setView(view) 
   }
 
   /** Re-renders the icon layer when marker (crosshair) position changes in state. */
@@ -373,6 +381,7 @@ export class SkraaFotoMap extends HTMLElement {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
     window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener('updateItem', this.updateMap)
+    this.markerUpdateDisposer()
+    this.viewUpdateDisposer()
   }
 }
