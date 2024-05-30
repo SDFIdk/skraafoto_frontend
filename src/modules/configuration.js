@@ -41,7 +41,6 @@ let configuration = {
   MIN_ZOOM: 1, // the minimum zoom for skraafotos.
 
   SITEIMPROVE_SCRIPT: '',
-  DOWNLOAD_TYPE: 'default', // 'default' | 'currentview'
 
   COLOR_SETTINGS:
     {
