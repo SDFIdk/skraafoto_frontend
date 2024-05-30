@@ -257,7 +257,7 @@ export class MeasureWidthTool {
     const world_coords = []
     for (let n = 0; coords.length > n; n = n+2) {
       const new_coord = await getWorldXYZ({
-        image: this.viewport.item,
+        image: state.items[this.viewport.dataset.itemkey],
         terrain: state.terrain[this.viewport.dataset.itemkey],
         xy: [coords[n], coords[n + 1]]
       })
@@ -266,7 +266,7 @@ export class MeasureWidthTool {
       world_coords.push(wgs84_coords)
     }
     const distance = getDistance(world_coords[0], world_coords[1])
-    return distance.toFixed(1) + 'm'
+    return distance.toFixed(0) + 'm'
   }
 
 }

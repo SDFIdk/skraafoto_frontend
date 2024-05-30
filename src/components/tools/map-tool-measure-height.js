@@ -6,7 +6,8 @@ import Overlay from 'ol/Overlay'
 import { image2world, getImageXY } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
-import { configuration } from "../../modules/configuration";
+import { configuration } from "../../modules/configuration"
+import { state } from '../../state/index.js'
 
 const featureIdentifiers = []
 
@@ -134,7 +135,7 @@ export class MeasureHeightTool {
     this.draw.on('drawstart', (event) => {
       // set sketch
       this.sketch = event.feature
-      this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], this.viewport.item)
+      this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], state.items[this.viewport.dataset.itemkey])
 
       // Store references to the feature and overlay
       const tooltipId = `tooltip-${this.overlayIdCounter++}`
@@ -293,7 +294,7 @@ export class MeasureHeightTool {
       const ratio_y = delta_y / s[1]
       const delta_x = ratio_y * s[0] // We assume x and y ratios are equal
       const x = image_coor_1[0] + delta_x
-      return [x, image_coor_2[1], Math.abs(ratio_y).toFixed(1)]
+      return [x, image_coor_2[1], Math.abs(ratio_y).toFixed(0)]
     }
   }
 
