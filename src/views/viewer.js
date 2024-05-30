@@ -2,7 +2,7 @@ import { registerComponents } from '../components/component-register.js'
 import { setupAnalytics } from '../modules/tracking.js'
 import { setupListeners } from '../modules/listeners.js'
 import { SkraaFotoDirectionPicker} from "../components/direction-picker"
-import { SkraaFotoMap } from '../components/map.js'
+import { SkraaFotoMap } from '../components/geomap/map.js'
 import { SkraaFotoViewportMini } from "../components/viewport/viewport-mini.js"
 import { state, autorun} from '../state/index.js'
 

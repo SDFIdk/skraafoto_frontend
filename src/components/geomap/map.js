@@ -10,7 +10,7 @@ import View from 'ol/View'
 import { get as getProjection } from 'ol/proj'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
-import { epsg25832proj, getZ } from '@dataforsyningen/saul'
+import { epsg25832proj } from '@dataforsyningen/saul'
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
@@ -19,12 +19,12 @@ import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
-import { configuration } from '../modules/configuration.js'
-import { getViewSyncMapListener } from '../modules/sync-view'
-import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
-import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
-import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
-import { state, autorun } from '../state/index.js'
+import { configuration } from '../../modules/configuration.js'
+import { getViewSyncMapListener } from '../../modules/sync-view'
+import { generateParcelVectorLayer } from '../../custom-plugins/plugin-parcel'
+import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../../custom-plugins/plugin-pointer'
+import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../../custom-plugins/plugin-footprint.js'
+import { state, autorun } from '../../state/index.js'
 
 /**
  * Web component that displays a map.
@@ -153,8 +153,8 @@ export class SkraaFotoMap extends HTMLElement {
 
     // Create a vector layer for the user's position marker
     this.userPositionLayer = new VectorLayer({
-      source: new VectorSource(),
-    });
+      source: new VectorSource()
+    })
   }
 
   // methods
@@ -222,7 +222,6 @@ export class SkraaFotoMap extends HTMLElement {
       })
 
       this.update_view_function = getViewSyncMapListener(this, map)
-      window.addEventListener('updateView', this.update_view_function)
 
       if (configuration.ENABLE_POINTER) {
         addPointerLayerToMap(map)
@@ -325,12 +324,13 @@ export class SkraaFotoMap extends HTMLElement {
       this.updateMap(state.marker)
     })
 
+    // Sync view when view is changed in state
     this.viewUpdateDisposer = autorun(() => {
       this.updateMapView(state.view)
     })
 
     if (configuration.ENABLE_PARCEL) {
-      autorun(() => {
+      this.parcelDisposer = autorun(() => {
         this.drawParcels(state.parcels)
       })
     }
@@ -380,8 +380,10 @@ export class SkraaFotoMap extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
-    window.removeEventListener('updateView', this.update_view_function)
     this.markerUpdateDisposer()
     this.viewUpdateDisposer()
+    if (configuration.ENABLE_PARCEL) {
+      this.parcelDisposer()
+    }
   }
 }

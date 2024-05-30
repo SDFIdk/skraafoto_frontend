@@ -103,17 +103,19 @@ class SkraafotoState {
    * @param {array} payload.position
    * @param {number} payload.kote 
    */
-  setView(payload) {
-    console.debug('set view', payload)
+  *setView(payload) {
     if (payload.position[0] < 400000) {
       console.error('View position is not a useful EPSG:25832 coordinate.')
       return
     }
-    if (payload.position) {
-      this.view.position = payload.position
-    }
     if (payload.kote) {
       this.view.kote = payload.kote
+    } else {
+      const kote = yield getZ(payload.position[0], payload.position[1], configuration)
+      this.view.kote = kote
+    }
+    if (payload.position) {
+      this.view.position = payload.position
     }
     if (payload.zoom) {
       this.view.zoom = payload.zoom
