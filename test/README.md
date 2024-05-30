@@ -43,6 +43,6 @@ This folder contains test scripts for unit tests and E2E tests.
 [ ] Ændre lysforhold
 [ ] Visning af footprint i geomap
 [ ] Zoom mormor knapper
-[-] Måleværkttøj
+[ ] Måleværkttøj
 [-] GeoPosition værktøj
 [ ] Information om billede
