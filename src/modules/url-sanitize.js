@@ -138,7 +138,7 @@ async function sanitizeParams(searchparams) {
     params.set('center', [574764,6220953])
     if (params.get('orientation') !== 'map') {
       collections = await getCollections()
-      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0])
+      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0].id)
       params.set('item', response.features[0].id)
     }
     return params

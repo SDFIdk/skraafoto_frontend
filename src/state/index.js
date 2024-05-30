@@ -1,6 +1,6 @@
 import { makeAutoObservable, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
-import { queryItems, getCollections, getTerrainData } from '../modules/api.js'
+import { getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { refreshItems } from './items.js'
@@ -128,43 +128,6 @@ class SkraafotoState {
       this.terrain[key] = terrain
       this.items[key] = item
     }
-  }
-  *setItems(payload) {
-    let promises = [
-      getZ(payload.position[0], payload.position[1], configuration),
-      queryItems(payload.position, 'nadir', payload.item.collection),
-      queryItems(payload.position, 'north', payload.item.collection),
-      queryItems(payload.position, 'south', payload.item.collection),
-      queryItems(payload.position, 'east', payload.item.collection),
-      queryItems(payload.position, 'west', payload.item.collection)  
-    ]
-    const koteAndItems = yield Promise.all(promises)
-    const items = koteAndItems.slice(1)
-    
-    let morePromises = []
-    for (let data of items) {
-      morePromises.push(getTerrainData(data.features[0]))
-    }
-    const terrains = yield Promise.all(morePromises)
-    this.items['item1'] = items[1].features[0]
-    this.terrain['item1'] = terrains[1]
-    this.items['item2'] = items[1].features[0]
-    this.terrain['item2'] = terrains[1]
-    this.items['nadir'] = items[0].features[0]
-    this.terrain['nadir'] = terrains[0]
-    this.items['north'] = items[1].features[0]
-    this.terrain['north'] = terrains[1]
-    this.items['south'] = items[2].features[0]
-    this.terrain['south'] = terrains[2]
-    this.items['east'] = items[3].features[0]
-    this.terrain['east'] = terrains[3]
-    this.items['west'] = items[4].features[0]
-    this.terrain['west'] = terrains[4]
-    
-    this.view.position = payload.position
-    this.view.kote = koteAndItems[0]
-    this.marker.position = payload.position
-    this.marker.kote = koteAndItems[0]
   }
   /**
    * Reloads all image items based on a coordinate

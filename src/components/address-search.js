@@ -205,43 +205,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       // On a new address input, update state
       this.addEventListener('gsearch:select', function(event) {
         const center = getGSearchCenterPoint(event.detail)
-        this.searchItemsInCollection({
-          collection: state.item.collection,
-          center: center,
-          orientation: state.item.properties.direction
-        })
+        state.refresh(center)
       })
-    }
-  }
-
-  async searchItemsInCollection({ center, orientation, collection}) {
-    try {
-      const response = await queryItems(center, orientation, collection)
-
-      if (response.features.length > 0) {
-        state.setItems({
-          item: response.features[0],
-          position: center
-        })
-      } else {
-        const collections = state.collections
-        const collectionIndex = collections.findIndex((c) => c === collection)
-        if (collectionIndex !== -1) { // Check if the collection was found
-          const nextCollectionIndex = (collectionIndex + 1) % collections.length // Wrap around to the first collection if necessary
-          const nextCollection = collections[nextCollectionIndex]
-          this.showAlert(collection, nextCollection)
-
-          this.searchItemsInCollection({
-            collection: nextCollection,
-            center: center,
-            orientation: orientation
-          })
-        } else {
-          console.error("Requested collection not found.")
-        }
-      }
-    } catch (err) {
-      console.error('No items were found in any collections', err)
     }
   }
 

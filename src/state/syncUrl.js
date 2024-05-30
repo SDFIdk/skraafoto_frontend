@@ -78,7 +78,7 @@ export async function syncFromURL(urlParams) {
     const westItem = await queryItems(newState.marker.position, 'west', newState.collection)
     newState.items.west = westItem.features[0]
   }
-
+  
   return newState
 }
 
