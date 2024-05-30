@@ -116,14 +116,11 @@ export default `
     background-color: var(--highlight) !important;
   }
 
-  /* Download tool */
-  .sf-download-tool {
-    border-radius: 0 2.5rem 2.5rem 0;
-    width: 3.5rem !important;
-  }
-
   /* Info tool, exposure tool */
-  .sf-info-btn, .exposure-btn {
+  .sf-info-btn, 
+  .exposure-btn,
+  .sf-download-tool,
+  .sf-print-tool {
     border-radius: 0;
   }
 
@@ -142,6 +139,12 @@ export default `
   .sf-compass-arrows {
     display: absolute;
     padding:10rem;
+  }
+
+  /* Style last child in btn group */
+  .ds-button-group > *:last-child button {
+    border-radius: 0 2.5rem 2.5rem 0;
+    width: 3.5rem !important;
   }
 
   @media screen and (max-width: 35rem) {

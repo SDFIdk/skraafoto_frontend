@@ -7,7 +7,6 @@ import { image2world } from '@dataforsyningen/saul'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { SkraaFotoExposureTool } from '../tools/map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from '../tools/map-tool-crosshair.js'
-import { SkraaFotoDownloadTool } from '../tools/map-tool-download.js'
 import { CenterTool } from '../tools/map-tool-center.js'
 import { MeasureWidthTool } from '../tools/map-tool-measure-width.js'
 import { MeasureHeightTool } from '../tools/map-tool-measure-height.js'
@@ -29,8 +28,17 @@ import { getSharedStyles } from "../../styles/shared-styles.js"
 import viewportstyles from './viewport.css.js'
 import { state, reaction, when, autorun } from '../../state/index.js'
 
-customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
-
+// Imports and definitions based on configuration
+if (configuration.ENABLE_PRINT) {
+  import('../tools/map-tool-print.js').then(({ SkraaFotoPrintTool }) => {
+    customElements.define('skraafoto-print-tool', SkraaFotoPrintTool)
+  }) 
+}
+if (configuration.ENABLE_DOWNLOAD) {
+  import('../tools/map-tool-download.js').then(({ SkraaFotoDownloadTool }) => {
+    customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
+  })
+}
 if (configuration.ENABLE_CROSSHAIR) {
   customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
 }
@@ -90,7 +98,8 @@ export class SkraaFotoViewport extends HTMLElement {
           <svg><use href="${ svgSprites }#map-ruler"/></svg>
         </button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
-        <skraafoto-download-tool></skraafoto-download-tool>
+        ${ configuration.ENABLE_DOWNLOAD ? '<skraafoto-download-tool></skraafoto-download-tool>' : '' }
+        ${ configuration.ENABLE_PRINT ? '<skraafoto-print-tool></skraafoto-print-tool>' : '' }
       </div>
     </nav>
     
@@ -214,9 +223,13 @@ export class SkraaFotoViewport extends HTMLElement {
     this.shadowRoot.querySelector('.image-date').innerText = updateDate(item)
     this.innerText = updateTextContent(item)
     updatePlugins(this, item)
-
-    this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this
     this.shadowRoot.querySelector('skraafoto-info-box').setItem = item
+    if (configuration.ENABLE_PRINT) {
+      this.shadowRoot.querySelector('skraafoto-print-tool').setContextTarget = this  
+    }
+    if (configuration.ENABLE_DOWNLOAD) {
+      this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this  
+    }
     if (configuration.ENABLE_CROSSHAIR) {
       this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
     }

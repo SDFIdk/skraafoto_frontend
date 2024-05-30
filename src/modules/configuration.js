@@ -30,6 +30,8 @@ let configuration = {
   ENABLE_CUSTOM_PARAMETER: true, // Enable custom year parameter for SKAT (REMOVE - DEPRECATED)
   ENABLE_CUSTOM_YEAR: true, // Enable custom year parameter for SKAT
   ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
+  ENABLE_DOWNLOAD: true,
+  ENABLE_PRINT: true,
   
   // The zoom difference between skraafotos and the WMTS service used for the map.
   MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.

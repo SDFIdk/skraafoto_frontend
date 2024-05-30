@@ -1,10 +1,11 @@
+import { createPdf } from '../../custom-plugins/plugin-custom-create-pdf.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 import { state } from '../../state/index.js'
 
 /**
  * Web component that enables user to download the current image
  */
-export class SkraaFotoDownloadTool extends HTMLElement {
+export class SkraaFotoPrintTool extends HTMLElement {
 
   // properties
   button_element
@@ -25,9 +26,9 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
-    this.button_element.className = 'sf-download-tool secondary'
-    this.button_element.title = 'Download billede'
-    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#hentdata-download"/></svg>`
+    this.button_element.className = 'sf-print-tool secondary'
+    this.button_element.title = 'Print billede til PDF'
+    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#print"/></svg>`
     this.append(this.button_element)
 
     // Create virtual link to initiate download with
@@ -45,9 +46,13 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   // Lifecycle callbacks
 
   connectedCallback() {
-    this.createDOM()
+    this.createDOM()  
     this.button_element.addEventListener('click', () => {
-      this.download()
+      const callback = (pdf, file_name) => {
+        pdf.save(file_name)
+        this.button_element.blur()
+      }
+      createPdf(this.viewport.map, state.items[this.viewport.dataset.itemkey], callback)
     })
   }
 }
