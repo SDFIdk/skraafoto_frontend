@@ -10,7 +10,6 @@ function getYearFromCollection(collection) {
 /** Find nearest ancestor node in a DOM tree */
 function findAncestor(element, selector) {
   // Base case: If the element is null or we reached the top of the DOM or shadow tree
-  // console.log(element, typeof element, selector)
   if (!element || element === document.documentElement || element instanceof ShadowRoot) {
       return null
   }
@@ -53,7 +52,6 @@ function debounce(func, timeout = 300) {
   return (...args) => {
     clearTimeout(timer)
     timer = setTimeout(() => {
-      console.log('apply now', args)
       func.apply(args)
     }, timeout)
   }

@@ -10,7 +10,6 @@ export class CenterTool {
   constructor(viewport) {
     // Set up event listener
     viewport.map.on('singleclick', async (event) => {
-      console.log('clicked', event.coordinate)
       if (viewport.mode === 'center') {
         const worldXYZ = await getWorldXYZ({
           xy: event.coordinate, 

@@ -163,7 +163,6 @@ function updateMapCenterIcon(map, localCoordinate) {
   }
   newIconLayer = generateIconLayer(localCoordinate, iconImage)
   map.addLayer(newIconLayer)
-  console.log('new marker added', localCoordinate)
 }
 
 /** Completely update an image map */
