@@ -36,11 +36,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
     <style>
       ${ viewportMiniStyles }
     </style>
-    <div class="viewport-map">
-      <p class="out-of-bounds" hidden>
-        Out of bounds, klik på hovedvinduet for at hente nye billeder.
-      </p>
-    </div>
+    <div class="viewport-map"></div>
     <skraafoto-compass direction="north"></skraafoto-compass>
     <p id="image-date" class="image-date"></p>
   `

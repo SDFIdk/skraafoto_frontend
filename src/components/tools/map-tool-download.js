@@ -1,6 +1,7 @@
 import { configuration } from '../../modules/configuration.js'
 import { createPdf } from '../../custom-plugins/plugin-custom-create-pdf.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import { state } from '../../state/index.js'
 
 /**
  * Web component that enables user to download the current image
@@ -43,7 +44,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   }
 
   download() {
-    this.link_element.href = this.viewport.item.assets.data.href
+    this.link_element.href = state.items[this.viewport.dataset.itemkey].assets.data.href
     this.link_element.click()
     this.button_element.blur()
   }
@@ -60,7 +61,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
           pdf.save(file_name)
           this.button_element.blur()
         }
-        createPdf(this.viewport.map, this.viewport.item, callback)
+        createPdf(this.viewport.map, state.items[this.viewport.dataset.itemkey], callback)
       })
 
     } else {

@@ -25,3 +25,41 @@ This folder contains test scripts for unit tests and E2E tests.
 [ ] Search and select new address to center view at that address
 
 [ ] Click in corners of image to see if they change image only when necessary
+
+[ ] test af download
+[ ] URL kald med https://test11.dataforsyningen.dk/?x=10.252991&y=55.541065
+[ ] URL kald med https://test11.dataforsyningen.dk/?x=726302.243018&y=6096616.678447
+[ ] VURDST Vis parcel og kunne downloade billede med ejendURL kald med ejedomsID: https://test16.dataforsyningen.dk/?parcels=2008351-209&address=Slotsgade 13A, 6200 Aabenraa&ejendomsid=1325323&year=2019&center=526712.6161780799,6099476.85308015&orientation=north
+[ ] URL kald med http://localhost:8000/?center=722120.17972822%2C6178879.0063692
+[ ] URL kald med item: localhost:8000/?item=2021_83_28_2_0014_00003307 
+
+[ ] Full screen view
+
+    URL kald med:
+        
+        year
+        Viewer (twinview.html samt singleview.html)
+    Multiview:
+        Genvejstaster (piletaster) også knapper ved kompas
+        Skifte billede i hovedvindue
+        Skifte adresse/lokalitet
+        Print
+        Ændre lysforhold
+        Footprint
+        zoom ‘mormor’ knapper
+        Måleværktøj
+    Twin view:
+        Genvejstaster (piletaster) også knapper ved kompas
+        Skifte billede i begge vinduer
+        Skifte adresse/lokalitet
+        Print
+        Ændre lysforhold
+        zoom ‘mormor’ knapper
+        Måleværktøj
+    Single view:
+        Genvejstaster (piletaster) også knapper ved kompas
+        Skifte adresse/lokalitet
+        Print
+        Ændre lysforhold
+        zoom ‘mormor’ knapper
+        Måleværktøj
