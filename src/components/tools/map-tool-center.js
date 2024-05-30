@@ -1,6 +1,6 @@
 import { state } from '../../state/index.js'
 import { configuration } from '../../modules/configuration.js'
-import { getZ } from '@dataforsyningen/saul'
+import { getZ, getWorldXYZ } from '@dataforsyningen/saul'
 
 /**
  * Enables a user to click an image and move the center marker to that location
@@ -10,11 +10,16 @@ export class CenterTool {
   constructor(viewport) {
     // Set up event listener
     viewport.map.on('singleclick', async (event) => {
+      console.log('clicked', event.coordinate)
       if (viewport.mode === 'center') {
-        const kote = await getZ(event.coordinate[0], event.coordinate[1], configuration)
+        const worldXYZ = await getWorldXYZ({
+          xy: event.coordinate, 
+          image: state.items[viewport.dataset.itemkey], 
+          terrain: state.terrain[viewport.dataset.itemkey]
+        })
         state.setViewMarker = {
-          position: event.coordinate,
-          kote: kote
+          position: worldXYZ.slice(0,2),
+          kote: worldXYZ[2]
         }
       }
     })
