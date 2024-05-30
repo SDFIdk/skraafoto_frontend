@@ -45,7 +45,7 @@ function getViewSyncViewportListener(viewport, always_sync = true) {
  * @param {ol.Map} map The Openlayers map.
  */
 function addViewSyncMapTrigger(viewport, map) {
-  map.on('moveend', (e) => {
+  map.on('moveend', () => {
     if (!viewport.sync) {
       viewport.sync = true
       return

@@ -52,7 +52,6 @@ export class SkraaFotoExposureTool extends HTMLElement {
     if (this.exposure_index >= configuration.EXPOSURE_SETTINGS.length) {
       this.exposure_index = 0
     }
-    const new_vars = configuration.EXPOSURE_SETTINGS[this.exposure_index]
     this.copySettingsToVariables(configuration.EXPOSURE_SETTINGS[this.exposure_index])
     this.viewport.map.render()
     this.button_element.blur()

@@ -62,7 +62,6 @@ async function sanitizeParams(searchparams) {
     collections = await getCollections()
 
     const desiredYearParam = params.get('year')
-    const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0
 
     let yearToUse;
 

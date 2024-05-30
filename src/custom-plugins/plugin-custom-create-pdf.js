@@ -153,19 +153,6 @@ function createPdf(map, item, callback, resolution=300, format='a4', rotation='l
   const x = (image_max_width / 2) - (new_width / 2)
   const y = (image_max_height / 2) - (new_height / 2)
 
-  const exportOptions = {
-    useCORS: true,
-    ignoreElements: function (element) {
-      const className = element.className || ''
-      if (typeof className !== 'string' && !(className instanceof String)) {
-        return false
-      }
-      return (className.includes('ol-control') && !className.includes('ol-attribution'))
-    },
-    width: image_width,
-    height: image_height
-  }
-
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   canvas.height = canvas_height

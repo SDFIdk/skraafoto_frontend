@@ -1,4 +1,3 @@
-import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
 import { getSharedStyles } from "../styles/shared-styles.js"
 import { state, autorun } from '../state/index.js' 
@@ -253,7 +252,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // When a mini-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
-      btn.addEventListener('click', (event) => {
+      btn.addEventListener('click', () => {
         const targetOrientation = btn.querySelector('skraafoto-viewport-mini').dataset.orientation
         // Dispatch new item
         state.setMapVisible = false
@@ -263,7 +262,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     })
 
     // When the map-viewport is clicked in the selector, display it on the main viewport
-    this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
+    this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', () => {
       // Set orientation parameter, causing the page to reload with map open
       state.setMapVisible = true
       this.slider_element.style.transform = 'translate(0,100vh)'

@@ -58,7 +58,7 @@ function keyDownHandler(event) {
 
 function setupListeners() {
   // Catch load errors and display to user
-  window.addEventListener('offline', function (ev) {
+  window.addEventListener('offline', function () {
     alert('Du er ikke længere online. Prøv igen senere.')
   })
 

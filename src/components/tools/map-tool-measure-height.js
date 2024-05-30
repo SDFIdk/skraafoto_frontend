@@ -50,13 +50,12 @@ export class MeasureHeightTool {
 
   constructor(viewport) {
 
-    const self = this
-
     this.viewport = viewport
     this.viewport.map.addLayer(this.layer)
 
     this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
 
+    // TODO: Are these still relevant?
     document.addEventListener('directionchange', this.imageChangeHandler.bind(this))
     document.addEventListener('addresschange', this.imageChangeHandler.bind(this))
     document.addEventListener('mapchange', this.imageChangeHandler.bind(this))

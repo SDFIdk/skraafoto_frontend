@@ -1,6 +1,5 @@
 import { state } from '../../state/index.js'
-import { configuration } from '../../modules/configuration.js'
-import { getZ, getWorldXYZ } from '@dataforsyningen/saul'
+import { getWorldXYZ } from '@dataforsyningen/saul'
 
 /**
  * Enables a user to click an image and move the center marker to that location
