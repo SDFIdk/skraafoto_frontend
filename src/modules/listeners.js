@@ -30,10 +30,11 @@ function shiftItemTime(direction) {
 }
 
 function keyDownHandler(event) {
-  const isShiftKeyPressed = event.shiftKey;
-  const isViewport = event.target.tagName === 'SKRAAFOTO-VIEWPORT'
 
-  if (isShiftKeyPressed && !isViewport) {
+  const isShiftPressed = event.shiftKey
+  const isArrowKeyPressed = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+
+  if (isShiftPressed && isArrowKeyPressed) {
     event.preventDefault()
 
     switch (event.key) {
@@ -63,7 +64,7 @@ function setupListeners() {
   })
 
   document.addEventListener('loaderror', function (ev) {
-    console.error('Network error: ', ev.details);
+    console.error('Network error: ', ev.details)
     alert('Der var et problem med at hente data fra serveren.')
   })
 
