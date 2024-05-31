@@ -88,11 +88,13 @@ let configuration = {
 
 // We assume a global variable `config` has been declared
 // and let it override the default configurations
+/* eslint-disable */
 if (config) {
   for (let c in config) {
     configuration[c] = config[c]
   }
 }
+/* eslint-enable */
 
 // Hack to enable requesting images from skraafoto_server
 function convertAPIurl(url, replaceStr) {

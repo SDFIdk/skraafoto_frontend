@@ -10,7 +10,7 @@ async function refreshItems(position, collection) {
   }
   let itemPromises = []
   let terrainPromises = []
-  for (const [key, value] of Object.entries(itemTerrainPairs)) {
+  for (const key of Object.keys(itemTerrainPairs)) {
     itemPromises.push(queryItems(position, key, collection))
   }
   const items = await Promise.all(itemPromises)
