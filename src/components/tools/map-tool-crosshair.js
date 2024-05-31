@@ -1,6 +1,6 @@
-import { getWorldXYZ } from "@dataforsyningen/saul"
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-import store from '../store'
+import { state } from '../../state/index.js'
+import { getWorldXYZ } from '@dataforsyningen/saul'
 
 export class SkraaFotoCrossHairTool extends HTMLElement {
   button_element
@@ -34,29 +34,21 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
     }
   }
 
-  handleClick = (event) => {
+  handleClick = async (event) => {
     if (this.crosshairEnabled === 1 && this.viewport.mode === 'center') {
       this.crosshairEnabled = 0 // Set the toggle value to 0 (disabled)
       this.button_element.style.background = ''
       this.button_element.style.borderRadius = '0'
       this.button_element.blur()
-
-      getWorldXYZ({
-        image: this.viewport.item,
-        terrain: this.viewport.terrain,
-        xy: event.coordinate
-      }, 0.06).then((world_xyz) => {
-
-        this.viewport.coord_world = world_xyz
-        const newMarker = store.state.marker
-        newMarker.kote = world_xyz[2]
-        newMarker.center = world_xyz.slice(0,2)
-        const newView = store.state.view
-        newView.kote = world_xyz[2]
-        newView.center = world_xyz.slice(0,2)
-        store.dispatch('updateMarker', newMarker)
-        store.dispatch('updateView', newView)
+      const worldPosition = await getWorldXYZ({
+        xy: event.coordinate,
+        image: state.items[this.viewport.dataset.itemkey], 
+        terrain: state.terrain[this.viewport.dataset.itemkey]
       })
+      state.setMarker = {
+        position: worldPosition.slice(0,2),
+        kote: worldPosition[2]
+      }
     }
   }
 

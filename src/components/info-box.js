@@ -28,7 +28,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
       position: fixed;
       top: 0;
       left: 0;
-      z-index: 3;
+      z-index: 5;
       transition: transform .3s;
       transform: translate(-100vw,0);
       margin: 0;

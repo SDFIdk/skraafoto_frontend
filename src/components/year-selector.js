@@ -1,13 +1,9 @@
 import { getYearFromCollection } from '../modules/utilities.js'
-import store from '../store'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-
+import { state, autorun, when } from '../state/index.js'
+import { queryItems } from '../modules/api.js'
 
 /**
- * Web component that enables the user to select from a list of available years.
- * Looks up `store.state.viewports[this.dataset.index].collection` on connectedCallback to get available years.
- * @prop {string} dataset.index - `data-index` attribute used to look up state by viewport index.
- * @fires updateCollection - New collection (`skraafotos` + year) selected by user.
+ * Web component that enables the user to select from a list of available years (collections).
  */
 export class SkraaFotoYearSelector extends HTMLElement {
 
@@ -78,50 +74,56 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   connectedCallback() {
-    this.createDOM()
 
-    // Listen for user change
-    this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
+    // When collections are available in state, build the DOM and add listeners
+    this.whendisposer = when(
+      () => state.collections.length > 0, 
+      () => {
+        this.createDOM(state.collections)
 
-    window.addEventListener('updateCollection', this.collectionUpdatedHandler.bind(this))
+        // Listen for user change
+        this.#selectElement.addEventListener('change', this.selectionChangeHandler.bind(this))
+      }
+    )    
+
+    this.autorunDisposer = autorun(() => {
+      this.collectionUpdatedHandler(state.items[this.dataset.itemkey])
+    })
+  }
+
+  disconectedCallback() {
+    this.whendisposer()
+    this.autorunDisposer()
   }
 
   // methods
 
-  createDOM() {
+  createDOM(collections) {
     this.innerHTML = this.#template
 
     this.#selectElement = this.querySelector('select')
 
     // Create the year options from the list of collections
-    for (const c of store.state.collections) {
+    for (const c of collections) {
       const year = getYearFromCollection(c)
       const optionElement = document.createElement('option')
-      optionElement.value = year
+      optionElement.value = c
       optionElement.innerText = year
       this.#selectElement.appendChild(optionElement)
     }
-
-    // Setup select element value from state
-    this.#selectElement.value = getYearFromCollection(store.state.viewports[this.dataset.index].collection)
   }
 
   selectionChangeHandler(event) {
-    store.dispatch('updateCollection', {
-      index: this.dataset.index,
-      collection: `skraafotos${event.target.value}`
+    queryItems(state.marker.position, state.items[this.dataset.itemkey].properties.direction, event.target.value, 1).then((data) => {
+      state.setItem(data.features[0], this.dataset.itemkey)
     })
   }
 
-  collectionUpdatedHandler(event) {
-    // Only update if the right viewport state was updated
-    if (event.detail.index === this.dataset.index) {
-      this.#selectElement.value = getYearFromCollection(event.detail.collection)
+  collectionUpdatedHandler(item) {
+    if (!item) {
+      return
     }
-  }
-
-  disconnectedCallback() {
-    window.removeEventListener('updateCollection', this.collectionUpdatedHandler)
+    this.#selectElement.value = item.collection
   }
 
 }

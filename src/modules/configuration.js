@@ -30,8 +30,9 @@ let configuration = {
   ENABLE_CUSTOM_PARAMETER: true, // Enable custom year parameter for SKAT (REMOVE - DEPRECATED)
   ENABLE_CUSTOM_YEAR: true, // Enable custom year parameter for SKAT
   ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
-  ENABLE_DATAFORDELER_PING: false, // Feature that checks if Datafordeler service is still running every 60 seconds.
-
+  ENABLE_DOWNLOAD: true,
+  ENABLE_PRINT: true,
+  
   // The zoom difference between skraafotos and the WMTS service used for the map.
   MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
   DEFAULT_ZOOM: 4, // the default zoom level for main view skraafoto.
@@ -40,7 +41,6 @@ let configuration = {
   MIN_ZOOM: 1, // the minimum zoom for skraafotos.
 
   SITEIMPROVE_SCRIPT: '',
-  DOWNLOAD_TYPE: 'currentview', // 'default' | 'currentview'
 
   COLOR_SETTINGS:
     {
@@ -88,11 +88,13 @@ let configuration = {
 
 // We assume a global variable `config` has been declared
 // and let it override the default configurations
+/* eslint-disable */
 if (config) {
   for (let c in config) {
     configuration[c] = config[c]
   }
 }
+/* eslint-enable */
 
 // Hack to enable requesting images from skraafoto_server
 function convertAPIurl(url, replaceStr) {

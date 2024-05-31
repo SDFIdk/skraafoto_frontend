@@ -8,7 +8,7 @@ import Style from 'ol/style/Style'
 import Stroke from 'ol/style/Stroke'
 import Circle from 'ol/style/Circle'
 import { getImageXY, image2world } from '@dataforsyningen/saul'
-import store from '../store'
+import { state } from '../state/index.js'
 import { configuration } from "../modules/configuration";
 
 
@@ -66,28 +66,23 @@ function addPointerLayerToViewport(viewport) {
    */
   viewport.map.addLayer(generatePointerLayer())
   viewport.map.on('pointermove', event => {
-    const coord = image2world(viewport.item, event.coordinate[0], event.coordinate[1], viewport.coord_world[2])
-    window.dispatchEvent(new CustomEvent("updatePointer", { detail: { coord: coord, map: viewport.map } }))
+    const coord = image2world(viewport.item, event.coordinate[0], event.coordinate[1], viewport.coord_world[2] = 0)
+    state.setPointerPosition = {point: coord}
   })
 }
 
 /**
- * Gets a function for updating the viewport pointer.
- * @param {*} viewport The viewport.
- * @returns {function} The viewport pointer update function.
+ * Function for updating a viewport pointer.
  */
-function getUpdateViewportPointerFunction(viewport) {
-  return event => {
-    if (event.detail.map === viewport.map) {
-      updatePointer(viewport.map, [-9999, -9999])
-    } else {
-      if (!viewport.coord_world) {
-        return
-      }
-      const coord = event.detail.coord
-      const position = getImageXY(viewport.item, coord[0], coord[1], viewport.coord_world[2])
-      updatePointer(viewport.map, position)
-    }
+function updateViewportPointer(viewport, coord, itemkey) {
+  if (!coord || !itemkey || !viewport || !state.items[itemkey]) {
+    return
+  }
+  if (state.pointerItemkey === itemkey) {
+    updatePointer(viewport.map, [-9999, -9999])
+  } else {
+    const position = getImageXY(state.items[itemkey], coord[0], coord[1], state.view.kote)
+    updatePointer(viewport.map, position)
   }
 }
 
@@ -102,7 +97,7 @@ function addPointerLayerToMap(map) {
      * It is too expensive to get the Z value for every point, so we use the most recent value stored from
      * zoom sync instead.
      */
-    const coord = [event.coordinate[0], event.coordinate[1], store.state.view.center[2] || 0]
+    const coord = [event.coordinate[0], event.coordinate[1], state.view.kote || 0]
     window.dispatchEvent(new CustomEvent("updatePointer", { detail: { coord: coord, map: map } }))
   })
 }
@@ -124,8 +119,10 @@ function getUpdateMapPointerFunction(map) {
 }
 
 export {
+  updatePointer,
+  generatePointerLayer,
   addPointerLayerToViewport,
-  getUpdateViewportPointerFunction,
+  updateViewportPointer,
   addPointerLayerToMap,
   getUpdateMapPointerFunction
 }

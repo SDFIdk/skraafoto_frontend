@@ -1,11 +1,11 @@
-import store from '../store/index.js'
-import {Geolocation} from 'ol'
-import {get as getProjection} from 'ol/proj.js'
+import { state } from '../state/index.js'
+import { Geolocation } from 'ol'
+import { get as getProjection } from 'ol/proj.js'
 import VectorLayer from 'ol/layer/Vector.js'
 import VectorSource from 'ol/source/Vector.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-import {configuration} from '../modules/configuration.js'
-import {getZ} from '@dataforsyningen/saul'
+import { configuration } from '../modules/configuration.js'
+import { getZ } from '@dataforsyningen/saul'
 
 
 /**
@@ -132,17 +132,12 @@ export class SkraafotoGeolocation extends HTMLElement {
       return
     }
     const newKote = await getZ(newCenter[0], newCenter[1], configuration)
-    const newMarker = structuredClone(store.state.marker)
-    const newView = structuredClone(store.state.view)
-    newMarker.center = newCenter
-    newMarker.kote = newKote
-    newView.center = newCenter
-    newView.kote = newKote
     // Update marker and view with user's position
-    store.state.marker = newMarker
-    store.state.view = newView
-    store.dispatch('updateMarker', newMarker)
-    store.dispatch('updateView', newView)
+    state.setView({
+      position: newCenter,
+      kote: newKote
+    })
+    state.setMarker = {position: newCenter, kote: newKote}
     this.geolocation.setTracking(false)
   }
 }

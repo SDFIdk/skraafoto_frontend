@@ -9,7 +9,8 @@ import Style from 'ol/style/Style'
 import Icon from 'ol/style/Icon'
 import Stroke from 'ol/style/Stroke'
 import { image2world } from '@dataforsyningen/saul'
-import {configuration} from "../modules/configuration";
+import { configuration } from "../modules/configuration"
+import { state } from '../state/index.js'
 
 const camera_styles = {
   'nadir': new Style(),
@@ -67,10 +68,9 @@ function createCameraStyle(orientation) {
  * The camera is placed between the two points nearest the camera at a distance equal to the
  * distance between the same two points.
  * @param {Number[][]} bbox The bounding box.
- * @param {String} orientation The orientation.
  * @returns {Number[]} the position of the camera object.
  */
-function calculateCameraPosition(bbox, orientation) {
+function calculateCameraPosition(bbox) {
   const l = bbox[0][0]
   const r = bbox[0][1]
   const lr = [r[0] - l[0], r[1] - l[1]] // lr vector
@@ -107,20 +107,19 @@ function updateFootprint(map, bounding_box, orientation) {
 
 /**
  * Adds an eventlistener to the viewport for updating the footprint.
- * @param {*} viewport The viewport.
+ * @param {Object} viewport The viewport.
+ * @param {Object} item Image item displayed by the viewport
  */
-function addFootprintListenerToViewport(viewport) {
-  viewport.map.on('pointermove', event => {
-    const bbox_image = event.map.getView().calculateExtent(event.map.getSize())
-    const bl = image2world(viewport.item, bbox_image[0], bbox_image[1], viewport.coord_world[2]).slice(0, -1)
-    const br = image2world(viewport.item, bbox_image[2], bbox_image[1], viewport.coord_world[2]).slice(0, -1)
-    const tl = image2world(viewport.item, bbox_image[0], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
-    const tr = image2world(viewport.item, bbox_image[2], bbox_image[3], viewport.coord_world[2]).slice(0, -1)
-    const bbox = [[ bl, br, tr, tl, bl]]
-    window.dispatchEvent(new CustomEvent("updateFootprint", {
-      detail: { bounding_box: bbox, orientation: viewport.item.properties.direction }
-    }))
-  })
+function footprintHandler(event, item) {
+  const bbox_image = event.map.getView().calculateExtent(event.map.getSize())
+  const bl = image2world(item, bbox_image[0], bbox_image[1], state.view.kote).slice(0, -1)
+  const br = image2world(item, bbox_image[2], bbox_image[1], state.view.kote).slice(0, -1)
+  const tl = image2world(item, bbox_image[0], bbox_image[3], state.view.kote).slice(0, -1)
+  const tr = image2world(item, bbox_image[2], bbox_image[3], state.view.kote).slice(0, -1)
+  const bbox = [[ bl, br, tr, tl, bl]]
+  window.dispatchEvent(new CustomEvent("updateFootprint", {
+    detail: { bounding_box: bbox, orientation: item.properties.direction }
+  }))
 }
 
 /**
@@ -143,7 +142,7 @@ function getUpdateMapFootprintFunction(map) {
 }
 
 export {
-  addFootprintListenerToViewport,
+  footprintHandler,
   addFootprintLayerToMap,
   getUpdateMapFootprintFunction
 }

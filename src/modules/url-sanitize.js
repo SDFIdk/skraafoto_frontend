@@ -48,7 +48,7 @@ async function sanitizeParams(searchparams) {
   }
 
 
-// If only center is given, add direction and find a matching recent item
+  // If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
@@ -62,7 +62,6 @@ async function sanitizeParams(searchparams) {
     collections = await getCollections()
 
     const desiredYearParam = params.get('year')
-    const desiredYear = desiredYearParam ? Number(desiredYearParam) : 0
 
     let yearToUse;
 
@@ -114,11 +113,6 @@ async function sanitizeParams(searchparams) {
     return latestYear.toString(); // Convert to string as desired
   }
 
-
-
-
-
-
   function extractYearFromCollectionID(collectionID) {
     // Extract the year from the collection ID
     const yearPart = collectionID.substring(collectionID.length - 4)
@@ -143,7 +137,7 @@ async function sanitizeParams(searchparams) {
     params.set('center', [574764,6220953])
     if (params.get('orientation') !== 'map') {
       collections = await getCollections()
-      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0])
+      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0].id)
       params.set('item', response.features[0].id)
     }
     return params

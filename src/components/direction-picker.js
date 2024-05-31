@@ -1,7 +1,6 @@
-import { queryItems } from '../modules/api.js'
 import { configuration } from "../modules/configuration.js"
 import { getSharedStyles } from "../styles/shared-styles.js"
-import store from '../store'
+import { state, autorun } from '../state/index.js' 
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
@@ -227,25 +226,14 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
     this.slider_element = this.shadowRoot.querySelector('.sf-slider-content')
   }
 
-  // TODO: Move to relevant component ...
-  /** Checks whether center coordinate is outside image area */
-  checkImage(coordinate, item) {
-    if (coordinate[0] < item.bbox[0] || coordinate[0] > item.bbox[2] || coordinate[1] < item.bbox[1] || coordinate[1] > item.bbox[3]) {
-      // coordinate is out of bounds
-      queryItems(coordinate, item.properties.direction, item.collection)
-      .then((response) => {
-        this.updateViewport(coordinate, response.features[0])
-      })
-    } else {
-      this.updateViewport(coordinate, item)
+  highlightCurrentDirection(item) {
+    if (!item) {
+      return
     }
-  }
-
-  highlightCurrentDirection() {
     this.shadowRoot.querySelectorAll('button').forEach(function(button) {
       button.classList.remove('active')
     })
-    this[`${ store.state.viewports[0].orientation }_element`].parentNode.classList.add('active')
+    this[`${ item.properties.direction }_element`].parentNode.classList.add('active')
   }
 
   // Lifecycle
@@ -253,7 +241,6 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   connectedCallback() {
 
     this.createShadowDOM()
-    this.highlightInitialDirection()
 
     this.btn_open_element.addEventListener('click', () => {
       this.slider_element.style.transform = 'translate(0,0)'
@@ -265,41 +252,29 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
 
     // When a mini-viewport is clicked in the selector, display it on the main viewport
     this.shadowRoot.querySelectorAll('.sf-direction-picker-btn').forEach((btn) => {
-      btn.addEventListener('click', (event) => {
-        const target_item = btn.querySelector('skraafoto-viewport-mini').item
-        // Sync view and marker positions
-        store.state.view.center = store.state.marker.center
-        store.state.view.kote = store.state.marker.kote
+      btn.addEventListener('click', () => {
+        const targetOrientation = btn.querySelector('skraafoto-viewport-mini').dataset.orientation
         // Dispatch new item
-        store.dispatch('updateMapVisibility', false)
-        store.dispatch('updateItem', {index: 0, item: target_item})
+        state.setMapVisible = false
+        state.setItem(state.items[targetOrientation])
         this.slider_element.style.transform = 'translate(0,100vh)'
-        this.highlightCurrentDirection()
       })
     })
 
     // When the map-viewport is clicked in the selector, display it on the main viewport
-    this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', (event) => {
+    this.shadowRoot.querySelector('.sf-map-picker-btn').addEventListener('click', () => {
       // Set orientation parameter, causing the page to reload with map open
-      // TODO: clean up these dispatches. Which is actually needed?
-      store.dispatch('updateMapVisibility', true)
+      state.setMapVisible = true
       this.slider_element.style.transform = 'translate(0,100vh)'
-      this.highlightCurrentDirection()
     })
 
-    window.addEventListener('updateItem', () => { this.highlightCurrentDirection() })
-  }
-
-  highlightInitialDirection() {
-    const initialDirection = store.state.viewports[0].orientation
-    const initialElement = this[`${initialDirection}_element`]
-
-    // Remove active class from all buttons
-    this.shadowRoot.querySelectorAll('button').forEach(button => {
-      button.classList.remove('active')
+    this.highlightAutorunDisposer = autorun(() => {
+      this.highlightCurrentDirection(state.items[this.dataset.itemkey])
     })
-
-    // Add active class to the initially selected direction button
-    initialElement.parentNode.classList.add('active')
   }
+
+  disconnectedCallback() {
+    this.highlightAutorunDisposer()
+  }
+
 }

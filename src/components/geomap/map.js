@@ -19,18 +19,15 @@ import Point from 'ol/geom/Point'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
-import { configuration } from '../modules/configuration.js'
-import { getViewSyncMapListener } from '../modules/sync-view'
-import { generateParcelVectorLayer } from '../custom-plugins/plugin-parcel'
-import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../custom-plugins/plugin-pointer'
-import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../custom-plugins/plugin-footprint.js'
-import store from '../store'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
-
+import { configuration } from '../../modules/configuration.js'
+import { getViewSyncMapListener } from '../../modules/sync-view'
+import { generateParcelVectorLayer } from '../../custom-plugins/plugin-parcel'
+import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../../custom-plugins/plugin-pointer'
+import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../../custom-plugins/plugin-footprint.js'
+import { state, autorun } from '../../state/index.js'
 
 /**
  * Web component that displays a map.
- * @listens updateMarker - Re-position the crosshairs icon on `updateMarker` event in state.
  */
 export class SkraaFotoMap extends HTMLElement {
 
@@ -84,7 +81,7 @@ export class SkraaFotoMap extends HTMLElement {
     }
     .geographic-map skraafoto-compass {
       position: absolute;
-      top: 5.5rem;
+      top: 1.5rem;
       right: 1rem;
       z-index: 1;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
@@ -156,8 +153,8 @@ export class SkraaFotoMap extends HTMLElement {
 
     // Create a vector layer for the user's position marker
     this.userPositionLayer = new VectorLayer({
-      source: new VectorSource(),
-    });
+      source: new VectorSource()
+    })
   }
 
   // methods
@@ -225,7 +222,6 @@ export class SkraaFotoMap extends HTMLElement {
       })
 
       this.update_view_function = getViewSyncMapListener(this, map)
-      window.addEventListener('updateView', this.update_view_function)
 
       if (configuration.ENABLE_POINTER) {
         addPointerLayerToMap(map)
@@ -246,8 +242,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.toggleSpinner(false)
   }
 
-  drawParcels() {
-    const parcels = store.state.parcels
+  drawParcels(parcels) {
     if (!this.map || !parcels[0]) {
       return
     }
@@ -289,10 +284,8 @@ export class SkraaFotoMap extends HTMLElement {
     })
   }
 
-  singleClickHandler(event) {
-    const newMarker = structuredClone(store.state.marker)
-    newMarker.center = event.coordinate
-    store.dispatch('updateMarker', newMarker)
+  async singleClickHandler(event) {
+    await state.refresh(event.coordinate)
     // Update crosshairs icon on map
     this.map.removeLayer(this.icon_layer)
     this.icon_layer = this.generateIconLayer(event.coordinate)
@@ -303,10 +296,10 @@ export class SkraaFotoMap extends HTMLElement {
 
     this.toggleSpinner(true)
 
-    const center = store.state.marker.center
+    const center = state.marker.position
 
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center, (store.state.view.zoom + configuration.MAP_ZOOM_DIFFERENCE))
+      this.map = await this.generateMap(this.getAttribute('minimal'), center, (state.view.zoom + configuration.MAP_ZOOM_DIFFERENCE))
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
@@ -319,25 +312,47 @@ export class SkraaFotoMap extends HTMLElement {
     this.map.addLayer(this.icon_layer)
 
     if (configuration.ENABLE_PARCEL) {
-      this.drawParcels()
+      this.drawParcels(state.parcels)
     }
+
+    this.setupListeners()
+  }
+
+  setupListeners() {
+    // When marker (crosshair) position changes in state, re-render the icon layer
+    this.markerUpdateDisposer = autorun(() => {
+      this.updateMap(state.marker)
+    })
+
+    // Sync view when view is changed in state
+    this.viewUpdateDisposer = autorun(() => {
+      this.updateMapView(state.view)
+    })
+
+    if (configuration.ENABLE_PARCEL) {
+      this.parcelDisposer = autorun(() => {
+        this.drawParcels(state.parcels)
+      })
+    }
+  }
+
+  /** Changes the view according to state */
+  updateMapView(viewstate) {
+    const view = this.map.getView()
+    view.setCenter(viewstate.position)
+    this.map.setView(view) 
   }
 
   /** Re-renders the icon layer when marker (crosshair) position changes in state. */
-  updateMap() {
+  updateMap(markerstate) {
     if (this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
-    const center = store.state.marker.center
     const view = this.map.getView()
-    view.setCenter(center)
+    view.setCenter(markerstate.position)
     this.map.setView(view)
-    this.icon_layer = this.generateIconLayer(center)
+    this.icon_layer = this.generateIconLayer(markerstate.position)
     this.map.addLayer(this.icon_layer)
-  }
-
-  parcelsHandler() {
-    this.drawParcels()
   }
 
   /** Toggles displaying the loading spinner */
@@ -358,26 +373,17 @@ export class SkraaFotoMap extends HTMLElement {
   // Lifecycle
 
   connectedCallback() {
-
     this.createDOM()
     this.createMap()
-
-    // When marker (crosshair) position changes in state, re-render the icon layer
-    window.addEventListener('updateMarker', this.updateMap.bind(this))
-    window.addEventListener('updateItem', this.updateMap.bind(this))
-
-    if (configuration.ENABLE_PARCEL) {
-      this.parcels_function = this.parcelsHandler.bind(this)
-      window.addEventListener('parcels', this.parcels_function)
-    }
   }
 
   disconnectedCallback() {
-    window.removeEventListener('parcels', this.parcels_function)
     window.removeEventListener('updatePointer', this.update_pointer_function)
     window.removeEventListener('updateFootprint', this.update_footprint_function)
-    window.removeEventListener('updateView', this.update_view_function)
-    window.removeEventListener('updateMarker', this.updateMap)
-    window.removeEventListener('updateItem', this.updateMap)
+    this.markerUpdateDisposer()
+    this.viewUpdateDisposer()
+    if (configuration.ENABLE_PARCEL) {
+      this.parcelDisposer()
+    }
   }
 }

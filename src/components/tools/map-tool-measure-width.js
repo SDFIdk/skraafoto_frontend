@@ -1,24 +1,26 @@
 import { Vector as VectorSource } from 'ol/source'
 import { Vector as VectorLayer } from 'ol/layer'
-import { Circle as CircleStyle, Stroke, Style } from 'ol/style'
+import {Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
+import { getDistance } from 'ol/sphere'
 import Overlay from 'ol/Overlay'
-import { image2world, getImageXY } from '@dataforsyningen/saul'
+import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
-import LineString from 'ol/geom/LineString'
-import { configuration } from "../modules/configuration";
+import { configuration } from "../../modules/configuration"
+import { state } from '../../state/index.js'
 
 const featureIdentifiers = []
 
 /**
- * Enables user to measure vertical distances in an image
+ * Enables user to measure horizontal distances in an image
  */
-export class MeasureHeightTool {
+export class MeasureWidthTool {
 
   // properties
   overlayIdCounter = 1
+  coorTranslator = createTranslator()
   viewport
-  colorSetting = configuration.COLOR_SETTINGS.heightColor
+  colorSetting = configuration.COLOR_SETTINGS.widthColor
   style = new Style({
     stroke: new Stroke({
       color: this.colorSetting,
@@ -27,7 +29,7 @@ export class MeasureHeightTool {
     image: new CircleStyle({
       radius: 4,
       stroke: new Stroke({
-        color: '#FF5252',
+        color: '#3EDDC6',
         width: 1
       })
     })
@@ -44,18 +46,16 @@ export class MeasureHeightTool {
   measureTooltipElement
   measureTooltip
   draw
-  axisFunc
-
+  
 
   constructor(viewport) {
-
-    const self = this
 
     this.viewport = viewport
     this.viewport.map.addLayer(this.layer)
 
     this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
 
+    // TODO: Are these still relevant. Maybe change to state listener
     document.addEventListener('directionchange', this.imageChangeHandler.bind(this))
     document.addEventListener('addresschange', this.imageChangeHandler.bind(this))
     document.addEventListener('mapchange', this.imageChangeHandler.bind(this))
@@ -72,7 +72,7 @@ export class MeasureHeightTool {
     this.viewport.map.removeEventListener('pointermove', this.pointerMoveHandler)
     this.viewport.map.getViewport().removeEventListener('mouseout', this.mouseOutHandler)
 
-    if (event.detail() === 'measureheight') {
+    if (event.detail() === 'measurewidth') {
       // Add new interaction
       this.addInteraction()
       // Set up event listeners
@@ -85,7 +85,7 @@ export class MeasureHeightTool {
     if (event.dragging) {
       return
     }
-    let helpMsg = '‘Klik på terræn for at måle højde’'
+    let helpMsg = 'Klik på terræn for at måle afstand'
     if (this.sketch) {
       helpMsg = 'Klik for at afslutte måling'
     }
@@ -106,25 +106,7 @@ export class MeasureHeightTool {
       type: 'LineString',
       style: this.style,
       maxPoints: 2,
-      minPoints: 2,
-      geometryFunction: (coords, geom) => {
-        if (!geom) {
-          geom = new LineString([])
-        }
-        if (this.axisFunc) {
-          const adjusted_coordinate = this.axisFunc(coords[0], coords[1])
-          geom.setCoordinates([
-            coords[0],
-            [
-              adjusted_coordinate[0],
-              adjusted_coordinate[1]
-            ]
-          ])
-        } else {
-          geom.setCoordinates(coords)
-        }
-        return geom
-      }
+      minPoints: 2
     })
     this.viewport.map.addInteraction(this.draw)
 
@@ -132,9 +114,8 @@ export class MeasureHeightTool {
     this.createMeasureTooltip()
 
     this.draw.on('drawstart', (event) => {
-      // set sketch
+      // Set sketch
       this.sketch = event.feature
-      this.axisFunc = this.generateVerticalAxisFunction(event.feature.getGeometry().getCoordinates()[0], this.viewport.item)
 
       // Store references to the feature and overlay
       const tooltipId = `tooltip-${this.overlayIdCounter++}`
@@ -145,48 +126,31 @@ export class MeasureHeightTool {
       }
       featureIdentifiers[tooltipId] = featureOverlayPair
 
-      this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
-      this.measureTooltipElement.title = 'Klik for at slette måling'
-      listener = this.sketch.getGeometry().on('change', (ev) => {
+      let tooltipCoord = event.coordinate
+      listener = this.sketch.getGeometry().on('change', async (ev) => {
         const geom = ev.target
-        const new_coords = geom.getCoordinates()
-        const corrected_coord = this.axisFunc(new_coords[0], new_coords[1])
-        this.measureTooltipElement.innerHTML = `${corrected_coord[2]}m`
-        this.measureTooltip.setOffset([0, -7])
-        this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
+        let output
+        output = await this.calculateDistance(geom.flatCoordinates)
+        tooltipCoord = geom.getLastCoordinate()
+        this.measureTooltipElement.innerHTML = output
+        this.measureTooltip.setPosition(tooltipCoord)
       })
-
     })
 
-    this.draw.on('drawend', () => {
-
-      this.drawAdjustedLine(this.axisFunc, this.calcTooltipPosition, this.measureTooltipElement, this.measureTooltip)
-
-      // unset sketch
+    this.draw.on('drawend', async () => {
+      const geom = this.sketch.getGeometry()
+      this.measureTooltipElement.innerHTML = await this.calculateDistance(geom.flatCoordinates)
+      this.measureTooltipElement.className = 'ol-tooltip ol-tooltip-static'
+      this.measureTooltipElement.title = 'Klik for at slette måling'
+      this.measureTooltip.setOffset([0, -7])
+      this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
+      // Unset sketch
       this.sketch = null
-      // unset tooltip so that a new one can be created
+      // Unset tooltip so that a new one can be created
       this.measureTooltipElement = null
       this.createMeasureTooltip()
       unByKey(listener)
     })
-  }
-
-  drawAdjustedLine(axisFunction, tooltipPositionFunction, tooltipElement, tooltip) {
-
-    const geom = this.sketch.getGeometry()
-    const new_coords = geom.getCoordinates()
-
-    // Calculate new xy in order to constrain to image height axis
-    const corrected_coord = axisFunction(new_coords[0], new_coords[1])
-    new_coords[1] = [corrected_coord[0], corrected_coord[1]]
-    // Snap to height axis
-    geom.setCoordinates(new_coords)
-    this.sketch.setGeometry(geom)
-
-    tooltipElement.innerHTML = `${corrected_coord[2]}m`
-    tooltipElement.className = 'ol-tooltip ol-tooltip-static'
-    tooltip.setOffset([0, -7])
-    tooltip.setPosition(tooltipPositionFunction(geom))
   }
 
   /**
@@ -230,6 +194,18 @@ export class MeasureHeightTool {
       insertFirst: false
     })
 
+    // Add a mouseenter event listener to show a cross when hovering over the tooltip
+    this.measureTooltipElement.addEventListener('mouseenter', () => {
+      this.measureTooltipElement.innerHTML = 'X'; // Display a cross or any other symbol you prefer
+      this.measureTooltipElement.style.cursor = 'pointer';
+    });
+
+    // Add a mouseleave event listener to revert to the measurement text when mouse leaves
+    this.measureTooltipElement.addEventListener('mouseleave', () => {
+      this.measureTooltipElement.innerHTML = 'Click to remove measurement';
+      this.measureTooltipElement.style.cursor = 'auto';
+    });
+
     this.measureTooltipElement.addEventListener('click', (event) => {
       event.stopPropagation() // Prevent the click event from propagating to the map
 
@@ -249,7 +225,6 @@ export class MeasureHeightTool {
 
     this.viewport.map.addOverlay(this.measureTooltip)
   }
-
   calcTooltipPosition(geometry) {
     return geometry.getFlatMidpoint()
   }
@@ -279,22 +254,20 @@ export class MeasureHeightTool {
     this.source.clear()
   }
 
-  generateVerticalAxisFunction(coord, image_item) {
-    const world0 = image2world(image_item, coord[0], coord[1], 0)
-    const world1 = image2world(image_item, coord[0], coord[1], 10)
-    const image0 = getImageXY(image_item, world0[0], world0[1])
-    const image1 = getImageXY(image_item, world1[0], world1[1])
-    const skew_factor = [(image1[0] - image0[0])/10, (image1[1] - image0[1])/10]
-
-    // Return a function that takes two image coordinates and returns the second coordinate with Y axis skew adjusted
-    return function(image_coor_1, image_coor_2) {
-      const s = skew_factor
-      const delta_y = image_coor_2[1] - image_coor_1[1]
-      const ratio_y = delta_y / s[1]
-      const delta_x = ratio_y * s[0] // We assume x and y ratios are equal
-      const x = image_coor_1[0] + delta_x
-      return [x, image_coor_2[1], Math.abs(ratio_y).toFixed(1)]
+  async calculateDistance(coords) {
+    const world_coords = []
+    for (let n = 0; coords.length > n; n = n+2) {
+      const new_coord = await getWorldXYZ({
+        image: state.items[this.viewport.dataset.itemkey],
+        terrain: state.terrain[this.viewport.dataset.itemkey],
+        xy: [coords[n], coords[n + 1]]
+      })
+      // Since `getDistance` works with WGS84 coordinates, we must translate the coords
+      const wgs84_coords = this.coorTranslator.inverse([new_coord[0], new_coord[1]])
+      world_coords.push(wgs84_coords)
     }
+    const distance = getDistance(world_coords[0], world_coords[1])
+    return distance.toFixed(0) + 'm'
   }
 
 }

@@ -6,13 +6,12 @@ import VectorSource from 'ol/source/Vector'
 import Projection from 'ol/proj/Projection.js'
 import Feature from 'ol/Feature'
 import Point from 'ol/geom/Point'
-import {Icon, Style} from 'ol/style'
-import {getImageXY, getZ} from '@dataforsyningen/saul'
-import {configuration} from './configuration.js'
-import store from '../store'
-import {toDanish} from '../modules/i18n.js'
-import {getTerrainData} from '../modules/api.js'
-import {renderParcels} from '../custom-plugins/plugin-parcel.js'
+import { Icon, Style } from 'ol/style'
+import { getImageXY, getZ } from '@dataforsyningen/saul'
+import { configuration } from '../../modules/configuration.js'
+import { state } from '../../state/index.js'
+import { toDanish } from '../../modules/i18n.js'
+import { renderParcels } from '../../custom-plugins/plugin-parcel.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
 // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -94,6 +93,52 @@ async function updateMapView({map, zoom, center, item}) {
   map.setView(mapView)
 }
 
+/** Handler to update the relevant parts of the image map when item, view, or marker is updated */
+async function updateViewport(newData, oldData, map) {
+  if (!newData.item || !newData.view || !newData.marker) {
+    return
+  }
+
+  // On item change, load a new image layer in map and update view/marker
+  if (newData.item !== oldData.item) {
+    updateMapImage(map, newData.item)
+    await updateView(newData, map)
+    await updateMarker(newData, map)
+    return
+  }
+  
+  // On view change, update map view
+  if (newData.view.position !== oldData.view.position || newData.view.zoom !== oldData.view.zoom) {
+    await updateView(newData, map)
+  }
+
+  // On marker change, update marker position
+  if (newData.marker.position !== oldData.marker.position) {
+    await updateMarker(newData, map)
+  }
+
+  return
+}
+
+/** Calculates new view position and updates image map view */
+async function updateView(data, map) {
+  const newViewCoords = await updateCenter(data.view.position, data.item, data.view.kote)
+  await updateMapView({
+    map: map,
+    item: data.item,
+    zoom: data.view.zoom,
+    center: newViewCoords.imageCoord
+  })
+  return
+}
+
+/** Calculates new marker position and updates marker in image map */
+async function updateMarker(data, map) {
+  const newMarkerCoords = await updateCenter(data.marker.position, data.item, data.marker.kote)
+  updateMapCenterIcon(map, newMarkerCoords.imageCoord)
+  return
+}
+
 /** Updates the image displayed in a map */
 function updateMapImage(map, item) {
   const layer = getLayerById(map, 'geotifflayer')
@@ -126,7 +171,7 @@ async function updateMap(self) {
     return
   }
 
-  const coords = await updateCenter(store.state.marker.center, self.item, store.state.marker.kote)
+  const coords = await updateCenter(state.marker.position, self.item, state.marker.kote)
 
   // Create and add image layer
   updateMapImage(self.map, self.item)
@@ -137,7 +182,7 @@ async function updateMap(self) {
   // Update the map's view
   await updateMapView({
     map: self.map,
-    zoom: self.toImageZoom(store.state.view.zoom),
+    zoom: self.toImageZoom(state.view.zoom),
     center: coords.imageCoord,
     item: self.item
   })
@@ -188,15 +233,12 @@ function createView(view_config) {
 }
 
 function updateTextContent(imagedata) {
-  return `Billede af området omkring koordinat ${ store.state.marker.center[0].toFixed(0) } Ø, ${ store.state.marker.center[1].toFixed(0) } N set fra ${toDanish(imagedata.properties.direction)}.`
+  return `Billede af området omkring koordinat ${ state.marker.position[0].toFixed(0) } Ø, ${ state.marker.position[1].toFixed(0) } N set fra ${toDanish(imagedata.properties.direction)}.`
 }
 
-function updatePlugins(self) {
-  getTerrainData(self.item).then(terrain => {
-    self.terrain = terrain
-  })
+function updatePlugins(self, item) {
   if (configuration.ENABLE_PARCEL) {
-    renderParcels(self)
+    renderParcels(self, item.id)
   }
 }
 
@@ -209,7 +251,7 @@ async function updateCenter(coordinate, item, kote) {
   if (!item) {
     return
   }
-  if (!kote) {
+  if (kote === undefined || kote === null) {
     kote = await getZ(coordinate[0], coordinate[1], configuration)
   }
   return {
@@ -218,18 +260,11 @@ async function updateCenter(coordinate, item, kote) {
   }
 }
 
-function isOutOfBounds(img_shape, img_coordinate, bound = 500) {
-  if (img_coordinate[0] < bound || img_coordinate[0] > (img_shape[1] - bound)) {
-    return true
-  } else if (img_coordinate[1] < bound || img_coordinate[1] > (img_shape[0] - bound)) {
-    return true
-  } else {
-    return false
-  }
-}
-
 export {
   projection,
+  updateViewport,
+  updateView,
+  updateMarker,
   updateMap,
   updateMapView,
   updateMapCenterIcon,
@@ -239,6 +274,5 @@ export {
   updateTextContent,
   updatePlugins,
   updateDate,
-  updateCenter,
-  isOutOfBounds
+  updateCenter
 }
