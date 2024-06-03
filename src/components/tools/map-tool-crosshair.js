@@ -28,7 +28,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
   toggleCrosshair() {
     if (this.crosshairEnabled === 0) {
       this.crosshairEnabled = 1 // Set the toggle value to 1 (enabled)
-      this.button_element.style.borderRadius = '0'
+      this.viewport.shadowRoot.querySelector('.ol-layer canvas').classList.add('crosshair-on')
       this.button_element.blur()
       this.viewport.map.once('singleclick', this.handleClick) // Bind the click event listener once
     }
@@ -38,17 +38,17 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
     if (this.crosshairEnabled === 1 && this.viewport.mode === 'center') {
       this.crosshairEnabled = 0 // Set the toggle value to 0 (disabled)
       this.button_element.style.background = ''
-      this.button_element.style.borderRadius = '0'
+      this.viewport.shadowRoot.querySelector('.ol-layer canvas').classList.remove('crosshair-on')
       this.button_element.blur()
       const worldPosition = await getWorldXYZ({
         xy: event.coordinate,
         image: state.items[this.viewport.dataset.itemkey], 
         terrain: state.terrain[this.viewport.dataset.itemkey]
       })
-      state.setMarker = {
+      state.setMarker({
         position: worldPosition.slice(0,2),
         kote: worldPosition[2]
-      }
+      })
     }
   }
 

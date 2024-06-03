@@ -15,10 +15,10 @@ export class CenterTool {
           image: state.items[viewport.dataset.itemkey], 
           terrain: state.terrain[viewport.dataset.itemkey]
         })
-        state.setViewMarker = {
+        state.setViewMarker({
           position: worldXYZ.slice(0,2),
           kote: worldXYZ[2]
-        }
+        })
       }
     })
   }

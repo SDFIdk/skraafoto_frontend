@@ -1,3 +1,5 @@
+import crossHairIcon from '../../../public/img/icons/icon_cursor_crosshair.svg'
+
 // Exporting CSS as a Javascript string, since we want to import it into a shadow DOM.
 export default `
   :host {
@@ -82,6 +84,9 @@ export default `
   }
   .ol-viewport canvas {
     cursor: crosshair;
+  }
+  .ol-viewport canvas.crosshair-on {
+    cursor: url(${ crossHairIcon }) 12 12, crosshair;
   }
   .image-date {
     display: none;
