@@ -23,29 +23,6 @@ function findAncestor(element, selector) {
   return findAncestor(element.parentNode, selector)
 }
 
-/** Checks if a coordinate is outside the edge coordinates of an image 
- * @param {Object} imageItem image item object from STAC API
- * @param {Array} imageCoordinate coordinate is an XY pair like [x, y]
- * @returns {Object} Returns a new image object if coordinate falls outside the shape bounds - otherwise returns false.
-*/
-async function checkBounds(imageItem, imageCoordinate) {
-
-  const shape = imageItem.properties['proj:shape']
-
-  const minX = 0
-  const maxX = shape[1]
-  const minY = 0
-  const maxY = shape[0]
-
-  if (imageCoordinate[0] < minX || imageCoordinate[0] > maxX || imageCoordinate[1] < minY || imageCoordinate[1] > maxY) {
-    const worldCoord = await image2world(imageItem, imageCoordinate[0], imageCoordinate[1])
-    const newImage = await queryItems(worldCoord.slice(0,2), imageItem.properties.direction, imageItem.collection)
-    return newImage.features[0]
-  } else {
-    return false
-  }
-}
-
 /** Debounces a function as to not run a lot of times in a short timespan */
 function debounce(func, timeout = 300) {
   let timer
@@ -60,6 +37,5 @@ function debounce(func, timeout = 300) {
 export {
   getYearFromCollection,
   findAncestor,
-  checkBounds,
   debounce
 }

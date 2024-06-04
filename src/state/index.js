@@ -3,7 +3,7 @@ import { configuration } from '../modules/configuration.js'
 import { getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
-import { refreshItems } from './items.js'
+import { refreshItems, checkBoundsAll } from './items.js'
 import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
@@ -60,22 +60,7 @@ class SkraafotoState {
   } 
 
   /* Actions */
-  // Marker 
-  set setMarker(payload) {
-    if (payload.position[0] < 400000) {
-      console.error('Marker position is not a useful EPSG:25832 coordinate.')
-      return
-    }
-    this.marker.position = payload.position
-    this.marker.kote = payload.kote
-  }
   // Marker + view
-  set setViewMarker(payload) {
-    this.view.position = payload.position
-    this.view.kote = payload.kote
-    this.marker.position = payload.position
-    this.marker.kote = payload.kote
-  }
   // Pointer
   set setPointerPosition(payload) {
     this.pointerPosition = payload.point
@@ -97,6 +82,23 @@ class SkraafotoState {
   }
 
   /* Flows */
+  *setMarker(payload) {
+    if (payload.position[0] < 400000) {
+      console.error('Marker position is not a useful EPSG:25832 coordinate.')
+      return
+    }
+    if (payload.position && !payload.kote) {
+      this.marker.kote = yield getZ(payload.position[0], payload.position[1], configuration)
+    }
+    if (payload.kote) {
+      this.marker.kote = payload.kote
+    }
+    if (payload.position) {
+      this.marker.position = payload.position 
+    }
+    // Decide whether to reload main images based on view
+    // TODO
+  }
   /**
    * Update `view` state
    * @param {number} payload.zoom
@@ -108,18 +110,45 @@ class SkraafotoState {
       console.error('View position is not a useful EPSG:25832 coordinate.')
       return
     }
-    if (payload.kote) {
-      this.view.kote = payload.kote
-    } else {
-      const kote = yield getZ(payload.position[0], payload.position[1], configuration)
-      this.view.kote = kote
+    if (payload.position && !payload.kote) {
+      this.view.kote = yield getZ(payload.position[0], payload.position[1], configuration)
     }
     if (payload.position) {
       this.view.position = payload.position
     }
+    if (payload.kote) {
+      this.view.kote = payload.kote
+    }
     if (payload.zoom) {
       this.view.zoom = payload.zoom
     }
+    // Decide whether to reload some small images based on view
+    const itemsToCheck = {
+      nadir: this.items.nadir,
+      north: this.items.north,
+      south: this.items.south,
+      east: this.items.east,
+      west: this.items.west
+    }
+    const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
+    for (const [key, value] of Object.entries(newItems)) {
+      this.terrain[key] = value.terrain
+      this.items[key] = value.item
+    }
+  }
+  *setViewMarker(payload) {
+    let normalizedKote 
+    if (!payload.kote) {
+      normalizedKote = yield getZ(payload.position[0], payload.position[1], configuration)
+    } else {
+      normalizedKote = payload.kote
+    }
+    this.view.position = payload.position
+    this.view.kote = normalizedKote
+    this.marker.position = payload.position
+    this.marker.kote = normalizedKote
+    // Decide whether to reload some small images based on view
+    // TODO
   }
   // Item
   *setItem(item, key = 'item1') {
@@ -173,7 +202,7 @@ class SkraafotoState {
     if (payload.parcels) {
       this.parcels = payload.parcels
     }
-  }
+  } 
 
   constructor() {
     makeAutoObservable(this)
