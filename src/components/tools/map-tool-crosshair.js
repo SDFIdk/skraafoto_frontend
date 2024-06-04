@@ -45,7 +45,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
         image: state.items[this.viewport.dataset.itemkey], 
         terrain: state.terrain[this.viewport.dataset.itemkey]
       })
-      state.setMarker({
+      state.setViewMarker({
         position: worldPosition.slice(0,2),
         kote: worldPosition[2]
       })
