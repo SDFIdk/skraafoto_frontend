@@ -3,7 +3,7 @@ import { configuration } from '../modules/configuration.js'
 import { getCollections, getTerrainData } from '../modules/api.js'
 import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
-import { refreshItems } from './items.js'
+import { refreshItems, checkBoundsAll } from './items.js'
 import { getZ } from '@dataforsyningen/saul'
 
 class SkraafotoState {
@@ -123,7 +123,18 @@ class SkraafotoState {
       this.view.zoom = payload.zoom
     }
     // Decide whether to reload some small images based on view
-    // TODO
+    const itemsToCheck = {
+      nadir: this.items.nadir,
+      north: this.items.north,
+      south: this.items.south,
+      east: this.items.east,
+      west: this.items.west
+    }
+    const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
+    for (const [key, value] of Object.entries(newItems)) {
+      this.terrain[key] = value.terrain
+      this.items[key] = value.item
+    }
   }
   *setViewMarker(payload) {
     let normalizedKote 
