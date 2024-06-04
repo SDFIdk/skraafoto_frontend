@@ -87,6 +87,20 @@ class SkraafotoState {
       console.error('Marker position is not a useful EPSG:25832 coordinate.')
       return
     }
+
+    // Decide whether to reload main images based on view
+    const itemsToCheck = {
+      item1: this.items.item1,
+      item2: this.items.item2
+    }
+    const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
+    if (newItems) {
+      for (const [key, value] of Object.entries(newItems)) {
+        this.terrain[key] = value.terrain
+        this.items[key] = value.item
+      }
+    }
+
     if (payload.position && !payload.kote) {
       this.marker.kote = yield getZ(payload.position[0], payload.position[1], configuration)
     }
@@ -96,8 +110,6 @@ class SkraafotoState {
     if (payload.position) {
       this.marker.position = payload.position 
     }
-    // Decide whether to reload main images based on view
-    // TODO
   }
   /**
    * Update `view` state
@@ -110,6 +122,23 @@ class SkraafotoState {
       console.error('View position is not a useful EPSG:25832 coordinate.')
       return
     }
+
+    // Decide whether to reload some small images based on view
+    const itemsToCheck = {
+      nadir: this.items.nadir,
+      north: this.items.north,
+      south: this.items.south,
+      east: this.items.east,
+      west: this.items.west
+    }
+    const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
+    if (newItems) {
+      for (const [key, value] of Object.entries(newItems)) {
+        this.terrain[key] = value.terrain
+        this.items[key] = value.item
+      }
+    }
+
     if (payload.position && !payload.kote) {
       this.view.kote = yield getZ(payload.position[0], payload.position[1], configuration)
     }
@@ -122,19 +151,6 @@ class SkraafotoState {
     if (payload.zoom) {
       this.view.zoom = payload.zoom
     }
-    // Decide whether to reload some small images based on view
-    const itemsToCheck = {
-      nadir: this.items.nadir,
-      north: this.items.north,
-      south: this.items.south,
-      east: this.items.east,
-      west: this.items.west
-    }
-    const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
-    for (const [key, value] of Object.entries(newItems)) {
-      this.terrain[key] = value.terrain
-      this.items[key] = value.item
-    }
   }
   *setViewMarker(payload) {
     let normalizedKote 
@@ -143,12 +159,20 @@ class SkraafotoState {
     } else {
       normalizedKote = payload.kote
     }
+
+    // Decide whether to reload any images based on view
+    const newItems = yield checkBoundsAll(payload.position, this.items)
+    if (newItems) {
+      for (const [key, value] of Object.entries(newItems)) {
+        this.terrain[key] = value.terrain
+        this.items[key] = value.item
+      }
+    }
+
     this.view.position = payload.position
     this.view.kote = normalizedKote
     this.marker.position = payload.position
     this.marker.kote = normalizedKote
-    // Decide whether to reload some small images based on view
-    // TODO
   }
   // Item
   *setItem(item, key = 'item1') {

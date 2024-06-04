@@ -52,6 +52,8 @@ async function checkBounds(coordinate, imageItem) {
   }
 }
 
+let isChecking = false
+
 /** 
  * Ensure that a collection of image items all fit a given coordinate 
  * @param {Array} coordinate EPSG:25832 coordinate 
@@ -60,13 +62,15 @@ async function checkBounds(coordinate, imageItem) {
 async function checkBoundsAll(coordinate, images) {
   let reloadedItems = {}
   for (const [key,value] of Object.entries(images)) {
-    const newImage = await checkBounds(coordinate, value)
-    if (newImage) {
-      const newTerrain = await getTerrainData(value)
-      reloadedItems[key] = {
-        item: newImage,
-        terrain: newTerrain
-      }
+    if (value) {
+      const newImage = await checkBounds(coordinate, value)
+      if (newImage) {
+        const newTerrain = await getTerrainData(value)
+        reloadedItems[key] = {
+          item: newImage,
+          terrain: newTerrain
+        }
+      }  
     }
   }
   return reloadedItems
