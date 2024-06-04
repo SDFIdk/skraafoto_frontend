@@ -96,6 +96,8 @@ class SkraafotoState {
     if (payload.position) {
       this.marker.position = payload.position 
     }
+    // Decide whether to reload main images based on view
+    // TODO
   }
   /**
    * Update `view` state
@@ -111,15 +113,17 @@ class SkraafotoState {
     if (payload.position && !payload.kote) {
       this.view.kote = yield getZ(payload.position[0], payload.position[1], configuration)
     }
+    if (payload.position) {
+      this.view.position = payload.position
+    }
     if (payload.kote) {
       this.view.kote = payload.kote
-    }
-    if (payload.position) {
-      this.view.position = payload.position 
     }
     if (payload.zoom) {
       this.view.zoom = payload.zoom
     }
+    // Decide whether to reload some small images based on view
+    // TODO
   }
   *setViewMarker(payload) {
     let normalizedKote 
@@ -132,6 +136,8 @@ class SkraafotoState {
     this.view.kote = normalizedKote
     this.marker.position = payload.position
     this.marker.kote = normalizedKote
+    // Decide whether to reload some small images based on view
+    // TODO
   }
   // Item
   *setItem(item, key = 'item1') {
