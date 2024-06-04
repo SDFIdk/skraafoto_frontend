@@ -27,11 +27,10 @@ let configuration = {
   ENABLE_ALERT: false, // Shows a modal with custom content
   ENABLE_YEAR_SELECTOR: true, // Display a collection selector in toolbar.
   ENABLE_DATE_BROWSER: true, // Display a selection of other image items for the same collection (year).
-  ENABLE_CUSTOM_PARAMETER: true, // Enable custom year parameter for SKAT (REMOVE - DEPRECATED)
   ENABLE_CUSTOM_YEAR: true, // Enable custom year parameter for SKAT
   ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
-  ENABLE_DOWNLOAD: true,
-  ENABLE_PRINT: true,
+  ENABLE_DOWNLOAD: true, // Enable image download (download entire tiff image)
+  ENABLE_PRINT: true, // Enable printing only the currently viewed part of an image
   
   // The zoom difference between skraafotos and the WMTS service used for the map.
   MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
@@ -82,7 +81,7 @@ let configuration = {
     }
   ],
 
-  DEFAULT_ITEM_ID: '2023_82_24_2_0011_00000400',
+  DEFAULT_COLLECTION: null, // Set a default collection to initiate from. Example `skraafotos2021`
   DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ]
 }
 

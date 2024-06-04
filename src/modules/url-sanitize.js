@@ -2,29 +2,68 @@
  * @module
  */
 
-import { queryItem, queryItems, getCollections } from './api.js'
+import { queryItem, queryItems } from './api.js'
 import { createTranslator } from '@dataforsyningen/saul'
-import { configuration } from "./configuration.js";
+import { configuration } from "./configuration.js"
+import { getParam } from './url-state.js'
 
-async function getLatestImages(center, orientation, collection, collections) {
-  const response = await queryItems(center, orientation, collection)
-  if (response.features.length < 1) {
-    const collectionIndex = collections.findIndex(function(c) { return c.id === collection})
-    return getLatestImages(center, orientation, collections[collectionIndex + 1].id, collections)
-  } else {
-    return response
+/** Find the collection closest to a given year */
+function findClosestYear(targetYear, collections) {
+  const yearList = collections.map((collection) => getYearFromCollectionID(collection.id))
+  // Initialize the closest year to the first year in the list
+  let closestYear = yearList[0]
+  let smallestDifference = Math.abs(targetYear - closestYear)
+
+  // Iterate through the year list to find the closest year
+  for (let i = 1; i < yearList.length; i++) {
+    let currentYear = yearList[i]
+    let currentDifference = Math.abs(targetYear - currentYear)
+
+    if (currentDifference < smallestDifference) {
+      smallestDifference = currentDifference
+      closestYear = currentYear
+    }
   }
+  return closestYear
+}
+
+function getYearFromCollectionID(id) {
+  const yearRegex = /[1-2][0-9]{3}/g
+  return Number(id.match(yearRegex)[0])
 }
 
 /** Adds or modifies URL searchparams according to various edge cases */
-async function sanitizeParams(searchparams) {
+async function sanitizeParams(searchparams, collections) {
 
-  let params = searchparams
-  let collections = []
+  let params = sanitizeCoords(searchparams)
 
-  // Remove params from skat that are never used
+  const sortedCollections = collections.sort(function(a,b) {
+    const yearA = getYearFromCollectionID(a.id)
+    const yearB = getYearFromCollectionID(b.id)
+    if (yearA > yearB) {
+      return -1
+    } else if (yearA < yearB) {
+      return 1
+    } else {
+      return 0
+    }
+  })
+
+  // Remove params that are never used
   removeUnusedParams(params)
 
+  // Manipulate `year` parameter
+  if (params.get('year')) {
+    params.set('year', findClosestYear(params.get('year'), collections))
+  } else {
+    // Use configured year or just from the latest collection
+    if (configuration.DEFAULT_COLLECTION) {
+      params.set('year', getYearFromCollectionID(configuration.DEFAULT_COLLECTION))
+    } else {
+      params.set('year', getYearFromCollectionID(sortedCollections[0].id))
+    }
+  }
+  
   // Just return when we have center, orientation, item, and year
   if (
     params.get('center') &&
@@ -47,76 +86,22 @@ async function sanitizeParams(searchparams) {
     return params
   }
 
-
   // If only center is given, add direction and find a matching recent item
   if (params.get('center') && params.get('orientation') !== 'map') {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
     }
-    const center = params
-      .get('center')
-      .split(',')
-      .map(function (c) {
-        return Number(c)
-      })
-    collections = await getCollections()
-
-    const desiredYearParam = params.get('year')
-
-    let yearToUse;
-
-    if (configuration.ENABLE_CUSTOM_YEAR) {
-      yearToUse = '2019';
-    } else {
-      yearToUse = desiredYearParam ? desiredYearParam : getLatestYear(collections)
-    }
-
-    if (desiredYearParam === '2023') {
-      yearToUse = '2019' // Explicitly switch '2023' to '2019'
-    }
-
-    if (configuration.ENABLE_CUSTOM_PARAMETER) {
-      if (yearToUse) {
-        const matchingCollection = collections
-          .filter(collection => extractYearFromCollectionID(collection.id) === yearToUse)
-          .sort((a, b) => {
-            const yearA = Number(extractYearFromCollectionID(a.id))
-            const yearB = Number(extractYearFromCollectionID(b.id))
-            return yearB - yearA
-          })[0]
-
-        if (matchingCollection) {
-          const response = await getLatestImages(center, params.get('orientation'), matchingCollection.id, collections);
-          if (response.features[0]) {
-            params.set('item', response.features[0].id)
-          } else {
-            alert('No images found for the selected coordinates.')
-          }
-        } else {
-          alert('No matching collection found.')
-          return
-        }
+    const center = getParam('center')
+    for (const collection of sortedCollections) {
+      const response = await queryItems(center, params.get('orientation'), collection.id)
+      if (response.features[0]) {
+        params.set('item', response.features[0].id)
+        return params
       }
     }
-
+    // If no items were returned, leave a message for the user
+    alert('Der kunne ikke findes et billede svarende til valgte koordinat.')
     return params
-  }
-
-  function getLatestYear(collections) {
-    let latestYear = 0;
-    collections.forEach(collection => {
-      const year = extractYearFromCollectionID(collection.id);
-      if (year > latestYear) {
-        latestYear = year;
-      }
-    });
-    return latestYear.toString(); // Convert to string as desired
-  }
-
-  function extractYearFromCollectionID(collectionID) {
-    // Extract the year from the collection ID
-    const yearPart = collectionID.substring(collectionID.length - 4)
-    return yearPart
   }
 
   // If we only have item
@@ -131,13 +116,11 @@ async function sanitizeParams(searchparams) {
     return params
   }
 
-
   // If we only have orientation
   if (params.get('orientation')) {
     params.set('center', [574764,6220953])
     if (params.get('orientation') !== 'map') {
-      collections = await getCollections()
-      const response = await queryItems([574764,6220953], params.get('orientation'), collections[0].id)
+      const response = await queryItems([574764,6220953], params.get('orientation'), sortedCollections[0].id)
       params.set('item', response.features[0].id)
     }
     return params

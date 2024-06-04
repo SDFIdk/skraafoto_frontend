@@ -29,11 +29,7 @@ export async function syncFromURL(urlParams) {
   newState.view.position = center
   newState.view.kote = z
 
-  if (urlParams.get('year')) {
-    newState.collection = `skraafotos${ urlParams.get('year') }`
-  } else {
-    newState.collection = 'skraafotos2023'
-  }
+  newState.collection = `skraafotos${ urlParams.get('year') }`
 
   if (urlParams.has('item')) {
     const item1 = await queryItem(urlParams.get('item'))

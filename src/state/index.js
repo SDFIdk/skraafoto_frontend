@@ -1,7 +1,7 @@
 import { makeAutoObservable, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
 import { getCollections, getTerrainData } from '../modules/api.js'
-import { sanitizeCoords, sanitizeParams } from '../modules/url-sanitize.js'
+import { sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { refreshItems, checkBoundsAll } from './items.js'
 import { getZ } from '@dataforsyningen/saul'
@@ -230,24 +230,22 @@ class SkraafotoState {
 
   constructor() {
     makeAutoObservable(this)
-
-    getCollections().then((collections) => {
-      this.setCollections = collections
-    })
   }
 }
 
-// Initialize state using URL search parameters and populate items for other directions
+// Initialize state using URL search parameters
 const state = new SkraafotoState()
-
-sanitizeParams(sanitizeCoords(new URL(window.location))).then((urlSearchParams) => {
-  syncFromURL(urlSearchParams).then((newState) => {
-  
-    state.syncState(newState)
-  
-    // Update URL on state change
-    autorun(() => {
-      syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
+getCollections().then((collections) => {
+  state.setCollections = collections
+  sanitizeParams(new URL(window.location), collections).then((urlSearchParams) => {
+    syncFromURL(urlSearchParams).then((newState) => {
+    
+      state.syncState(newState)
+    
+      // Update URL on state change
+      autorun(() => {
+        syncToUrl(state.marker, state.items.item1, state.items.item2, state.mapVisible)
+      })
     })
   })
 })
