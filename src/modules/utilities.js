@@ -1,7 +1,4 @@
-import { image2world } from "@dataforsyningen/saul"
-import { queryItems } from "./api"
-
-/**  */
+/** Extract the year from a collection id */
 function getYearFromCollection(collection) {
   const yearRegex = /[0-9]{4}/g
   return collection.match(yearRegex)[0]
@@ -34,8 +31,17 @@ function debounce(func, timeout = 300) {
   }
 }
 
+function getImageCenter(imageItem) {
+  const center_point = [
+    (imageItem.bbox[0] + ((imageItem.bbox[2] - imageItem.bbox[0]) / 2)),
+    (imageItem.bbox[1] + ((imageItem.bbox[3] - imageItem.bbox[1]) / 2))
+  ]
+  return center_point
+}
+
 export {
   getYearFromCollection,
   findAncestor,
+  getImageCenter,
   debounce
 }

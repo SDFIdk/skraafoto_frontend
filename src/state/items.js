@@ -78,5 +78,6 @@ async function checkBoundsAll(coordinate, images) {
 
 export {
   refreshItems,
-  checkBoundsAll
+  checkBoundsAll,
+  checkBounds
 }
