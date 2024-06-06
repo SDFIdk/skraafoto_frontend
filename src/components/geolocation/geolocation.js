@@ -74,6 +74,7 @@ export class SkraafotoGeolocation extends HTMLElement {
 
   handleGeolocation() {
     const newCenter = this.geolocation.getPosition()
+    const accucary = this.geolocation.getAccuracy()
     if (!newCenter) {
       showToast({message: 'Kan ikke finde din placering.', duration: 5000})
       return
@@ -83,9 +84,25 @@ export class SkraafotoGeolocation extends HTMLElement {
     // Update marker and view with user's position
     state.setViewMarker({ position: newCenter })
     
-    if (this.geolocation.getAccuracy() > 50) {
-      showToast({message: 'Placering er ikke præcis.', duration: 5000})
+    if (accucary > 50) {
+      showToast({message: `Fandt placering, men den er upræcis (${ this.formatAccuracyWarning(accucary) })`, duration: 5000})
     }
     this.geolocation.setTracking(false)
+  }
+
+  formatAccuracyWarning(accuracy) {
+    let accStr
+    if (accuracy <= 50) {
+      accStr = 'op til 50m'
+    } else if (accuracy <= 100) {
+      accStr = 'op til 100m'
+    } else if (accuracy <= 500) {
+      accStr = 'op til 500m'
+    } else if (accuracy <= 1000) {
+      accStr = 'op til 1km'
+    } else {
+      accStr = '1km eller mere'
+    }
+    return accStr
   }
 }
