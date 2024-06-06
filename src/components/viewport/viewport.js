@@ -105,11 +105,7 @@ export class SkraaFotoViewport extends HTMLElement {
     
     ${ configuration.ENABLE_DATE_BROWSER ? `<skraafoto-date-viewer data-itemkey="${ this.dataset.itemkey }"></skraafoto-date-viewer>` : '' }
 
-    <div class="viewport-map">
-      <p class="out-of-bounds" hidden>
-        Out of bounds, klik på hovedvinduet for at hente nye billeder.
-      </p>
-    </div>
+    <div class="viewport-map"></div>
     ${
       configuration.ENABLE_COMPASSARROWS ?
       `<skraafoto-compass-arrows direction="north" data-itemkey="${ this.dataset.itemkey }"></skraafoto-compass-arrows>`:
@@ -258,32 +254,24 @@ export class SkraaFotoViewport extends HTMLElement {
   /** Toggles the visibility of the loading spinner. */
   toggleSpinner(bool) {
     const canvasElement = this.shadowRoot.querySelector('.ol-viewport canvas')
-    const boundsElements = this.shadowRoot.querySelectorAll('.out-of-bounds')
     if (bool) {
       if (canvasElement) {
         canvasElement.style.cursor = 'progress'
       }
       // Attach a loading animation element while updating
       const spinner_element = document.createElement('ds-spinner')
+      spinner_element.className = 'viewport-spinner'
       this.shadowRoot.append(spinner_element)
-      // hide out of bounds text while loading
-      boundsElements.forEach(function(el) {
-        el.hidden = true
-      })
     } else {
       if (canvasElement) {
         canvasElement.style.cursor = "url('./img/icons/icon_crosshair.svg') 15 15, crosshair;"
       }
       // Removes loading animation elements
       setTimeout(() => {
-        this.shadowRoot.querySelectorAll('ds-spinner').forEach(function(spinner) {
+        this.shadowRoot.querySelectorAll('.viewport-spinner').forEach(function(spinner) {
           spinner.remove()
         })
       }, 200)
-      // display out of bounds text if done loading
-      boundsElements.forEach(function(el) {
-        el.hidden = false
-      })
     }
   }
 

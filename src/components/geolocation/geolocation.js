@@ -4,6 +4,7 @@ import { get as getProjection } from 'ol/proj.js'
 import VectorLayer from 'ol/layer/Vector.js'
 import VectorSource from 'ol/source/Vector.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import { showToast } from '@dataforsyningen/designsystem'
 
 /**
  * Web component that displays a Geolocation button with the option to track and show user's current location
@@ -44,13 +45,12 @@ export class SkraafotoGeolocation extends HTMLElement {
     })
 
     this.geolocation.on('change', () => {
-      console.log('geoloc is tracking')
       this.handleGeolocation.bind(this)()
     })
 
     this.geolocation.once('error', (error) => {
       console.error('Geolocation error: Something went wrong.', error.message)
-      alert('Kan ikke finde din placering.')
+      showToast({message: 'Kan ikke finde din placering.', duration: 5000})
     })
   }
 
@@ -62,29 +62,30 @@ export class SkraafotoGeolocation extends HTMLElement {
     if (isLoading) {
       // Attach a loading animation element while updating
       const spinner_element = document.createElement('ds-spinner')
+      spinner_element.className = 'geolocation-spinner'
       this.append(spinner_element)
     } else {
       // Removes loading animation elements
-      this.querySelectorAll('ds-spinner').forEach(function (spinner) {
+      this.querySelectorAll('.geolocation-spinner').forEach(function (spinner) {
         spinner.remove()
       })
     }
   }
 
   handleGeolocation() {
-    console.log('got location', this.geolocation.getPosition(), this.geolocation.getAccuracy())
     const newCenter = this.geolocation.getPosition()
     if (!newCenter) {
-      alert('Kan ikke finde din placering.')
+      showToast({message: 'Kan ikke finde din placering.', duration: 5000})
       return
     }
-    // Stop tracking location when a fairly accurate position is aquired
-    // or a timeout is reached.
-    const timePassed = new Date().getTime() - this.timeBegin
-    if (this.geolocation.getAccuracy() < 50 || timePassed > 60000) {
-      this.geolocation.setTracking(false)
-    }
+    
+    this.toggleSpinner(false)
     // Update marker and view with user's position
     state.setViewMarker({ position: newCenter })
+    
+    if (this.geolocation.getAccuracy() > 50) {
+      showToast({message: 'Placering er ikke præcis.', duration: 5000})
+    }
+    this.geolocation.setTracking(false)
   }
 }
