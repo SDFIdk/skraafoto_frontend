@@ -8,7 +8,7 @@ import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
 import { SkraaFotoCompass } from './compass'
-import { SkraafotoGeolocation } from './geolocation.js';
+import { SkraafotoGeolocation } from './geolocation/geolocation.js'
 import { FirstTimeVisit } from './first-time-visitor.js'
 import { configuration } from "../modules/configuration"
 

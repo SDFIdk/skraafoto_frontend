@@ -130,7 +130,7 @@ export class SkraaFotoMap extends HTMLElement {
         ${this.styles}
       </style>
       <skraafoto-compass direction="north"></skraafoto-compass>
-      ${ this.getAttribute('minimal') === null ? '<skraafoto-geolocation></skraafoto-geolocation>': ''}
+      ${ configuration.ENABLE_GEOLOCATION && this.getAttribute('minimal') === null ? `<skraafoto-geolocation></skraafoto-geolocation>`: '' }
     </div>
   `
 
