@@ -4,7 +4,9 @@
 
 import { queryItem, queryItems } from './api.js'
 import { createTranslator } from '@dataforsyningen/saul'
-import { configuration } from "./configuration.js"
+import { configuration } from './configuration.js'
+import { getYearFromCollection, getImageCenter } from '../modules/utilities.js'
+import { checkBounds } from '../state/items.js'
 
 /** Find the collection closest to a given year */
 function findClosestYear(targetYear, collections) {
@@ -51,7 +53,23 @@ async function sanitizeParams(searchparams, collections) {
   // Remove params that are never used
   removeUnusedParams(params)
 
-  // Manipulate `year` parameter
+  // Having `item` parameter overrules year and orientation (and center if coordinate is outside image)
+  if (params.get('item')) {
+    const item = await queryItem(params.get('item'))
+    params.set('orientation', item.properties.direction)
+    params.set('year', getYearFromCollection(item.collection))
+    if (!params.get('center')) {
+      params.set('center', getImageCenter(item).join(','))
+    } else {
+      const outsideBounds = await checkBounds(params.get('center').split(','), item)
+      if (outsideBounds) {
+        params.set('center', getImageCenter(item).join(','))
+      }
+    }
+    return params
+  }
+
+  // Update `year` parameter
   if (params.get('year')) {
     params.set('year', findClosestYear(params.get('year'), collections))
   } else {
@@ -62,66 +80,18 @@ async function sanitizeParams(searchparams, collections) {
       params.set('year', getYearFromCollectionID(sortedCollections[0].id))
     }
   }
-  
-  // Just return when we have center, orientation, item, and year
-  if (
-    params.get('center') &&
-    params.get('orientation') &&
-    params.get('item') &&
-    params.get('year')
-  ) {
-    return params
+
+  if (!params.get('center')) {
+    params.set('center', configuration.DEFAULT_WORLD_COORDINATE.join(','))
   }
 
-  // If we have item and center
-  if (params.get('center') && params.get('item')) {
-    const item = await queryItem(params.get('item'))
-    params.set('orientation', item.properties.direction)
-    return params
+  if (!params.get('orientation')) {
+    params.set('orientation', 'north')
   }
 
-  // If we have orientation and center
-  if (params.get('center') && params.get('orientation') === 'map') {
-    return params
-  }
-
-  // If only center is given, add direction and find a matching recent item
-  if (params.get('center') && params.get('orientation') !== 'map') {
-    if (!params.get('orientation')) {
-      params.set('orientation', 'north')
-    }
-    for (const collection of sortedCollections) {
-      const response = await queryItems(params.get('center').split(','), params.get('orientation'), collection.id)
-      if (response.features[0]) {
-        params.set('item', response.features[0].id)
-        return params
-      }
-    }
-    // If no items were returned, leave a message for the user
-    alert('Der kunne ikke findes et billede svarende til valgte koordinat.')
-    return params
-  }
-
-  // If we only have item
-  if (params.get('item')) {
-    const item = await queryItem(params.get('item'))
-    const center_point = [
-      (item.bbox[0] + ((item.bbox[2] - item.bbox[0]) / 2)),
-      (item.bbox[1] + ((item.bbox[3] - item.bbox[1]) / 2))
-    ]
-    params.set('orientation', item.properties.direction)
-    params.set('center', center_point)
-    return params
-  }
-
-  // If we only have orientation
-  if (params.get('orientation')) {
-    params.set('center', [574764,6220953])
-    if (params.get('orientation') !== 'map') {
-      const response = await queryItems([574764,6220953], params.get('orientation'), sortedCollections[0].id)
-      params.set('item', response.features[0].id)
-    }
-    return params
+  if (params.get('orientation') !== 'map') {
+    const itemData = await queryItems(params.get('center').split(','), params.get('orientation'), `skraafotos${ params.get('year') }`)
+    params.set('item', itemData.features[0].id)
   }
 
   return params
