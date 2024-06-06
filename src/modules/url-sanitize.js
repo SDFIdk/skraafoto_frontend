@@ -91,7 +91,7 @@ async function sanitizeParams(searchparams, collections) {
       params.set('orientation', 'north')
     }
     for (const collection of sortedCollections) {
-      const response = await queryItems(params.get('center'), params.get('orientation'), collection.id)
+      const response = await queryItems(params.get('center').split(','), params.get('orientation'), collection.id)
       if (response.features[0]) {
         params.set('item', response.features[0].id)
         return params
