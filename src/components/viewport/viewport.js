@@ -115,11 +115,7 @@ export class SkraaFotoViewport extends HTMLElement {
       `<skraafoto-compass-arrows direction="north" data-itemkey="${ this.dataset.itemkey }"></skraafoto-compass-arrows>`:
       `<skraafoto-compass direction="north"></skraafoto-compass>`
     }
-    ${
-      configuration.ENABLE_GEOLOCATION ?
-     `<skraafoto-geolocation></skraafoto-geolocation>`:
-     '' // or you can remove the colon and empty string
-    }
+    ${ configuration.ENABLE_GEOLOCATION ? `<skraafoto-geolocation></skraafoto-geolocation>`: '' }
     <p id="image-date" class="image-date"></p>
   `
 

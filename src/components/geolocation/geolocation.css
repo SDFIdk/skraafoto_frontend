@@ -1,0 +1,25 @@
+.ds-icon-map-icon-findonmap::before {
+  width: 2rem;
+  height: 2rem;
+}
+
+.ds-icon-map-icon-findonmap {
+  position: absolute;
+  z-index: 10;
+  bottom: 8rem;
+  right: 1rem;
+  --icon-outer-size: 3rem;
+  --icon-pos: 0rem 1rem;
+  z-index: 1;
+}
+
+@media screen and (max-width: 35rem) {
+  .ds-icon-map-icon-findonmap {
+    right: 2rem;
+  }
+
+  .geographic-map skraafoto-compass {
+    top: 5rem;
+    right: 0.5rem;
+  }
+}
