@@ -5,7 +5,6 @@
 import { queryItem, queryItems } from './api.js'
 import { createTranslator } from '@dataforsyningen/saul'
 import { configuration } from "./configuration.js"
-import { getParam } from './url-state.js'
 
 /** Find the collection closest to a given year */
 function findClosestYear(targetYear, collections) {
@@ -91,9 +90,8 @@ async function sanitizeParams(searchparams, collections) {
     if (!params.get('orientation')) {
       params.set('orientation', 'north')
     }
-    const center = getParam('center')
     for (const collection of sortedCollections) {
-      const response = await queryItems(center, params.get('orientation'), collection.id)
+      const response = await queryItems(params.get('center'), params.get('orientation'), collection.id)
       if (response.features[0]) {
         params.set('item', response.features[0].id)
         return params

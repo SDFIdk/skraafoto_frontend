@@ -8,8 +8,9 @@
     "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js || : && node esbuild.js",
     "build": "export NODE_ENV=production && node esbuild.js",
     "docs": "jsdoc --configure docs/jsdoc-conf.json",
-    "test": "npx playwright test",
-    "test-unit": "node test/unit/api.test.js",
+    "test": "npm run test-unit && npm run test-e2e",
+    "test-e2e": "npx playwright test",
+    "test-unit": "node --test test/unit/*.test.js",
     "serve-docs": "python3 -m http.server 8001 --directory docs/api",
     "test-ci": "export BASEURL=https://test16.dataforsyningen.dk && export CI=true && npx playwright test",
     "test-local": "npx playwright test"
