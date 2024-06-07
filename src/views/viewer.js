@@ -6,6 +6,9 @@ import { SkraaFotoMap } from '../components/geomap/map.js'
 import { SkraaFotoViewportMini } from "../components/viewport/viewport-mini.js"
 import { state, autorun} from '../state/index.js'
 
+// Start snooping 
+setupAnalytics()
+
 // Initialize web components
 registerComponents()
 
@@ -33,5 +36,4 @@ autorun(() => {
   toggleMap(state.mapVisible)
 })
 
-setupAnalytics()
 setupListeners()
