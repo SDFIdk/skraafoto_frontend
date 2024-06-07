@@ -110,13 +110,15 @@ export class FirstTimeVisit extends HTMLElement {
     if (this.checkFirstTimeVisit() === null) {
       this.dialog.showModal()
 
-      this.shadowRoot.querySelector('.btn-welcome-close').addEventListener('click', () => {
-        this.dialog.classList.add('fade-out'); // Apply fade-out class
-        setTimeout(() => {
-          this.dialog.close();
-          this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
-        }, 300); // Adjust the timing to match the transition duration in milliseconds
-        localStorage.setItem(this.local_storage_key, 'false')
+      this.shadowRoot.querySelectorAll('.btn-welcome-close').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.dialog.classList.add('fade-out'); // Apply fade-out class
+          setTimeout(() => {
+            this.dialog.close();
+            this.dialog.classList.remove('fade-out'); // Remove the class after the transition completes
+          }, 300); // Adjust the timing to match the transition duration in milliseconds
+          localStorage.setItem(this.local_storage_key, 'false')
+        })
       })
     }
   }
