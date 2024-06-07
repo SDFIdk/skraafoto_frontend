@@ -1,5 +1,6 @@
 import { configuration } from '../modules/configuration.js'
 import { getSharedStyles } from '../styles/shared-styles.js'
+import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 /**
  * Web component that presents a greeting to first time visitors to the site
@@ -48,6 +49,12 @@ export class FirstTimeVisit extends HTMLElement {
     ul li {
       text-align: left;
     }
+    .btn-welcome-close.quiet {
+      position: absolute;
+      top: var(--space-sm);
+      right: var(--space);
+      margin: 0;
+    } 
   `
   template = `
     ${ getSharedStyles() }
@@ -56,20 +63,21 @@ export class FirstTimeVisit extends HTMLElement {
     </style>
     
     <article>
-      <div style="padding: var(--space-lg) var(--space-xl) var(--space-xl); text-align: center;">
+      <button class="btn-welcome-close quiet" title="luk dialog"><svg><use href="${ svgSprites }#close"/></svg></button>
+      <div style="padding: var(--space-lg) var(--space-lg) var(--space-xl); text-align: center;">
         <h2 class="h1" style="display: inline-block;">Velkommen til Skråfoto</h2>
         <p>
-          Skråfoto giver dig mulighed for at se luftfotos taget fra forskellige retninger.
+          Skråfoto giver dig mulighed for at se luftfotos taget fra forskellige retninger.<br>
           Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
-        </p>
-        <p>
-          <button class="btn-welcome-close">Forstået</button>
         </p>
         <h2 style="display: inline-block;">Vil du hjælpe os?</h2>
         <p>Vi vil gerne vide noget mere om, hvem der bruger Skråfoto.</p>
-        <p>Hvis du har 2 minutter, kan du hjælpe os ved at<br>udfylde dette korte spørgeskema.</p>
+        <p>Hvis du har 2 minutter, kan du hjælpe os ved at udfylde dette korte spørgeskema.</p>
       </div>
       <iframe style="height: 60rem; width: 100%; border: none;" src="https://www.survey-xact.dk/LinkCollector?key=TJ5EARGLU292"></iframe>
+      <p style="padding-bottom: var(--space-lg);">
+        <button class="btn-welcome-close">Fortsæt med at bruge Skråfoto</button>
+      </p>
     </article>
   `
 
