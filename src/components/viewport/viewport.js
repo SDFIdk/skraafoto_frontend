@@ -84,11 +84,7 @@ export class SkraaFotoViewport extends HTMLElement {
     
     <nav class="ds-nav-tools sf-viewport-tools" data-theme="light">
       <div class="ds-button-group">
-        ${ 
-          configuration.ENABLE_YEAR_SELECTOR ?
-          `<skraafoto-year-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-year-selector>`
-          : `<skraafoto-date-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-date-selector>`
-        }
+        <skraafoto-year-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-year-selector>
         <hr>
         ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
         <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
@@ -103,7 +99,7 @@ export class SkraaFotoViewport extends HTMLElement {
       </div>
     </nav>
     
-    ${ configuration.ENABLE_DATE_BROWSER ? `<skraafoto-date-viewer data-itemkey="${ this.dataset.itemkey }"></skraafoto-date-viewer>` : '' }
+    <skraafoto-date-selector data-itemkey="${ this.dataset.itemkey }"></skraafoto-date-selector>
 
     <div class="viewport-map"></div>
     ${
