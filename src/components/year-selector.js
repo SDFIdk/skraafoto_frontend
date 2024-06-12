@@ -66,7 +66,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
       ${ this.#styles }
     </style>
     <label hidden>Vælg en årgang</label>
-    <select class="sf-date-selector" title="Vælg en årgang"></select>
+    <select class="sf-collection-selector" title="Vælg en årgang"></select>
   `
 
   constructor() {

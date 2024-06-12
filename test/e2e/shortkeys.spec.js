@@ -16,7 +16,7 @@ test('Shift view from north to east using shortkeys', async ({ page }) => {
 })
 
 test('Shift to earlier image using shortkeys', async ({ page }) => {
-  await expect(page.locator('css=.sf-date-viewer')).toHaveValue('2023_84_40_2_0139_00061830')
+  await expect(page.locator('css=.sf-date-selector')).toHaveValue('2023_84_40_2_0139_00061830')
   await page.keyboard.press('Shift+ArrowDown')
-  await expect(page.locator('css=.sf-date-viewer')).toHaveValue('2023_84_40_2_0139_00061833')
+  await expect(page.locator('css=.sf-date-selector')).toHaveValue('2023_84_40_2_0139_00061833')
 })

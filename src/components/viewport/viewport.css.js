@@ -25,7 +25,7 @@ export default `
   .sf-viewport-tools button {
     display: flex;
   }
-  .sf-viewport-tools select.sf-date-selector {
+  .sf-viewport-tools select.sf-collection-selector {
     border-radius: var(--space-lg) 0 0 var(--space-lg);
     height: 100%;
   }
