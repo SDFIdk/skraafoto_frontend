@@ -9,7 +9,6 @@ import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
 import { SkraaFotoCompass } from './compass'
 import { SkraafotoGeolocation } from './geolocation/geolocation.js'
-import { FirstTimeVisit } from './first-time-visitor.js'
 import { configuration } from "../modules/configuration"
 
 export async function registerComponents() {
@@ -22,11 +21,14 @@ export async function registerComponents() {
   customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
   customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
   customElements.define('skraafoto-header', SkraaFotoHeader)
-  customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
   customElements.define('skraafoto-compass', SkraaFotoCompass)
   customElements.define('skraafoto-geolocation', SkraafotoGeolocation)
 
   // Load web components by configuration
+  if (configuration.ENABLE_FIRST_VISIT_INFO) {
+    const { FirstTimeVisit } = await import('./first-time-visitor.js')
+    customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
+  }
   if (configuration.ENABLE_COMPASSARROWS) {
     const { SkraaFotoCompassArrows } = await import("./compass-arrows.js")
     customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)

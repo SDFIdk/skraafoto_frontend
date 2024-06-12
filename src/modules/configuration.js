@@ -13,6 +13,9 @@ let configuration = {
   LOCAL_STORAGE_COOKIE_KEY: 'skraafoto-cookie-allowed',
   LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY: 'skraafoto-first-time-visit',
 
+  DEFAULT_COLLECTION: null, // Set a default collection to initiate from. Example `skraafotos2021`
+  DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ],
+
   ENABLE_VIEW_SWITCH: false, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
   ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
@@ -32,6 +35,7 @@ let configuration = {
   ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
   ENABLE_DOWNLOAD: true, // Enable image download (download entire tiff image)
   ENABLE_PRINT: true, // Enable printing only the currently viewed part of an image
+  ENABLE_FIRST_VISIT_INFO: true,
   
   // The zoom difference between skraafotos and the WMTS service used for the map.
   MAP_ZOOM_DIFFERENCE: 12, // use 15.5 to have roughly the same zoom on the map as the overview skraafotos.
@@ -80,10 +84,7 @@ let configuration = {
       contrast: 0.0,
       saturation: 0
     }
-  ],
-
-  DEFAULT_COLLECTION: null, // Set a default collection to initiate from. Example `skraafotos2021`
-  DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ]
+  ]
 }
 
 // We assume a global variable `config` has been declared
