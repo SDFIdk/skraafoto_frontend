@@ -17,7 +17,6 @@ let configuration = {
   DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ],
 
   ENABLE_VIEW_SWITCH: false, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
-  ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
   ENABLE_POINTER: true, // Enables displaying the cursor's position as a yellow dot on the other viewports
   ENABLE_FOOTPRINT: false, // Enables displaying the footprint of the viewport being hovered over on the map
@@ -29,9 +28,7 @@ let configuration = {
   ENABLE_CROSSHAIR_ICON: false,
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
   ENABLE_ALERT: false, // Shows a modal with custom content
-  ENABLE_YEAR_SELECTOR: true, // Display a collection selector in toolbar.
-  ENABLE_DATE_BROWSER: true, // Display a selection of other image items for the same collection (year).
-  ENABLE_CUSTOM_YEAR: true, // Enable custom year parameter for SKAT
+  
   ENABLE_GEOLOCATION: true, // Display Geolocation button to track current location
   ENABLE_DOWNLOAD: true, // Enable image download (download entire tiff image)
   ENABLE_PRINT: true, // Enable printing only the currently viewed part of an image
@@ -44,6 +41,7 @@ let configuration = {
   MAX_ZOOM: 10, // the maximum zoom for skraafotos.
   MIN_ZOOM: 1, // the minimum zoom for skraafotos.
 
+  ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
   SITEIMPROVE_SCRIPT: '',
 
   COLOR_SETTINGS:
