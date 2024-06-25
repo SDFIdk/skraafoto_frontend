@@ -20,15 +20,23 @@ const lookup = {
 
 async function shiftItemOrientation(direction, viewportKey = 'item1') {
   const newOrientation = direction === 1
-    ? lookup.counterclockwise[state.items.item1.properties.direction]
-    : lookup.clockwise[state.items.item1.properties.direction]
+    ? lookup.counterclockwise[state.items[viewportKey].properties.direction]
+    : lookup.clockwise[state.items[viewportKey].properties.direction]
 
-  state.setItem(state.items[newOrientation], 'item1')
+  if (state.items[newOrientation].collection === state.items[viewportKey].collection) {
+    // Use cached image if available
+    state.setItem(state.items[newOrientation], viewportKey)
+  } else {
+    // Reload image
+    const data = await queryItems(state.view.position, newOrientation, state.items[viewportKey].collection)
+    state.setItem(data.features[0], viewportKey)
+  }
   
-  // Also update item2 when available
-  if (state.items.item2 && state.items.item2.properties.direction !== newOrientation) {
-    const data = await queryItems(state.view.position, newOrientation, state.items.item2.collection)
-    state.setItem(data.features[0], 'item2')
+  // Also update 2nd item in twinview mode
+  const secondViewportKey = viewportKey === 'item1' ? 'item2' : 'item1'
+  if (state.items[secondViewportKey] && state.items[secondViewportKey].properties.direction !== newOrientation) {
+    const data = await queryItems(state.view.position, newOrientation, state.items[secondViewportKey].collection)
+    state.setItem(data.features[0], secondViewportKey)
   }
 }
 
