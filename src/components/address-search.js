@@ -3,7 +3,7 @@ import { GSearchUI } from '@dataforsyningen/gsearch-ui'
 import { configuration } from '../modules/configuration.js'
 import { getGSearchCenterPoint } from '../modules/gsearch-util.js'
 import { state } from '../state/index.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 
 customElements.define('g-search', GSearchUI)
 

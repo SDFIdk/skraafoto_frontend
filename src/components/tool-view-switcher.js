@@ -1,4 +1,4 @@
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 
 /**
  * Web component that a set of buttons to switch between kinds of views

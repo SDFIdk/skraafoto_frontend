@@ -96,7 +96,8 @@ export default `
     top: 6rem;
     right: 2rem;
   }
-  .sf-fullscreen-btn svg {
+  .sf-fullscreen-btn-true svg:has(use),
+  .sf-fullscreen-btn-false svg:has(use) {
     display: none;
     margin: 0 !important;
   }
@@ -113,8 +114,6 @@ export default `
   .ol-zoom-out {
     margin: 0.25rem 0 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
     box-shadow: 0 0.15rem 0.3rem hsl(0, 0%, 50%, 0.5);
   }
   .sf-viewport-tools button.active {
@@ -131,14 +130,9 @@ export default `
 
   /* Measure width tool */
   .sf-tooltip-measure {
-    background-color: var(--mork-tyrkis);
-    color: var(--hvid);
+    background-color: var(--background-color);
+    color: var(--color);
     padding: 0.25rem 0.5rem;
-  }
-
-  /* Measure height tool */
-  .btn-height-measure > svg {
-    transform: rotate(90deg);
   }
 
   .sf-compass-arrows {

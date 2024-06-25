@@ -1,4 +1,4 @@
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { state } from '../../state/index.js'
 
 /**
@@ -27,7 +27,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
     this.button_element = document.createElement('button')
     this.button_element.className = 'sf-download-tool secondary'
     this.button_element.title = 'Download billede'
-    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#hentdata-download"/></svg>`
+    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#download"/></svg>`
     this.append(this.button_element)
 
     // Create virtual link to initiate download with

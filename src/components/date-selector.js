@@ -1,5 +1,5 @@
 import { queryItems, queryItem } from '../modules/api.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { state, autorun } from '../state/index.js'
 
 /**

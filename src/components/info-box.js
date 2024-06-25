@@ -1,6 +1,6 @@
 import { toDanish } from '../modules/i18n.js'
 import { get } from '@dataforsyningen/saul'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 
 /**
  * Web component that displays a sliding panel with information on an image

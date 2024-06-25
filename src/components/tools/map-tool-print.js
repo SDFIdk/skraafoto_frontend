@@ -1,5 +1,5 @@
 import { createPdf } from '../../custom-plugins/plugin-custom-create-pdf.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { state } from '../../state/index.js'
 
 /**
