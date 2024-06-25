@@ -25,7 +25,7 @@ async function shiftItemOrientation(direction, viewportKey = 'item1') {
 
   state.setItem(state.items[newOrientation], 'item1')
   
-  // Also update item2 when watching twinview
+  // Also update item2 when available
   if (state.items.item2 && state.items.item2.properties.direction !== newOrientation) {
     const data = await queryItems(state.view.position, newOrientation, state.items.item2.collection)
     state.setItem(data.features[0], 'item2')
