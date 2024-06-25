@@ -1,4 +1,5 @@
 import { state } from '../state/index.js'
+import { queryItems } from './api.js'
 
 const lookup = {
   counterclockwise: {
@@ -19,10 +20,16 @@ const lookup = {
 
 async function shiftItemOrientation(direction, viewportKey = 'item1') {
   const newOrientation = direction === 1
-    ? lookup.counterclockwise[state.items[viewportKey].properties.direction]
-    : lookup.clockwise[state.items[viewportKey].properties.direction]
+    ? lookup.counterclockwise[state.items.item1.properties.direction]
+    : lookup.clockwise[state.items.item1.properties.direction]
 
-  state.setItem(state.items[newOrientation], viewportKey)
+  state.setItem(state.items[newOrientation], 'item1')
+  
+  // Also update item2 when available
+  if (state.items.item2 && state.items.item2.properties.direction !== newOrientation) {
+    const data = await queryItems(state.view.position, newOrientation, state.items.item2.collection)
+    state.setItem(data.features[0], 'item2')
+  }
 }
 
 function shiftItemTime(direction) {
