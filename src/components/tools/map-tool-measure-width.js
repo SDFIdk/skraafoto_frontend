@@ -267,7 +267,7 @@ export class MeasureWidthTool {
       world_coords.push(wgs84_coords)
     }
     const distance = getDistance(world_coords[0], world_coords[1])
-    return distance.toFixed(0) + 'm'
+    return distance.toFixed(1) + 'm'
   }
 
 }
