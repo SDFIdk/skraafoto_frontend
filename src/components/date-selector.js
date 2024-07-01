@@ -1,5 +1,5 @@
 import { queryItems, queryItem } from '../modules/api.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { state, autorun } from '../state/index.js'
 
 /**
@@ -28,56 +28,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
       pointer-events: all;
       align-items: center;
     }
-    select {
-      background-color: var(--hvid);
-      border: none;
-      cursor: pointer;
-      box-shadow: none;
-      margin: 0;
-      border-radius: 0;
-    }
-    select {
-      width: auto;
-      background-position: center right .25rem !important;
-    }
-
-    @media screen and (max-width: 50rem) {
-
-      select {
-        text-indent: 0 !important;
-        width: auto;
-        height: 3rem;
-        border: none;
-        position: relative;
-        background: var(--ds-hentdata-icon-pending);
-        background-size: 2rem auto !important;
-        background-repeat: no-repeat;
-        background-position: 0.75rem center !important;
-        background-color: transparent;
-        padding: 0 1rem !important;
-      }
-      select:hover,
-      select:active {
-        background-color: var(--aktion) !important;
-        background-blend-mode: difference;
-      }
-      select:focus {
-        box-shadow: inset 0 0 0 3px var(--highlight);
-      }
-    }
-
-    @media screen and (min-width: 50.1rem) {
-
-      select {
-        width: auto;
-        background-position: center right .25rem !important;
-      }
-
-      select:focus {
-        box-shadow: 0 0 0 3px var(--highlight);
-      }
-
-    }
   `
 
   constructor() {
@@ -95,7 +45,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
             <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
           </button>
           <hr>
-          <select class="sf-date-selector" id="date"></select>
+          <select class="sf-date-selector" id="date" style="border: none; width: auto;"></select>
           <hr>
           <button class="button-up secondary" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-up"/></svg>

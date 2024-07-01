@@ -1,7 +1,6 @@
 import { SkraaFotoViewSwitcher } from './tool-view-switcher.js'
 import { SkraaFotoAddressSearch } from './address-search.js'
 import {configuration} from "../modules/configuration"
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
 
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
 
@@ -15,16 +14,9 @@ export class SkraaFotoHeader extends HTMLElement {
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
-      padding: 0.75rem 1rem;
+      justify-content: flex-start;
+      padding: var(--space-sm) var(--space) var(--space-sm) var(--space);
       width: 100vw;
-    }
-    .sf-nav-toggle {
-      margin-left: 1rem; 
-      font-size: 2rem; 
-      font-weight: 400;
-      width: 3rem;
-      padding: 0;
-      display: inline-block;
     }
     .sf-header nav {
       position: fixed;
@@ -40,60 +32,63 @@ export class SkraaFotoHeader extends HTMLElement {
     .sf-header nav[hidden] {
       transform: translateX(20rem);
     }
-    .sf-header .ds-icon-icon-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background-color: transparent;
-      border: none;
-    }
-    .sf-help-link {
+    skraafoto-info-dialog {
       flex: 0 0 auto;
     }
+    .sf-logo {
+      margin: 0;
+      display: flex;
+      flex-flow: row nowrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .sf-logo strong {
+      display: block;
+      margin: 0;
+    }
+    .sf-logo ds-logo {
+      height: 3rem;
+      width: auto;
+    }
+
+    /* Skat logo styles begin */
     .skat-logo {
       width: 12rem;
     }
     #headline {
-    display: inline;
-    margin-left: 0;
+      display: inline;
+      margin-left: 0;
     }
-    hr {
-      width: 30px;
-      rotate: 90deg;
-      display: flex;
-    }
-    .ds-logo {
-    }
-    .ds-logo > ds-logo {
-      height: 3rem;
-    }
-    .ds-logo > strong {
-      padding-top: 0.25rem;
-    }
-    .ds-logo > span:last-child {
-      display: flex;
-      align-items: end;
+    /* Skat logo styles end */
+
+    skraafoto-view-switcher hr {
+      height: var(--space-md);
+      width: 1px; 
+      margin: 0 var(--space-sm);
     }
 
-    
-    
     @media screen and (max-width: 79.9rem) {
+
       .sf-header {
         --padding: 1.5rem 3rem 2rem;
       }
       .sf-header nav {
         width: 100vw;
       }
+      
     }
 
     @media screen and (max-width: 40rem) {
     
-      .ds-logo > span:last-child {
+      .sf-logo ds-logo {
+        height: 2rem;
+      }
+
+      skraafoto-view-switcher, 
+      .sf-logo small {
         display: none;
       }
-      skraafoto-view-switcher {
-        display: none;
-      }
+
     }
   `
 
@@ -103,10 +98,6 @@ export class SkraaFotoHeader extends HTMLElement {
 
   connectedCallback() {
     this.createDOM()
-    this.querySelector('.sf-help-link').addEventListener('click', (event) => {
-      event.preventDefault()
-      location = `/info.html${ location.search }`
-    })
   }
 
   createDOM() {
@@ -119,27 +110,28 @@ export class SkraaFotoHeader extends HTMLElement {
 
     if (configuration.ENABLE_SKATLOGO) {
       headerContent += `
-        <a href="/" class="ds-logo">
+        <p class="sf-logo">
           <img href="/" id="vurderingsstyrelsen" class="skat-logo" src="img/logos/logo-vurderingsstyrelsen.svg" alt="logo af Vurderingsstyrelsen"/>
-          <strong id="headline">Skråfoto</strong>
-        </a>
+          <strong id="headline" class="h5">Skråfoto</strong>
+        </p>
       `
     } else {
       headerContent += `
-        <a href="/" class="ds-logo">
+        <p class="sf-logo">
           <ds-logo></ds-logo>
-          <strong>Skråfoto</strong>
-          <span>Styrelsen for Dataforsyning og Infrastruktur</span>
-        </a>
+          <span>
+            <strong class="h5">Skråfoto</strong>
+            <small>Klimadatastyrelsen</small>
+          </span>
+        </p>
       `
     }
 
     headerContent += `
+      <div style="flex-grow: 1;"></div>
       <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
       <skraafoto-view-switcher></skraafoto-view-switcher>
-      <a role="button" class="sf-help-link quiet" title="Information om Skråfoto" href="/info.html">
-        <svg><use href="${ svgSprites }#info"/></svg>
-      </a>
+      <skraafoto-info-dialog></skraafoto-info-dialog>
     `
     markup.innerHTML = headerContent
     this.append(markup)
@@ -155,7 +147,3 @@ async function setupConfigurables(conf) {
 // Initialize
 
 setupConfigurables(configuration)
-
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-header', SkraaFotoHeader)

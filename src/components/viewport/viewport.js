@@ -4,7 +4,7 @@ import FullScreen from 'ol/control/FullScreen'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import Collection from 'ol/Collection'
 import { image2world } from '@dataforsyningen/saul'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { SkraaFotoExposureTool } from '../tools/map-tool-exposure.js'
 import { SkraaFotoCrossHairTool } from '../tools/map-tool-crosshair.js'
 import { CenterTool } from '../tools/map-tool-center.js'
@@ -88,10 +88,10 @@ export class SkraaFotoViewport extends HTMLElement {
         <hr>
         ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
         <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
-          <svg><use href="${ svgSprites }#map-ruler"/></svg>
+          <svg><use href="${ svgSprites }#ruler-horizontal"/></svg>
         </button>
         <button id="height-btn" class="btn-height-measure secondary" title="Mål højde">
-          <svg><use href="${ svgSprites }#map-ruler"/></svg>
+          <svg><use href="${ svgSprites }#ruler-vertical"/></svg>
         </button>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         ${ configuration.ENABLE_DOWNLOAD ? '<skraafoto-download-tool></skraafoto-download-tool>' : '' }

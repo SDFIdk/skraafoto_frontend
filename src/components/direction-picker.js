@@ -1,7 +1,7 @@
 import { configuration } from "../modules/configuration.js"
 import { getSharedStyles } from "../styles/shared-styles.js"
 import { state, autorun } from '../state/index.js' 
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 
 /**
  * Web component that displays and updates a list of viewports with views from various directions

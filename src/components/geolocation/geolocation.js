@@ -1,9 +1,7 @@
 import { state } from '../../state/index.js'
 import { Geolocation } from 'ol'
 import { get as getProjection } from 'ol/proj.js'
-import VectorLayer from 'ol/layer/Vector.js'
-import VectorSource from 'ol/source/Vector.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { showToast } from '@dataforsyningen/designsystem'
 
 /**
@@ -16,7 +14,7 @@ export class SkraafotoGeolocation extends HTMLElement {
   geolocation
   template = `
     <button title="Vis min placering" id="geolocation-button" class="ds-icon-map-icon-findonmap">
-      <svg><use href="${ svgSprites }#map-findonmap" /></svg>
+      <svg><use href="${ svgSprites }#pointer-find-on-map" /></svg>
     </button>
   `
 

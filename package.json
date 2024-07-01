@@ -25,7 +25,7 @@
     "SDFI"
   ],
   "author": {
-    "name": "Styrelsen for Dataforsyning og Infrastruktur",
+    "name": "Klimadatastyrelsen",
     "email": "support@sdfi.dk",
     "url": "https://sdfi.dk/"
   },
@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
   "dependencies": {
-    "@dataforsyningen/designsystem": "^5.0.2",
+    "@dataforsyningen/designsystem": "^7.0.0",
     "@dataforsyningen/gsearch-ui": "^2.0.1",
     "@dataforsyningen/saul": "^3.4.0",
     "jspdf": "^2.5.1",

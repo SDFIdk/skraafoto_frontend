@@ -1,6 +1,6 @@
 /* Import and define common custom elements */
 
-import { Spinner, DSLogo } from '@dataforsyningen/designsystem'
+import { Spinner, DSLogo, DSLogoTitle } from '@dataforsyningen/designsystem'
 import { AlertSplash } from './alert-splash.js'
 import { SkraaFotoViewport } from './viewport/viewport.js'
 import { SkraaFotoAdvancedMap } from './geomap/advanced-map.js'
@@ -11,11 +11,13 @@ import { SkraaFotoCompass } from './compass'
 import { SkraafotoGeolocation } from './geolocation/geolocation.js'
 import { configuration } from '../modules/configuration'
 import { SkraaFotoYearSelector } from './year-selector.js'
+import { InformationDialog } from './info.js'
 
 export async function registerComponents() {
 
   customElements.define('ds-spinner', Spinner)
   customElements.define('ds-logo', DSLogo)
+  customElements.define('ds-logo-title', DSLogoTitle)
   customElements.define('skraafoto-alert-splash', AlertSplash)
   customElements.define('skraafoto-viewport', SkraaFotoViewport)
   customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)
@@ -25,6 +27,7 @@ export async function registerComponents() {
   customElements.define('skraafoto-compass', SkraaFotoCompass)
   customElements.define('skraafoto-geolocation', SkraafotoGeolocation)
   customElements.define('skraafoto-year-selector', SkraaFotoYearSelector)
+  customElements.define('skraafoto-info-dialog', InformationDialog)
 
   // Load web components by configuration
   if (configuration.ENABLE_FIRST_VISIT_INFO) {

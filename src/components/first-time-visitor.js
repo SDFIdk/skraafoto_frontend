@@ -1,6 +1,6 @@
 import { configuration } from '../modules/configuration.js'
 import { getSharedStyles } from '../styles/shared-styles.js'
-import svgSprites from '@dataforsyningen/designsystem/assets/designsystem-icons.svg'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 
 /**
  * Web component that presents a greeting to first time visitors to the site
