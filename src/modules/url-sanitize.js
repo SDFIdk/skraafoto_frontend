@@ -8,7 +8,7 @@ import { configuration } from './configuration.js'
 import { getYearFromCollection, getImageCenter } from '../modules/utilities.js'
 import { checkBounds } from '../state/items.js'
 
-/** Find the collection closest to a given year */
+/** Finds the collection closest to a given year */
 function findClosestYear(targetYear, collections) {
   const yearList = collections.map((collection) => getYearFromCollectionID(collection.id))
   // Initialize the closest year to the first year in the list
@@ -24,10 +24,16 @@ function findClosestYear(targetYear, collections) {
       smallestDifference = currentDifference
       closestYear = currentYear
     }
+
+    // When more years are equally close, use the lesser year
+    if (currentDifference === smallestDifference && closestYear > currentYear) {
+      closestYear = currentYear
+    }
   }
   return closestYear
 }
 
+/** Returns the year number from a collection ID */
 function getYearFromCollectionID(id) {
   const yearRegex = /[1-2][0-9]{3}/g
   return Number(id.match(yearRegex)[0])
