@@ -151,7 +151,7 @@ export class MeasureHeightTool {
         const geom = ev.target
         const new_coords = geom.getCoordinates()
         const corrected_coord = this.axisFunc(new_coords[0], new_coords[1])
-        this.measureTooltipElement.innerHTML = `${corrected_coord[2]}m`
+        this.measureTooltipElement.innerHTML = `${ corrected_coord[2] }m`
         this.measureTooltip.setOffset([0, -7])
         this.measureTooltip.setPosition(this.calcTooltipPosition(geom))
       })
@@ -293,7 +293,7 @@ export class MeasureHeightTool {
       const ratio_y = delta_y / s[1]
       const delta_x = ratio_y * s[0] // We assume x and y ratios are equal
       const x = image_coor_1[0] + delta_x
-      return [x, image_coor_2[1], Math.abs(ratio_y).toFixed(0)]
+      return [x, image_coor_2[1], Math.abs(ratio_y).toFixed(1)]
     }
   }
 
