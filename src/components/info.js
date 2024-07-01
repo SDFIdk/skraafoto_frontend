@@ -70,7 +70,7 @@ export class InformationDialog extends HTMLElement {
         <hr>
         <p>© 2024 Klimadatastyrelsen</p>
       </div>
-      <footer style="justify-content: center; padding: var(--space) var(--space-lg) var(--space-lg);">
+      <footer style="justify-content: center; padding: var(--space) var(--space-lg) var(--space-lg); background-color: var(--bg0);">
         <button class="btn-toggle-dialog" aria-controls="info-dialog">Luk</button>
       </footer>
     </dialog> 
