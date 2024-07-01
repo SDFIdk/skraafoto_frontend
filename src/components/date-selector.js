@@ -28,10 +28,6 @@ export class SkraaFotoDateSelector extends HTMLElement {
       pointer-events: all;
       align-items: center;
     }
-    skraafoto-date-selector select {
-      border: none;
-      width: auto;
-    }
   `
 
   constructor() {
@@ -49,7 +45,7 @@ export class SkraaFotoDateSelector extends HTMLElement {
             <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
           </button>
           <hr>
-          <select class="sf-date-selector" id="date"></select>
+          <select class="sf-date-selector" id="date" style="border: none; width: auto;"></select>
           <hr>
           <button class="button-up secondary" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-up"/></svg>

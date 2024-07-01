@@ -11,7 +11,7 @@ export class SkraaFotoYearSelector extends HTMLElement {
   #selectElement
   #template = `
     <label hidden>Vælg en årgang</label>
-    <select style="height: 100%;" class="sf-collection-selector" title="Vælg en årgang"></select>
+    <select style="height: 100%; border: none;" class="sf-collection-selector" title="Vælg en årgang"></select>
   `
 
   constructor() {

@@ -32,8 +32,8 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     }
     .gs-input {
       margin: 0 !important;
-      padding-top: 0.35rem;
-      padding-bottom: 0.35rem;
+      padding-top: var(--space-sm);
+      padding-bottom: var(--space-sm);
     }
     .sf-search-btn-open {
       display: none;
@@ -42,11 +42,10 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       top: -0.25rem;
     }
     .gs-result-list {
-      background-color: var(--lys-steel);
       text-align: left;
       z-index: 100;
       max-width: 100%;
-      border-radius: 1rem;
+      border-radius: var(--border-radius);
       box-shadow: 0 0.0625em 0.15625em rgba(0,0,0,.15);
       max-height: 90vh;
       overflow-y: auto;
@@ -56,32 +55,39 @@ export class SkraaFotoAddressSearch extends HTMLElement {
     .gs-result-list:empty {
       display: none;
     }
-    .gs-result-item {
+    li.gs-result-item {
       margin: 0;
-      border-top: solid 1px var(--hvid);
+      border-top: solid 1px var(--grey2);
+      background-color: var(--white);
+      padding: var(--space-xs) var(--space);
     }
     .gs-result-item:first-child {
       border-top: none;
-      border-radius: 1rem 1rem 0 0;
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
     }
     .gs-result-item:last-child {
-      border-radius: 0 0 1rem 1rem;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
     }
     .gs-result-item:hover {
-      background-color: var(--medium-steel) !important;
+      background-color: var(--highlight) !important;
+    }
+    .gs-result-item svg {
+      --ds-icon-color: var(--black);
+      stroke: var(--black);
+    }
+    g-search-result-box {
+      gap: var(--space-sm);
     }
     .gs-title-text {
-      color: var(--sort);
-      padding: 0.66rem 1.75rem;
-      font-size: 0.95em;
-    }
-    skraafoto-address-search {
+      color: var(--black);
+      padding: var(--space-sm) 0;
+      font-size: 0.875em;
     }
     .gs-wrapper {
       width: 20rem
     }
     .sf-search-collapsible {
-      border-radius: 1rem;
+      border-radius: var(--space);
     }
     
     .sf-slider-close {
@@ -89,7 +95,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       background-color: transparent;
       border: none;
       font-size: 1.2em;
-      color: var(--sort);
+      color: var(--color);
     }
 
     @media screen and (max-width: 50rem) {
@@ -145,7 +151,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button id="search-button" class="sf-search-btn-open ds-icon-icon-search secondary" title="Søg efter adresse eller stednavn"></button>
+    <button id="search-button" class="sf-search-btn-open ds-icon-icon-search quiet" title="Søg efter adresse eller stednavn"></button>
     <div class="sf-input-container">
       <g-search data-placeholder="Søg adresse eller stednavn" data-token="${configuration.API_STAC_TOKEN}" data-limit="100" data-resources="husnummer,stednavn"></g-search>
       <button class="sf-slider-close quiet" title="Luk">
