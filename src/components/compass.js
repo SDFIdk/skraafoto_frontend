@@ -23,7 +23,7 @@ export class SkraaFotoCompass extends HTMLElement {
       height: 0;
       border: solid 1.25rem transparent;
       border-top-color: var(--primary);
-      mix-blend-mode: color-dodge;
+      mix-blend-mode: lighten;
       z-index: 2;
       border-radius: 2.5rem;
     }
