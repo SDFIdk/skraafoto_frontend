@@ -112,7 +112,7 @@ export class SkraaFotoHeader extends HTMLElement {
       headerContent += `
         <p class="sf-logo">
           <img href="/" id="vurderingsstyrelsen" class="skat-logo" src="img/logos/logo-vurderingsstyrelsen.svg" alt="logo af Vurderingsstyrelsen"/>
-          <strong id="headline">Skråfoto</strong>
+          <strong id="headline" class="h5">Skråfoto</strong>
         </p>
       `
     } else {
@@ -120,8 +120,8 @@ export class SkraaFotoHeader extends HTMLElement {
         <p class="sf-logo">
           <ds-logo></ds-logo>
           <span>
-            <strong class="h3">Skråfoto</strong>
-            <small>Styrelsen for Dataforsyningen og Infrastruktur</small>
+            <strong class="h5">Skråfoto</strong>
+            <small>Klimadatastyrelsen</small>
           </span>
         </p>
       `

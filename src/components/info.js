@@ -18,7 +18,7 @@ export class InformationDialog extends HTMLElement {
       <article style="padding: var(--space) var(--space-lg) var(--space-lg);">
 
         <p>
-          Skråfoto er en webapplikation, som stilles til rådighed af Styrelsen for Dataforsyning og Infrastruktur.<br>
+          Skråfoto er en webapplikation, som stilles til rådighed af Klimadatastyrelsen.<br>
           Den kan benyttes til at finde og vise skråfotos fra hele Danmark i 2017, 2019, 2021 og 2023.
         </p>
         
@@ -55,7 +55,7 @@ export class InformationDialog extends HTMLElement {
 
       </article>
       <div style="background-color: var(--bg0); padding: var(--space) var(--space-lg) var(--space-lg);">
-        <ds-logo-title class="transparent" title="Styrelsen for Dataforsyning og Infrastruktur"></ds-logo-title>  
+        <ds-logo-title class="transparent" title="Klimadatastyrelsen"></ds-logo-title>  
         <hr>
         <p>
           <small>
@@ -68,7 +68,7 @@ export class InformationDialog extends HTMLElement {
           </small>
         </p>
         <hr>
-        <p>© 2024 Styrelsen for Dataforsyning og Infrastruktur</p>
+        <p>© 2024 Klimadatastyrelsen</p>
       </div>
       <footer style="justify-content: center; padding: var(--space) var(--space-lg) var(--space-lg);">
         <button class="btn-toggle-dialog" aria-controls="info-dialog">Luk</button>

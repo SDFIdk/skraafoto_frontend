@@ -1,6 +1,6 @@
 /* Import and define common custom elements */
 
-import { Spinner, DSLogo } from '@dataforsyningen/designsystem'
+import { Spinner, DSLogo, DSLogoTitle } from '@dataforsyningen/designsystem'
 import { AlertSplash } from './alert-splash.js'
 import { SkraaFotoViewport } from './viewport/viewport.js'
 import { SkraaFotoAdvancedMap } from './geomap/advanced-map.js'
@@ -17,6 +17,7 @@ export async function registerComponents() {
 
   customElements.define('ds-spinner', Spinner)
   customElements.define('ds-logo', DSLogo)
+  customElements.define('ds-logo-title', DSLogoTitle)
   customElements.define('skraafoto-alert-splash', AlertSplash)
   customElements.define('skraafoto-viewport', SkraaFotoViewport)
   customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)
