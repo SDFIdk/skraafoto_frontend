@@ -1,6 +1,5 @@
 /** @module */
 
-import { getParam } from '../modules/url-state.js'
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
 import { state } from '../state/index.js'
@@ -107,25 +106,6 @@ function generateParcelVectorLayer() {
   })
   return layer
 }
- /**
- * Elevation data geoTiFF or map data might not be ready yet.
- * This method cycles while waiting for the data to be available,
- * then initiates drawing the parcel data.
- */
-
-function waitForData(viewport, itemId) {
-
-  if (!state.terrain[viewport.dataset.itemkey] || state.parcels.length < 1 || !viewport.map) {
-    setTimeout(() => waitForData(viewport), 300)
-  } else {
-    drawParcels({
-      parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
-      imageId: itemId,
-      map: viewport.map,
-      elevationdata: state.terrain[viewport.dataset.itemkey]
-    })
-  }
-}
 
 /**
  * Fetches the parcel polygons based on the ids
@@ -169,10 +149,17 @@ function drawParcels({parcels, imageId, map, elevationdata}) {
  * Starts fetching the relevant data to draw the parcels on map
  */
 function renderParcels(viewport, itemId) {
-  if (!getParam('parcels')) {
+  if (state.parcels.length < 1) {
+    // No parcels to draw
     return
   }
-  waitForData(viewport, itemId)
+  const itemkey = viewport.dataset.itemkey ? viewport.dataset.itemkey : viewport.dataset.orientation
+  drawParcels({
+    parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
+    imageId: itemId,
+    map: viewport.map,
+    elevationdata: state.terrain[itemkey]
+  })
 }
 
 export {
