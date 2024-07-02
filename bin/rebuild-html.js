@@ -45,10 +45,5 @@ export async function buildHTML(entrypoints, outputs, outDir) {
   const newMarkupSingleview = markupSingleview.replace(assets.singleview.match, assets.singleview.out).replace(assets.style.match, assets.style.out)
   await writeToFile(`${ outDir }/singleview.html`, newMarkupSingleview)
 
-  // Updates info.html
-  let markupInfo = await readHTML(`${ entryDir }/info.html`)
-  const newMarkupInfo = markupInfo.replace(assets.info.match, assets.info.out).replace(assets.style.match, assets.style.out)
-  await writeToFile(`${ outDir }/info.html`, newMarkupInfo)
-
   console.log('HTML updated 👍')
 }
