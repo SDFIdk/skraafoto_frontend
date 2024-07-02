@@ -24,8 +24,6 @@ import {
   updateDate,
   updateCenter
 } from './viewport-mixin.js'
-import { getSharedStyles } from "../../styles/shared-styles.js"
-import viewportstyles from './viewport.css.js'
 import { state, reaction, when, autorun } from '../../state/index.js'
 
 // Imports and definitions based on configuration
@@ -77,11 +75,9 @@ export class SkraaFotoViewport extends HTMLElement {
   tool_measure_height
 
   template = /*html*/`
-    ${ getSharedStyles() }
-    <style>
-      ${ viewportstyles }
-    </style>
-    
+
+    <p class="basic-image-info"></p>
+
     <nav class="ds-nav-tools sf-viewport-tools" data-theme="light">
       <div class="ds-button-group">
         <skraafoto-year-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-year-selector>
@@ -118,20 +114,11 @@ export class SkraaFotoViewport extends HTMLElement {
 
   // Methods
 
-  createShadowDOM() {
-    // Create a shadow root
-    this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
-    // Create elements
-    const wrapper = document.createElement('article')
-    wrapper.className = 'viewport-wrapper'
-    wrapper.innerHTML = this.template
-    // attach the created elements to the shadow DOM
-    this.shadowRoot.append(wrapper)
-
-    this.compass_element = configuration.ENABLE_COMPASSARROWS ? this.shadowRoot.querySelector('skraafoto-compass-arrows') : this.shadowRoot.querySelector('skraafoto-compass')
-
+  createDOM() {
+    this.innerHTML = this.template
+    this.compass_element = configuration.ENABLE_COMPASSARROWS ? this.querySelector('skraafoto-compass-arrows') : this.querySelector('skraafoto-compass')
     if (configuration.ENABLE_SMALL_FONT) {
-      this.shadowRoot.getElementById('image-date').style.fontSize = '0.75rem'
+      this.querySelector('#image-date').style.fontSize = '0.75rem'
     }
   }
 
@@ -139,7 +126,7 @@ export class SkraaFotoViewport extends HTMLElement {
   async createMap(item) {
     // Initialize a map
     this.map = new OlMap({
-      target: this.shadowRoot.querySelector('.viewport-map'),
+      target: this.querySelector('.viewport-map'),
       controls: defaultControls({rotate: false, attribution: false, zoom: true}),
       interactions: new Collection()
     })
@@ -159,8 +146,8 @@ export class SkraaFotoViewport extends HTMLElement {
     })
 
     // Add controls
-    this.shadowRoot.querySelector('.ol-zoom-out').innerHTML = `<svg><use href="${ svgSprites }#minus" /></svg>`
-    this.shadowRoot.querySelector('.ol-zoom-in').innerHTML = `<svg><use href="${ svgSprites }#plus" /></svg>`
+    this.querySelector('.ol-zoom-out').innerHTML = `<svg><use href="${ svgSprites }#minus" /></svg>`
+    this.querySelector('.ol-zoom-in').innerHTML = `<svg><use href="${ svgSprites }#plus" /></svg>`
     if (configuration.ENABLE_FULLSCREEN) {
       this.map.addControl(new FullScreen({
         className: 'sf-fullscreen-btn',
@@ -168,7 +155,7 @@ export class SkraaFotoViewport extends HTMLElement {
         tipLabel: 'Skift fuldskærmsvisning'
       }))
       // Add our custom fullscreen icon to fullscreen button
-      this.shadowRoot.querySelector('.sf-fullscreen-btn button').innerHTML = `
+      this.querySelector('.sf-fullscreen-btn button').innerHTML = `
         <svg class="fullscreen-false"><use href="${ svgSprites }#fullscreen" /></svg>
         <svg class="fullscreen-true"><use href="${ svgSprites }#close" /></svg>
       `
@@ -196,8 +183,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.tool_measure_height = new MeasureHeightTool(this)
     // Add button to adjust brightness to the dom if enabled
     if (configuration.ENABLE_EXPOSURE) {
-      const button_group = this.shadowRoot.querySelector('.ds-button-group')
-      const info_button = this.shadowRoot.querySelector('#info-btn')
+      const button_group = this.querySelector('.ds-button-group')
+      const info_button = this.querySelector('#info-btn')
       button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
     }
     if (!configuration.ENABLE_CROSSHAIR) {
@@ -208,27 +195,27 @@ export class SkraaFotoViewport extends HTMLElement {
   /** Updates various items not directly related to the image map */
   updateNonMap(item) {
     this.compass_element.setAttribute('direction', item.properties.direction)
-    this.shadowRoot.querySelector('.image-date').innerText = updateDate(item)
-    this.innerText = updateTextContent(item)
+    this.querySelector('.image-date').innerText = updateDate(item)
+    this.querySelector('.basic-image-info').innerText = updateTextContent(item)
     updatePlugins(this, item)
-    this.shadowRoot.querySelector('skraafoto-info-box').setItem = item
+    this.querySelector('skraafoto-info-box').setItem = item
     if (configuration.ENABLE_PRINT) {
-      this.shadowRoot.querySelector('skraafoto-print-tool').setContextTarget = this  
+      this.querySelector('skraafoto-print-tool').setContextTarget = this  
     }
     if (configuration.ENABLE_DOWNLOAD) {
-      this.shadowRoot.querySelector('skraafoto-download-tool').setContextTarget = this  
+      this.querySelector('skraafoto-download-tool').setContextTarget = this  
     }
     if (configuration.ENABLE_CROSSHAIR) {
-      this.shadowRoot.querySelector('skraafoto-crosshair-tool').setContextTarget = this
+      this.querySelector('skraafoto-crosshair-tool').setContextTarget = this
     }
     if (configuration.ENABLE_EXPOSURE) {
-      this.shadowRoot.querySelector('skraafoto-exposure-tool').setContextTarget = this
+      this.querySelector('skraafoto-exposure-tool').setContextTarget = this
     }
   }
 
   /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
   toggleMode(mode, button_element) {
-    this.shadowRoot.querySelectorAll('.sf-viewport-tools button').forEach(function(btn) {
+    this.querySelectorAll('.sf-viewport-tools button').forEach(function(btn) {
       btn.classList.remove('active')
     })
     if (mode !== this.mode) {
@@ -249,7 +236,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   /** Toggles the visibility of the loading spinner. */
   toggleSpinner(bool) {
-    const canvasElement = this.shadowRoot.querySelector('.ol-viewport canvas')
+    const canvasElement = this.querySelector('.ol-viewport canvas')
     if (bool) {
       if (canvasElement) {
         canvasElement.style.cursor = 'progress'
@@ -257,14 +244,14 @@ export class SkraaFotoViewport extends HTMLElement {
       // Attach a loading animation element while updating
       const spinner_element = document.createElement('ds-spinner')
       spinner_element.className = 'viewport-spinner'
-      this.shadowRoot.append(spinner_element)
+      this.append(spinner_element)
     } else {
       if (canvasElement) {
-        canvasElement.style.cursor = "url('./img/icons/icon_crosshair.svg') 15 15, crosshair;"
+        canvasElement.style.cursor = 'inherit'
       }
       // Removes loading animation elements
       setTimeout(() => {
-        this.shadowRoot.querySelectorAll('.viewport-spinner').forEach(function(spinner) {
+        this.querySelectorAll('.viewport-spinner').forEach(function(spinner) {
           spinner.remove()
         })
       }, 200)
@@ -329,7 +316,7 @@ export class SkraaFotoViewport extends HTMLElement {
     )
 
     // When user cliks toolbar buttons, change mode
-    this.shadowRoot.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
+    this.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
       const measureWidthBtn = findAncestor(event.target, '.btn-width-measure')
       const measureHeightBtn = findAncestor(event.target, '.btn-height-measure')
       if (measureHeightBtn) {
@@ -371,7 +358,7 @@ export class SkraaFotoViewport extends HTMLElement {
   // Lifecycle callbacks
 
   connectedCallback() {
-    this.createShadowDOM()
+    this.createDOM()
     
     // Initialize image map when image item is available
     this.whenDisposer = when(

@@ -1,0 +1,90 @@
+skraafoto-header .sf-header {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  padding: var(--space-sm) var(--space) var(--space-sm) var(--space);
+  width: 100vw;
+}
+skraafoto-header .sf-header nav {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 20rem;
+  transition: transform 0.3s;
+  transform: translateX(0);
+  z-index: 5;
+  display: block;
+}
+skraafoto-header .sf-header nav[hidden] {
+  transform: translateX(20rem);
+}
+skraafoto-header skraafoto-info-dialog {
+  flex: 0 0 auto;
+}
+skraafoto-header .sf-logo {
+  margin: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+skraafoto-header .sf-logo strong {
+  display: block;
+  margin: 0;
+}
+skraafoto-header .sf-logo ds-logo {
+  height: 3rem;
+  width: auto;
+}
+
+/* Skat logo styles begin */
+skraafoto-header .skat-logo {
+  width: 12rem;
+}
+skraafoto-header #headline {
+  display: inline;
+  margin-left: 0;
+}
+/* Skat logo styles end */
+
+skraafoto-header skraafoto-view-switcher {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin-left: var(--space-sm);
+}
+
+skraafoto-header skraafoto-view-switcher button {
+  border: none;
+}
+
+skraafoto-header skraafoto-view-switcher hr {
+  height: var(--space-md);
+  width: 1px; 
+  margin: 0 var(--space-sm);
+}
+
+@media screen and (max-width: 79.9rem) {
+
+  skraafoto-header .sf-header {
+    --padding: 1.5rem 3rem 2rem;
+  }
+  skraafoto-header .sf-header nav {
+    width: 100vw;
+  }
+  
+}
+
+@media screen and (max-width: 40rem) {
+
+  skraafoto-header .sf-logo ds-logo {
+    height: 2rem;
+  }
+
+  skraafoto-header skraafoto-view-switcher {
+    display: none;
+  }
+
+}

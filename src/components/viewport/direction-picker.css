@@ -1,0 +1,118 @@
+skraafoto-direction-picker {
+  display: block;
+  flex: 0 1 30%;
+}
+
+skraafoto-direction-picker,
+skraafoto-direction-picker .sf-slider-content,
+skraafoto-direction-picker .sf-slider-grid {
+  height: 100%;
+  width: 100%;
+}
+
+skraafoto-direction-picker .sf-slider-content {
+  background-color: var(--background-color);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 3;
+  transition: transform .3s;
+  transform: translate(0,100vh);
+  margin: 0;
+}
+
+skraafoto-direction-picker .sf-slider-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 3px;
+}
+
+skraafoto-direction-picker .sf-slider-open-wrapper {
+  z-index: 1;
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+skraafoto-direction-picker .sf-slider-open,
+skraafoto-direction-picker .sf-slider-close {
+  box-shadow: 0 0 0.75rem hsl(0,0%,0%,0.3);
+}
+
+skraafoto-direction-picker .sf-slider-close {
+  position: absolute;
+  right: var(--space);
+  bottom: var(--space);
+  z-index: 2;
+}
+
+skraafoto-direction-picker .sf-slider-content h2 {
+  margin: 1rem;
+}
+
+skraafoto-direction-picker button.sf-direction-picker-btn,
+skraafoto-direction-picker button.sf-map-picker-btn {
+  height: auto;
+  width: auto;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  border-radius: 0;
+  position: relative;
+}
+
+skraafoto-direction-picker .sf-map-picker-btn .geographic-map {
+  cursor: pointer;
+}
+
+skraafoto-direction-picker .sf-direction-picker-btn.active::after,
+skraafoto-direction-picker .sf-map-picker-btn.active::after,
+skraafoto-direction-picker .sf-direction-picker-btn:hover::after,
+skraafoto-direction-picker .sf-direction-picker-btn:focus::after,
+skraafoto-direction-picker .sf-map-picker-btn:hover::after,
+skraafoto-direction-picker .sf-map-picker-btn:focus::after {
+  content: '';
+  position: absolute;
+  display: block;
+  bottom: 0;
+  left: 0;
+  height: 1.5rem;
+  width: 100%;
+  background-color: var(--blue);
+  clip-path: polygon(0 40%, 46% 40%, 50% 0%, 54% 40%, 100% 40%, 100% 100%, 0 100%);
+}
+
+skraafoto-direction-picker .sf-direction-picker-btn:hover::after,
+skraafoto-direction-picker .sf-map-picker-btn:hover::after {
+  box-shadow: inset 0 0 0 1rem var(--highlight);
+}
+
+skraafoto-direction-picker skraafoto-map,
+skraafoto-direction-picker skraafoto-viewport-mini {
+  height: 100%;
+  width: 100%;
+  display: block;
+  margin: 0 !important;
+}
+
+@media screen and (min-width: 80rem) {
+
+  skraafoto-direction-picker .sf-slider-content {
+    position: static;
+    width: 40rem;
+    transition: none;
+    transform: translate(0,0) !important;
+  }
+
+  skraafoto-direction-picker .sf-slider-open-wrapper,
+  skraafoto-direction-picker .sf-slider-close {
+    display: none;
+  }
+
+  skraafoto-direction-picker .sf-slider-grid {
+    border-left: solid 3px var(--background-color);
+  }
+}

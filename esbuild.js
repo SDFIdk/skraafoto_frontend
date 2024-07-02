@@ -4,11 +4,9 @@ import {copyFiles} from './bin/copy-to-dist.js'
 
 const outputDir = 'dist'
 const entry_points = {
-  splash: 'src/views/splash.js',
   viewer: 'src/views/viewer.js',
   singleview: 'src/views/singleview.js',
   twinview: 'src/views/twinview.js',
-  info: 'src/views/info.js',
   style: 'src/index.css'
 }
 

@@ -27,7 +27,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
 
   toggleCrosshair() {
     if (this.crosshairEnabled === 0) {
-      this.viewport.shadowRoot.querySelector('.viewport-map').classList.add('crosshair-on')
+      this.viewport.querySelector('.viewport-map').classList.add('crosshair-on')
       this.button_element.blur()
       this.crosshairEnabled = 1 // Set the toggle value to 1 (enabled)
       this.viewport.map.once('singleclick', this.handleClick) // Bind the click event listener once
@@ -38,7 +38,7 @@ export class SkraaFotoCrossHairTool extends HTMLElement {
     if (this.crosshairEnabled === 1 && this.viewport.mode === 'center') {
       this.crosshairEnabled = 0 // Set the toggle value to 0 (disabled)
       this.button_element.style.background = ''
-      this.viewport.shadowRoot.querySelector('.viewport-map').classList.remove('crosshair-on')
+      this.viewport.querySelector('.viewport-map').classList.remove('crosshair-on')
       this.button_element.blur()
       const worldPosition = await getWorldXYZ({
         xy: event.coordinate,

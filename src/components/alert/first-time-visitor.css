@@ -1,0 +1,45 @@
+skraafoto-first-time-visit dialog {
+  padding: 0 !important;
+  overflow: auto;
+}
+skraafoto-first-time-visit dialog[open] {
+  max-width: 100%;
+  width: 70rem;
+  margin: auto;
+  height: 100%;
+  max-height: 87.5rem;
+}
+skraafoto-first-time-visit dialog::backdrop {
+  background-color: hsla(0, 0%, 0%, 0.6);
+  transition: backdrop-filter 0.2s;
+}
+skraafoto-first-time-visit dialog article {
+  padding: var(--space-lg) 0 0;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+skraafoto-first-time-visit dialog p,
+skraafoto-first-time-visit dialog button {
+  margin: 0;
+}
+skraafoto-first-time-visit .btn-welcome-close {
+  margin-top: var(--space-lg);
+  transition: opacity 0.3s ease;
+}
+skraafoto-first-time-visit .fade-out, 
+skraafoto-first-time-visit .fade-out::backdrop {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+skraafoto-first-time-visit ul li {
+  text-align: left;
+}
+skraafoto-first-time-visit .btn-welcome-close.quiet {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space);
+  margin: 0;
+}
