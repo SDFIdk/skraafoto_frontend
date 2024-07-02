@@ -129,7 +129,7 @@ export class SkraaFotoHeader extends HTMLElement {
 
     headerContent += `
       <div style="flex-grow: 1;"></div>
-      <skraafoto-address-search collapsible data-theme="dark"></skraafoto-address-search>
+      <skraafoto-address-search collapsible data-theme="light" style="background-color: transparent;"></skraafoto-address-search>
       <skraafoto-view-switcher></skraafoto-view-switcher>
       <skraafoto-info-dialog></skraafoto-info-dialog>
     `

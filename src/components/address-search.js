@@ -140,6 +140,12 @@ export class SkraaFotoAddressSearch extends HTMLElement {
         align-items: center;
         justify-content: center;
       }
+      g-search {
+        flex: 0 1 100%;
+      }
+      .gs-wrapper {
+        width: 100%;
+      }
     }
     @media screen and (min-width: 50rem) {
       .sf-slider-close {
@@ -151,7 +157,7 @@ export class SkraaFotoAddressSearch extends HTMLElement {
       ${ this.styles }
     </style>
     
-    <button id="search-button" class="sf-search-btn-open ds-icon-icon-search quiet" title="Søg efter adresse eller stednavn"></button>
+    <button data-theme="dark" id="search-button" class="sf-search-btn-open secondary" title="Søg efter adresse eller stednavn"></button>
     <div class="sf-input-container">
       <g-search data-placeholder="Søg adresse eller stednavn" data-token="${configuration.API_STAC_TOKEN}" data-limit="100" data-resources="husnummer,stednavn"></g-search>
       <button class="sf-slider-close quiet" title="Luk">
