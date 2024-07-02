@@ -5,31 +5,10 @@ import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
  */
 export class SkraaFotoViewSwitcher extends HTMLElement {
 
-
   // Properties
-
   markup
-  styles = `
-  
-  media screen 
-    skraafoto-view-switcher {
-      display: flex;
-    }
-    .switch-button {
-      display: flex;
-      border: none;
-    }
-    @media screen and (min-width: 40rem) {
-      skraafoto-view-switcher {
-      display: flex;
-          align-items: center;
-      }
-    }
-  `
+
   template = `
-    <style>
-      ${ this.styles }
-    </style>
     <hr>
     <button class="switch-view-1 secondary switch-button" title="Vis ét stort billede">
       <svg><use href="${ svgSprites }#frame-single"/></svg>
@@ -45,15 +24,12 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
     <hr>
   `
 
-
   constructor() {
     super()
     this.createDOM()
   }
 
-
   // Methods
-
   createDOM() {
     // Create elements
     this.innerHTML = this.template
@@ -74,6 +50,3 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
   }
 
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)

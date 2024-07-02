@@ -1,5 +1,6 @@
 skraafoto-direction-picker {
   display: block;
+  flex: 0 1 30%;
 }
 
 skraafoto-direction-picker,
@@ -42,8 +43,8 @@ skraafoto-direction-picker .sf-slider-close {
 
 skraafoto-direction-picker .sf-slider-close {
   position: absolute;
-  right: 1rem;
-  bottom: 2rem;
+  right: var(--space);
+  bottom: var(--space);
   z-index: 2;
 }
 
@@ -95,15 +96,6 @@ skraafoto-direction-picker skraafoto-viewport-mini {
   width: 100%;
   display: block;
   margin: 0 !important;
-}
-
-@media screen and (max-width: 35rem) {
-
-  skraafoto-direction-picker .sf-slider-close {
-    right: 1rem;
-    bottom: 1rem;
-    top: auto !important;
-  }      
 }
 
 @media screen and (min-width: 80rem) {

@@ -5,12 +5,9 @@
 
 .ds-icon-map-icon-findonmap {
   position: absolute;
-  z-index: 10;
+  z-index: 3;
   bottom: 8rem;
   right: 1rem;
-  --icon-outer-size: 3rem;
-  --icon-pos: 0rem 1rem;
-  z-index: 1;
 }
 
 @media screen and (max-width: 35rem) {

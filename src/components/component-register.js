@@ -5,13 +5,13 @@ import { AlertSplash } from './alert/alert-splash.js'
 import { SkraaFotoViewport } from './viewport/viewport.js'
 import { SkraaFotoAdvancedMap } from './geomap/advanced-map.js'
 import { SkraaFotoDateSelector } from './date-selector.js'
-import { SkraaFotoInfoBox } from './info-box.js'
-import { SkraaFotoHeader } from './page-header.js'
+import { SkraaFotoInfoBox } from './tools/info-box.js'
+import { SkraaFotoHeader } from './header/page-header.js'
 import { SkraaFotoCompass } from './compass/compass.js'
 import { SkraafotoGeolocation } from './geolocation/geolocation.js'
 import { configuration } from '../modules/configuration'
 import { SkraaFotoYearSelector } from './year-selector.js'
-import { InformationDialog } from './info.js'
+import { InformationDialog } from './header/info.js'
 
 export async function registerComponents() {
 

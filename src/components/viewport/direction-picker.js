@@ -18,10 +18,10 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
   btn_close_element
 
   template = `
-    <nav class="sf-slider-open-wrapper"><button class="sf-slider-open contrast">Vælg retning</button></nav>
+    <nav class="sf-slider-open-wrapper"><button class="sf-slider-open">Vælg retning</button></nav>
     <section class="sf-slider-content">
       <button class="sf-slider-close" title="Luk">
-        <svg><use href="${ svgSprites }#close"/></svg>
+        <svg><use href="${ svgSprites }#close" /></svg>
       </button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn sf-btn-map" title="Skift til kortvisning">

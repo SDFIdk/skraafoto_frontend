@@ -1,4 +1,4 @@
-import { toDanish } from '../modules/i18n.js'
+import { toDanish } from '../../modules/i18n.js'
 import { get } from '@dataforsyningen/saul'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 
@@ -14,38 +14,8 @@ export class SkraaFotoInfoBox extends HTMLElement {
   slider_content
   btn_open_element
   btn_close_element
-  styles = `
-    .sf-slider,
-    .sf-slider-content,
-    .sf-slider-grid {
-      height: 100%;
-      width: 100%;
-    }
-
-    .sf-slider-content {
-      max-width: 30rem;
-      background-color: var(--background-color);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 5;
-      transition: transform .3s;
-      transform: translate(-100vw,0);
-      margin: 0;
-    }
-
-    .sf-slider-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      z-index: 2;
-    }
-  `
+  
   template = `
-    <style>
-      ${ this.styles }
-    </style>
-    
     <button class="sf-info-btn sf-slider-open secondary" title="Information om billede">
       <svg><use href="${ svgSprites }#info"/></svg>
     </button>

@@ -1,0 +1,28 @@
+skraafoto-info-box {
+  display: inline-block;
+}
+skraafoto-info-box .sf-slider,
+skraafoto-info-box .sf-slider-content,
+skraafoto-info-box .sf-slider-grid {
+  height: 100%;
+  width: 100%;
+}
+
+skraafoto-info-box .sf-slider-content {
+  max-width: 30rem;
+  background-color: var(--background-color);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  transition: transform .3s;
+  transform: translate(-100vw,0);
+  margin: 0;
+}
+
+skraafoto-info-box .sf-slider-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+}
