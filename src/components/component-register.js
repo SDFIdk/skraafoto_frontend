@@ -1,13 +1,13 @@
 /* Import and define common custom elements */
 
 import { Spinner, DSLogo, DSLogoTitle } from '@dataforsyningen/designsystem'
-import { AlertSplash } from './alert-splash.js'
+import { AlertSplash } from './alert/alert-splash.js'
 import { SkraaFotoViewport } from './viewport/viewport.js'
 import { SkraaFotoAdvancedMap } from './geomap/advanced-map.js'
 import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoInfoBox } from './info-box.js'
 import { SkraaFotoHeader } from './page-header.js'
-import { SkraaFotoCompass } from './compass'
+import { SkraaFotoCompass } from './compass/compass.js'
 import { SkraafotoGeolocation } from './geolocation/geolocation.js'
 import { configuration } from '../modules/configuration'
 import { SkraaFotoYearSelector } from './year-selector.js'
@@ -35,7 +35,7 @@ export async function registerComponents() {
     customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
   }
   if (configuration.ENABLE_COMPASSARROWS) {
-    const { SkraaFotoCompassArrows } = await import("./compass-arrows.js")
+    const { SkraaFotoCompassArrows } = await import("./compass/compass-arrows.js")
     customElements.define('skraafoto-compass-arrows', SkraaFotoCompassArrows)
   }
 }

@@ -5,7 +5,7 @@ export class InformationDialog extends HTMLElement {
   dialogElement
   template = `
     <button class="secondary" aria-controls="info-dialog" title="Information om Skråfoto" style="border: none;">
-      <svg><use href="${ svgSprites }#info"></svg>
+      <svg><use href="${ svgSprites }#question"></svg>
     </button>
 
     <dialog id="info-dialog" style="width: 94vw; max-width: 50rem; margin: auto; max-height: 94vh; padding: 0;">

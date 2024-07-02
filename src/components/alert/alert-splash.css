@@ -1,0 +1,27 @@
+skraafoto-alert-splash dialog::backdrop {
+  background-color: hsla(0, 0%, 0%, 0.6);
+  transition: backdrop-filter 0.2s;
+}
+skraafoto-alert-splash dialog article {
+  padding: var(--margin);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+skraafoto-alert-splash dialog p,
+skraafoto-alert-splash dialog button {
+  margin: 0;
+}
+
+skraafoto-alert-splash .btn-confirm {
+  margin-top: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+skraafoto-alert-splash .fade-out, 
+skraafoto-alert-splash .fade-out::backdrop {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}

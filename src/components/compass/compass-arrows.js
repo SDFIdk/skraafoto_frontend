@@ -1,5 +1,5 @@
-import { toDanish } from '../modules/i18n.js'
-import { shiftItemOrientation } from '../modules/listeners.js'
+import { toDanish } from '../../modules/i18n.js'
+import { shiftItemOrientation } from '../../modules/listeners.js'
 import svgSprite from '@dataforsyningen/designsystem/assets/icons.svg'
 
 /**
@@ -13,88 +13,7 @@ export class SkraaFotoCompassArrows extends HTMLElement {
   markup
   button_right
   button_left
-  styles = `
-    :host {
-      position: relative;
-    }
-    :host::after {
-      position: absolute;
-      top: 0.8rem;
-      left: 1.15rem;
-      display: block;
-      content: '';
-      width: 0;
-      height: 0;
-      border: solid 1.25rem transparent;
-      border-top-color: var(--primary);
-      mix-blend-mode: lighten;
-      z-index: 2;
-      border-radius: 2.5rem;
-    }
-    .sf-compass {
-      display: block;
-      height: 4.5rem;
-      width: auto;
-      max-width: 4.8rem;
-      cursor: pointer;
-    }
-    .svg-icon-compass {
-      display: block;
-      position: absolute;
-      top: 0.72rem;
-      left: 0.92rem;
-      z-index: 2;
-      margin: 0;
-      padding: 0;
-      width: 3rem;
-      height: 3rem;
-      transition: rotate 0.3s;
-      animation: transition 0.3s;
-    }
-    @keyframes transition {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    .button {
-      display: block;
-      padding: 30px 0;
-      font-size: 16px;
-      text-align: center;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      width: 2.5rem;
-      position: relative;
-    }
-    .button-container {
-      position: absolute;
-      display: flex;
-      height: inherit;
-      z-index: 8;
-      cursor: pointer
-    }
-    .button-left {
-      cursor: pointer;
-      background: none;
-    }
-    
-    .button:hover .button-left,
-    .button .button-right:hover {
-    }
-    .button-right {
-      cursor: pointer;
-      background: none;
-    }
-  `
   template = `
-    <style>
-      ${ this.styles }
-    </style>
-    
     <div class="button-container">
         <button title="Genvej: Shift + pil venstre" class="button button-left"></button>
         <button title="Genvej: Shift + pil højre" class="button button-right"></button>
@@ -131,14 +50,12 @@ export class SkraaFotoCompassArrows extends HTMLElement {
 
   createDOM() {
 
-    // Create a shadow root
-    this.attachShadow({mode: 'open'}) // sets and returns 'this.shadowRoot'
     // Create elements
     this.markup = document.createElement('div')
     this.markup.className = 'sf-compass'
     this.markup.innerHTML = this.template
     // attach the created elements to the DOM
-    this.shadowRoot.append(this.markup)
+    this.append(this.markup)
 
     // Save element reference for later
     this.compass = this.markup.querySelector('.svg-icon-compass')
@@ -147,11 +64,11 @@ export class SkraaFotoCompassArrows extends HTMLElement {
   }
 
   shiftItemLeftHandler() {
-    shiftItemOrientation(-1, this.dataset.itemkey)
+    shiftItemOrientation(1, this.dataset.itemkey)
   }
 
   shiftItemRightHandler() {
-    shiftItemOrientation(1, this.dataset.itemkey)
+    shiftItemOrientation(-1, this.dataset.itemkey)
   }
 
   // Lifecycle

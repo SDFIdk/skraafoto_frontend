@@ -1,15 +1,17 @@
 import { registerComponents } from '../components/component-register.js'
 import { setupAnalytics } from '../modules/tracking.js'
 import { setupListeners } from '../modules/listeners.js'
-import { SkraaFotoDirectionPicker} from "../components/direction-picker"
+import { SkraaFotoDirectionPicker} from "../components/viewport/direction-picker.js"
 import { SkraaFotoMap } from '../components/geomap/map.js'
 import { SkraaFotoViewportMini } from "../components/viewport/viewport-mini.js"
 import { state, autorun} from '../state/index.js'
+import { applyCustomStyles } from '../styles/custom-styles.js'
 
 // Start snooping 
 setupAnalytics()
 
-// Initialize web components
+// Initialize
+applyCustomStyles()
 registerComponents()
 
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
@@ -28,8 +30,6 @@ function toggleMap(show) {
     viewportElement.hidden = false
   }
 }
-
-// Initialize
 
 // React to changes in state
 autorun(() => {

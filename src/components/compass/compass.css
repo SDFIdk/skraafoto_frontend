@@ -1,0 +1,107 @@
+skraafoto-compass,
+skraafoto-compass-arrows {
+  position: absolute;
+  -webkit-transform: translate3d(2px,0,0); /* Fix for Safari bug */
+}
+
+skraafoto-compass::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  border: solid 1.25rem transparent;
+  border-top-color: var(--primary);
+  mix-blend-mode: lighten;
+  z-index: 2;
+  border-radius: 2.5rem;
+}
+skraafoto-compass .sf-compass {
+  display: block;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+skraafoto-compass svg:has(use[href*="icon"]) {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  margin: 0 !important;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s;
+}
+
+skraafoto-compass-arrows::after {
+  position: absolute;
+  top: 0.8rem;
+  left: 1.15rem;
+  display: block;
+  content: '';
+  width: 0;
+  height: 0;
+  border: solid 1.25rem transparent;
+  border-top-color: var(--primary);
+  mix-blend-mode: lighten;
+  z-index: 2;
+  border-radius: 2.5rem;
+}
+skraafoto-compass-arrows .sf-compass {
+  display: block;
+  height: 4.5rem;
+  width: auto;
+  max-width: 4.8rem;
+  cursor: pointer;
+}
+skraafoto-compass-arrows svg:has(use[href*="icon"]) {
+  display: block;
+  position: absolute;
+  top: 0.72rem;
+  left: 0.92rem;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  width: 3rem;
+  height: 3rem;
+  transition: rotate 0.3s;
+  animation: transition 0.3s;
+}
+@keyframes transition {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+skraafoto-compass-arrows .button {
+  display: block;
+  padding: 30px 0;
+  font-size: 16px;
+  text-align: center;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 2.5rem;
+  position: relative;
+}
+skraafoto-compass-arrows .button-container {
+  position: absolute;
+  display: flex;
+  height: inherit;
+  z-index: 8;
+  cursor: pointer
+}
+skraafoto-compass-arrows .button-left {
+  cursor: pointer;
+  background: none;
+}
+
+skraafoto-compass-arrows .button-right {
+  cursor: pointer;
+  background: none;
+}

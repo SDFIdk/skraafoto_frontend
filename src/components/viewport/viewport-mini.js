@@ -5,7 +5,6 @@ import { image2world } from '@dataforsyningen/saul'
 import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
 import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
 import { configuration } from '../../modules/configuration.js'
-import viewportMiniStyles from './viewport-mini.css.js'
 import { state, reaction, when, autorun } from '../../state/index.js'
 import {
   updateViewport,
@@ -33,9 +32,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
   compass_element
 
   template = /*html*/`
-    <style>
-      ${ viewportMiniStyles }
-    </style>
     <div class="viewport-map"></div>
     <skraafoto-compass direction="north"></skraafoto-compass>
     <p id="image-date" class="image-date"></p>

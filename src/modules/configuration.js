@@ -82,7 +82,9 @@ let configuration = {
       contrast: 0.0,
       saturation: 0
     }
-  ]
+  ],
+
+  CUSTOM_STYLES: null
 }
 
 // We assume a global variable `config` has been declared

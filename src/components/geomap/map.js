@@ -81,8 +81,8 @@ export class SkraaFotoMap extends HTMLElement {
     }
     .geographic-map skraafoto-compass {
       position: absolute;
-      top: 1.5rem;
-      right: 1rem;
+      top: var(--space);
+      right: var(--space);
       z-index: 1;
       -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
     }
