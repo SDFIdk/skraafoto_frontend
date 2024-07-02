@@ -49,6 +49,17 @@ skraafoto-header #headline {
 }
 /* Skat logo styles end */
 
+skraafoto-header skraafoto-view-switcher {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin-left: var(--space-sm);
+}
+
+skraafoto-header skraafoto-view-switcher button {
+  border: none;
+}
+
 skraafoto-header skraafoto-view-switcher hr {
   height: var(--space-md);
   width: 1px; 
@@ -72,8 +83,7 @@ skraafoto-header skraafoto-view-switcher hr {
     height: 2rem;
   }
 
-  skraafoto-header skraafoto-view-switcher, 
-  .sf-logo small {
+  skraafoto-header skraafoto-view-switcher {
     display: none;
   }
 

@@ -31,7 +31,7 @@ export async function registerComponents() {
 
   // Load web components by configuration
   if (configuration.ENABLE_FIRST_VISIT_INFO) {
-    const { FirstTimeVisit } = await import('./first-time-visitor.js')
+    const { FirstTimeVisit } = await import('./alert/first-time-visitor.js')
     customElements.define('skraafoto-first-time-visit', FirstTimeVisit)
   }
   if (configuration.ENABLE_COMPASSARROWS) {

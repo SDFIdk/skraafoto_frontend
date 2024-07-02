@@ -84,7 +84,7 @@ let configuration = {
     }
   ],
 
-  CUSTOM_STYLES: null
+  CUSTOM_STYLES: false
 }
 
 // We assume a global variable `config` has been declared

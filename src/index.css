@@ -9,7 +9,6 @@
 @import "./components/viewport/viewport.css";
 @import "./components/viewport/viewport-mini.css";
 @import "./components/viewport/direction-picker.css";
-@import "./components/alert/alert-splash.css";
 @import "./components/compass/compass.css";
 @import "./components/geomap/geomap.css";
 
@@ -21,6 +20,10 @@
 @import "./components/tools/measure.css";
 @import "./components/geolocation/geolocation.css";
 @import "./components/tools/info-box.css";
+
+/* Various popups */
+@import "./components/alert/alert-splash.css";
+@import "./components/alert/first-time-visitor.css";
 
 body {
   position: relative;
