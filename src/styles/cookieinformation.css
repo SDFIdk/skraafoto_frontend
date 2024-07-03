@@ -1,6 +1,6 @@
 #coi-banner-wrapper {
-  --color: var(--sort);
-  --footer-background: var(--hvid);
+  --color: var(--black);
+  --footer-background: var(--white);
 }
 #coi-banner-wrapper h1,
 #coi-banner-wrapper h2,
@@ -8,11 +8,11 @@
 #coi-banner-wrapper h4,
 #coi-banner-wrapper h5,
 #coi-banner-wrapper h6 {
-  --color: var(--sort);
+  --color: var(--black);
 }
 
 button.coi-banner__accept {
-  color: var(--hvid) !important;
+  color: var(--white) !important;
 }
 
 button.coi-consent-banner__category-name:focus {
