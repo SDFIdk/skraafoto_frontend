@@ -1,8 +1,8 @@
 .ol-tooltip {
   position: relative;
-  background: var(--blaa);
+  background: var(--c7);
   border-radius: 0.5rem;
-  color: var(--hvid);
+  color: var(--white);
   padding: 0.25rem 0.5rem;
   white-space: nowrap;
   font-size: 0.8rem;
@@ -10,12 +10,12 @@
   user-select: none;
 }
 .ol-tooltip-static {
-  background-color: var(--blaa);
-  color: var(--hvid);
+  background-color: var(--c7);
+  color: var(--white);
 }
 .ol-tooltip-measure::before,
 .ol-tooltip-static::before {
-  border-top: 0.5rem solid var(--blaa);
+  border-top: 0.5rem solid var(--c7);
   border-right: 0.5rem solid transparent;
   border-left: 0.5rem solid transparent;
   content: "";
