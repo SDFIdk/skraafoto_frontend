@@ -239,7 +239,7 @@ getCollections().then((collections) => {
   state.setCollections = collections
   sanitizeParams(new URL(window.location), collections).then((urlSearchParams) => {
     syncFromURL(urlSearchParams).then((newState) => {
-    
+      
       state.syncState(newState)
     
       // Update URL on state change

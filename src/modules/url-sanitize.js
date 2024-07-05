@@ -62,7 +62,9 @@ async function sanitizeParams(searchparams, collections) {
   // Having `item` parameter overrules year and orientation (and center if coordinate is outside image)
   if (params.get('item')) {
     const item = await queryItem(params.get('item'))
-    params.set('orientation', item.properties.direction)
+    if (params.get('orientation') !== 'map') {
+      params.set('orientation', item.properties.direction)
+    }
     params.set('year', getYearFromCollection(item.collection))
     if (!params.get('center')) {
       params.set('center', getImageCenter(item).join(','))

@@ -31,6 +31,10 @@ export class SkraaFotoAdvancedMap extends SkraaFotoMap {
     })
   }
 
+  updateMapView(viewstate) {
+    // Override this method to avoid big map from updating in a loop when panning.
+  }
+
   // Lifecycle callbacks
   connectedCallback() {
     this.createDOM()

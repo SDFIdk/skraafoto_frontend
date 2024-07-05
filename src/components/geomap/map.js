@@ -256,9 +256,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   /** Changes the view according to state */
   updateMapView(viewstate) {
-    const view = this.map.getView()
-    view.setCenter(viewstate.position)
-    this.map.setView(view) 
+    this.map.getView().setCenter(viewstate.position) 
   }
 
   /** Re-renders the icon layer when marker (crosshair) position changes in state. */
@@ -266,9 +264,7 @@ export class SkraaFotoMap extends HTMLElement {
     if (this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }
-    const view = this.map.getView()
-    view.setCenter(markerstate.position)
-    this.map.setView(view)
+    this.map.getView().setCenter(markerstate.position) 
     this.icon_layer = this.generateIconLayer(markerstate.position)
     this.map.addLayer(this.icon_layer)
   }
