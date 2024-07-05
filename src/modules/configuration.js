@@ -1,9 +1,12 @@
 /** @module */
 
+const api_stac_default_prod = "https://api.dataforsyningen.dk/rest/skraafoto_api/v1.0"
+const api_stac_default_test = "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v1.0"
+
 let configuration = {
 
   API_STAC_TOKEN: '', // STAC TOKEN can be aquired from https://dataforsyningen.dk/
-  API_STAC_BASEURL: "https://test11.dataforsyningen.dk/api/rest/skraafoto_api/v1.0",
+  API_STAC_BASEURL: api_stac_default_prod,
 
   API_DHM_WCS_BASEURL: "https://services.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS",
   API_DHM_BASEURL: "https://test11.dataforsyningen.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter",
@@ -97,13 +100,14 @@ if (config) {
 }
 /* eslint-enable */
 
-// Hack to enable requesting images from skraafoto_server
-function convertAPIurl(url, replaceStr) {
-  const newUrl = url.replace(replaceStr, location.host)
-  return newUrl
+// Let user decide which STAC API to use by setting an URL param ("api=test"/"api=prod")
+const urlParams = new URLSearchParams(location.search)
+if (urlParams.get('api') === 'test') {
+  configuration.API_STAC_BASEURL = api_stac_default_test
+} else if (urlParams.get('api') === 'prod') {
+  configuration.API_STAC_BASEURL = api_stac_default_prod
 }
 
 export {
-  convertAPIurl,
   configuration
 }
