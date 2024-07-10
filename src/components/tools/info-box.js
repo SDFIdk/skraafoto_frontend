@@ -119,15 +119,12 @@ export class SkraaFotoInfoBox extends HTMLElement {
       // Update area information
       this.getLocalAreaInfo()
       // Move infobox into view
-      this.slider_element.style.transform = 'translate(0,0)'
+      this.slider_element.classList.toggle('open')
     })
 
     this.btn_close_element.addEventListener('click', () => {
-      this.slider_element.style.transform = 'translate(-100vw,0)'
+      this.slider_element.classList.toggle('open')
     })
   }
 
 }
-
-// This is how to initialize the custom element
-// customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
