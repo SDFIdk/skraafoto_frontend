@@ -1,7 +1,7 @@
 /** @module */
 
 const api_stac_default_prod = "https://api.dataforsyningen.dk/rest/skraafoto_api/v1.0"
-const api_stac_default_test = "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v1.0"
+const api_stac_default_test = "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v2"
 
 let configuration = {
 
