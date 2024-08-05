@@ -25,6 +25,10 @@ if (process.env.NODE_ENV === 'production') {
     loader: {
       '.ttf': 'file',
       '.svg': 'file'
+    },
+    banner: {
+      js: `// Skråfoto v${ process.env.npm_package_version }`,
+      css: `/* Skråfoto v${ process.env.npm_package_version } */`,
     }
   })
   .then(async (result) => {
