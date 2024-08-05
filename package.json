@@ -1,6 +1,6 @@
 {
   "name": "skraafoto-frontend",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "type": "module",
