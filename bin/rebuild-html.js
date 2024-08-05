@@ -32,17 +32,17 @@ export async function buildHTML(entrypoints, outputs, outDir) {
 
   // Updates index.html
   let markupIndex = await readHTML(`${ entryDir }/index.html`)
-  const newMarkupIndex = markupIndex.replace(assets.viewer.match, assets.viewer.out).replace(assets.style.match, assets.style.out)
+  const newMarkupIndex = markupIndex.replace(assets.viewer.match, assets.viewer.out).replace(assets.style.match, assets.style.out).replace('<meta name="version" content="">', `<meta name="version" content="${process.env.npm_package_version}">`)
   await writeToFile(`${ outDir }/index.html`, newMarkupIndex)
 
   // Updates twinview.html
   let markupTwinview = await readHTML(`${ entryDir }/twinview.html`)
-  const newMarkupTwinview = markupTwinview.replace(assets.twinview.match, assets.twinview.out).replace(assets.style.match, assets.style.out)
+  const newMarkupTwinview = markupTwinview.replace(assets.twinview.match, assets.twinview.out).replace(assets.style.match, assets.style.out).replace('<meta name="version" content="">', `<meta name="version" content="${process.env.npm_package_version}">`)
   await writeToFile(`${ outDir }/twinview.html`, newMarkupTwinview)
 
   // Updates singleview.html
   let markupSingleview = await readHTML(`${ entryDir }/singleview.html`)
-  const newMarkupSingleview = markupSingleview.replace(assets.singleview.match, assets.singleview.out).replace(assets.style.match, assets.style.out)
+  const newMarkupSingleview = markupSingleview.replace(assets.singleview.match, assets.singleview.out).replace(assets.style.match, assets.style.out).replace('<meta name="version" content="">', `<meta name="version" content="${process.env.npm_package_version}">`)
   await writeToFile(`${ outDir }/singleview.html`, newMarkupSingleview)
 
   console.log('HTML updated 👍')
