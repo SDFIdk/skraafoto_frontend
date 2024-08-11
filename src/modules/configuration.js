@@ -19,6 +19,7 @@ let configuration = {
   DEFAULT_COLLECTION: null, // Set a default collection to initiate from. Example `skraafotos2021`
   DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ],
 
+  ENABLE_CUSTOM_TOKEN: false, // Enables using a custom token from URL param or localstorage to access STAC API
   ENABLE_VIEW_SWITCH: false, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
   ENABLE_POINTER: true, // Enables displaying the cursor's position as a yellow dot on the other viewports
@@ -100,12 +101,24 @@ if (config) {
 }
 /* eslint-enable */
 
-// Let user decide which STAC API to use by setting an URL param ("api=test"/"api=prod")
+// Setting config via URL params 
 const urlParams = new URLSearchParams(location.search)
+// Let user decide which STAC API to use by setting an URL param ("api=test"/"api=prod")
 if (urlParams.get('api') === 'test') {
   configuration.API_STAC_BASEURL = api_stac_default_test
 } else if (urlParams.get('api') === 'prod') {
   configuration.API_STAC_BASEURL = api_stac_default_prod
+}
+// Checks if a custom API token is available from URL params or localstorage
+if (configuration.ENABLE_CUSTOM_TOKEN) {
+  const urlToken = urlParams.get('token')
+  const localToken = localStorage.getItem('skraafoto_stac_token')
+  if (urlToken) {
+    configuration.API_STAC_TOKEN = urlToken
+    localStorage.setItem('skraafoto_stac_token', urlToken)
+  } else if (urlToken) {
+    configuration.API_STAC_TOKEN = localToken
+  }
 }
 
 export {
