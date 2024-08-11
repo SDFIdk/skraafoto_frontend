@@ -174,5 +174,6 @@ function removeUnusedParams(params) {
 
 export {
   sanitizeParams,
-  sanitizeCoords
+  sanitizeCoords,
+  removeUnusedParams
 }
