@@ -116,7 +116,7 @@ if (configuration.ENABLE_CUSTOM_TOKEN) {
   if (urlToken) {
     configuration.API_STAC_TOKEN = urlToken
     localStorage.setItem('skraafoto_stac_token', urlToken)
-  } else if (urlToken) {
+  } else if (localToken) {
     configuration.API_STAC_TOKEN = localToken
   }
 }
