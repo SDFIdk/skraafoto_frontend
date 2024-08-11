@@ -1,5 +1,6 @@
-import { queryItems, queryItem } from "../modules/api.js"
-import { configuration } from "../modules/configuration.js"
+import { queryItems, queryItem } from '../modules/api.js'
+import { configuration } from '../modules/configuration.js'
+import { removeUnusedParams } from '../modules/url-sanitize.js'
 import { getZ } from '@dataforsyningen/saul'
 import { fetchParcels } from '../custom-plugins/plugin-parcel.js'
 
@@ -101,6 +102,8 @@ export function syncToUrl(marker, item1, item2, mapVisible) {
   } else if (item1) {
     url.searchParams.set('orientation', item1.properties.direction)
   }
+
+  removeUnusedParams(url.searchParams)
 
   history.pushState({}, '', url)
 }
