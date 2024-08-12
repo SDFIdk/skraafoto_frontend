@@ -55,11 +55,7 @@ export class MeasureWidthTool {
 
     this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
 
-    // TODO: Are these still relevant. Maybe change to state listener
-    document.addEventListener('directionchange', this.imageChangeHandler.bind(this))
-    document.addEventListener('addresschange', this.imageChangeHandler.bind(this))
-    document.addEventListener('mapchange', this.imageChangeHandler.bind(this))
-    document.addEventListener('urlupdate', this.imageChangeHandler.bind(this))
+    // TODO: Use `this.imageChangeHandler` to clear drawn lines on image change
   }
 
 
