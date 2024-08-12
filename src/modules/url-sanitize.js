@@ -39,7 +39,11 @@ function getYearFromCollectionID(id) {
   return Number(id.match(yearRegex)[0])
 }
 
-/** Adds or modifies URL searchparams according to various edge cases */
+/** 
+ * Adds or modifies URL searchparams according to various edge cases 
+ * @param { URL } searchparams - URL object instance with query string (ie. search parameters).
+ * @param { Array } collections - List of collection objects from STAC API JSON reponse.
+ */
 async function sanitizeParams(searchparams, collections) {
 
   let params = sanitizeCoords(searchparams)
@@ -55,9 +59,6 @@ async function sanitizeParams(searchparams, collections) {
       return 0
     }
   })
-
-  // Remove params that are never used
-  removeUnusedParams(params)
 
   // Having `item` parameter overrules year and orientation (and center if coordinate is outside image)
   if (params.get('item')) {
