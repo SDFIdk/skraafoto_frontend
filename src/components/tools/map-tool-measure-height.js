@@ -7,7 +7,7 @@ import { image2world, getImageXY } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 import { configuration } from "../../modules/configuration"
-import { state } from '../../state/index.js'
+import { state, reaction } from '../../state/index.js'
 
 const featureIdentifiers = []
 
@@ -55,7 +55,14 @@ export class MeasureHeightTool {
 
     this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
 
-    // TODO: Use `this.imageChangeHandler` to clear drawn lines on image change
+    // Removes drawn lines on image change
+    reaction(() => {
+      return state.items[this.viewport.dataset.itemkey]
+    }, (newItem, oldItem) => {
+      if (newItem.id !== oldItem.id) {
+        this.imageChangeHandler()
+      }
+    })
   }
 
 
@@ -252,7 +259,7 @@ export class MeasureHeightTool {
 
   imageChangeHandler() {
     this.clearInteraction()
-    this.clearDrawings()
+    this.source.clear() // Clear line features
   }
 
   clearInteraction() {
@@ -260,19 +267,6 @@ export class MeasureHeightTool {
       this.helpTooltipElement.remove()
     }
     this.viewport.map.removeInteraction(this.draw)
-  }
-
-  clearDrawings() {
-    // Clear tooltips from layer
-    const overlays = this.viewport.map.getOverlays()
-    overlays.forEach((overlay) => {
-      if (overlay.getElement().className === 'ol-tooltip ol-tooltip-measure') {
-        this.viewport.map.removeOverlay(overlay)
-      }
-    })
-
-    // Clear line features
-    this.source.clear()
   }
 
   generateVerticalAxisFunction(coord, image_item) {
