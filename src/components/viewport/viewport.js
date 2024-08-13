@@ -281,6 +281,20 @@ export class SkraaFotoViewport extends HTMLElement {
     return zoom
   }
 
+  clearDrawings() {
+    // Clears tooltips from layer
+    const overlays = this.map.getOverlays()
+    overlays.forEach((overlay) => {
+      if (!overlay) {
+        return
+      }
+      const className = overlay.getElement().className
+      if (className === 'ol-tooltip ol-tooltip-measure' || className === 'ol-tooltip ol-tooltip-static') {
+        this.map.removeOverlay(overlay)
+      }
+    })
+  }
+
   setupListeners() {
 
     // When map has finished loading, remove spinner, etc.
@@ -308,7 +322,12 @@ export class SkraaFotoViewport extends HTMLElement {
         if (!newData.item) {
           return
         }
+        // Reset toolbar and clear measurement lines
         this.toggleMode('center')
+        if (newData.item.id !== oldData.item.id) {
+          this.clearDrawings()
+        }
+        // Update viewport
         updateViewport(newData, oldData, this.map).then(() => {
           this.updateNonMap(newData.item)
         })
@@ -351,7 +370,6 @@ export class SkraaFotoViewport extends HTMLElement {
 
     // Viewport sync trigger
     this.map.on('moveend', this.syncHandler.bind(this))
-
   }
 
 
