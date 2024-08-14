@@ -3,6 +3,7 @@ import { SkraaFotoAddressSearch } from './address-search.js'
 import {configuration} from "../../modules/configuration"
 
 customElements.define('skraafoto-address-search', SkraaFotoAddressSearch)
+customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher)
 
 /**
  * Web component that displays a reusable webpage header
@@ -54,13 +55,3 @@ export class SkraaFotoHeader extends HTMLElement {
     this.append(markup)
   }
 }
-
-async function setupConfigurables(conf) {
-  if (conf.ENABLE_VIEW_SWITCH) {
-    customElements.define('skraafoto-view-switcher', SkraaFotoViewSwitcher);
-  }
-}
-
-// Initialize
-
-setupConfigurables(configuration)
