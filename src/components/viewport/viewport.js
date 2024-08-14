@@ -26,6 +26,8 @@ import {
 } from './viewport-mixin.js'
 import { state, reaction, when, autorun } from '../../state/index.js'
 
+customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
+
 // Imports and definitions based on configuration
 if (configuration.ENABLE_PRINT) {
   import('../tools/map-tool-print.js').then(({ SkraaFotoPrintTool }) => {
@@ -39,9 +41,6 @@ if (configuration.ENABLE_DOWNLOAD) {
 }
 if (configuration.ENABLE_CROSSHAIR) {
   customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
-}
-if (configuration.ENABLE_EXPOSURE) {
-  customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
 }
 
 
@@ -181,12 +180,12 @@ export class SkraaFotoViewport extends HTMLElement {
   setupTools(item) {
     this.tool_measure_width = new MeasureWidthTool(this)
     this.tool_measure_height = new MeasureHeightTool(this)
-    // Add button to adjust brightness to the dom if enabled
-    if (configuration.ENABLE_EXPOSURE) {
-      const button_group = this.querySelector('.ds-button-group')
-      const info_button = this.querySelector('#info-btn')
-      button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
-    }
+
+    // Add button to adjust brightness to the DOM
+    const button_group = this.querySelector('.ds-button-group')
+    const info_button = this.querySelector('#info-btn')
+    button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
+    
     if (!configuration.ENABLE_CROSSHAIR) {
       this.tool_center = new CenterTool(this, item)
     }
@@ -199,6 +198,8 @@ export class SkraaFotoViewport extends HTMLElement {
     this.querySelector('.basic-image-info').innerText = updateTextContent(item)
     updatePlugins(this, item)
     this.querySelector('skraafoto-info-box').setItem = item
+    this.querySelector('skraafoto-exposure-tool').setContextTarget = this
+
     if (configuration.ENABLE_PRINT) {
       this.querySelector('skraafoto-print-tool').setContextTarget = this  
     }
@@ -207,9 +208,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     if (configuration.ENABLE_CROSSHAIR) {
       this.querySelector('skraafoto-crosshair-tool').setContextTarget = this
-    }
-    if (configuration.ENABLE_EXPOSURE) {
-      this.querySelector('skraafoto-exposure-tool').setContextTarget = this
     }
   }
 
