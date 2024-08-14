@@ -62,8 +62,8 @@ export class InformationDialog extends HTMLElement {
           <hr>
           <p>
             <small>
-              Sankt Kjelds Plads 11
-              2100 København Ø
+              Sankt Kjelds Plads 11<br>
+              2100 København Ø<br>
               7254 5500<br>
               sdfi@sdfi.dk<br>
               EAN-nummer: 5798009813640<br>
