@@ -190,9 +190,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
           }
           
           // When user changes viewport orientation, display image footprint on the map
-          if (configuration.ENABLE_FOOTPRINT) {
-            footprintHandler(event, state.items[this.dataset.orientation])
-          }
+          footprintHandler(event, state.items[this.dataset.orientation])
         })
       }
     )

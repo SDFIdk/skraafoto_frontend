@@ -146,12 +146,12 @@ export class SkraaFotoMap extends HTMLElement {
         this.update_pointer_function = getUpdateMapPointerFunction(map)
         window.addEventListener('updatePointer', this.update_pointer_function)
       }
-
-      if (configuration.ENABLE_FOOTPRINT) {
-        addFootprintLayerToMap(map)
-        this.update_footprint_function = getUpdateMapFootprintFunction(map)
-        window.addEventListener('updateFootprint', this.update_footprint_function)
-      }
+      
+      // Display footprint on map
+      addFootprintLayerToMap(map)
+      this.update_footprint_function = getUpdateMapFootprintFunction(map)
+      window.addEventListener('updateFootprint', this.update_footprint_function)
+    
       return map
     })
   }
