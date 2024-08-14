@@ -20,7 +20,6 @@ let configuration = {
   DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ],
 
   ENABLE_CUSTOM_TOKEN: false, // Enables using a custom token from URL param or localstorage to access STAC API
-  ENABLE_VIEW_SWITCH: false, // Enables view switcher to toggle between 1,2, and 5 way perspectives.
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
   ENABLE_POINTER: true, // Enables displaying the cursor's position as a yellow dot on the other viewports
   ENABLE_FOOTPRINT: false, // Enables displaying the footprint of the viewport being hovered over on the map
