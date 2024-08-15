@@ -12,7 +12,6 @@ import { state } from '../state/index.js'
 import { configuration } from "../modules/configuration";
 
 
-
 /**
  * Creates an Openlayers layer with a pointer marker.
  * @returns An Openlayers layer with a pointer marker.

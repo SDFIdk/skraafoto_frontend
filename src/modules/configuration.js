@@ -46,7 +46,6 @@ let configuration = {
 
   COLOR_SETTINGS:
     {
-      cursorColor: 'icon_crosshair.svg', // cursor                            / Default outer:'fill:#808080', inner:'fill:#ffffff' black/white
       targetColor: '#FFF', // cursor-target viewport.js line                  / Default '#FFF' white
       heightColor: '#FF5252', // map-tool-measure-height.js line              / Default '#FF5252' red
       widthColor: '#3EDDC6', // map-tool-measure-length.js line               / Default '#3EDDC6' cyan

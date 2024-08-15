@@ -1,6 +1,6 @@
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import pointerSvg from '../../../public/img/icons/pin.svg'
-import crosshairSvg from '../../../public/img/icons/crosshair.svg'
+import crosshairSvg from '../../../public/img/icons/crosshairs.svg'
 import { state } from '../../state/index.js'
 import { getWorldXYZ } from '@dataforsyningen/saul'
 import { configuration } from '../../modules/configuration.js'
@@ -37,7 +37,11 @@ export class PlacementPinTool extends HTMLElement {
     this.button_element.style.borderRadius = '0'
     this.button_element.className = 'pin-btn secondary'
     this.button_element.title = 'Aktivér sigtekorn'
-    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#pointer-position"/></svg>`
+    if (configuration.ENABLE_CROSSHAIR_ICON) {
+      this.button_element.innerHTML = `<svg><use href="${ svgSprites }#crosshair"/></svg>`
+    } else {
+      this.button_element.innerHTML = `<svg><use href="${ svgSprites }#pointer-position"/></svg>`
+    }
     this.append(this.button_element)
 
     const styleElement = document.createElement('style')
