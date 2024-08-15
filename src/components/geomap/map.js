@@ -25,6 +25,7 @@ import { generateParcelVectorLayer } from '../../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../../custom-plugins/plugin-footprint.js'
 import { state, autorun } from '../../state/index.js'
+import pointerSvg from '@dataforsyningen/designsystem/assets/icons/pointer-position.svg'
 
 /**
  * Web component that displays a map.
@@ -190,7 +191,7 @@ export class SkraaFotoMap extends HTMLElement {
     })
     const icon_style = new Style({
       image: new Icon({
-        src: '../img/icons/icon_cursor_crosshair.svg',
+        src: pointerSvg,
         scale: 1
       })
     })
