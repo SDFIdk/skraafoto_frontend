@@ -6,8 +6,7 @@ import Collection from 'ol/Collection'
 import { image2world } from '@dataforsyningen/saul'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { SkraaFotoExposureTool } from '../tools/map-tool-exposure.js'
-import { SkraaFotoCrossHairTool } from '../tools/map-tool-crosshair.js'
-import { CenterTool } from '../tools/map-tool-center.js'
+import { PlacementPinTool } from '../tools/map-tool-pin.js'
 import { MeasureWidthTool } from '../tools/map-tool-measure-width.js'
 import { MeasureHeightTool } from '../tools/map-tool-measure-height.js'
 import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
@@ -27,6 +26,7 @@ import {
 import { state, reaction, when, autorun } from '../../state/index.js'
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
+customElements.define('skraafoto-pin-tool', PlacementPinTool)
 
 // Imports and definitions based on configuration
 if (configuration.ENABLE_PRINT) {
@@ -39,11 +39,7 @@ if (configuration.ENABLE_DOWNLOAD) {
     customElements.define('skraafoto-download-tool', SkraaFotoDownloadTool)
   })
 }
-if (configuration.ENABLE_CROSSHAIR) {
-  customElements.define('skraafoto-crosshair-tool', SkraaFotoCrossHairTool)
-}
-
-
+  
 /**
  * HTML web component that displays an image using the OpenLayers library.
  * This is the main component of the Skraafoto application.
@@ -69,7 +65,6 @@ export class SkraaFotoViewport extends HTMLElement {
   update_view_function
   mode = 'center'
   modechange = new CustomEvent('modechange', {detail: () => this.mode })
-  tool_center
   tool_measure_width
   tool_measure_height
 
@@ -81,7 +76,7 @@ export class SkraaFotoViewport extends HTMLElement {
       <div class="ds-button-group">
         <skraafoto-year-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-year-selector>
         <hr>
-        ${ configuration.ENABLE_CROSSHAIR ? '<skraafoto-crosshair-tool></skraafoto-crosshair-tool>' : '' }
+        <skraafoto-pin-tool></skraafoto-pin-tool>
         <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
           <svg><use href="${ svgSprites }#ruler-horizontal"/></svg>
         </button>
@@ -171,13 +166,13 @@ export class SkraaFotoViewport extends HTMLElement {
     updateCenter(center, item).then((newCenters) => {
       this.coord_image = newCenters.imageCoord
       this.createMap(item)
-      this.setupTools(item)
+      this.setupTools()
       this.updateNonMap(item)
       this.setupListeners()
     })
   }
 
-  setupTools(item) {
+  setupTools() {
     this.tool_measure_width = new MeasureWidthTool(this)
     this.tool_measure_height = new MeasureHeightTool(this)
 
@@ -185,10 +180,6 @@ export class SkraaFotoViewport extends HTMLElement {
     const button_group = this.querySelector('.ds-button-group')
     const info_button = this.querySelector('#info-btn')
     button_group.insertBefore(document.createElement('skraafoto-exposure-tool'), info_button)
-    
-    if (!configuration.ENABLE_CROSSHAIR) {
-      this.tool_center = new CenterTool(this, item)
-    }
   }
 
   /** Updates various items not directly related to the image map */
@@ -199,15 +190,13 @@ export class SkraaFotoViewport extends HTMLElement {
     updatePlugins(this, item)
     this.querySelector('skraafoto-info-box').setItem = item
     this.querySelector('skraafoto-exposure-tool').setContextTarget = this
+    this.querySelector('skraafoto-pin-tool').setContextTarget = this
 
     if (configuration.ENABLE_PRINT) {
       this.querySelector('skraafoto-print-tool').setContextTarget = this  
     }
     if (configuration.ENABLE_DOWNLOAD) {
       this.querySelector('skraafoto-download-tool').setContextTarget = this  
-    }
-    if (configuration.ENABLE_CROSSHAIR) {
-      this.querySelector('skraafoto-crosshair-tool').setContextTarget = this
     }
   }
 

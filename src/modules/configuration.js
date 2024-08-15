@@ -25,7 +25,6 @@ let configuration = {
   ENABLE_SMALL_FONT: false, // Enables a small font on image-date
   ENABLE_FULLSCREEN: false, // Enables Fullscreen button
   ENABLE_COMPASSARROWS: true, // Enables compass buttons
-  ENABLE_CROSSHAIR: true, // Enables crosshair/movement tool
   ENABLE_CROSSHAIR_ICON: false,
   ENABLE_SKATLOGO: false, // Switches logo to Vurderingsstyrelsen instead of SDFI
   ENABLE_ALERT: false, // Shows a modal with custom content
@@ -47,7 +46,6 @@ let configuration = {
 
   COLOR_SETTINGS:
     {
-      cursorColor: 'icon_crosshair.svg', // cursor                            / Default outer:'fill:#808080', inner:'fill:#ffffff' black/white
       targetColor: '#FFF', // cursor-target viewport.js line                  / Default '#FFF' white
       heightColor: '#FF5252', // map-tool-measure-height.js line              / Default '#FF5252' red
       widthColor: '#3EDDC6', // map-tool-measure-length.js line               / Default '#3EDDC6' cyan

@@ -64,9 +64,6 @@ skraafoto-viewport .out-of-bounds {
 skraafoto-viewport .ol-viewport canvas {
   cursor: crosshair;
 }
-skraafoto-viewport .crosshair-on .ol-viewport canvas {
-  cursor: url('../../../public/img/icons/icon_cursor_crosshair.svg') 12 12, crosshair;
-}
 skraafoto-viewport .image-date {
   display: none;
 }

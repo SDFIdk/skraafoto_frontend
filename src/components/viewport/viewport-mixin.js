@@ -12,6 +12,8 @@ import { configuration } from '../../modules/configuration.js'
 import { state } from '../../state/index.js'
 import { toDanish } from '../../modules/i18n.js'
 import { renderParcels } from '../../custom-plugins/plugin-parcel.js'
+import pointerSvg from '@dataforsyningen/designsystem/assets/icons/pointer-position.svg'
+import crosshairSvg from '../../../public/img/icons/crosshairs.svg'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
 // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -29,7 +31,7 @@ function generateSource(geotiff_href) {
   })
 }
 
-function generateIconLayer(center, icon_image) {
+function generateIconLayer(center) {
   if (center) {
     let icon_feature = new Feature({
       geometry: new Point([center[0], center[1]])
@@ -38,13 +40,12 @@ function generateIconLayer(center, icon_image) {
     let icon
     if (configuration.ENABLE_CROSSHAIR_ICON) {
       icon = new Icon({
-        src: icon_image,
-        scale: 1,
-        color: colorSetting
+        src: crosshairSvg,
+        scale: 1
       })
     } else {
       icon = new Icon({
-        src: icon_image,
+        src: pointerSvg,
         scale: 1.5,
         color: colorSetting
       })
@@ -154,13 +155,7 @@ function updateMapImage(map, item) {
 function updateMapCenterIcon(map, localCoordinate) {
   map.removeLayer(getLayerById(map, 'vectoriconlayer'))
   let newIconLayer
-  let iconImage
-  if (configuration.ENABLE_CROSSHAIR_ICON) {
-    iconImage = '../img/icons/icon_cursor_crosshair.svg'
-  } else {
-    iconImage = '../img/icons/icon_crosshair.svg'
-  }
-  newIconLayer = generateIconLayer(localCoordinate, iconImage)
+  newIconLayer = generateIconLayer(localCoordinate)
   map.addLayer(newIconLayer)
 }
 
