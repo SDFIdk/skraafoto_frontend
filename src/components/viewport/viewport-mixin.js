@@ -47,7 +47,7 @@ function generateIconLayer(center) {
     } else {
       icon = new Icon({
         src: pointerSvg,
-        scale: 1.5,
+        scale: 1.25,
         color: colorSetting,
         anchor: [0.5,1]
       })
