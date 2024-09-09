@@ -20,16 +20,19 @@ export class PlacementPinTool extends HTMLElement {
 
   constructor() {
     super()
+    let cursorPosition
     if (configuration.ENABLE_CROSSHAIR_ICON) {
       this.cursorIcon = crosshairSvg
+      cursorPosition = '12 12'
     } else {
       this.cursorIcon = pointerSvg
+      cursorPosition = '14 29'
     } 
     this.style  = `
-    skraafoto-viewport .pin-on .ol-viewport canvas {
-      cursor: url(${ this.cursorIcon }) 12 12, crosshair;
-    }
-  `
+      skraafoto-viewport .pin-on .ol-viewport canvas {
+        cursor: url(${ this.cursorIcon }) ${ cursorPosition }, crosshair;
+      }
+    `
   }
 
   createDOM() {

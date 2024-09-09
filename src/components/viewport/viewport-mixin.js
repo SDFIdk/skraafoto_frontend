@@ -41,13 +41,15 @@ function generateIconLayer(center) {
     if (configuration.ENABLE_CROSSHAIR_ICON) {
       icon = new Icon({
         src: crosshairSvg,
-        scale: 1
+        scale: 1,
+        anchor: [0.5,0.5]
       })
     } else {
       icon = new Icon({
         src: pointerSvg,
         scale: 1.5,
-        color: colorSetting
+        color: colorSetting,
+        anchor: [0.5,1]
       })
     }
     const icon_style = new Style({ image: icon })
