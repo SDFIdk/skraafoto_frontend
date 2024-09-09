@@ -64,11 +64,11 @@ export class SkraaFotoCompassArrows extends HTMLElement {
   }
 
   shiftItemLeftHandler() {
-    shiftItemOrientation(1, this.dataset.itemkey)
+    shiftItemOrientation(-1, this.dataset.itemkey)
   }
 
   shiftItemRightHandler() {
-    shiftItemOrientation(-1, this.dataset.itemkey)
+    shiftItemOrientation(1, this.dataset.itemkey)
   }
 
   // Lifecycle
