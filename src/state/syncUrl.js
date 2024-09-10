@@ -33,14 +33,22 @@ export async function syncFromURL(urlParams) {
   newState.collection = `skraafotos${ urlParams.get('year') }`
 
   if (urlParams.has('item')) {
-    const item1 = await queryItem(urlParams.get('item'))
-    newState.items.item1 = item1
-    newState.items[item1.properties.direction] = item1
+    const item = await queryItem(urlParams.get('item'))
+    newState.items.item1 = item
+    newState.items[item.properties.direction] = item1
   } else {
     // Load default item
-    const item1 = await queryItems(newState.marker.position, 'north', newState.collection)
-    newState.items.item1 = item1.features[0]
-    newState.items.north = item1.features[0]
+    if (center[0] === 721239 && center[1] === 6174113) {
+      // Easter Egg - displays the "waterplane" image when the center is right
+      const item = await queryItem('2021_84_40_4_0037_00084342')
+      newState.items.item1 = item
+      newState.items[item.properties.direction] = item
+    } else {
+      // Default behaviour
+      const item = await queryItems(newState.marker.position, 'north', newState.collection)
+      newState.items.item1 = item.features[0]
+      newState.items.north = item.features[0]  
+    }
   }
 
   if (urlParams.has('item-2')) {
