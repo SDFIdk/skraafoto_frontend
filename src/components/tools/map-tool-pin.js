@@ -26,7 +26,7 @@ export class PlacementPinTool extends HTMLElement {
       cursorPosition = '12 12'
     } else {
       this.cursorIcon = pointerSvg
-      cursorPosition = '14 29'
+      cursorPosition = '15 30'
     } 
     this.style  = `
       skraafoto-viewport .pin-on .ol-viewport canvas {
