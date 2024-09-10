@@ -25,11 +25,6 @@
 @import "./components/alert/alert-splash.css";
 @import "./components/alert/first-time-visitor.css";
 
-/* Adjust global vars */
-:root {
-  --ds-icon-stroke: 0.08rem;
-}
-
 body {
   position: relative;
   display: flex;
