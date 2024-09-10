@@ -8,9 +8,10 @@ import { state } from '../../state/index.js'
  * @extends SkraaFotoMap
  */
 export class SkraaFotoAdvancedMap extends SkraaFotoMap {
-  
+
   constructor() {
     super() // Inherit stuff from SkraaFotoMap
+    this.advanced = true
   }
   
   // Methods
@@ -35,11 +36,25 @@ export class SkraaFotoAdvancedMap extends SkraaFotoMap {
     // Override this method to avoid big map from updating in a loop when panning.
   }
 
+  async singleClickHandler(event) {
+    // Update crosshairs icon on map
+    this.map.removeLayer(this.icon_layer)
+    this.icon_layer = this.generateIconLayer(event.coordinate)
+    this.map.addLayer(this.icon_layer)
+    await state.refresh(event.coordinate)
+  }
+
   // Lifecycle callbacks
   connectedCallback() {
     this.createDOM()
     this.createMap().then(() => {
+      
       this.map.on('moveend', this.userPanHandler.bind(this))
+      
+      // Do something when the map is clicked
+      this.map.on('singleclick', (event) => {
+        this.singleClickHandler(event)
+      })
     })
   }
 }

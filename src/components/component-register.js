@@ -3,7 +3,6 @@
 import { Spinner, DSLogo, DSLogoTitle } from '@dataforsyningen/designsystem'
 import { AlertSplash } from './alert/alert-splash.js'
 import { SkraaFotoViewport } from './viewport/viewport.js'
-import { SkraaFotoAdvancedMap } from './geomap/advanced-map.js'
 import { SkraaFotoDateSelector } from './date-selector.js'
 import { SkraaFotoInfoBox } from './tools/info-box.js'
 import { SkraaFotoHeader } from './header/page-header.js'
@@ -20,7 +19,6 @@ export async function registerComponents() {
   customElements.define('ds-logo-title', DSLogoTitle)
   customElements.define('skraafoto-alert-splash', AlertSplash)
   customElements.define('skraafoto-viewport', SkraaFotoViewport)
-  customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)
   customElements.define('skraafoto-date-selector', SkraaFotoDateSelector)
   customElements.define('skraafoto-info-box', SkraaFotoInfoBox)
   customElements.define('skraafoto-header', SkraaFotoHeader)

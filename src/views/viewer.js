@@ -3,6 +3,7 @@ import { setupAnalytics } from '../modules/tracking.js'
 import { setupListeners } from '../modules/listeners.js'
 import { SkraaFotoDirectionPicker} from "../components/viewport/direction-picker.js"
 import { SkraaFotoMap } from '../components/geomap/map.js'
+import { SkraaFotoAdvancedMap } from '../components/geomap/advanced-map.js'
 import { SkraaFotoViewportMini } from "../components/viewport/viewport-mini.js"
 import { state, autorun} from '../state/index.js'
 import { applyCustomStyles } from '../styles/custom-styles.js'
@@ -16,6 +17,7 @@ registerComponents()
 
 customElements.define('skraafoto-direction-picker', SkraaFotoDirectionPicker)
 customElements.define('skraafoto-map', SkraaFotoMap)
+customElements.define('skraafoto-advanced-map', SkraaFotoAdvancedMap)
 customElements.define('skraafoto-viewport-mini', SkraaFotoViewportMini)
 
 const viewportElement = document.querySelector('#viewport-1')
