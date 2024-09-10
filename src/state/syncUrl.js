@@ -38,17 +38,9 @@ export async function syncFromURL(urlParams) {
     newState.items[item.properties.direction] = item
   } else {
     // Load default item
-    if (center[0] === 721239 && center[1] === 6174113) {
-      // Easter Egg - displays the "waterplane" image when the center is right
-      const item = await queryItem('2021_84_40_4_0037_00084342')
-      newState.items.item1 = item
-      newState.items[item.properties.direction] = item
-    } else {
-      // Default behaviour
-      const item = await queryItems(newState.marker.position, 'north', newState.collection)
-      newState.items.item1 = item.features[0]
-      newState.items.north = item.features[0]  
-    }
+    const item = await queryItems(newState.marker.position, 'north', newState.collection)
+    newState.items.item1 = item.features[0]
+    newState.items.north = item.features[0]  
   }
 
   if (urlParams.has('item-2')) {

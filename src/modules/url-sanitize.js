@@ -103,6 +103,12 @@ async function sanitizeParams(searchparams, collections) {
     params.set('item', itemData.features[0].id)
   }
 
+  // Sea plane easter egg
+  const center = params.get('center').split(',')
+  if (center[0] === '721239' && center[1] === '6174113') {
+    params.set('item', '2021_84_40_4_0037_00084342')
+  }
+
   return params
 }
 
