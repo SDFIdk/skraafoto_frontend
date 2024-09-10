@@ -45,11 +45,12 @@ export class SkraaFotoMap extends HTMLElement {
   update_footprint_function
   update_view_function
   parcels_function
+  advanced = false
 
   template = `
     <div class="geographic-map">
       <skraafoto-compass direction="north"></skraafoto-compass>
-      ${ configuration.ENABLE_GEOLOCATION && this.getAttribute('minimal') === null ? `<skraafoto-geolocation></skraafoto-geolocation>`: '' }
+      ${ configuration.ENABLE_GEOLOCATION && this.advanced ? `<skraafoto-geolocation></skraafoto-geolocation>`: '' }
     </div>
   `
 
@@ -57,7 +58,6 @@ export class SkraaFotoMap extends HTMLElement {
   static get observedAttributes() {
     return [
       'data-center',
-      'minimal',
       'hidden'
     ]
   }
@@ -82,7 +82,7 @@ export class SkraaFotoMap extends HTMLElement {
     this.innerHTML = this.template
   }
 
-  generateMap(is_minimal, center, zoom) {
+  generateMap(center, zoom) {
     // Switch to datafordeler might be preferable
     return fetch(`https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }&service=WMTS&request=GetCapabilities`)
     .then((response) => {
@@ -96,17 +96,17 @@ export class SkraaFotoMap extends HTMLElement {
       })
 
       let controls
-      if (is_minimal !== null) {
-        controls = defaultControls({rotate: false, attribution: false, zoom: false})
-      } else {
+      if (this.advanced) {
         controls = defaultControls({rotate: false, attribution: false})
+      } else {
+        controls = defaultControls({rotate: false, attribution: false, zoom: false})
       }
 
       let interactions
-      if (is_minimal !== null) {
-        interactions = defaultInteractions({dragPan: false, pinchZoom: true, mouseWheelZoom: false})
-      } else {
+      if (this.advanced) {
         interactions = defaultInteractions()
+      } else {
+        interactions = defaultInteractions({dragPan: false, pinchZoom: true, mouseWheelZoom: false})
       }
 
       const view = new View({
@@ -128,13 +128,6 @@ export class SkraaFotoMap extends HTMLElement {
         controls: controls,
         interactions: interactions
       })
-
-      if (is_minimal === null) {
-        // Do something when the big map is clicked
-        map.on('singleclick', (event) => {
-          this.singleClickHandler(event)
-        })
-      }
 
       map.on('rendercomplete', () => {
         this.rendercompleteHandler()
@@ -192,7 +185,8 @@ export class SkraaFotoMap extends HTMLElement {
     const icon_style = new Style({
       image: new Icon({
         src: pointerSvg,
-        scale: 1
+        scale: 1,
+        anchor: [0.5, 1]
       })
     })
     icon_feature.setStyle(icon_style)
@@ -203,14 +197,6 @@ export class SkraaFotoMap extends HTMLElement {
     })
   }
 
-  async singleClickHandler(event) {
-    await state.refresh(event.coordinate)
-    // Update crosshairs icon on map
-    this.map.removeLayer(this.icon_layer)
-    this.icon_layer = this.generateIconLayer(event.coordinate)
-    this.map.addLayer(this.icon_layer)
-  }
-
   async createMap() {
 
     this.toggleSpinner(true)
@@ -218,7 +204,7 @@ export class SkraaFotoMap extends HTMLElement {
     const center = state.marker.position
 
     if (!this.map) {
-      this.map = await this.generateMap(this.getAttribute('minimal'), center, (state.view.zoom + configuration.MAP_ZOOM_DIFFERENCE))
+      this.map = await this.generateMap(center, (state.view.zoom + configuration.MAP_ZOOM_DIFFERENCE))
     } else if (this.map && this.icon_layer) {
       this.map.removeLayer(this.icon_layer)
     }

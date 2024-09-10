@@ -33,14 +33,14 @@ export async function syncFromURL(urlParams) {
   newState.collection = `skraafotos${ urlParams.get('year') }`
 
   if (urlParams.has('item')) {
-    const item1 = await queryItem(urlParams.get('item'))
-    newState.items.item1 = item1
-    newState.items[item1.properties.direction] = item1
+    const item = await queryItem(urlParams.get('item'))
+    newState.items.item1 = item
+    newState.items[item.properties.direction] = item
   } else {
     // Load default item
-    const item1 = await queryItems(newState.marker.position, 'north', newState.collection)
-    newState.items.item1 = item1.features[0]
-    newState.items.north = item1.features[0]
+    const item = await queryItems(newState.marker.position, 'north', newState.collection)
+    newState.items.item1 = item.features[0]
+    newState.items.north = item.features[0]  
   }
 
   if (urlParams.has('item-2')) {

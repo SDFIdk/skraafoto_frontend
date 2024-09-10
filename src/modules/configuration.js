@@ -3,6 +3,18 @@
 const api_stac_default_prod = "https://api.dataforsyningen.dk/rest/skraafoto_api/v1.0"
 const api_stac_default_test = "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v2"
 
+function getRandomPosition() {
+  const places = [
+    [865464, 6140049], // Hammershus
+    [574764, 6220953], // Marselisborg
+    [725872, 6176763], // Amalienborg
+    [721239, 6174113], // Vandflyver, Toftegårds Plads, København
+    [468482, 6322499], // Klitmøller
+    [723842, 6179667], // Sct. Kjels Gård
+  ]
+  return places[ Math.floor(Math.random() * places.length) ]
+}
+
 let configuration = {
 
   API_STAC_TOKEN: '', // STAC TOKEN can be aquired from https://dataforsyningen.dk/
@@ -17,7 +29,7 @@ let configuration = {
   LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY: 'skraafoto-first-time-visit',
 
   DEFAULT_COLLECTION: null, // Set a default collection to initiate from. Example `skraafotos2021`
-  DEFAULT_WORLD_COORDINATE: [ 574764, 6220953 ],
+  DEFAULT_WORLD_COORDINATE: getRandomPosition(),
 
   ENABLE_CUSTOM_TOKEN: false, // Enables using a custom token from URL param or localstorage to access STAC API
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports

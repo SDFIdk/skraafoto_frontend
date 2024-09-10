@@ -25,7 +25,7 @@ export class SkraaFotoDirectionPicker extends HTMLElement {
       </button>
       <div class="sf-slider-grid">
         <button class="sf-map-picker-btn sf-btn-map" title="Skift til kortvisning">
-          <skraafoto-map id="skraafoto-map" class="pick-map" minimal></skraafoto-map>
+          <skraafoto-map id="skraafoto-map" class="pick-map"></skraafoto-map>
         </button>
         <button class="sf-direction-picker-btn sf-btn-nadir" title="Vis fra top">
           <skraafoto-viewport-mini id="viewport-nadir" class="viewport-pick-option" data-orientation="nadir">
