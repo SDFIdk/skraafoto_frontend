@@ -35,7 +35,7 @@ export async function syncFromURL(urlParams) {
   if (urlParams.has('item')) {
     const item = await queryItem(urlParams.get('item'))
     newState.items.item1 = item
-    newState.items[item.properties.direction] = item1
+    newState.items[item.properties.direction] = item
   } else {
     // Load default item
     if (center[0] === 721239 && center[1] === 6174113) {
