@@ -75,7 +75,7 @@ export class PlacementPinTool extends HTMLElement {
         image: state.items[this.viewport.dataset.itemkey], 
         terrain: state.terrain[this.viewport.dataset.itemkey]
       })
-      state.setViewMarker({
+      state.setMarker({
         position: worldPosition.slice(0,2),
         kote: worldPosition[2]
       })
