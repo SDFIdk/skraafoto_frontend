@@ -102,7 +102,8 @@ skraafoto-direction-picker skraafoto-viewport-mini {
 
   skraafoto-direction-picker .sf-slider-content {
     position: static;
-    width: 40rem;
+    width: auto;
+    min-width: 40rem;
     transition: none;
     transform: translate(0,0) !important;
   }

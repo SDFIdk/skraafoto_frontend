@@ -12,7 +12,7 @@ import { configuration } from '../../modules/configuration.js'
 import { state } from '../../state/index.js'
 import { toDanish } from '../../modules/i18n.js'
 import { renderParcels } from '../../custom-plugins/plugin-parcel.js'
-import pointerSvg from '@dataforsyningen/designsystem/assets/icons/pointer-position.svg'
+import pointerSvg from '../../../public/img/icons/pointer-position.svg'
 import crosshairSvg from '../../../public/img/icons/crosshairs.svg'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -41,13 +41,15 @@ function generateIconLayer(center) {
     if (configuration.ENABLE_CROSSHAIR_ICON) {
       icon = new Icon({
         src: crosshairSvg,
-        scale: 1
+        scale: 1,
+        anchor: [0.5,0.5]
       })
     } else {
       icon = new Icon({
         src: pointerSvg,
-        scale: 1.5,
-        color: colorSetting
+        scale: 1,
+        color: colorSetting,
+        anchor: [0.5,1]
       })
     }
     const icon_style = new Style({ image: icon })
