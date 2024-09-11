@@ -56,36 +56,35 @@ export class PlacementPinTool extends HTMLElement {
   }
 
   togglePin() {
+    console.log(this.pinEnabled)
     if (this.pinEnabled === 0) {
       this.viewport.querySelector('.viewport-map').classList.add('pin-on')
       this.button_element.blur()
       this.pinEnabled = 1 // Set the toggle value to 1 (enabled)
-      this.viewport.map.once('singleclick', this.handleClick) // Bind the click event listener once
+      this.viewport.map.once('singleclick', this.handleClick.bind(this)) // Bind the click event listener once
     }
   }
 
   handleClick = async (event) => {
     if (this.pinEnabled === 1 && this.viewport.mode === 'center') {
-      this.pinEnabled = 0 // Set the toggle value to 0 (disabled)
-      this.button_element.style.background = ''
-      this.viewport.querySelector('.viewport-map').classList.remove('pin-on')
-      this.button_element.blur()
       const worldPosition = await getWorldXYZ({
         xy: event.coordinate,
         image: state.items[this.viewport.dataset.itemkey], 
         terrain: state.terrain[this.viewport.dataset.itemkey]
       })
-      state.setMarker({
+      state.setViewMarker({
         position: worldPosition.slice(0,2),
         kote: worldPosition[2]
       })
     }
+    this.pinEnabled = 0 // Set the toggle value to 0 (disabled)
+    this.button_element.style.background = ''
+    this.viewport.querySelector('.viewport-map').classList.remove('pin-on')
+    this.button_element.blur()
   }
 
   connectedCallback() {
     this.createDOM()
-    this.button_element.addEventListener('click', () => {
-      this.togglePin()
-    })
+    this.button_element.addEventListener('click', this.togglePin.bind(this))
   }
 }

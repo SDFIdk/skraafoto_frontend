@@ -160,6 +160,9 @@ class SkraafotoState {
       normalizedKote = payload.kote
     }
 
+    this.marker.position = payload.position
+    this.marker.kote = normalizedKote
+
     // Decide whether to reload any images based on view
     const newItems = yield checkBoundsAll(payload.position, this.items)
     if (newItems) {
@@ -171,8 +174,6 @@ class SkraafotoState {
 
     this.view.position = payload.position
     this.view.kote = normalizedKote
-    this.marker.position = payload.position
-    this.marker.kote = normalizedKote
   }
   // Item
   *setItem(item, key = 'item1') {
