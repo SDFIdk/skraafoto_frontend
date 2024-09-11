@@ -19,11 +19,7 @@ export class FirstTimeVisit extends HTMLElement {
           Skråfoto giver dig mulighed for at se luftfotos taget fra forskellige retninger.<br>
           Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
         </p>
-        <h2 style="display: inline-block;">Vil du hjælpe os?</h2>
-        <p>Vi vil gerne vide noget mere om, hvem der bruger Skråfoto.</p>
-        <p>Hvis du har 2 minutter, kan du hjælpe os ved at udfylde dette korte spørgeskema.</p>
       </div>
-      <iframe style="height: 60rem; width: 100%; border: none;" src="https://www.survey-xact.dk/LinkCollector?key=TJ5EARGLU292"></iframe>
       <p style="padding-bottom: var(--space-lg);">
         <button class="btn-welcome-close">Fortsæt med at bruge Skråfoto</button>
       </p>

@@ -3,11 +3,10 @@ skraafoto-first-time-visit dialog {
   overflow: auto;
 }
 skraafoto-first-time-visit dialog[open] {
-  max-width: 100%;
-  width: 70rem;
+  width: 45rem;
   margin: auto;
-  height: 100%;
   max-height: 87.5rem;
+  max-width: 100%;
 }
 skraafoto-first-time-visit dialog::backdrop {
   background-color: hsla(0, 0%, 0%, 0.6);
