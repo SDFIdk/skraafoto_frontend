@@ -61,7 +61,7 @@ skraafoto-viewport .out-of-bounds {
   transform: translateY(-50%);
   text-align: center;
 }
-skraafoto-viewport .ol-viewport canvas {
+skraafoto-viewport .ol-viewport {
   cursor: crosshair;
 }
 skraafoto-viewport .image-date {

@@ -29,7 +29,7 @@ export class PlacementPinTool extends HTMLElement {
       cursorPosition = '15 30'
     } 
     this.style  = `
-      skraafoto-viewport .pin-on .ol-viewport canvas {
+      skraafoto-viewport .pin-on .ol-viewport {
         cursor: url(${ this.cursorIcon }) ${ cursorPosition }, crosshair;
       }
     `
@@ -56,7 +56,6 @@ export class PlacementPinTool extends HTMLElement {
   }
 
   togglePin() {
-    console.log(this.pinEnabled)
     if (this.pinEnabled === 0) {
       this.viewport.querySelector('.viewport-map').classList.add('pin-on')
       this.button_element.blur()
