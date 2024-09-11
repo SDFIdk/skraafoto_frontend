@@ -1,8 +1,8 @@
 import { getImageXY } from '@dataforsyningen/saul'
-import { queryItems, getTerrainData } from '../modules/api.js'
+import { queryItems } from '../modules/api.js'
 
 async function refreshItems(position, collection) {
-  const itemTerrainPairs = {
+  const itemList = {
     nadir: null,
     north: null,
     south: null,
@@ -10,23 +10,15 @@ async function refreshItems(position, collection) {
     west: null
   }
   let itemPromises = []
-  let terrainPromises = []
-  for (const key of Object.keys(itemTerrainPairs)) {
+  for (const key of Object.keys(itemList)) {
     itemPromises.push(queryItems(position, key, collection))
   }
   const items = await Promise.all(itemPromises)
   for (const i in items) {
-    terrainPromises.push(getTerrainData(items[i].features[0]))
-  }
-  const terrains = await Promise.all(terrainPromises)
-  for (const i in items) {
     const item = items[i].features[0]
-    itemTerrainPairs[item.properties.direction] = {
-      item: item,
-      terrain: terrains[i]
-    }
+    itemList[item.properties.direction] = item
   }
-  return itemTerrainPairs
+  return itemList
 }
 
 /** Checks if a coordinate is inside or outside the bounding box coordinates of an image 
@@ -65,11 +57,7 @@ async function checkBoundsAll(coordinate, images) {
     if (value) {
       const newImage = await checkBounds(coordinate, value)
       if (newImage) {
-        const newTerrain = await getTerrainData(value)
-        reloadedItems[key] = {
-          item: newImage,
-          terrain: newTerrain
-        }
+        reloadedItems[key] = newImage
       }  
     }
   }

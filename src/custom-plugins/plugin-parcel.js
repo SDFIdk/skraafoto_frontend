@@ -158,7 +158,7 @@ function renderParcels(viewport, itemId) {
     parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
     imageId: itemId,
     map: viewport.map,
-    elevationdata: state.terrain[itemkey]
+    elevationdata: state.terrain
   })
 }
 

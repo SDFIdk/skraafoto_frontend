@@ -1,10 +1,10 @@
 import { makeAutoObservable, autorun, reaction, when } from 'mobx'
 import { configuration } from '../modules/configuration.js'
-import { getCollections, getTerrainData } from '../modules/api.js'
+import { getCollections } from '../modules/api.js'
 import { sanitizeParams } from '../modules/url-sanitize.js'
 import { syncToUrl, syncFromURL } from './syncUrl.js'
 import { refreshItems, checkBoundsAll } from './items.js'
-import { getZ } from '@dataforsyningen/saul'
+import { getDenmarkGeoTiff, getElevation } from '@dataforsyningen/saul'
 
 class SkraafotoState {
  
@@ -23,7 +23,7 @@ class SkraafotoState {
   // Pointer
   pointerPosition = null
   pointerItemkey = null
-  // Items & terrain (height info)
+  // Items
   items = {
     item1: null,
     item2: null,
@@ -33,15 +33,8 @@ class SkraafotoState {
     west: null,
     east: null
   }
-  terrain = {
-    item1: null,
-    item2: null,
-    nadir: null,
-    north: null,
-    south: null,
-    west: null,
-    east: null
-  }
+  // Elevation data (terrain heights)
+  terrain = null
   // Map
   mapVisible = false
   // Collections
@@ -80,6 +73,10 @@ class SkraafotoState {
   set setParcels(parcels) {
     this.parcels = parcels
   }
+  // Terrain
+  set setTerrain(gtiff) {
+    this.terrain = gtiff
+  }
 
   /* Flows */
   *setMarker(payload) {
@@ -96,13 +93,12 @@ class SkraafotoState {
     const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
     if (newItems) {
       for (const [key, value] of Object.entries(newItems)) {
-        this.terrain[key] = value.terrain
-        this.items[key] = value.item
+        this.items[key] = value
       }
     }
 
     if (payload.position && !payload.kote) {
-      this.marker.kote = yield getZ(payload.position[0], payload.position[1], configuration)
+      this.marker.kote = getElevation(payload.position[0], payload.position[1], this.terrain)
     }
     if (payload.kote) {
       this.marker.kote = payload.kote
@@ -134,13 +130,12 @@ class SkraafotoState {
     const newItems = yield checkBoundsAll(payload.position, itemsToCheck)
     if (newItems) {
       for (const [key, value] of Object.entries(newItems)) {
-        this.terrain[key] = value.terrain
-        this.items[key] = value.item
+        this.items[key] = value
       }
     }
 
     if (payload.position && !payload.kote) {
-      this.view.kote = yield getZ(payload.position[0], payload.position[1], configuration)
+      this.view.kote = getElevation(payload.position[0], payload.position[1], this.terrain)
     }
     if (payload.position) {
       this.view.position = payload.position
@@ -155,7 +150,7 @@ class SkraafotoState {
   *setViewMarker(payload) {
     let normalizedKote 
     if (!payload.kote) {
-      normalizedKote = yield getZ(payload.position[0], payload.position[1], configuration)
+      normalizedKote = getElevation(payload.position[0], payload.position[1], this.terrain)
     } else {
       normalizedKote = payload.kote
     }
@@ -167,8 +162,7 @@ class SkraafotoState {
     const newItems = yield checkBoundsAll(payload.position, this.items)
     if (newItems) {
       for (const [key, value] of Object.entries(newItems)) {
-        this.terrain[key] = value.terrain
-        this.items[key] = value.item
+        this.items[key] = value
       }
     }
 
@@ -178,8 +172,6 @@ class SkraafotoState {
   // Item
   *setItem(item, key = 'item1') {
     if (this.items[key]?.id !== item.id) { // Only update if item is new
-      const terrain = yield getTerrainData(item)
-      this.terrain[key] = terrain
       this.items[key] = item
     }
   }
@@ -188,21 +180,18 @@ class SkraafotoState {
    * @param {array} position ESPG:25832 coordinate 
    */
   *refresh(position) {
-    const kote = yield getZ(position[0], position[1], configuration)
-    const itemTerrainPairs = yield refreshItems(position, this.currentCollection)
-    for (const [key, value] of Object.entries(itemTerrainPairs)) {
-      this.terrain[key] = value.terrain
-      this.items[key] = value.item
+    const kote = getElevation(position[0], position[1], this.terrain)
+    const itemList = yield refreshItems(position, this.currentCollection)
+    for (const [key, value] of Object.entries(itemList)) {
+      this.items[key] = value
     }
     if (this.items['item1']) {
-      const item1direction = itemTerrainPairs[this.items['item1'].properties.direction]
-      this.terrain['item1'] = item1direction.terrain
-      this.items['item1'] = item1direction.item
+      const item1direction = itemList[this.items['item1'].properties.direction]
+      this.items['item1'] = item1direction
     }
     if (this.items['item2']) {
-      const item2direction = itemTerrainPairs[this.items['item2'].properties.direction]
-      this.terrain['item2'] = item2direction.terrain
-      this.items['item2'] = item2direction.item
+      const item2direction = itemList[this.items['item2'].properties.direction]
+      this.items['item2'] = item2direction
     }
     this.view.position = position
     this.marker.position = position
@@ -236,9 +225,14 @@ class SkraafotoState {
 
 // Initialize state using URL search parameters
 const state = new SkraafotoState()
-getCollections().then((collections) => {
-  state.setCollections = collections
-  sanitizeParams(new URL(window.location), collections).then((urlSearchParams) => {
+const promises = [
+  getDenmarkGeoTiff({auth: configuration, size: 700}),
+  getCollections()  
+]
+Promise.all(promises).then((values) => {
+  state.setTerrain = values[0]
+  state.setCollections = values[1]
+  sanitizeParams(new URL(window.location), values[1]).then((urlSearchParams) => {
     syncFromURL(urlSearchParams).then((newState) => {
       
       state.syncState(newState)

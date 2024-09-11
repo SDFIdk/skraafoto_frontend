@@ -249,7 +249,7 @@ export class MeasureWidthTool {
     for (let n = 0; coords.length > n; n = n+2) {
       const new_coord = await getWorldXYZ({
         image: state.items[this.viewport.dataset.itemkey],
-        terrain: state.terrain[this.viewport.dataset.itemkey],
+        terrain: state.terrain,
         xy: [coords[n], coords[n + 1]]
       })
       // Since `getDistance` works with WGS84 coordinates, we must translate the coords
