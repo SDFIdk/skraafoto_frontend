@@ -101,7 +101,6 @@ async function updateViewport(newData, oldData, map) {
   if (!newData.item || !newData.view || !newData.marker) {
     return
   }
-
   // On item change, load a new image layer in map and update view/marker
   if (newData.item !== oldData.item) {
     updateMapImage(map, newData.item)
@@ -111,12 +110,12 @@ async function updateViewport(newData, oldData, map) {
   }
   
   // On view change, update map view
-  if (newData.view.position !== oldData.view.position || newData.view.zoom !== oldData.view.zoom) {
+  if (newData.view.position && newData.view.position !== oldData.view.position || newData.view.zoom !== oldData.view.zoom) {
     await updateView(newData, map)
   }
 
   // On marker change, update marker position
-  if (newData.marker.position !== oldData.marker.position) {
+  if (newData.marker.position && newData.marker.position !== oldData.marker.position) {
     await updateMarker(newData, map)
   }
 

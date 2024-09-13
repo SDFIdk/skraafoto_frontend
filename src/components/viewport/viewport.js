@@ -3,7 +3,7 @@ import { defaults as defaultControls } from 'ol/control'
 import FullScreen from 'ol/control/FullScreen'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import Collection from 'ol/Collection'
-import { image2world } from '@dataforsyningen/saul'
+import { image2world, getWorldXYZ } from '@dataforsyningen/saul'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { SkraaFotoExposureTool } from '../tools/map-tool-exposure.js'
 import { PlacementPinTool } from '../tools/map-tool-pin.js'
@@ -255,11 +255,16 @@ export class SkraaFotoViewport extends HTMLElement {
     }
     const center = view.getCenter()
     const world_zoom = view.getZoom()
-    const world_center = image2world(state.items[this.dataset.itemkey], center[0], center[1], state.view.kote)
-    state.setView({
-      zoom: world_zoom,
-      position: world_center.slice(0,2),
-      kote: world_center[2]
+    getWorldXYZ({
+      xy: center,
+      image: state.items[this.dataset.itemkey],
+      terrain: state.terrain
+    }).then((worldCenter) => {
+      state.setView({
+        zoom: world_zoom,
+        position: worldCenter.slice(0,2),
+        kote: worldCenter[2]
+      })
     })
   }
 

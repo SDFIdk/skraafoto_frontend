@@ -98,7 +98,7 @@ class SkraafotoState {
     }
 
     if (payload.position && !payload.kote) {
-      this.marker.kote = getElevation(payload.position[0], payload.position[1], this.terrain)
+      this.marker.kote = yield getElevation(payload.position[0], payload.position[1], this.terrain)
     }
     if (payload.kote) {
       this.marker.kote = payload.kote
@@ -135,7 +135,7 @@ class SkraafotoState {
     }
 
     if (payload.position && !payload.kote) {
-      this.view.kote = getElevation(payload.position[0], payload.position[1], this.terrain)
+      this.view.kote = yield getElevation(payload.position[0], payload.position[1], this.terrain)
     }
     if (payload.position) {
       this.view.position = payload.position
@@ -150,7 +150,7 @@ class SkraafotoState {
   *setViewMarker(payload) {
     let normalizedKote 
     if (!payload.kote) {
-      normalizedKote = getElevation(payload.position[0], payload.position[1], this.terrain)
+      normalizedKote = yield getElevation(payload.position[0], payload.position[1], this.terrain)
     } else {
       normalizedKote = payload.kote
     }
@@ -180,7 +180,7 @@ class SkraafotoState {
    * @param {array} position ESPG:25832 coordinate 
    */
   *refresh(position) {
-    const kote = getElevation(position[0], position[1], this.terrain)
+    const kote = yield getElevation(position[0], position[1], this.terrain)
     const itemList = yield refreshItems(position, this.currentCollection)
     for (const [key, value] of Object.entries(itemList)) {
       this.items[key] = value
@@ -197,6 +197,7 @@ class SkraafotoState {
     this.marker.position = position
     this.view.kote = kote
     this.marker.kote = kote
+    
   }
 
   // URL sync
@@ -226,7 +227,7 @@ class SkraafotoState {
 // Initialize state using URL search parameters
 const state = new SkraafotoState()
 const promises = [
-  getDenmarkGeoTiff({auth: configuration, size: 700}),
+  getDenmarkGeoTiff({src: '/img/dk-terrain.tiff'}),
   getCollections()  
 ]
 Promise.all(promises).then((values) => {
