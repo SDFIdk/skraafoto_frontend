@@ -9,9 +9,9 @@ function getGSearchCenterPoint(detail) {
     const interior_point = poly.getInteriorPoint().flatCoordinates
     coord = [interior_point[0], interior_point[1]]
   } 
-  else if (detail.type === 'MultiLineString') {
-    const middlePoint = Math.floor(detail.coordinates[0].length / 2)
-    coord = detail.coordinates[0][middlePoint]
+  else if (detail.geometry.type === 'MultiLineString') {
+    const middlePoint = Math.floor(detail.geometry.coordinates[0].length / 2)
+    coord = detail.geometry.coordinates[0][middlePoint]
   } 
   else {
     // Other geometries will be of type 'MultiPoint'
