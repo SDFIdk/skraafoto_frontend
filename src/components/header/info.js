@@ -65,9 +65,9 @@ export class InformationDialog extends HTMLElement {
               Sankt Kjelds Plads 11<br>
               2100 København Ø<br>
               7254 5500<br>
-              sdfi@sdfi.dk<br>
-              EAN-nummer: 5798009813640<br>
-              CVR-nummer: 37 28 41 14
+              kds@kds.dk<br>
+              EAN-nr: 5798009813640<br>
+              CVR-nr: 37284114
             </small>
           </p>
           <hr>

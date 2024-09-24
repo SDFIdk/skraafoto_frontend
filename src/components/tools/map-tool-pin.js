@@ -39,10 +39,12 @@ export class PlacementPinTool extends HTMLElement {
     this.button_element = document.createElement('button')
     this.button_element.style.borderRadius = '0'
     this.button_element.className = 'pin-btn secondary'
-    this.button_element.title = 'Aktivér sigtekorn'
+    
     if (configuration.ENABLE_CROSSHAIR_ICON) {
+      this.button_element.title = 'Aktivér sigtekorn for at vælge en ny position'
       this.button_element.innerHTML = `<svg><use href="${ svgSprites }#crosshair"/></svg>`
     } else {
+      this.button_element.title = 'Vælg en ny position'
       this.button_element.innerHTML = `<svg><use href="${ svgSprites }#pointer-position"/></svg>`
     }
     this.append(this.button_element)
