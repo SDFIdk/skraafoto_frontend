@@ -28,6 +28,11 @@ function fetchParcels(ids) {
   if (!ids) {
     return Promise.resolve([])
   }
+
+  if (configuration.ENABLE_PARCEL_WFS) {
+    return Promise.resolve([])
+  }
+
   const splitIds = ids.split(';')
   const promises = []
 
