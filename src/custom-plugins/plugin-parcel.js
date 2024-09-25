@@ -24,29 +24,62 @@ function fetchParcel(id) {
   })
 }
 
+/**
+ * Requests MATRIKLEN WFS service and fetches "Jordstykker" filtered by Ejerlav and Matrikel.
+ * @param {number} ejerlav 
+ * @param {string} matrikel 
+ * @returns {Array} Polygon array consisting of coordinate pairs
+ */
+function fetchParcelWFS(ejerlav, matrikel) {
+  return fetch(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
+  .then((response) => response.text())
+  .then((xml) => new DOMParser().parseFromString(xml, "text/xml"))
+  .then((data) => {
+    const polygonData = data.getElementsByTagName('gml:posList')[0].childNodes[0].nodeValue.split(' ')
+    const polygon = []
+    for (let i = 0; i < polygonData.length; i = i + 3) {
+      polygon.push([Number(polygonData[i]), Number(polygonData[i + 1])])
+    }
+    return polygon
+  })
+}
+
 function fetchParcels(ids) {
   if (!ids) {
     return Promise.resolve([])
   }
 
-  if (configuration.ENABLE_PARCEL_WFS) {
-    return Promise.resolve([])
-  }
-
   const splitIds = ids.split(';')
   const promises = []
-
-  splitIds.forEach((id) => {
-    promises.push(fetchParcel(id)
-      .then((parcel_data) => {
-        return parcel_data.geometry ? parcel_data.geometry.coordinates[0] : undefined
-      })
-    )
-  })
-
   const parcels = []
 
-  return Promise.all(promises)
+  if (configuration.ENABLE_PARCEL_WFS) {
+    console.log('parcel ids',splitIds)
+    splitIds.forEach((id) => {
+      const [ejerlav, matrikel] = id.split('-')
+      promises.push(fetchParcelWFS(ejerlav, matrikel))
+    })
+
+    return Promise.all(promises).then((results) => {
+      results.forEach((result) => {
+        if (result) {
+          parcels.push(result)
+        }
+      })
+      return parcels
+    })
+
+  } else {
+
+    splitIds.forEach((id) => {
+      promises.push(fetchParcel(id)
+        .then((parcel_data) => {
+          return parcel_data.geometry ? parcel_data.geometry.coordinates[0] : undefined
+        })
+      )
+    })
+
+    return Promise.all(promises)
     .then((results) => {
       results.forEach((result) => {
         if (result) {
@@ -55,6 +88,8 @@ function fetchParcels(ids) {
       })
       return parcels
     })
+
+  }
 }
 
 function getPolygonElevations(coords, terrain) {
