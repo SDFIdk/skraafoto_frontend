@@ -54,7 +54,6 @@ function fetchParcels(ids) {
   const parcels = []
 
   if (configuration.ENABLE_PARCEL_WFS) {
-    console.log('parcel ids',splitIds)
     splitIds.forEach((id) => {
       const [ejerlav, matrikel] = id.split('-')
       promises.push(fetchParcelWFS(ejerlav, matrikel))
