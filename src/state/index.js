@@ -183,7 +183,6 @@ class SkraafotoState {
   }
   // Item
   *setItem(item, key = 'item1') {
-    console.log('setting item')
     if (this.items[key]?.id !== item.id) { // Only update if item is new
       const terrain = yield getTerrainData(item)
       this.toolMode = null

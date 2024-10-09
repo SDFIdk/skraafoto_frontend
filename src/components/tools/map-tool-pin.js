@@ -81,14 +81,12 @@ export class PlacementPinTool extends HTMLElement {
       this.button_element.blur()
       state.setToolMode = 'center' // Enable tool
       this.viewport.map.once('singleclick', this.handleClick.bind(this)) // Bind the click event listener once
-      console.log('state.toolMode', state.toolMode)
     } else {
       this.cleanUp()
     }
   }
 
   handleClick = async (event) => {
-    console.log('clickety click', state.toolMode, this.viewport.mode)
     if (state.toolMode === 'center') {
       const worldPosition = await getWorldXYZ({
         xy: event.coordinate,
