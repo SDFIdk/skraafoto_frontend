@@ -1,3 +1,7 @@
+.btn-width-measure,
+.btn-height-measure {
+  border-radius: 0;
+}
 .ol-tooltip {
   position: relative;
   background: var(--c7);

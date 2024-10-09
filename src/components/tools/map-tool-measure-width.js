@@ -7,19 +7,24 @@ import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import { configuration } from "../../modules/configuration"
-import { state, reaction } from '../../state/index.js'
+import { state, reaction, autorun } from '../../state/index.js'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
+import { findAncestor } from '../../modules/utilities.js'
+import { awaitMap, setModeChangeHandler, setLineRemoveHandler, setToggleHandler } from './map-tool-measure-shared.js'
 
 const featureIdentifiers = []
 
 /**
  * Enables user to measure horizontal distances in an image
  */
-export class MeasureWidthTool {
+export class MeasureWidthTool extends HTMLElement {
 
   // properties
+  mode = 'measurewidth'
   overlayIdCounter = 1
   coorTranslator = createTranslator()
   viewport
+  map
   colorSetting = configuration.COLOR_SETTINGS.widthColor
   style = new Style({
     stroke: new Stroke({
@@ -46,42 +51,41 @@ export class MeasureWidthTool {
   measureTooltipElement
   measureTooltip
   draw
+  modeListenDisposer
+  lineRemoveDisposer
+  toggleDisposer
   
-
-  constructor(viewport) {
-
-    this.viewport = viewport
-    this.viewport.map.addLayer(this.layer)
-
-    this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
-
-    // Removes drawn lines on image change
-    reaction(() => {
-      return state.items[this.viewport.dataset.itemkey]
-    }, (newItem, oldItem) => {
-      if (newItem.id !== oldItem.id) {
-        this.imageChangeHandler()
-      }
-    })
+  constructor() {
+    super()
   }
 
+  connectedCallback() {
+    this.createDOM()
+    this.viewport = findAncestor(this, 'skraafoto-viewport')
+    awaitMap(this.viewport).then((mapObj) => {
+      this.map = mapObj
+      this.map.addLayer(this.layer)
+      this.modeListenDisposer = setModeChangeHandler(this)
+      // Removes drawn lines on image change
+      this.lineRemoveDisposer = setLineRemoveHandler(this)
+    }) 
+    this.toggleDisposer = setToggleHandler('measurewidth', this.querySelector('button'))
+  }
+
+  disconnectedCallback() {
+    this.modeListenDisposer()
+    this.lineRemoveDisposer()
+    this.toggleDisposer()
+  }
 
   // Methods
 
-  modeChangeHandler(event) {
-    // Clear previous interaction and measure drawings
-    this.clearInteraction()
-    // Remove previous event listeners
-    this.viewport.map.removeEventListener('pointermove', this.pointerMoveHandler)
-    this.viewport.map.getViewport().removeEventListener('mouseout', this.mouseOutHandler)
-
-    if (event.detail() === 'measurewidth') {
-      // Add new interaction
-      this.addInteraction()
-      // Set up event listeners
-      this.viewport.map.addEventListener('pointermove', this.pointerMoveHandler.bind(this))
-      this.viewport.map.getViewport().addEventListener('mouseout', this.mouseOutHandler.bind(this))
-    }
+  createDOM() {
+    this.innerHTML = `
+      <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand" data-mode="measurewidth">
+        <svg><use href="${ svgSprites }#ruler-horizontal"/></svg>
+      </button>
+    `
   }
 
   pointerMoveHandler(event) {
@@ -111,7 +115,7 @@ export class MeasureWidthTool {
       maxPoints: 2,
       minPoints: 2
     })
-    this.viewport.map.addInteraction(this.draw)
+    this.map.addInteraction(this.draw)
 
     this.createHelpTooltip()
     this.createMeasureTooltip()
@@ -171,7 +175,7 @@ export class MeasureWidthTool {
       offset: [15, 0],
       positioning: 'center-left'
     })
-    this.viewport.map.addOverlay(this.helpTooltip)
+    this.map.addOverlay(this.helpTooltip)
   }
 
   /**
@@ -217,7 +221,7 @@ export class MeasureWidthTool {
       const featureToRemove = featureIdentifiers[clickedTooltipId]
       if (featureToRemove) {
         this.source.removeFeature(featureToRemove.feature) // Remove the feature from the source
-        this.viewport.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
+        this.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
         this.draw.setActive(false) // Disable the draw interaction
       }
       this.draw.setActive(true) // Re-enable the draw interaction
@@ -226,22 +230,10 @@ export class MeasureWidthTool {
     // Store references to the feature and overlay
     featureIdentifiers[tooltipId] = this.measureTooltip
 
-    this.viewport.map.addOverlay(this.measureTooltip)
+    this.map.addOverlay(this.measureTooltip)
   }
   calcTooltipPosition(geometry) {
     return geometry.getFlatMidpoint()
-  }
-
-  imageChangeHandler() {
-    this.clearInteraction()
-    this.source.clear() // Clear line features
-  }
-
-  clearInteraction() {
-    if (this.helpTooltipElement) {
-      this.helpTooltipElement.remove()
-    }
-    this.viewport.map.removeInteraction(this.draw)
   }
 
   async calculateDistance(coords) {
