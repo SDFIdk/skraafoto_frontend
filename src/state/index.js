@@ -80,7 +80,6 @@ class SkraafotoState {
   }
   // Tools
   set setToolMode(toolMode) {
-    console.log('setting tool mode', toolMode)
     this.toolMode = toolMode
   }
   // Parcels
@@ -184,9 +183,10 @@ class SkraafotoState {
   }
   // Item
   *setItem(item, key = 'item1') {
+    console.log('setting item')
     if (this.items[key]?.id !== item.id) { // Only update if item is new
       const terrain = yield getTerrainData(item)
-      this.toolMode = 'center'
+      this.toolMode = null
       this.terrain[key] = terrain
       this.items[key] = item
     }
@@ -198,7 +198,7 @@ class SkraafotoState {
   *refresh(position) {
     const kote = yield getZ(position[0], position[1], configuration)
     const itemTerrainPairs = yield refreshItems(position, this.currentCollection)
-    this.toolMode = 'center'
+    this.toolMode = null
     for (const [key, value] of Object.entries(itemTerrainPairs)) {
       this.terrain[key] = value.terrain
       this.items[key] = value.item

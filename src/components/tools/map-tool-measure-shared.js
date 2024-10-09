@@ -11,6 +11,7 @@ export function setToggleHandler(mode, buttonElement) {
   return autorun(() => {
     if (state.toolMode !== mode) {
       buttonElement.classList.remove('active')
+      buttonElement.blur()
     } else {
       buttonElement.classList.add('active')
     }

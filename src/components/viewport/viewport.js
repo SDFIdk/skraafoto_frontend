@@ -257,26 +257,23 @@ export class SkraaFotoViewport extends HTMLElement {
     // When state changes, update viewport
     this.reactionDisposer = reaction(
       () => {
-        // If the user is using the measure tool, refrain from reacting to state change since that will abort the Draw action.
-        if (state.toolMode === 'measurewidth' || state.toolMode === 'measureheight') {
-          return false
-        } else {
-          return {
-            item: state.items[this.dataset.itemkey], 
-            view: {
-              position: state.view.position,
-              kote: state.view.kote,
-              zoom: state.view.zoom
-            },
-            marker: {
-              position: state.marker.position,
-              kote: state.marker.kote
-            }
-          }
+        return {
+          item: state.items[this.dataset.itemkey], 
+          view: {
+            position: state.view.position,
+            kote: state.view.kote,
+            zoom: state.view.zoom
+          },
+          marker: {
+            position: state.marker.position,
+            kote: state.marker.kote
+          },
+          mode: state.toolMode
         }
       },
       (newData, oldData) => {
-        if (!newData || !newData.item) {
+        // If there is no new image or the user just fiddled with some tools (`mode`), refrain from reacting to state change since that will abort the Draw action.
+        if (!newData || newData.mode) {
           return
         }
         if (!oldData || newData.item.id !== oldData.item.id) {
