@@ -1,7 +1,7 @@
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import pointerSvg from '../../../public/img/icons/pin.svg'
 import crosshairSvg from '../../../public/img/icons/crosshairs.svg'
-import { state } from '../../state/index.js'
+import { state, autorun } from '../../state/index.js'
 import { getWorldXYZ } from '@dataforsyningen/saul'
 import { configuration } from '../../modules/configuration.js'
 
@@ -10,9 +10,9 @@ export class PlacementPinTool extends HTMLElement {
   button_element
   viewport
   variables = {}
-  pinEnabled = 0
   cursorIcon
   style
+  toggleDisposer
 
   set setContextTarget(viewport) {
     this.viewport = viewport
@@ -33,6 +33,23 @@ export class PlacementPinTool extends HTMLElement {
         cursor: url(${ this.cursorIcon }) ${ cursorPosition }, crosshair;
       }
     `
+  }
+
+  connectedCallback() {
+    this.createDOM()
+    this.button_element.addEventListener('click', this.togglePin.bind(this))
+    this.toggleDisposer = autorun(() => {
+      if (state.toolMode !== 'center') {
+        this.button_element.classList.remove('active')
+        if (this.viewport) {
+          this.viewport.querySelector('.viewport-map').classList.remove('pin-on')
+        }
+      }
+    })
+  }
+
+  disconnectedCallback() {
+    this.toggleDisposer()
   }
 
   createDOM() {
@@ -58,16 +75,19 @@ export class PlacementPinTool extends HTMLElement {
   }
 
   togglePin() {
-    if (this.pinEnabled === 0) {
+    if (state.toolMode !== 'center') {
       this.viewport.querySelector('.viewport-map').classList.add('pin-on')
+      this.button_element.classList.add('active')
       this.button_element.blur()
-      this.pinEnabled = 1 // Set the toggle value to 1 (enabled)
+      state.setToolMode = 'center' // Enable tool
       this.viewport.map.once('singleclick', this.handleClick.bind(this)) // Bind the click event listener once
+    } else {
+      this.cleanUp()
     }
   }
 
   handleClick = async (event) => {
-    if (this.pinEnabled === 1 && this.viewport.mode === 'center') {
+    if (state.toolMode === 'center') {
       const worldPosition = await getWorldXYZ({
         xy: event.coordinate,
         image: state.items[this.viewport.dataset.itemkey], 
@@ -78,14 +98,12 @@ export class PlacementPinTool extends HTMLElement {
         kote: worldPosition[2]
       })
     }
-    this.pinEnabled = 0 // Set the toggle value to 0 (disabled)
-    this.button_element.style.background = ''
-    this.viewport.querySelector('.viewport-map').classList.remove('pin-on')
-    this.button_element.blur()
+    this.cleanUp()
   }
 
-  connectedCallback() {
-    this.createDOM()
-    this.button_element.addEventListener('click', this.togglePin.bind(this))
+  cleanUp() {
+    this.viewport.querySelector('.viewport-map').classList.remove('pin-on')
+    this.button_element.blur()
+    state.setToolMode = null // Disable tool
   }
 }

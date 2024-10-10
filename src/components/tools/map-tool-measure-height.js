@@ -7,18 +7,23 @@ import { image2world, getImageXY } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 import { configuration } from "../../modules/configuration"
-import { state, reaction } from '../../state/index.js'
+import { state, reaction, autorun } from '../../state/index.js'
+import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
+import { findAncestor } from '../../modules/utilities.js'
+import { awaitMap, setModeChangeHandler, setLineRemoveHandler, setToggleHandler } from './map-tool-measure-shared.js'
 
 const featureIdentifiers = []
 
 /**
  * Enables user to measure vertical distances in an image
  */
-export class MeasureHeightTool {
+export class MeasureHeightTool extends HTMLElement {
 
   // properties
+  mode = 'measureheight'
   overlayIdCounter = 1
   viewport
+  map
   colorSetting = configuration.COLOR_SETTINGS.heightColor
   style = new Style({
     stroke: new Stroke({
@@ -46,49 +51,49 @@ export class MeasureHeightTool {
   measureTooltip
   draw
   axisFunc
+  modeListenDisposer
+  lineRemoveDisposer
+  toggleDisposer
 
+  constructor() {
+    super()
+  }
 
-  constructor(viewport) {
-
-    this.viewport = viewport
-    this.viewport.map.addLayer(this.layer)
-
-    this.viewport.addEventListener('modechange', this.modeChangeHandler.bind(this))
-
-    // Removes drawn lines on image change
-    reaction(() => {
-      return state.items[this.viewport.dataset.itemkey]
-    }, (newItem, oldItem) => {
-      if (newItem.id !== oldItem.id) {
-        this.imageChangeHandler()
-      }
+  connectedCallback() {
+    this.createDOM()
+    this.viewport = findAncestor(this, 'skraafoto-viewport')
+    awaitMap(this.viewport).then((mapObj) => {
+      this.map = mapObj
+      this.map.addLayer(this.layer)
+      this.modeListenDisposer = setModeChangeHandler(this)
+      // Removes drawn lines on image change
+      this.lineRemoveDisposer = setLineRemoveHandler(this)
     })
+    this.toggleDisposer = setToggleHandler('measureheight', this.querySelector('button'))
+  }
+
+  disconnectedCallback() {
+    this.modeListenDisposer()
+    this.lineRemoveDisposer()
+    this.toggleDisposer()
   }
 
 
   // Methods
 
-  modeChangeHandler(event) {
-    // Clear previous interaction and measure drawings
-    this.clearInteraction()
-    // Remove previous event listeners
-    this.viewport.map.removeEventListener('pointermove', this.pointerMoveHandler)
-    this.viewport.map.getViewport().removeEventListener('mouseout', this.mouseOutHandler)
-
-    if (event.detail() === 'measureheight') {
-      // Add new interaction
-      this.addInteraction()
-      // Set up event listeners
-      this.viewport.map.addEventListener('pointermove', this.pointerMoveHandler.bind(this))
-      this.viewport.map.getViewport().addEventListener('mouseout', this.mouseOutHandler.bind(this))
-    }
+  createDOM() {
+    this.innerHTML = `
+      <button id="height-btn" class="btn-height-measure secondary" title="Mål højde">
+        <svg><use href="${ svgSprites }#ruler-vertical"/></svg>
+      </button>
+    `
   }
 
   pointerMoveHandler(event) {
     if (event.dragging) {
       return
     }
-    let helpMsg = '‘Klik på terræn for at måle højde’'
+    let helpMsg = 'Klik på terræn for at måle højde'
     if (this.sketch) {
       helpMsg = 'Klik for at afslutte måling'
     }
@@ -129,7 +134,7 @@ export class MeasureHeightTool {
         return geom
       }
     })
-    this.viewport.map.addInteraction(this.draw)
+    this.map.addInteraction(this.draw)
 
     this.createHelpTooltip()
     this.createMeasureTooltip()
@@ -207,7 +212,7 @@ export class MeasureHeightTool {
       offset: [15, 0],
       positioning: 'center-left'
     })
-    this.viewport.map.addOverlay(this.helpTooltip)
+    this.map.addOverlay(this.helpTooltip)
   }
 
   /**
@@ -241,7 +246,7 @@ export class MeasureHeightTool {
       const featureToRemove = featureIdentifiers[clickedTooltipId]
       if (featureToRemove) {
         this.source.removeFeature(featureToRemove.feature) // Remove the feature from the source
-        this.viewport.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
+        this.map.removeOverlay(featureToRemove.overlay) // Remove the overlay from the map
         this.draw.setActive(false) // Disable the draw interaction
       }
       this.draw.setActive(true) // Re-enable the draw interaction
@@ -250,23 +255,11 @@ export class MeasureHeightTool {
     // Store references to the feature and overlay
     featureIdentifiers[tooltipId] = this.measureTooltip
 
-    this.viewport.map.addOverlay(this.measureTooltip)
+    this.map.addOverlay(this.measureTooltip)
   }
 
   calcTooltipPosition(geometry) {
     return geometry.getFlatMidpoint()
-  }
-
-  imageChangeHandler() {
-    this.clearInteraction()
-    this.source.clear() // Clear line features
-  }
-
-  clearInteraction() {
-    if (this.helpTooltipElement) {
-      this.helpTooltipElement.remove()
-    }
-    this.viewport.map.removeInteraction(this.draw)
   }
 
   generateVerticalAxisFunction(coord, image_item) {

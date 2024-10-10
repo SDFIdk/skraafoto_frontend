@@ -12,7 +12,6 @@ import { MeasureHeightTool } from '../tools/map-tool-measure-height.js'
 import { updateViewportPointer, generatePointerLayer } from '../../custom-plugins/plugin-pointer'
 import { footprintHandler } from '../../custom-plugins/plugin-footprint.js'
 import { configuration } from '../../modules/configuration.js'
-import { findAncestor } from '../../modules/utilities.js'
 import {
   updateViewport,
   updateMapView,
@@ -27,6 +26,8 @@ import { state, reaction, when, autorun } from '../../state/index.js'
 
 customElements.define('skraafoto-exposure-tool', SkraaFotoExposureTool)
 customElements.define('skraafoto-pin-tool', PlacementPinTool)
+customElements.define('skraafoto-measure-width-tool', MeasureWidthTool)
+customElements.define('skraafoto-measure-height-tool', MeasureHeightTool)
 
 // Imports and definitions based on configuration
 if (configuration.ENABLE_PRINT) {
@@ -43,19 +44,10 @@ if (configuration.ENABLE_DOWNLOAD) {
 /**
  * HTML web component that displays an image using the OpenLayers library.
  * This is the main component of the Skraafoto application.
- * It provides methods, event listeners, and UI tools for handling interactions with the image.
- * @fires SkraaFotoViewport#modechange
+ * It provides methods, and UI tools for handling interactions with the image.
  */
 
 export class SkraaFotoViewport extends HTMLElement {
-
-  /**
-   * Event dispatched when the mode of the viewport changes.
-   *
-   * @event SkraaFotoViewport#modechange
-   * @type {CustomEvent}
-   * @property {string} detail - The new mode of the viewport (default: 'center').
-   */
 
   // properties
   coord_image
@@ -63,8 +55,6 @@ export class SkraaFotoViewport extends HTMLElement {
   compass_element
   update_pointer_function
   update_view_function
-  mode = 'center'
-  modechange = new CustomEvent('modechange', {detail: () => this.mode })
   tool_measure_width
   tool_measure_height
 
@@ -77,12 +67,8 @@ export class SkraaFotoViewport extends HTMLElement {
         <skraafoto-year-selector data-itemkey="${ this.dataset.itemkey }" data-viewport-id="${this.id}"></skraafoto-year-selector>
         <hr>
         <skraafoto-pin-tool></skraafoto-pin-tool>
-        <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand">
-          <svg><use href="${ svgSprites }#ruler-horizontal"/></svg>
-        </button>
-        <button id="height-btn" class="btn-height-measure secondary" title="Mål højde">
-          <svg><use href="${ svgSprites }#ruler-vertical"/></svg>
-        </button>
+        <skraafoto-measure-width-tool></skraafoto-measure-width-tool>
+        <skraafoto-measure-height-tool></skraafoto-measure-height-tool>
         <skraafoto-info-box id="info-btn"></skraafoto-info-box>
         ${ configuration.ENABLE_DOWNLOAD ? '<skraafoto-download-tool></skraafoto-download-tool>' : '' }
         ${ configuration.ENABLE_PRINT ? '<skraafoto-print-tool></skraafoto-print-tool>' : '' }
@@ -200,27 +186,6 @@ export class SkraaFotoViewport extends HTMLElement {
     }
   }
 
-  /** Toggle between diffent modes for UI tools in the viewport ('center', 'measurewidth', 'measureheight'). */
-  toggleMode(mode, button_element) {
-    this.querySelectorAll('.sf-viewport-tools button').forEach(function(btn) {
-      btn.classList.remove('active')
-    })
-    if (mode !== this.mode) {
-      // if prior mode was different, toggle on
-      if (button_element) {
-        button_element.classList.add('active')
-      }
-      this.mode = mode
-    } else {
-      // else set default mode
-      if (button_element) {
-        button_element.blur()
-      }
-      this.mode = 'center'
-    }
-    this.dispatchEvent(this.modechange)
-  }
-
   /** Toggles the visibility of the loading spinner. */
   toggleSpinner(bool) {
     const canvasElement = this.querySelector('.ol-viewport canvas')
@@ -292,31 +257,27 @@ export class SkraaFotoViewport extends HTMLElement {
     // When state changes, update viewport
     this.reactionDisposer = reaction(
       () => {
-        // If the user is using the measure tool, refrain from reacting to state change since that will abort the Draw action.
-        if (this.mode === 'measurewidth' || this.mode === 'measureheight') {
-          return false
-        } else {
-          return {
-            item: state.items[this.dataset.itemkey], 
-            view: {
-              position: state.view.position,
-              kote: state.view.kote,
-              zoom: state.view.zoom
-            },
-            marker: {
-              position: state.marker.position,
-              kote: state.marker.kote
-            }
-          }
+        return {
+          item: state.items[this.dataset.itemkey], 
+          view: {
+            position: state.view.position,
+            kote: state.view.kote,
+            zoom: state.view.zoom
+          },
+          marker: {
+            position: state.marker.position,
+            kote: state.marker.kote
+          },
+          mode: state.toolMode
         }
       },
       (newData, oldData) => {
-        if (!newData.item) {
+        // If there is no new image or the user just fiddled with some tools (`mode`), 
+        // refrain from updating the viewport since that will abort the Draw action.
+        if (!newData || newData.mode && newData.mode !== 'center') {
           return
         }
-        // Reset toolbar and clear measurement lines
-        this.toggleMode('center')
-        if (newData.item.id !== oldData.item.id) {
+        if (!oldData || newData.item.id !== oldData.item.id) {
           this.clearDrawings()
         }
         // Update viewport
@@ -325,19 +286,6 @@ export class SkraaFotoViewport extends HTMLElement {
         })
       }
     )
-
-    // When user cliks toolbar buttons, change mode
-    this.querySelector('.sf-viewport-tools').addEventListener('click', (event) => {
-      const measureWidthBtn = findAncestor(event.target, '.btn-width-measure')
-      const measureHeightBtn = findAncestor(event.target, '.btn-height-measure')
-      if (measureHeightBtn) {
-        this.toggleMode('measureheight', measureHeightBtn)
-      } else if (measureWidthBtn) {
-        this.toggleMode('measurewidth', measureWidthBtn)
-      } else {
-        this.toggleMode('center')
-      }
-    })
 
     if (configuration.ENABLE_POINTER) {
       this.map.addLayer(generatePointerLayer())
@@ -367,7 +315,7 @@ export class SkraaFotoViewport extends HTMLElement {
 
   connectedCallback() {
     this.createDOM()
-    
+
     // Initialize image map when image item is available
     this.whenDisposer = when(
       () => state.items[this.dataset.itemkey],
