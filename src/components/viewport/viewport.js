@@ -272,8 +272,9 @@ export class SkraaFotoViewport extends HTMLElement {
         }
       },
       (newData, oldData) => {
-        // If there is no new image or the user just fiddled with some tools (`mode`), refrain from reacting to state change since that will abort the Draw action.
-        if (!newData || newData.mode) {
+        // If there is no new image or the user just fiddled with some tools (`mode`), 
+        // refrain from updating the viewport since that will abort the Draw action.
+        if (!newData || newData.mode && newData.mode !== 'center') {
           return
         }
         if (!oldData || newData.item.id !== oldData.item.id) {
