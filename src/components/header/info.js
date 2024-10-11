@@ -8,7 +8,7 @@ export class InformationDialog extends HTMLElement {
       <svg><use href="${ svgSprites }#question"></svg>
     </button>
 
-    <dialog id="info-dialog" style="width: 94vw; max-width: 50rem; margin: auto; max-height: 94vh; padding: 0;">
+    <dialog id="info-dialog">
       <header style="padding: var(--space) var(--space-lg) var(--space);">
         <h2 tabindex="0">Information om Skråfoto</h2>
         <button class="quiet" aria-controls="info-dialog" title="Luk dialogboks">

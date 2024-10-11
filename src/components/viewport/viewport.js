@@ -19,7 +19,6 @@ import {
   updateMapCenterIcon,
   updateTextContent,
   updatePlugins,
-  updateDate,
   updateCenter
 } from './viewport-mixin.js'
 import { state, reaction, when, autorun } from '../../state/index.js'
@@ -84,7 +83,6 @@ export class SkraaFotoViewport extends HTMLElement {
       `<skraafoto-compass direction="north"></skraafoto-compass>`
     }
     ${ configuration.ENABLE_GEOLOCATION ? `<skraafoto-geolocation></skraafoto-geolocation>`: '' }
-    <p id="image-date" class="image-date"></p>
   `
 
   constructor() {
@@ -97,9 +95,6 @@ export class SkraaFotoViewport extends HTMLElement {
   createDOM() {
     this.innerHTML = this.template
     this.compass_element = configuration.ENABLE_COMPASSARROWS ? this.querySelector('skraafoto-compass-arrows') : this.querySelector('skraafoto-compass')
-    if (configuration.ENABLE_SMALL_FONT) {
-      this.querySelector('#image-date').style.fontSize = '0.75rem'
-    }
   }
 
   /** Creates an OpenLayers map object and adds interactions, image data, etc. to it */
@@ -171,7 +166,6 @@ export class SkraaFotoViewport extends HTMLElement {
   /** Updates various items not directly related to the image map */
   updateNonMap(item) {
     this.compass_element.setAttribute('direction', item.properties.direction)
-    this.querySelector('.image-date').innerText = updateDate(item)
     this.querySelector('.basic-image-info').innerText = updateTextContent(item)
     updatePlugins(this, item)
     this.querySelector('skraafoto-info-box').setItem = item

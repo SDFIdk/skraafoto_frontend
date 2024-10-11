@@ -22,14 +22,6 @@ skraafoto-viewport .viewport-map {
   position: relative;
   background-color: var(--background-color);
 }
-skraafoto-viewport .image-date {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  color: #fff;
-  margin: 0;
-  -webkit-transform: translate3d(0,0,0); /* Fix for Safari bug */
-}
 skraafoto-viewport skraafoto-compass-arrows {
   position: absolute;
   top: var(--space);
@@ -63,9 +55,6 @@ skraafoto-viewport .out-of-bounds {
 }
 skraafoto-viewport .ol-viewport {
   cursor: crosshair;
-}
-skraafoto-viewport .image-date {
-  display: none;
 }
 skraafoto-viewport .sf-fullscreen-btn {
   position: absolute;
@@ -142,19 +131,8 @@ skraafoto-viewport .ds-button-group > *:last-child button {
     top: auto;
     bottom: 2rem;
   }
-  skraafoto-viewport .image-date {
-    bottom: 0.5rem;
-    left: 0.5rem;
-  }
 }
 
 @media screen and (max-width: 50rem) {
-
-  skraafoto-viewport .image-date {
-    display: block;
-    bottom: auto;
-    top: 3.5rem;
-    left: 2rem;
-  }
 
 }

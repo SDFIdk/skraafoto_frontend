@@ -23,6 +23,15 @@ skraafoto-header .sf-header nav[hidden] {
 skraafoto-header skraafoto-info-dialog {
   flex: 0 0 auto;
 }
+#info-dialog {
+  width: 94vw; 
+  max-width: 50rem; 
+  margin: auto;
+  height: auto;
+  max-height: 94vh; 
+  padding: 0;
+  display: block;
+}
 skraafoto-header .sf-logo {
   margin: 0;
   display: flex;
