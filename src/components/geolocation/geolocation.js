@@ -1,8 +1,10 @@
 import { state } from '../../state/index.js'
-import { Geolocation } from 'ol'
-import { get as getProjection } from 'ol/proj.js'
+import Geolocation from 'ol/Geolocation.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { showToast } from '@dataforsyningen/designsystem'
+import { findAncestor } from '../../modules/utilities.js'
+import { awaitMap } from '../tools/map-tool-measure-shared.js'
+import { createTranslator } from '@dataforsyningen/saul'
 
 /**
  * Web component that displays a Geolocation button with the option to track and show user's current location
@@ -29,26 +31,32 @@ export class SkraafotoGeolocation extends HTMLElement {
 
     // Get the geolocation button element
     const geolocationButton = this.querySelector('#geolocation-button')
+    
+    awaitMap(findAncestor(this, 'skraafoto-viewport')).then((mapObj) => {
 
-    // Initialize Geolocation with tracking disabled and custom projection
-    this.geolocation = new Geolocation({
-      tracking: false, // Do not track the user's position
-      projection: getProjection('EPSG:25832'), // Set the projection of the map
-    })
+      const projection = mapObj.getView().getProjection()
 
-    geolocationButton.addEventListener('click', async () => {
-      this.geolocation.setTracking(true)
-      this.timeBegin = new Date().getTime()
-      this.toggleSpinner(true)
-    })
+      // Initialize Geolocation with tracking disabled and using map projection
+      this.geolocation = new Geolocation({
+        tracking: false, // Do not track the user's position
+        projection: projection // Set the projection of the map
+      })
 
-    this.geolocation.on('change', () => {
-      this.handleGeolocation.bind(this)()
-    })
+      geolocationButton.addEventListener('click', async () => {
+        this.geolocation.setTracking(true)
+        this.timeBegin = new Date().getTime()
+        this.toggleSpinner(true)
+      })
+  
+      this.geolocation.on('change', () => {
+        this.handleGeolocation.bind(this)()
+      })
+  
+      this.geolocation.once('error', (error) => {
+        console.error('Geolocation error: Something went wrong.', error.message)
+        showToast({message: 'Kan ikke finde din placering.', duration: 5000})
+      })
 
-    this.geolocation.once('error', (error) => {
-      console.error('Geolocation error: Something went wrong.', error.message)
-      showToast({message: 'Kan ikke finde din placering.', duration: 5000})
     })
   }
 
@@ -71,7 +79,8 @@ export class SkraafotoGeolocation extends HTMLElement {
   }
 
   handleGeolocation() {
-    const newCenter = this.geolocation.getPosition()
+    const newCenter = createTranslator().forward(this.geolocation.getPosition())
+    console.log('got pos', newCenter)
     const accucary = this.geolocation.getAccuracy()
     if (!newCenter) {
       showToast({message: 'Kan ikke finde din placering.', duration: 5000})
