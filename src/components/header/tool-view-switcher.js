@@ -10,15 +10,15 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
 
   template = `
     <hr>
-    <button class="switch-view-1 secondary switch-button" title="Vis ét stort billede">
+    <button class="switch-view-1 secondary switch-button" title="Singleview">
       <svg><use href="${ svgSprites }#frame-single"/></svg>
     </button>
     
-    <button class="switch-view-2 secondary switch-button" title="Vis 2 store billeder">
+    <button class="switch-view-2 secondary switch-button" title="Twinview">
       <svg><use href="${ svgSprites }#frame-dual"/></svg>
     </button>
 
-    <button class="switch-view-5 secondary switch-button" title="Vis 1 stort og 5 små billeder">
+    <button class="switch-view-5 secondary switch-button" title="Multiview">
       <svg><use href="${ svgSprites }#frame-multi"/></svg>
     </button>
     <hr>
