@@ -36,10 +36,10 @@ export class InformationDialog extends HTMLElement {
           <h3>Support</h3>
           <p>
             <strong>Telefon: 78 76 87 92</strong><br>
-            Har du brug for hjælp? Ring til supporten, vi har åbent alle hverdage kl. 09:00-14:00.
+            Har du brug for hjælp? Ring til supporten, vi har åbent mandag til torsdag kl. 09:00-14:00, og fredag kl. 10:00-14:00.
           </p>
           <p>
-            <strong>E-mail: support@sdfi.dk</strong><br>
+            <strong>E-mail: support@kds.dk</strong><br>
             Har du spørgsmål eller ændringsforslag til Dataforsyningen? Skriv til supporten. Vi vender tilbage til dig hurtigst muligt. 
           </p>
           
@@ -52,7 +52,7 @@ export class InformationDialog extends HTMLElement {
           <h3>Vil du vide mere om skråfoto?</h3>
           <p>
             Her finder du <a href="https://docs.dataforsyningen.dk/#skraafoto-stac-api-dokumentation">dokumentation på SkråfotoAPI.</a><br>
-            Hvis du vil vide mere om baggrunden for skråfotos finder du her <a href="https://sdfi.dk/media/6880/faq-skraafotos.pdf">FAQ om skråfotos.</a>
+            Her finder du <a href="https://confluence.sdfi.dk/x/MAHiCQ">vejledningen til Skråfotoløsningen.</a>
           </p>
           
         </div>
