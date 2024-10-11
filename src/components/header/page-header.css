@@ -30,7 +30,7 @@ skraafoto-header skraafoto-info-dialog {
   height: auto;
   max-height: 94vh; 
   padding: 0;
-  display: block;
+  flex: 0 0 auto;
 }
 skraafoto-header .sf-logo {
   margin: 0;
