@@ -13,20 +13,19 @@ skraafoto-first-time-visit dialog::backdrop {
   transition: backdrop-filter 0.2s;
 }
 skraafoto-first-time-visit dialog article {
-  padding: var(--space-lg) 0 0;
+  padding: var(--space-xl) var(--space-lg);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
 }
-skraafoto-first-time-visit dialog p,
 skraafoto-first-time-visit dialog button {
   margin: 0;
 }
 skraafoto-first-time-visit .btn-welcome-close {
-  margin-top: var(--space-lg);
   transition: opacity 0.3s ease;
+  margin-top: var(--space);
 }
 skraafoto-first-time-visit .fade-out, 
 skraafoto-first-time-visit .fade-out::backdrop {
