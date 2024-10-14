@@ -51,6 +51,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
     this.exposure_index += 1
     if (this.exposure_index >= configuration.EXPOSURE_SETTINGS.length) {
       this.exposure_index = 0
+      
     }
     this.copySettingsToVariables(configuration.EXPOSURE_SETTINGS[this.exposure_index])
     this.viewport.map.render()
@@ -81,6 +82,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
 
     this.button_element.addEventListener('click', () => {
       this.cycleExposure()
+      this.button_element.dataset.count = this.exposure_index
     })
   }
 }
