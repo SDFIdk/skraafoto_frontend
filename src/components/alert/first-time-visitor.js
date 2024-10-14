@@ -11,16 +11,30 @@ export class FirstTimeVisit extends HTMLElement {
   local_storage_key = configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY
   
   template = `
-    <article>
+    <article style="overflow: auto; height: auto; max-height: 100vh;">
       <button class="btn-welcome-close quiet" title="luk dialog"><svg><use href="${ svgSprites }#close"/></svg></button>
-      <div style="padding: var(--space-lg) var(--space-lg) var(--space-xl); text-align: center;">
+      <div style="text-align: center; flex: 0 1 auto;">
         <h2 class="h1" style="display: inline-block;">Velkommen til Skråfoto</h2>
         <p>
           Skråfoto giver dig mulighed for at se luftfotos taget fra forskellige retninger.<br>
           Søg efter en adresse eller et stednavn for at finde skråfotos i dit område.
         </p>
+        <hr>
+        <h3>Nye features:</h3>
+        <ul>    
+          <li>
+            Justér lysforhold:<br>
+            <img src="img/exposure-screenshot.png" alt="" style="width: auto; height: 2.5rem; margin: var(--space-sm) 0;">
+          </li>
+          <li>
+            Sammenlign billeder på tværs af årgange med 'Twinview'-knappen på store skærme:<br>
+            <img src="img/twinview-screenshot.png" alt="" style="width: auto; height: 3rem; margin: var(--space-sm) 0;">
+          </li>
+          <li>Visning af billeders "footprint" i baggrundskort</li>
+          <li>Nye positionsmarkører</li>
+        </ul>
       </div>
-      <p style="padding-bottom: var(--space-lg);">
+      <p>
         <button class="btn-welcome-close">Fortsæt med at bruge Skråfoto</button>
       </p>
     </article>
