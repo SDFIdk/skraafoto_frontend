@@ -20,6 +20,7 @@
 @import "./components/tools/measure.css";
 @import "./components/geolocation/geolocation.css";
 @import "./components/tools/info-box.css";
+@import "./components/tools/exposure.css";
 
 /* Various popups */
 @import "./components/alert/alert-splash.css";

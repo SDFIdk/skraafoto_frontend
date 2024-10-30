@@ -13,7 +13,6 @@ export class SkraaFotoExposureTool extends HTMLElement {
   exposure_index = 0
   variables = {}
 
-
   // setters
   set setContextTarget(viewport) {
     this.viewport = viewport
