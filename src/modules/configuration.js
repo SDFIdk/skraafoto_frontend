@@ -119,7 +119,7 @@ if (urlParams.get('api') === 'test') {
 }
 // Checks if a custom API token is available from URL params or localstorage
 if (configuration.ENABLE_CUSTOM_TOKEN) {
-  const urlToken = urlParams.get('token')
+  const urlToken = urlParams.get('stactoken')
   const localToken = localStorage.getItem('skraafoto_stac_token')
   if (urlToken) {
     configuration.API_STAC_TOKEN = urlToken

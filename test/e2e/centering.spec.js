@@ -14,7 +14,7 @@ test('Change position when clicking in the viewport', async ({ page }) => {
   await expect(page.locator('css=skraafoto-viewport')).toContainText('koordinat 722119 Ø, 6178801 N set fra nord.')
   await expect(page.getByTitle('Billede af området omkring koordinat 722119 Ø, 6178801 N set fra øst.')).toBeDefined()
 
-  const centerTool = await page.getByTitle('Aktivér sigtekorn')
+  const centerTool = await page.getByTitle('Vælg en ny position')
   if (centerTool) {
     await centerTool.click()
     await page.mouse.click(200,200)
