@@ -175,7 +175,6 @@ function removeUnusedCoordParams(params) {
 function removeUnusedParams(params) {
   params.delete('width')
   params.delete('mode')
-  params.delete('token')
   params.delete('project')
 }
 

@@ -15,7 +15,7 @@ test('Navigate to help page', async ({ page }) => {
 })
 
 test('Change to singleview', async ({ page }) => {
-  await page.getByTitle('Vis ét stort billede').click()
+  await page.getByTitle('Singleview').click()
   await page.waitForLoadState('networkidle')
   const skraafotoViewports = await page.evaluate(() => {
     return document.querySelectorAll('skraafoto-viewport').length
@@ -24,7 +24,7 @@ test('Change to singleview', async ({ page }) => {
 })
 
 test('Change to twinview', async ({ page }) => {
-  await page.getByTitle('Vis 2 store billeder').click()
+  await page.getByTitle('Twinview').click()
   await page.waitForLoadState('networkidle')
   const skraafotoViewports = await page.evaluate(() => {
     return document.querySelectorAll('skraafoto-viewport').length
