@@ -1,0 +1,10 @@
+skraafoto-version-info {
+  position: fixed;
+  bottom: var(--space-sm);
+  left: var(--space);
+  font-size: 0.75rem;
+}
+
+skraafoto-version-info p {
+  margin: 0;
+}

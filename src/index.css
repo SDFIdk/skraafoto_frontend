@@ -11,6 +11,7 @@
 @import "./components/viewport/direction-picker.css";
 @import "./components/compass/compass.css";
 @import "./components/geomap/geomap.css";
+@import "./components/version/version.css";
 
 /* Header styles */
 @import "./components/header/page-header.css";
