@@ -54,8 +54,7 @@ let configuration = {
   MAX_ZOOM: 10, // the maximum zoom for skraafotos.
   MIN_ZOOM: 1, // the minimum zoom for skraafotos.
 
-  ENABLE_WEB_STATISTICS: false, // Enables web statistics. Requires Javascript url in SITEIMPROVE_SCRIPT
-  SITEIMPROVE_SCRIPT: '',
+  SITEIMPROVE_SCRIPT: '', // Enables web statistics. Values: `false` or string with SiteImprove Javascript URL
 
   COLOR_SETTINGS:
     {
