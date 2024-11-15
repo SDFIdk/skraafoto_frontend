@@ -1,7 +1,7 @@
 import { configuration } from "../modules/configuration.js"
 
 export function setupAnalytics() {
-  if (!configuration.ENABLE_WEB_STATISTICS) {
+  if (!configuration.SITEIMPROVE_SCRIPT) {
     return
   }
   const siteImproveScript = document.createElement('script')
