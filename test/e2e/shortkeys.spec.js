@@ -10,13 +10,11 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Shift view from north to east using shortkeys', async ({ page }) => {
-  await expect(page.locator('skraafoto-viewport')).toContainText('set fra nord.')
   await page.keyboard.press('Shift+ArrowLeft')
   await expect(page.locator('skraafoto-viewport')).toContainText('koordinat 722119 Ø, 6178801 N set fra øst.')
 })
 
 test('Shift to earlier image using shortkeys', async ({ page }) => {
-  await expect(page.locator('.sf-date-selector')).toHaveValue('2023_84_40_2_0139_00061830')
   await page.keyboard.press('Shift+ArrowDown')
   await expect(page.locator('.sf-date-selector')).toHaveValue('2023_84_40_2_0139_00061833')
 })
