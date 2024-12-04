@@ -22,12 +22,13 @@
   "keywords": [
     "skråfoto",
     "ortofoto",
-    "SDFI"
+    "SDFI",
+    "Klimadatastyrelsen"
   ],
   "author": {
     "name": "Klimadatastyrelsen",
-    "email": "support@sdfi.dk",
-    "url": "https://sdfi.dk/"
+    "email": "support@kds.dk",
+    "url": "https://kds.dk/"
   },
   "license": "MIT",
   "bugs": {
