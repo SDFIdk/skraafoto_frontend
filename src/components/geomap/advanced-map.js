@@ -37,10 +37,7 @@ export class SkraaFotoAdvancedMap extends SkraaFotoMap {
   }
 
   async singleClickHandler(event) {
-    // Update crosshairs icon on map
-    this.map.removeLayer(this.icon_layer)
-    this.icon_layer = this.generateIconLayer(event.coordinate)
-    this.map.addLayer(this.icon_layer)
+    // Update crosshairs icon on map by refreshing map (ie. trigger `updateMap()` in parent object).
     await state.refresh(event.coordinate)
   }
 
