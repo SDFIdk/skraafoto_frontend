@@ -3,7 +3,7 @@
 import jsPDF from 'jspdf'
 import { getParam } from '../modules/url-state.js'
 
-const dimentions = {
+const dimensions = {
   a0: [1189, 841],
   a1: [841, 594],
   a2: [594, 420],
@@ -134,11 +134,11 @@ function drawFooterContent(height, width, item) {
  * @param {String} rotation The rotation of the PDF either 'landscape' or 'portrait'.
  */
 function createPdf(map, item, callback, resolution=300, format='a4', rotation='landscape') {
-  const dimention = dimentions[format]
+  const dimension = dimensions[format]
   const resInch = resolution / mmPerInch
   const isLandscape = rotation === 'landscape'
-  const canvas_width = Math.round(dimention[isLandscape ? 0 : 1] * resInch)
-  const canvas_height = Math.round(dimention[isLandscape ? 1 : 0] * resInch)
+  const canvas_width = Math.round(dimension[isLandscape ? 0 : 1] * resInch)
+  const canvas_height = Math.round(dimension[isLandscape ? 1 : 0] * resInch)
 
   const image_max_height = canvas_height - footer_height - margin * 3
   const image_max_width = canvas_width - margin * 2
@@ -166,10 +166,38 @@ function createPdf(map, item, callback, resolution=300, format='a4', rotation='l
     ctx.drawImage(canvas, margin + x, margin + y, new_width, new_height)
   })
 
-  // Draw rest of image and generate the PDF
+  // Draw footer
   ctx.drawImage(drawFooterContent(footer_height, image_max_width, item), margin, canvas_height - footer_height - margin)
+
+  // Find tooltips
+  let toolTips = []
+  map.getViewport().querySelectorAll('[data-tooltip="measure"]').forEach(element => {
+    const xy = [...element.parentNode.style.transform.matchAll(/\d+px/g)]
+    toolTips.push({
+      text: element.innerText,
+      x: Number(xy[0][0].slice(0,-2)),
+      y: Number(xy[1][0].slice(0,-2))
+    })
+  })
+  // Draw tooltips in canvas
+  const fontSize = 30
+  toolTips.forEach(toolTip => {
+    ctx.font = `${ fontSize }px Roboto`
+    const textDimensions = ctx.measureText(toolTip.text)
+    const coord = [
+      (margin + x + toolTip.x * scale_factor),
+      (margin + y + toolTip.y * scale_factor)
+    ]
+    ctx.fillStyle = 'hsl(198, 100%, 30%)'
+    ctx.fillRect(coord[0], coord[1], (textDimensions.width + fontSize), fontSize * 1.5)
+    ctx.fillStyle = 'white'
+    ctx.textAlign = 'left'
+    ctx.fillText(toolTip.text, (coord[0] + fontSize / 2), (coord[1] + fontSize))
+  })
+
+  // Generate the PDF
   const pdf = new jsPDF(rotation, undefined, format)
-  pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dimention[isLandscape ? 0 : 1], dimention[isLandscape ? 1 : 0])
+  pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, dimension[isLandscape ? 0 : 1], dimension[isLandscape ? 1 : 0])
   const file_name = generateFileName(item)
   callback(pdf, file_name)
 }

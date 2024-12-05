@@ -127,6 +127,7 @@ export class MeasureWidthTool extends HTMLElement {
       // Store references to the feature and overlay
       const tooltipId = `tooltip-${this.overlayIdCounter++}`
       this.measureTooltipElement.setAttribute('data-tooltip-id', tooltipId)
+      this.measureTooltipElement.setAttribute('data-tooltip', 'measure')
       const featureOverlayPair = {
         feature: this.sketch,
         overlay: this.measureTooltip,
