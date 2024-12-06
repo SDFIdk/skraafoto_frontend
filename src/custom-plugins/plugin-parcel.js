@@ -201,11 +201,12 @@ function drawParcels({parcels, imageId, map, elevationdata}) {
 /**
  * Starts fetching the relevant data to draw the parcels on map
  */
-function renderParcels(viewport, itemId) {
+async function renderParcels(viewport, itemId) {
   if (state.parcels.length < 1) {
     // No parcels to draw
     return
   }
+  await state.updateTerrain()
   drawParcels({
     parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
     imageId: itemId,
