@@ -41,7 +41,7 @@ export function getTerrain(imageItems, currentTerrain) {
       }
       
       // First, try to get a GeoTiff elevation model for your particular bounding box from Datafordeler
-      getTerrainByBbox(bbox, configuration).then(gtiff => {
+      getTerrainByBbox(bbox, configuration, 250).then(gtiff => {
         const terrainData = {
           bbox: bbox,
           data: gtiff
