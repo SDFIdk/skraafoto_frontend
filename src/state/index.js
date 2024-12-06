@@ -101,7 +101,6 @@ class SkraafotoState {
       for (const [key, value] of Object.entries(newItems)) {
         this.items[key] = value.item
       }
-      this.updateTerrain()
     }
 
     if (payload.position && !payload.kote) {
@@ -139,7 +138,6 @@ class SkraafotoState {
       for (const [key, value] of Object.entries(newItems)) {
         this.items[key] = value.item
       }
-      this.updateTerrain()
     }
 
     if (payload.position && !payload.kote) {
@@ -172,7 +170,6 @@ class SkraafotoState {
       for (const [key, value] of Object.entries(newItems)) {
         this.items[key] = value.item
       }
-      this.updateTerrain()
     }
 
     this.view.position = payload.position
@@ -183,7 +180,6 @@ class SkraafotoState {
     if (this.items[key]?.id !== item.id) { // Only update if item is new
       this.toolMode = null
       this.items[key] = item
-      this.updateTerrain()
     }
   }
   /**
