@@ -36,7 +36,7 @@ export function getTerrain(imageItems, currentTerrain) {
       const bbox = getTotalBbox(imageItems)
       
       // If bbox is the same, the terrain data will probably be the same. No need to refetch.
-      if (currentTerrain.bbox === bbox) {
+      if (currentTerrain?.bbox === bbox) {
         console.log('are they the same?')
         resolve(currentTerrain)
       }

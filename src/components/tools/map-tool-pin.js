@@ -74,6 +74,7 @@ export class PlacementPinTool extends HTMLElement {
 
   togglePin() {
     if (state.toolMode !== 'center') {
+      state.updateTerrain()
       this.viewport.querySelector('.viewport-map').classList.add('pin-on')
       this.button_element.classList.add('active')
       this.button_element.blur()
