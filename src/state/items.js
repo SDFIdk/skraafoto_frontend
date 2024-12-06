@@ -62,7 +62,6 @@ async function checkBoundsAll(coordinate, images) {
     if (value) {
       const newImage = await checkBounds(coordinate, value)
       if (newImage) {
-        // TODO: Update terrain
         reloadedItems[key] = {
           item: newImage,
           terrain: null
