@@ -24,7 +24,8 @@ if (process.env.NODE_ENV === 'production') {
     format: 'esm',
     loader: {
       '.ttf': 'file',
-      '.svg': 'file'
+      '.svg': 'file',
+      '.tiff': 'file'
     },
     banner: {
       js: `// Skråfoto v${ process.env.npm_package_version }`,
@@ -53,7 +54,8 @@ if (process.env.NODE_ENV === 'production') {
     entryPoints: entry_points,
     loader: {
       '.ttf': 'file',
-      '.svg': 'file'
+      '.svg': 'file',
+      '.tiff': 'file'
     },
     outdir: 'public',
     bundle: true,
