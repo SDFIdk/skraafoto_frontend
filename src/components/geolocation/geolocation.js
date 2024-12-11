@@ -1,9 +1,6 @@
 import { state } from '../../state/index.js'
-import Geolocation from 'ol/Geolocation.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { showToast } from '@dataforsyningen/designsystem'
-import { findAncestor } from '../../modules/utilities.js'
-import { awaitMap } from '../tools/map-tool-measure-shared.js'
 import { createTranslator } from '@dataforsyningen/saul'
 
 /**
@@ -12,8 +9,7 @@ import { createTranslator } from '@dataforsyningen/saul'
 export class SkraafotoGeolocation extends HTMLElement {
 
   // Properties
-  timeBegin
-  geolocation
+  iteration
   template = `
     <button title="Vis min placering" id="geolocation-button" class="ds-icon-map-icon-findonmap">
       <svg><use href="${ svgSprites }#pointer-find-on-map" /></svg>
@@ -22,46 +18,54 @@ export class SkraafotoGeolocation extends HTMLElement {
 
   constructor() {
     super()
+    this.iteration = 0
   }
 
   // Lifecycle
   connectedCallback() {
-
-    this.createDOM()
-
-    // Get the geolocation button element
-    const geolocationButton = this.querySelector('#geolocation-button')
-    
-    awaitMap(findAncestor(this, 'skraafoto-viewport')).then((mapObj) => {
-
-      const projection = mapObj.getView().getProjection()
-
-      // Initialize Geolocation with tracking disabled and using map projection
-      this.geolocation = new Geolocation({
-        tracking: false, // Do not track the user's position
-        projection: projection // Set the projection of the map
-      })
-
-      geolocationButton.addEventListener('click', async () => {
-        this.geolocation.setTracking(true)
-        this.timeBegin = new Date().getTime()
-        this.toggleSpinner(true)
-      })
-  
-      this.geolocation.on('change', () => {
-        this.handleGeolocation.bind(this)()
-      })
-  
-      this.geolocation.once('error', (error) => {
-        console.error('Geolocation error: Something went wrong.', error.message)
-        showToast({message: 'Kan ikke finde din placering.', duration: 5000})
-      })
-
-    })
+    this.render()
+    this.querySelector('#geolocation-button').addEventListener('click', this.geoLocate.bind(this))
   }
 
-  createDOM() {
+  render() {
     this.innerHTML = this.template
+  }
+
+  geoLocate() {
+    if (!navigator.geolocation) {
+      console.error('Geolocation is not supported by your browser')
+    } else {
+      this.toggleSpinner(true)
+      navigator.geolocation.getCurrentPosition(this.geoSuccess.bind(this), this.geoError.bind(this))
+    }
+  }
+
+  geoSuccess(position) {
+    if (position.coords.accuracy > 100) {
+      if (this.iteration < 4) {
+        this.iteration++
+        this.geoLocate()  
+      } else {
+        showToast({message: `Fandt placering, men den er upræcis (${ this.formatAccuracyWarning(position.coords.accuracy) })`, duration: 5000})
+        console.error('Got GeoLocation but it is not accurate')
+        this.setGeoLocation([position.coords.longitude, position.coords.latitude])
+      }
+    } else {
+      this.setGeoLocation([position.coords.longitude, position.coords.latitude])
+    }
+  }
+
+  geoError() {
+    this.ieration = 0
+    showToast({message: 'Kan ikke finde din placering.', duration: 5000})
+    console.error('Cannot get GeoLocation')
+    this.toggleSpinner(false)
+  }
+
+  setGeoLocation(coord) {
+    this.ieration = 0
+    state.setViewMarker({ position: createTranslator().forward(coord) })
+    this.toggleSpinner(false)
   }
 
   toggleSpinner(isLoading) {
@@ -76,25 +80,6 @@ export class SkraafotoGeolocation extends HTMLElement {
         spinner.remove()
       })
     }
-  }
-
-  handleGeolocation() {
-    const newCenter = createTranslator().forward(this.geolocation.getPosition())
-    console.log('got pos', newCenter)
-    const accucary = this.geolocation.getAccuracy()
-    if (!newCenter) {
-      showToast({message: 'Kan ikke finde din placering.', duration: 5000})
-      return
-    }
-    
-    this.toggleSpinner(false)
-    // Update marker and view with user's position
-    state.setViewMarker({ position: newCenter })
-    
-    if (accucary > 50) {
-      showToast({message: `Fandt placering, men den er upræcis (${ this.formatAccuracyWarning(accucary) })`, duration: 5000})
-    }
-    this.geolocation.setTracking(false)
   }
 
   formatAccuracyWarning(accuracy) {
