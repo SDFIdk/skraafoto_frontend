@@ -8,7 +8,7 @@ import { devices } from '@playwright/test'
 export default {
   testDir: './test/e2e',
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 30000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -21,16 +21,16 @@ export default {
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+  /* Retries */
   retries: process.env.CI ? 1 : 2,
-  /* Opt out of parallel tests on CI. */
-  //workers: process.env.CI ? 1 : undefined,
+  /* Parallel tests */
+  workers: process.env.CI ? 5 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? 'list' : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
-    actionTimeout: 0,
+    actionTimeout: 30000,
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASEURL ? process.env.BASEURL : 'http://localhost:8000',
 
