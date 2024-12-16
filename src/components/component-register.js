@@ -11,7 +11,6 @@ import { SkraafotoGeolocation } from './geolocation/geolocation.js'
 import { configuration } from '../modules/configuration'
 import { SkraaFotoYearSelector } from './year-selector.js'
 import { InformationDialog } from './header/info.js'
-import { SkraafotoVersionInfo } from './version/version.js'
 
 export async function registerComponents() {
 
@@ -27,7 +26,6 @@ export async function registerComponents() {
   customElements.define('skraafoto-geolocation', SkraafotoGeolocation)
   customElements.define('skraafoto-year-selector', SkraaFotoYearSelector)
   customElements.define('skraafoto-info-dialog', InformationDialog)
-  customElements.define('skraafoto-version-info', SkraafotoVersionInfo)
 
   // Load web components by configuration
   if (configuration.ENABLE_FIRST_VISIT_INFO) {
