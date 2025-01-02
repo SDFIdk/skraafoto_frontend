@@ -41,14 +41,19 @@ export function getTerrain(imageItems, currentTerrain) {
       }
       
       // First, try to get a GeoTiff elevation model for your particular bounding box from Datafordeler
-      getTerrainByBbox(bbox, configuration, 250).then(gtiff => {
+      getTerrainByBbox(bbox, configuration, 450).then(gtiff => {
         const terrainData = {
           bbox: bbox,
           data: gtiff
         }
-        return resolve(terrainData)
+        if (terrainData.data instanceof TypeError) {
+          throw new Error('Could not fetch terrain data')
+        } else {
+          return resolve(terrainData)
+        }
       })
-      .catch(error => {
+      .catch(() => {
+        console.info('Downgrading to local terrain model')
         // If Datafordeler fails, fallback to using local GeoTiff elevation model
         get(DKGeoTiff, {cache: 'force-cache'}, false)
         .then((response) => {
@@ -73,7 +78,7 @@ export function getTerrain(imageItems, currentTerrain) {
       // If items aren't loaded yet, wait a while and retry
       setTimeout(() => {
         return getTerrain(imageItems)
-      }, 500)
+      }, 400)
     }
   })
 }
