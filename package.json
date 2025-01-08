@@ -38,7 +38,7 @@
   "dependencies": {
     "@dataforsyningen/designsystem": "^7.0.0",
     "@dataforsyningen/gsearch-ui": "^2.0.1",
-    "@dataforsyningen/saul": "^3.4.0",
+    "@dataforsyningen/saul": "^4.2.0",
     "jspdf": "^2.5.1",
     "mobx": "^6.12.1",
     "ol": "^10.0.0",

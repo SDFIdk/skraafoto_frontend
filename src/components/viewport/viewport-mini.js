@@ -22,7 +22,6 @@ export class SkraaFotoViewportMini extends HTMLElement {
   // properties
   coord_image
   coord_world
-  api_stac_token = configuration.API_STAC_TOKEN
   map
   layer_image
   layer_icon

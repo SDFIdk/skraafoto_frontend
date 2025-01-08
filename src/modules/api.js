@@ -28,16 +28,19 @@ function queryItem(item_id) {
  * @return {object} A featureCollection of STAC items
  */
 async function queryItems(coord, direction, collection, limit = 1) {
+  let endpoint
+  if (collection) {
+    endpoint = `/collections/${collection}/items`
+  } else {
+    endpoint = "/search"
+  }
   let search_query = { 
     "and": [
       {"contains": [ { "property": "geometry"}, {"type": "Point", "coordinates": [coord[0], coord[1]]} ]},
       {"eq": [ { "property": "direction" }, direction ]}
     ]
   }
-  if (collection) {
-    search_query.and.push({"eq": [ { "property": "collection" }, collection ]})
-  }
-  return getSTAC(`/search?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
+  return getSTAC(`${ endpoint }?limit=${ limit }&filter=${ encodeURI(JSON.stringify(search_query)) }&filter-lang=cql-json&filter-crs=http://www.opengis.net/def/crs/EPSG/0/25832&crs=http://www.opengis.net/def/crs/EPSG/0/25832`, configuration)
   .then(response => {
     if (response.name === 'Error') {
       alert('Kunne ikke hente data fra Skråfoto API serveren. Prøv igen senere.')
