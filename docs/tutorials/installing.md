@@ -52,9 +52,3 @@ The Playwright test suite will present you with a HTML report if some tests fail
 
 ### Unit tests
 Unit tests are run with `npm run test-unit`
-
-## Updating local terrain model
-
-Skråfoto uses a terrain elevation model hosted as a single GeoTiff file for events where Datafordeler service is unavailable. To update the terrain model, simply download a new GeoTiff from Datafordeler with the following URL (supply your own username/password):
-
-https://services.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS?SERVICE=WCS&COVERAGE=dhm_terraen&RESPONSE_CRS=epsg:25832&CRS=epsg:25832&FORMAT=GTiff&REQUEST=GetCoverage&VERSION=1.0.0&username=xxx&password=xxx&height=1000&width=1260&bbox=430000,6040000,900000,6413000
