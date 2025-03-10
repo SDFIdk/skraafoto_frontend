@@ -24,10 +24,22 @@ const projection = new Projection({
 })
 
 function generateSource(geotiff_href) {
+
+  let gtif
+  const searchParams = new URLSearchParams(location.search)
+
+  // POC HACK
+  // Force GeoTiff image from URL param
+  if (searchParams.has('gtif')) {
+    gtif = searchParams.get('gtif')
+  } else {
+    gtif = geotiff_href
+  }
+
   return new GeoTIFF({
     convertToRGB: true,
     transition: 0,
-    sources: [{ url: geotiff_href, bands: [1,2,3] }] // Ignores band 4. See https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF.html#~SourceInfo
+    sources: [{ url: gtif, bands: [1,2,3] }] // Ignores band 4. See https://openlayers.org/en/latest/apidoc/module-ol_source_GeoTIFF.html#~SourceInfo
   })
 }
 
