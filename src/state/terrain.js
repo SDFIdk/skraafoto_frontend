@@ -37,7 +37,7 @@ export function getTerrain(imageItems, currentTerrain) {
       
       // If bbox is the same, the terrain data will probably be the same. No need to refetch.
       if (currentTerrain?.bbox === bbox) {
-        resolve(currentTerrain)
+        return resolve(currentTerrain)
       }
       
       // First, try to get a GeoTiff elevation model for your particular bounding box from Datafordeler
@@ -46,7 +46,7 @@ export function getTerrain(imageItems, currentTerrain) {
           bbox: bbox,
           data: gtiff
         }
-        resolve(terrainData)
+        return resolve(terrainData)
       })
       .catch(error => {
         // If Datafordeler fails, fallback to using local GeoTiff elevation model
@@ -60,12 +60,11 @@ export function getTerrain(imageItems, currentTerrain) {
               bbox: [430000,6040000,900000,6413000],
               data: gtiff
             }
-            resolve(terrainData)
+            return resolve(terrainData)
           })
-          
         })
         .catch(error => {
-          reject(error)
+          return reject(error)
         })
       })
 
@@ -75,7 +74,6 @@ export function getTerrain(imageItems, currentTerrain) {
       setTimeout(() => {
         return getTerrain(imageItems)
       }, 500)
-
     }
   })
 }

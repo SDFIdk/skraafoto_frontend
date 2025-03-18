@@ -7,6 +7,7 @@ import { SkraaFotoAdvancedMap } from '../components/geomap/advanced-map.js'
 import { SkraaFotoViewportMini } from "../components/viewport/viewport-mini.js"
 import { state, autorun} from '../state/index.js'
 import { applyCustomStyles } from '../styles/custom-styles.js'
+import { version } from '../../package.json'
 
 // Start snooping 
 setupAnalytics()
@@ -39,3 +40,5 @@ autorun(() => {
 })
 
 setupListeners()
+
+console.info('Skråfoto version', version)
