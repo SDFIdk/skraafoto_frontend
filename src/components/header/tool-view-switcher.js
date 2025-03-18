@@ -42,10 +42,10 @@ export class SkraaFotoViewSwitcher extends HTMLElement {
       location.pathname = '/'
     })
     this.querySelector('.switch-view-2').addEventListener('click', () => {
-      location.pathname = 'twinview.html'
+      location.pathname = '/twinview.html'
     })
     this.querySelector('.switch-view-1').addEventListener('click', () => {
-      location.pathname = 'singleview.html'
+      location.pathname = '/singleview.html'
     })
   }
 

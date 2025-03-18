@@ -5,8 +5,8 @@
   "main": "./public/index.html",
   "type": "module",
   "scripts": {
-    "dev": "export NODE_ENV=development && cp ../web-config.test.js public/config.js || : && node esbuild.js",
-    "build": "export NODE_ENV=production && node esbuild.js",
+    "dev": "vite",
+    "build": "vite build",
     "docs": "jsdoc --configure docs/jsdoc-conf.json",
     "test": "npm run test-unit && npm run test-e2e",
     "test-e2e": "npx playwright test",
@@ -39,7 +39,7 @@
     "@dataforsyningen/designsystem": "^7.0.0",
     "@dataforsyningen/gsearch-ui": "^2.0.1",
     "@dataforsyningen/saul": "^4.2.0",
-    "jspdf": "^2.5.1",
+    "jspdf": "^3.0.1",
     "mobx": "^6.12.1",
     "ol": "^10.0.0",
     "proj4": "^2.10.0"
@@ -47,9 +47,9 @@
   "devDependencies": {
     "@eslint/js": "^9.3.0",
     "@playwright/test": "^1.41.0",
-    "esbuild": "^0.16.17",
     "eslint": "^9.3.0",
     "globals": "^15.3.0",
-    "jsdoc": "^4.0.2"
+    "jsdoc": "^4.0.2",
+    "vite": "^6.2.2"
   }
 }

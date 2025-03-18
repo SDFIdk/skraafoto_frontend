@@ -101,7 +101,7 @@ skraafoto-viewport .sf-tooltip-measure {
 }
 
 skraafoto-viewport .sf-compass-arrows {
-  display: absolute;
+  position: absolute;
   padding:10rem;
 }
 

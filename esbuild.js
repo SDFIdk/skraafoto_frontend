@@ -1,4 +1,4 @@
-import {build, analyzeMetafile, serve} from 'esbuild'
+import * as esbuild from 'esbuild'
 import {buildHTML} from './bin/rebuild-html.js'
 import {copyFiles} from './bin/copy-to-dist.js'
 
@@ -13,7 +13,7 @@ const entry_points = {
 if (process.env.NODE_ENV === 'production') {
 
   // Production build
-  build({
+  esbuild.build({
     entryPoints: entry_points,
     outdir: outputDir,
     bundle: true,
@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
     await buildHTML(entry_points, result.metafile.outputs, outputDir)
     await copyFiles()
     
-    analyzeMetafile(result.metafile).then((analysis) => {
+    esbuild.analyzeMetafile(result.metafile).then((analysis) => {
       //console.log(analysis)
       console.log('Build finished 👍')
     })
@@ -47,23 +47,26 @@ if (process.env.NODE_ENV === 'production') {
 } else {
 
   // Development mode watches for file changes and rebuilds
-  serve({
-    servedir: 'public',
-  }, {
+  let ctx = await esbuild.context({
     entryPoints: entry_points,
     loader: {
       '.ttf': 'file',
       '.svg': 'file'
     },
-    outdir: 'public',
+    outdir: outputDir,
     bundle: true,
     splitting: true,
-    format: 'esm'
-  }).then(server => {
-
-    console.log(server)
-    // Call "stop" on the web server to stop serving
-    // server.stop()
-
+    format: 'esm',
+    metafile: true
   })
+
+  console.log(ctx.metafile)
+  
+  let { host, port } = await ctx.serve({
+    servedir: outputDir,
+  })
+
+  console.log('------------------------------------------------')
+  console.log(`Skråfoto dev server running on ${ host ? host : 'localhost' }:${ port }`)
+  console.log('------------------------------------------------')
 }

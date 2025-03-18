@@ -1,6 +1,4 @@
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
-import pointerSvg from '../../../public/img/icons/pin.svg'
-import crosshairSvg from '../../../public/img/icons/crosshairs.svg'
 import { state, autorun } from '../../state/index.js'
 import { getWorldXYZ } from '@dataforsyningen/saul'
 import { configuration } from '../../modules/configuration.js'
@@ -22,10 +20,10 @@ export class PlacementPinTool extends HTMLElement {
     super()
     let cursorPosition
     if (configuration.ENABLE_CROSSHAIR_ICON) {
-      this.cursorIcon = crosshairSvg
+      this.cursorIcon = '/img/icons/crosshairs.svg'
       cursorPosition = '12 12'
     } else {
-      this.cursorIcon = pointerSvg
+      this.cursorIcon = '/img/icons/pin.svg'
       cursorPosition = '15 30'
     } 
     this.style  = `

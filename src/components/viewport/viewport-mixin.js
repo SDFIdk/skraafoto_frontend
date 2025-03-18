@@ -12,8 +12,6 @@ import { configuration } from '../../modules/configuration.js'
 import { state } from '../../state/index.js'
 import { toDanish } from '../../modules/i18n.js'
 import { renderParcels } from '../../custom-plugins/plugin-parcel.js'
-import pointerSvg from '../../../public/img/icons/pointer-position.svg'
-import crosshairSvg from '../../../public/img/icons/crosshairs.svg'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
 // when the view resolves view properties, the map view will be updated with the HACKish projection override
@@ -54,13 +52,13 @@ function generateIconLayer(center) {
     let icon
     if (configuration.ENABLE_CROSSHAIR_ICON) {
       icon = new Icon({
-        src: crosshairSvg,
+        src: '/img/icons/crosshairs.svg',
         scale: 1,
         anchor: [0.5,0.5]
       })
     } else {
       icon = new Icon({
-        src: pointerSvg,
+        src: '/img/icons/pointer-position.svg',
         scale: 1,
         color: colorSetting,
         anchor: [0.5,1]
