@@ -11,4 +11,4 @@ The full documentation is available at https://sdfidk.github.io/skraafoto_fronte
 
 For information on running local servers and testing, see [Instructions for installation](https://sdfidk.github.io/skraafoto_frontend/tutorial-installing.html)
 
-Provided by *Klimadatastyrelsen* 2024
+Provided by *Klimadatastyrelsen* 2025

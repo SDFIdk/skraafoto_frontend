@@ -17,7 +17,7 @@ Here is a quick overview of the most important folders [in the skraafoto_fronten
 
 `src/` - Javascript and CSS source
 
-`public/` - HTML and images. HTML files may reference files in `dist` folder.
+`public/` - Images and config file.
 
 `dist/` - When running `npm run build`, a `dist` folder will be created with the built Javascript and CSS. 
 

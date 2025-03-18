@@ -28,10 +28,10 @@ Check `/src/modules/configuration.js` for more configuration options.
 
 ## Build the documentation
 First, run `npm run docs` to build the documentation pages.
-Then you can run `npm run serve-docs` and access the documentation in a browser at http://localhost:5173/
+Then you can run `npm run serve-docs` and access the documentation in a browser at http://localhost:8001/
 
 ## Build for development
-Run `npm run dev` to start a development server running locally at `localhost:8000`
+Run `npm run dev` to start a development server running locally at http://localhost:5173/
 
 ## Build for production
 Run `npm run build` to make a production build. The built resources are saved in `dist/` folder; ready to be hosted along with the static assets in the `public` folder.

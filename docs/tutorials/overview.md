@@ -39,19 +39,14 @@ flowchart TD
 
 ## The Skraafoto application
 
-The Skraafoto application is a simple collection of HTML pages.
-Pages reside in the `public/` directory.
-
-There is no javascript single page application or rendering system on the server side.
-Routing between pages is as simple as linking to other HTML pages.
-While this results in some repeated markup across pages, this approach makes it simple to extend the application with custom views and ensures a high level of accessibility.
+The Skraafoto application is a simple collection of HTML pages with associated CSS and JS.
 
 ### Views
 
 Each HTML page represents a "view".
 You can add more views simply by adding a HTML file and linking to it from some other page.
 
-<em>Example:</em> The "skråfoto twinview" view is `public/twinview.html`. 
+<em>Example:</em> The "skråfoto twinview" view is `/twinview.html`. 
 This corresponds to "skraafoto.dataforsyningen.dk/twinview.html` in the browser.
 
 Each view imports some tailored Javascript and common CSS.
