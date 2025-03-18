@@ -7,9 +7,7 @@ To install and build `skraafoto_frontend` locally, run these commands:
 3. `npm install`
 
 ## Configuration (config.js)
-Skraafoto expects to find a `config.js` file in the root folder when hosted.
-
-When running a development server, `config.js` should reside in the `public/` folder.
+Skraafoto expects to find a `config.js` file in the `public` folder when hosted.
 
 The contents of `config.js` should be a single Javascript object defined like so:
 ```
@@ -17,11 +15,8 @@ const environment = {
   
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
-  API_STAC_BASEURL: "https://api.dataforsyningen.dk/rest/skraafoto_api/v1.0",
 
   // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
-  API_DHM_WCS_BASEURL: "https://services.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS",
-  API_DHM_BASEURL: "https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter",
   API_DHM_TOKENA: "[ INSERT USERNAME-LIKE TOKEN ]",
   API_DHM_TOKENB: "[ INSERT PASSWORD-LIKE TOKEN ]"
 
@@ -29,10 +24,11 @@ const environment = {
 ```
 You'll need to supply your own tokens for your particular configuration.
 You can copy and edit `public/config.js.example` to use as your own `config.js`.
+Check `/src/modules/configuration.js` for more configuration options.
 
 ## Build the documentation
 First, run `npm run docs` to build the documentation pages.
-Then you can run `npm run serve-docs` and access the documentation in a browser at `localhost:8001`
+Then you can run `npm run serve-docs` and access the documentation in a browser at http://localhost:5173/
 
 ## Build for development
 Run `npm run dev` to start a development server running locally at `localhost:8000`
@@ -47,7 +43,7 @@ You'll need to install Playwright dependencies **once** before running the E2E t
 Do so with `npx playwright install --with-deps`
 
 Then make sure you have a local development server running. 
-Run `npm run dev`, open a browser, and point it to `localhost:8000`
+Run `npm run dev`, open a browser, and point it to http://localhost:5173/
 
 Now you can run the test using:
 `npm run test` or `npm run test -- --ui` (the latter opens the Playwright test UI)

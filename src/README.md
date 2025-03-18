@@ -4,7 +4,7 @@ This folder contains source Javascript and CSS that is packaged by the build sys
 
 ## Javascript source
 
-Entry files for specific views are in the `views/` folder.
+Entry files for specific views' Javascripts are in the `views/` folder.
 
 ## CSS source
 
