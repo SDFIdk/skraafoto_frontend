@@ -28,13 +28,15 @@ function generateSource(geotiff_href) {
   let gtif
   const searchParams = new URLSearchParams(location.search)
 
-  // POC HACK
+  // TODO: Remove
+  // --- POC HACK ---
   // Force GeoTiff image from URL param
   if (searchParams.has('gtif')) {
     gtif = searchParams.get('gtif')
   } else {
     gtif = geotiff_href
   }
+  // --- END POC HACK ---
 
   return new GeoTIFF({
     convertToRGB: true,
