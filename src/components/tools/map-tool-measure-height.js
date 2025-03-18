@@ -7,7 +7,7 @@ import { image2world, getImageXY } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 import { configuration } from "../../modules/configuration"
-import { state, reaction, autorun } from '../../state/index.js'
+import { state } from '../../state/index.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { findAncestor } from '../../modules/utilities.js'
 import { awaitMap, setModeChangeHandler, setLineRemoveHandler, setToggleHandler } from './map-tool-measure-shared.js'
