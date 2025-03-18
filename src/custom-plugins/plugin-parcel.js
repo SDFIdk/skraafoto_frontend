@@ -12,6 +12,8 @@ import Polygon from 'ol/geom/Polygon'
 import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
+import { showToast } from '@dataforsyningen/designsystem/assets/designsystem.js'
+
 
 function fetchParcel(id) {
   const idSplit = id.split('-')
@@ -35,12 +37,19 @@ function fetchParcelWFS(ejerlav, matrikel) {
   .then((response) => response.text())
   .then((xml) => new DOMParser().parseFromString(xml, "text/xml"))
   .then((data) => {
-    const polygonData = data.getElementsByTagName('gml:posList')[0].childNodes[0].nodeValue.split(' ')
+    const gmlData = data.getElementsByTagName('gml:posList')[0]
+    if (!gmlData) {
+      return false
+    }
+    const polygonData = gmlData.childNodes[0].nodeValue.split(' ')
     const polygon = []
     for (let i = 0; i < polygonData.length; i = i + 3) {
       polygon.push([Number(polygonData[i]), Number(polygonData[i + 1])])
     }
     return polygon
+  })
+  .catch(err => {
+    console.error('Could not fetch matrikel Polygon from WFS', err)
   })
 }
 
@@ -63,6 +72,11 @@ function fetchParcels(ids) {
       results.forEach((result) => {
         if (result) {
           parcels.push(result)
+        } else {
+          showToast({
+            message: 'Nogle matrikler kunne ikke indlæses',
+            duration: 4000
+          })
         }
       })
       return parcels

@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test'
 
+test.beforeEach(async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'luk dialog' }).click()
+})
+
 test('Load viewer with URL params 1', async ({ page }) => {
   // Go to page and check that it renders in the correct position
   await page.goto('/?project=denmark&parcels=270554-15ax&address=Gartnervænget 3, 4160 Herlufmagle&ejendomsid=815465&x=674480.0132781528&y=6133107.9439362185&width=40&mode=4&year=2019', { waitUntil: 'networkidle' })
@@ -28,4 +33,16 @@ test('Load viewer with URL params 5', async ({ page }) => {
   // Go to page and check that it renders in the correct position
   await page.goto('/?project=denmark&parcels=1180452-156a;1180452-156p;1180452-168bf;1180452-156ah;1180452-156u;1180452-156aøg;1180452-156avt;1180452-156cd;1180452-156bap&address=Sønder Klitvej 284, Bjerregaard, 6960 Hvide Sande&ejendomsid=1858917&x=448601.1127685946&y=6190597.70005812&width=40&mode=4&year=2019', { waitUntil: 'networkidle' })
   await expect(page.locator('#viewport-1')).toContainText('Billede af området omkring koordinat 448601 Ø, 6190598 N set fra nord.')
+})
+
+test('Load viewer with bad/missing parcels', async ({ page }) => {
+  // Go to page and check that it informs user of missing parcels
+  await page.goto('/?parcels=1410353-201;1410353-202&address=Mælkevejen 1, Sandersvig, 6100 Haderslev&ejendomsid=1141917&year=2019&x=540964.5914037265&y=6132649.853562239&width=40&mode=4&token=e74200f9b819b0c96a656dce7e0d8850')
+  await expect(page.getByText('Nogle matrikler kunne ikke indlæses')).toBeVisible()
+})
+
+test('Load viewer with many parcels', async ({ page }) => {
+  // Go to page and check that it renders in the correct position
+  await page.goto('/?parcels=750555-1d;751551-11c;751551-21d;751551-2aq;751551-2ar;751551-2as;751551-2o;751551-3o;751551-3p;751551-3q;751551-4v;751552-53b;751555-2d;751555-5f;751555-5q;751555-5r;751555-5s;751555-6f;751555-7l&address=Vordevej%2027,%208831%20L%C3%B8gstrup&ejendomsid=1988364&year=2019&x=519998.5342623503&y=6265346.659501427&width=40&mode=4&token=e74200f9b819b0c96a656dce7e0d8850')
+  await expect(page.locator('#viewport-1')).toContainText('Billede af området omkring koordinat 519999 Ø, 6265347 N set fra nord.')
 })
