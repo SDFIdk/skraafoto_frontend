@@ -206,12 +206,11 @@ function renderParcels(viewport, itemId) {
     // No parcels to draw
     return
   }
-  const itemkey = viewport.dataset.itemkey ? viewport.dataset.itemkey : viewport.dataset.orientation
   drawParcels({
     parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
     imageId: itemId,
     map: viewport.map,
-    elevationdata: state.terrain[itemkey]
+    elevationdata: state.terrain.data
   })
 }
 
