@@ -3,6 +3,7 @@ import { state, autorun, reaction } from '../../state/index.js'
 export function setToggleHandler(mode, buttonElement) {
   buttonElement.addEventListener('click', (event) => {
     if (state.toolMode !== mode) {
+      state.updateTerrain()
       state.setToolMode = mode  
     } else {
       state.setToolMode = null
