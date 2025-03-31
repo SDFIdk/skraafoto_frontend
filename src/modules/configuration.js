@@ -1,6 +1,6 @@
 /** @module */
 
-const api_stac_default_prod = "https://api.dataforsyningen.dk/rest/skraafoto_api/v1.0"
+const api_stac_default_prod = "https://api.dataforsyningen.dk/rest/skraafoto_api/v2"
 const api_stac_default_test = "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v2"
 
 function getRandomPosition() {
@@ -21,7 +21,7 @@ let configuration = {
   API_STAC_BASEURL: api_stac_default_prod,
 
   API_DHM_WCS_BASEURL: "https://services.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS",
-  API_DHM_BASEURL: "https://test11.dataforsyningen.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter",
+  API_DHM_BASEURL: "https://services.datafordeler.dk/DHMTerraen/DHMKoter/1.0.0/GEOREST/HentKoter",
   API_DHM_TOKENA: '', // DHM API service username can be created at https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
   API_DHM_TOKENB: '', // DHM API service password can be created at https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
 
