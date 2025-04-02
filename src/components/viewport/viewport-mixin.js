@@ -10,7 +10,6 @@ import { Icon, Style } from 'ol/style'
 import { getImageXY, getZ } from '@dataforsyningen/saul'
 import { configuration } from '../../modules/configuration.js'
 import { state } from '../../state/index.js'
-import { toDanish } from '../../modules/i18n.js'
 import { renderParcels } from '../../custom-plugins/plugin-parcel.js'
 
 // HACK to avoid bug looking up meters per unit for 'pixels' (https://github.com/openlayers/openlayers/issues/13564)
@@ -242,7 +241,25 @@ function createView(view_config) {
 }
 
 function updateTextContent(imagedata) {
-  return `Billede af området omkring koordinat ${ state.marker.position[0].toFixed(0) } Ø, ${ state.marker.position[1].toFixed(0) } N set fra ${toDanish(imagedata.properties.direction)}.`
+  let orientationStr
+  switch(imagedata.properties.direction) {
+    case 'nadir': 
+      orientationStr = 'top'
+      break
+    case 'north': 
+      orientationStr = 'syd'
+      break
+    case 'south': 
+      orientationStr = 'nord'
+      break
+    case 'east': 
+      orientationStr = 'vest'
+      break
+    case 'west': 
+      orientationStr = 'øst'
+      break
+  }
+  return `Billede af området omkring koordinat ${ state.marker.position[0].toFixed(0) } Ø, ${ state.marker.position[1].toFixed(0) } N set fra ${ orientationStr }.`
 }
 
 function updatePlugins(self, item) {

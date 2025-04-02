@@ -38,7 +38,7 @@ test.slow('Change orientation to west', async ({ page }) => {
   await page.goto('/?item=2023_83_29_2_0022_00002831', { waitUntil: 'networkidle' })
   await page.getByTitle('Vis mod vest').click()
   await page.waitForLoadState('networkidle')
-  await expect(page.locator('css=skraafoto-viewport')).toContainText('Billede af området omkring koordinat 534893 Ø, 6173611 N set fra vest.')
+  await expect(page.locator('css=skraafoto-viewport')).toContainText('Billede af området omkring koordinat 534893 Ø, 6173611 N set fra øst.')
 })
 
 test.slow('Change orientation to nadir', async ({ page }) => {

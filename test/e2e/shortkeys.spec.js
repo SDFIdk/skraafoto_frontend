@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 
 test('Shift view from north to east using shortkeys', async ({ page }) => {
   await page.keyboard.press('Shift+ArrowLeft')
-  await expect(page.locator('skraafoto-viewport')).toContainText('koordinat 722119 Ø, 6178801 N set fra øst.')
+  await expect(page.locator('skraafoto-viewport')).toContainText('koordinat 722119 Ø, 6178801 N set fra vest.')
 })
 
 test('Shift to earlier image using shortkeys', async ({ page }) => {
