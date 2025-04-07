@@ -78,10 +78,12 @@ function setupListeners() {
     alert('Du er ikke længere online. Prøv igen senere.')
   })
 
+  /* TODO: Handle errors otherwise
   document.addEventListener('loaderror', function (ev) {
     console.error('Network error: ', ev.details)
     alert('Der var et problem med at hente data fra serveren.')
   })
+  */
 
   // Listen and react on shortkey use
   document.addEventListener('keydown', keyDownHandler)

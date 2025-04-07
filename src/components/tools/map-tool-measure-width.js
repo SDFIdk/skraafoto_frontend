@@ -7,7 +7,7 @@ import Overlay from 'ol/Overlay'
 import { getWorldXYZ, createTranslator } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import { configuration } from "../../modules/configuration"
-import { state, reaction, autorun } from '../../state/index.js'
+import { state } from '../../state/index.js'
 import svgSprites from '@dataforsyningen/designsystem/assets/icons.svg'
 import { findAncestor } from '../../modules/utilities.js'
 import { awaitMap, setModeChangeHandler, setLineRemoveHandler, setToggleHandler } from './map-tool-measure-shared.js'
@@ -242,7 +242,7 @@ export class MeasureWidthTool extends HTMLElement {
     for (let n = 0; coords.length > n; n = n+2) {
       const new_coord = await getWorldXYZ({
         image: state.items[this.viewport.dataset.itemkey],
-        terrain: state.terrain[this.viewport.dataset.itemkey],
+        terrain: state.terrain.data,
         xy: [coords[n], coords[n + 1]]
       })
       // Since `getDistance` works with WGS84 coordinates, we must translate the coords

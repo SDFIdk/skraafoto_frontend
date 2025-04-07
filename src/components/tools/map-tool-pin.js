@@ -74,6 +74,7 @@ export class PlacementPinTool extends HTMLElement {
 
   togglePin() {
     if (state.toolMode !== 'center') {
+      state.updateTerrain()
       this.viewport.querySelector('.viewport-map').classList.add('pin-on')
       this.button_element.classList.add('active')
       this.button_element.blur()
@@ -89,7 +90,7 @@ export class PlacementPinTool extends HTMLElement {
       const worldPosition = await getWorldXYZ({
         xy: event.coordinate,
         image: state.items[this.viewport.dataset.itemkey], 
-        terrain: state.terrain[this.viewport.dataset.itemkey]
+        terrain: state.terrain.data
       })
       state.setViewMarker({
         position: worldPosition.slice(0,2),
