@@ -1,4 +1,4 @@
-# skraafoto_frontend
+# Skråfoto frontend
 
 `skraafoto_frontend` **(Skraafoto)** is an application that lets users browse **oblique arial photographs (skråfotos)** in a web browser.
 Photographs are fetched using [Skråfoto STAC API](https://github.com/SDFIdk/skraafoto_stac_public/blob/main/dokumentation.md).
