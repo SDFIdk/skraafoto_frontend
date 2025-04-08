@@ -13,18 +13,8 @@ import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import { showToast } from '@dataforsyningen/designsystem/assets/designsystem.js'
+import { fetchWFSdata } from '../modules/wfs.js'
 
-
-function fetchParcel(id) {
-  const idSplit = id.split('-')
-  return fetch(`https://api.dataforsyningen.dk/jordstykker/${ idSplit[0] }/${ idSplit[1] }?format=geojson&srid=25832&token=${ configuration.API_STAC_TOKEN }`)
-  .then(function(response) {
-    return response.json()
-  })
-  .then(data => {
-    return data
-  })
-}
 
 /**
  * Requests MATRIKLEN WFS service and fetches "Jordstykker" filtered by Ejerlav and Matrikel.
@@ -33,10 +23,8 @@ function fetchParcel(id) {
  * @returns {Array} Polygon array consisting of coordinate pairs
  */
 function fetchParcelWFS(ejerlav, matrikel) {
-  return fetch(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
-  .then((response) => response.text())
-  .then((xml) => new DOMParser().parseFromString(xml, "text/xml"))
-  .then((data) => {
+  return fetchWFSdata(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
+  .then(data => {
     const gmlData = data.getElementsByTagName('gml:posList')[0]
     if (!gmlData) {
       return false
@@ -62,47 +50,24 @@ function fetchParcels(ids) {
   const promises = []
   const parcels = []
 
-  if (configuration.ENABLE_PARCEL_WFS) {
-    splitIds.forEach((id) => {
-      const [ejerlav, matrikel] = id.split('-')
-      promises.push(fetchParcelWFS(ejerlav, matrikel))
-    })
+  splitIds.forEach((id) => {
+    const [ejerlav, matrikel] = id.split('-')
+    promises.push(fetchParcelWFS(ejerlav, matrikel))
+  })
 
-    return Promise.all(promises).then((results) => {
-      results.forEach((result) => {
-        if (result) {
-          parcels.push(result)
-        } else {
-          showToast({
-            message: 'Nogle matrikler kunne ikke indlæses',
-            duration: 4000
-          })
-        }
-      })
-      return parcels
-    })
-
-  } else {
-
-    splitIds.forEach((id) => {
-      promises.push(fetchParcel(id)
-        .then((parcel_data) => {
-          return parcel_data.geometry ? parcel_data.geometry.coordinates[0] : undefined
+  return Promise.all(promises).then((results) => {
+    results.forEach((result) => {
+      if (result) {
+        parcels.push(result)
+      } else {
+        showToast({
+          message: 'Nogle matrikler kunne ikke indlæses',
+          duration: 4000
         })
-      )
+      }
     })
-
-    return Promise.all(promises)
-    .then((results) => {
-      results.forEach((result) => {
-        if (result) {
-          parcels.push(result)
-        }
-      })
-      return parcels
-    })
-
-  }
+    return parcels
+  })
 }
 
 function getPolygonElevations(coords, terrain) {
