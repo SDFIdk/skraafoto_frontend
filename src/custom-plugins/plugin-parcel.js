@@ -12,7 +12,7 @@ import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import { showToast } from '@dataforsyningen/designsystem/assets/designsystem.js'
-import { wfsFetchGML, wfsExtractGeometries, wfsConvertGeometry, wfsImproveElevation } from '../modules/wfs.js'
+import { wfsFetchGML, wfsExtractGeometries, wfsConvertGeometry, wfsImproveGeometryElevation } from '../modules/wfs.js'
 
 /**
  * Requests MATRIKLEN WFS service and fetches "Jordstykker" filtered by Ejerlav and Matrikel.
@@ -27,9 +27,7 @@ function fetchParcelWFS(ejerlav, matrikel) {
       return false
     }
     const geom = await wfsExtractGeometries(gmlData)
-    const improvedGeom = await wfsImproveElevation(geom)
-    console.log(improvedGeom)
-    return improvedGeom[0].coordinates
+    return geom[0]
   })
   .catch(err => {
     console.error('Could not fetch matrikel Polygon from WFS', err)
@@ -37,11 +35,9 @@ function fetchParcelWFS(ejerlav, matrikel) {
 }
 
 function fetchParcels(ids) {
-
   if (!ids) {
     return Promise.resolve([])
   }
-
   const splitIds = ids.split(';')
   const promises = []
   const parcels = []
@@ -105,13 +101,13 @@ function generateParcelVectorLayer() {
  * Fetches the parcel polygons based on the ids
  * and draws that polygon over an image in an OpenLayers map object
  */
-function drawParcels({parcels, imageId, map, elevationdata}) {
+function drawParcels({parcels, imageId, map}) {
   if (!parcels[0] || !imageId) {
     return
   }
   const promises = []
   parcels.forEach((parcel) => {
-    promises.push(generateFeature(parcel, imageId))
+    promises.push(generateFeature(parcel.coordinates, imageId))
   })
 
   // generate a map layer for parcel polygons
@@ -136,17 +132,23 @@ function drawParcels({parcels, imageId, map, elevationdata}) {
 /**
  * Starts fetching the relevant data to draw the parcels on map
  */
-async function renderParcels(viewport, itemId) {
+function renderParcels(viewport, itemId) {
   if (state.parcels.length < 1) {
     // No parcels to draw
     return
   }
-  const localParcels = toJS(state.parcels) // Using `toJS` to clone array and avoid manipulating state object directly
+  state.updateTerrain()
+  //const localParcels = toJS(state.parcels) // Using `toJS` to clone array and avoid manipulating state object directly
+  
+  let localParcels = [] 
+  state.parcels.forEach((parcel) => {
+    const improvedGeom = wfsImproveGeometryElevation(parcel, state.terrain.data)
+    localParcels.push(improvedGeom)
+  })
   drawParcels({
-    parcels: localParcels, 
+    parcels: localParcels,
     imageId: itemId,
-    map: viewport.map,
-    elevationdata: state.terrain.data
+    map: viewport.map
   })
 }
 

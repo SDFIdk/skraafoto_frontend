@@ -7,6 +7,8 @@
 import { state } from '../state/index.js'
 import { getImageXY, getElevation } from '@dataforsyningen/saul'
 
+let terrain = null
+
 /**
  * Pulls geometry info from WFS
  * @param {string} url - WFS endpoint URL
@@ -90,17 +92,24 @@ async function wfsExtractGeometries(gmlString) {
   return geometryData
 }
 
-async function wfsImproveElevation(geometry) {
-  if (!state.terrain.data) {
-    console.error('no geometry available')
+function wfsImproveGeometryElevation(geometry, terrainData) {
+  if (!terrainData) {
+    console.error('Missing terrain data at this time')
     return geometry
   } else {
-    return geometry.map(outer => {
-      return outer.coordinates.map(async inner => {
-        const z = await getElevation(inner[0], inner[1], state.terrain.data)
-        return [inner[0], inner[1], z]
+    const improvedGeom = {
+      type: geometry.type,
+      coordinates: []
+    }
+    geometry.coordinates.forEach(async (outer) => {
+      let feature = []
+      outer.map(async (inner) => {
+        const z = await getElevation(inner[0], inner[1], terrainData)
+        feature.push([inner[0], inner[1], z])
       })
+      improvedGeom.coordinates.push(feature)
     })
+    return improvedGeom
   }
 }
 
@@ -112,8 +121,8 @@ async function wfsImproveElevation(geometry) {
  */
 function wfsConvertGeometry(geometry, imageData) {
   const convertedGeom = geometry.map(outer => {
-    return outer.map(inner => {
-      return getImageXY(imageData, inner[0], inner[1])
+    return outer.map(([x,y,z]) => {
+      return getImageXY(imageData, x, y, z)
     })
   })
   return convertedGeom
@@ -129,5 +138,5 @@ export {
   wfsFetchGML,
   wfsExtractGeometries,
   wfsConvertGeometry,
-  wfsImproveElevation
+  wfsImproveGeometryElevation
 }
