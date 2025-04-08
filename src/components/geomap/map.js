@@ -163,7 +163,7 @@ export class SkraaFotoMap extends HTMLElement {
 
     parcels.forEach(parcel => {
       layer.getSource().addFeature(new Feature({
-        geometry: new Polygon(parcel.coordinates)
+        geometry: new Polygon(parcel.features)
       }))
     })
 

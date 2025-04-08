@@ -1,13 +1,18 @@
 /** @module */
 
 /*
- * Methods used for drawing geometries onto oblique arial photographs (skråfotos) from WFS data
+ * Methods and classes used for drawing geometries onto oblique arial photographs (skråfotos) from WFS data
  */
 
-import { state } from '../state/index.js'
 import { getImageXY, getElevation } from '@dataforsyningen/saul'
 
-let terrain = null
+/** Type to hold Geometry feature data after being scraped from GML */
+class Geometry {
+  constructor(type, features) {
+    this.type = type
+    this.features = features
+  }
+}
 
 /**
  * Pulls geometry info from WFS
@@ -43,10 +48,7 @@ async function wfsExtractGeometries(gmlString) {
   const points = xmlDoc.getElementsByTagName('gml:Point');
   for (let point of points) {
     const coordinates = point.getElementsByTagName('gml:coordinates')[0].textContent
-    geometryData.push({
-        type: 'Point',
-        coordinates: coordinates.split(',').map(coord => parseFloat(coord.trim()))
-    })
+    geometryData.push(new Geometry('Point', coordinates.split(',').map(coord => parseFloat(coord.trim()))))
   }
   */
 
@@ -56,10 +58,7 @@ async function wfsExtractGeometries(gmlString) {
   for (let line of lineStrings) {
     const coordinates = line.getElementsByTagName('gml:coordinates')[0].textContent
     const coordsArray = coordinates.split(' ').map(pair => pair.split(',').map(coord => parseFloat(coord.trim())))
-    geometryData.push({
-      type: 'LineString',
-      coordinates: coordsArray
-    })
+    geometryData.push(new Geometry('LineString', [coordsArray]))
   }
   */
 
@@ -74,10 +73,7 @@ async function wfsExtractGeometries(gmlString) {
     for (let i = 0; i < coordinates.length; i = i + 3) {
       coordsArray.push([Number(coordinates[i]), Number(coordinates[i + 1]), Number(coordinates[i + 2])])
     }
-    geometryData.push({
-      type: 'Polygon',
-      coordinates: [coordsArray] // Outer boundary (could include inner boundaries for holes)
-    })
+    geometryData.push(new Geometry('Polygon', [coordsArray])) // Outer boundary (could include inner boundaries for holes)
 
     // TODO: You could also add logic for inner boundaries (holes), if present
     /* AI generated:
@@ -85,51 +81,46 @@ async function wfsExtractGeometries(gmlString) {
     for (let hole of innerBoundaries) {
       const holeCoordinates = hole.getElementsByTagName('gml:coordinates')[0].textContent
       const holeCoordsArray = holeCoordinates.split(' ').map(pair => pair.split(',').map(coord => parseFloat(coord.trim())))
-      geometryData[geometryData.length - 1].coordinates.push(holeCoordsArray)
+      geometryData[geometryData.length - 1].features.push(holeCoordsArray)
     }
     */
   } 
   return geometryData
 }
 
+/**
+ * Returns a Geometry object with improved elevations for each feature coordinate
+ * @param {Geometry} geometry Geometry object
+ * @param {object} terrainData GeoTIFF terrain data
+ * @returns {Geometry} Improved Geometry object
+ */
 function wfsImproveGeometryElevation(geometry, terrainData) {
-  if (!terrainData) {
-    console.error('Missing terrain data at this time')
-    return geometry
-  } else {
-    const improvedGeom = {
-      type: geometry.type,
-      coordinates: []
-    }
-    geometry.coordinates.forEach(async (outer) => {
-      let feature = []
-      outer.map(async (inner) => {
-        const z = await getElevation(inner[0], inner[1], terrainData)
-        feature.push([inner[0], inner[1], z])
-      })
-      improvedGeom.coordinates.push(feature)
+  const improvedGeom = new Geometry(geometry.type, [])
+  geometry.features.forEach(async (outer) => {
+    let feature = []
+    outer.map(async (inner) => {
+      const z = await getElevation(inner[0], inner[1], terrainData)
+      feature.push([inner[0], inner[1], z])
     })
-    return improvedGeom
-  }
+    improvedGeom.features.push(feature)
+  })
+  return improvedGeom
 }
 
 /**
- * Convert WFS geometry to image points using SAUL module
- * @param {object} geometry Geometry
+ * Convert WFS geometry to image points using the SAUL module
+ * @param {Geometry} geometry Geometry object
  * @param {object} imageData Image data from STAC API
- * @returns {object} Geometry to match image's internal coordinate system
+ * @returns {Geometry} Geometry object to match image's internal coordinate system
  */
 function wfsConvertGeometry(geometry, imageData) {
-  const convertedGeom = {
-    type: geometry.type,
-    coordinates: []
-  }
-  geometry.coordinates.forEach(outer => {
+  const convertedGeom = new Geometry(geometry.type, [])
+  geometry.features.forEach(outer => {
     let feature = []
     outer.forEach(([x,y,z]) => {
       feature.push(getImageXY(imageData, x, y, z))
     })
-    convertedGeom.coordinates.push(feature)
+    convertedGeom.features.push(feature)
   })
   return convertedGeom
 }

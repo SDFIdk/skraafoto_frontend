@@ -67,7 +67,7 @@ function generateFeature(geometry, image_id) {
   .then(function(image_data) {
     const new_geometry = wfsConvertGeometry(geometry, image_data)
     return new Feature({
-      geometry: new Polygon(new_geometry.coordinates)
+      geometry: new Polygon(new_geometry.features)
     })
   })
 }
@@ -133,8 +133,8 @@ function drawParcels({parcels, imageId, map}) {
  * Starts fetching the relevant data to draw the parcels on map
  */
 function renderParcels(viewport, itemId) {
-  if (state.parcels.length < 1) {
-    // No parcels to draw
+  if (state.parcels.length < 1 || !state.terrain.data) {
+    // No terrain data available or no parcels to draw
     return
   }
   state.updateTerrain()
