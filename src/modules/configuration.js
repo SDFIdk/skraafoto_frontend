@@ -33,7 +33,7 @@ let configuration = {
 
   ENABLE_CUSTOM_TOKEN: false, // Enables using a custom token from URL param or localstorage to access STAC API
   ENABLE_PARCEL: false, // Enables displaying parcels on all viewports
-  ENABLE_PARCEL_WFS: false, // Enables fetching Jordstykke data from WFS service
+  ENABLE_PARCEL_WFS: true, // Enables fetching Jordstykke data from WFS service
   ENABLE_POINTER: true, // Enables displaying the cursor's position as a yellow dot on the other viewports
   ENABLE_SMALL_FONT: false, // Enables a small font on image-date
   ENABLE_FULLSCREEN: false, // Enables Fullscreen button
