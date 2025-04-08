@@ -3,7 +3,6 @@
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
 import { state } from '../state/index.js'
-import { getImageXY, getElevation } from '@dataforsyningen/saul'
 import { toJS } from 'mobx'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
@@ -13,8 +12,7 @@ import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import { showToast } from '@dataforsyningen/designsystem/assets/designsystem.js'
-import { fetchWFSdata } from '../modules/wfs.js'
-
+import { wfsFetchGML, wfsExtractGeometries, wfsConvertGeometry, wfsImproveElevation } from '../modules/wfs.js'
 
 /**
  * Requests MATRIKLEN WFS service and fetches "Jordstykker" filtered by Ejerlav and Matrikel.
@@ -23,18 +21,15 @@ import { fetchWFSdata } from '../modules/wfs.js'
  * @returns {Array} Polygon array consisting of coordinate pairs
  */
 function fetchParcelWFS(ejerlav, matrikel) {
-  return fetchWFSdata(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
-  .then(data => {
-    const gmlData = data.getElementsByTagName('gml:posList')[0]
+  return wfsFetchGML(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
+  .then(async (gmlData) => {
     if (!gmlData) {
       return false
     }
-    const polygonData = gmlData.childNodes[0].nodeValue.split(' ')
-    const polygon = []
-    for (let i = 0; i < polygonData.length; i = i + 3) {
-      polygon.push([Number(polygonData[i]), Number(polygonData[i + 1])])
-    }
-    return polygon
+    const geom = await wfsExtractGeometries(gmlData)
+    const improvedGeom = await wfsImproveElevation(geom)
+    console.log(improvedGeom)
+    return improvedGeom[0].coordinates
   })
   .catch(err => {
     console.error('Could not fetch matrikel Polygon from WFS', err)
@@ -42,6 +37,7 @@ function fetchParcelWFS(ejerlav, matrikel) {
 }
 
 function fetchParcels(ids) {
+
   if (!ids) {
     return Promise.resolve([])
   }
@@ -70,32 +66,12 @@ function fetchParcels(ids) {
   })
 }
 
-function getPolygonElevations(coords, terrain) {
-
-  const promises = []
-  coords.forEach(function(coor) {
-    promises.push(getElevation(coor[0], coor[1], terrain))
-  })
-
-  return Promise.all(promises)
-  .then(function(values) {
-    const improved_polygon = coords.map(function(coor, idx) {
-      coor[2] = values[idx]
-      return coor
-    })
-    return improved_polygon
-  })
-}
-
 function generateFeature(polygon, image_id) {
   return queryItem(image_id)
   .then(function(image_data) {
-    const new_polygon = polygon.map(function(coor) {
-      // Convert every coordinate to image x,y
-      return getImageXY(image_data, coor[0], coor[1], coor[2])
-    })
+    const new_polygon = wfsConvertGeometry(polygon, image_data)
     return new Feature({
-      geometry: new Polygon([new_polygon])
+      geometry: new Polygon(new_polygon)
     })
   })
 }
@@ -135,13 +111,7 @@ function drawParcels({parcels, imageId, map, elevationdata}) {
   }
   const promises = []
   parcels.forEach((parcel) => {
-    promises.push(getPolygonElevations(parcel, elevationdata)
-      .then((improved_polygon) => {
-        return generateFeature(improved_polygon, imageId)
-          .then(function(feature) {
-            return feature
-          })
-      }))
+    promises.push(generateFeature(parcel, imageId))
   })
 
   // generate a map layer for parcel polygons
@@ -171,9 +141,9 @@ async function renderParcels(viewport, itemId) {
     // No parcels to draw
     return
   }
-  await state.updateTerrain()
+  const localParcels = toJS(state.parcels) // Using `toJS` to clone array and avoid manipulating state object directly
   drawParcels({
-    parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
+    parcels: localParcels, 
     imageId: itemId,
     map: viewport.map,
     elevationdata: state.terrain.data

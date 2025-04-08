@@ -162,11 +162,11 @@ export class SkraaFotoMap extends HTMLElement {
     const layer = generateParcelVectorLayer()
 
     parcels.forEach(parcel => {
-      const polygon = parcel.map(coor => {
-        return [coor[0], coor[1]]
+      const polygon = parcel[0].map(p => {
+        return [p[0], p[1]]
       })
       layer.getSource().addFeature(new Feature({
-        geometry: new Polygon([polygon])
+        geometry: new Polygon(polygon)
       }))
     })
 
