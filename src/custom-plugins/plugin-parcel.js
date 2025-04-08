@@ -62,12 +62,12 @@ function fetchParcels(ids) {
   })
 }
 
-function generateFeature(polygon, image_id) {
+function generateFeature(geometry, image_id) {
   return queryItem(image_id)
   .then(function(image_data) {
-    const new_polygon = wfsConvertGeometry(polygon, image_data)
+    const new_geometry = wfsConvertGeometry(geometry, image_data)
     return new Feature({
-      geometry: new Polygon(new_polygon)
+      geometry: new Polygon(new_geometry.coordinates)
     })
   })
 }
@@ -107,7 +107,7 @@ function drawParcels({parcels, imageId, map}) {
   }
   const promises = []
   parcels.forEach((parcel) => {
-    promises.push(generateFeature(parcel.coordinates, imageId))
+    promises.push(generateFeature(parcel, imageId))
   })
 
   // generate a map layer for parcel polygons

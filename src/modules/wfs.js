@@ -115,20 +115,26 @@ function wfsImproveGeometryElevation(geometry, terrainData) {
 
 /**
  * Convert WFS geometry to image points using SAUL module
- * @param {array} geometry Geometry
+ * @param {object} geometry Geometry
  * @param {object} imageData Image data from STAC API
- * @returns localGeometry
+ * @returns {object} Geometry to match image's internal coordinate system
  */
 function wfsConvertGeometry(geometry, imageData) {
-  const convertedGeom = geometry.map(outer => {
-    return outer.map(([x,y,z]) => {
-      return getImageXY(imageData, x, y, z)
+  const convertedGeom = {
+    type: geometry.type,
+    coordinates: []
+  }
+  geometry.coordinates.forEach(outer => {
+    let feature = []
+    outer.forEach(([x,y,z]) => {
+      feature.push(getImageXY(imageData, x, y, z))
     })
+    convertedGeom.coordinates.push(feature)
   })
   return convertedGeom
 }
 
-/** 
+/** TODO:
  * Draws a local geometry onto image
  * @param olMap OpenLayers map instance
  * @returns ID of layer with the drawn geometry
