@@ -63,7 +63,7 @@ async function wfsExtractGeometries(gmlString) {
     // Fetches `gml:posList` coordinates for now. Maybe enable `gml:coordinates` in the future?
     const coordinates = outerBoundary.getElementsByTagName('gml:posList')[0].textContent.split(' ')
     let coordsArray = []
-    // Collects coordinate pairs (every 1st and 2nd numbers) and discards elevation (every 3rd number)
+    // Collects coordinate pairs (every 1st and 2nd numbers) with elevation info (every 3rd number) ... TODO: Is this a standard?
     for (let i = 0; i < coordinates.length; i = i + 3) {
       coordsArray.push([Number(coordinates[i]), Number(coordinates[i + 1]), Number(coordinates[i + 2])])
     }
