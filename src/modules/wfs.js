@@ -125,7 +125,7 @@ function wfsConvertGeometry(geometry, imageData) {
  * @returns ID of layer with the drawn geometry
  */
 function wfsDraw(options) {
-  
+  // Does nothing now
 }
 
 export {
