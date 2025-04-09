@@ -25,8 +25,7 @@ function wfsFetchGML(url) {
     const controller = new AbortController()
     const timeout = setTimeout(() => {
       controller.abort()
-      console.info('WFS service was too slow to respond')
-      reject('Server med data om matrikler var for langsom')
+      reject('WFS service did not respond in time')
     }, 4000)
 
     fetch(url, { signal: controller.signal })
@@ -37,8 +36,7 @@ function wfsFetchGML(url) {
     })
     .catch(err => {
       clearTimeout(timeout)
-      console.error(err)
-      reject('Matrikel kunne ikke hentes fra WFS server')
+      reject('WFS service could not be reached')
     })
   })
 }

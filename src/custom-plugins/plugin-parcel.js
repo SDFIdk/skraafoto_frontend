@@ -24,18 +24,29 @@ function fetchParcelWFS(ejerlav, matrikel) {
   return wfsFetchGML(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
   .then(async (gmlData) => {
     if (!gmlData) {
+      matrikelError('Nogle matrikler kunne ikke indlæses')
       return false
     }
     const geom = await wfsExtractGeometries(gmlData)
-    return geom[0]
+    if (geom.length === 0) {
+      matrikelError('Nogle matrikler kunne ikke indlæses')
+      return false
+    } else {
+      return geom[0]
+    }
   })
   .catch(err => {
-    console.info(err)
-    showToast({
-      message: err,
-      duration: 4000
-    })
+    console.error(err)
+    const danishErr = err === 'WFS service did not respond in time' ? 'Matrikel WFS server var for langsom' : 'Matrikel WFS kunne ikke indlæses'
+    matrikelError(danishErr)
     return false
+  })
+}
+
+function matrikelError(err) {
+  showToast({
+    message: err,
+    duration: 4000
   })
 }
 
