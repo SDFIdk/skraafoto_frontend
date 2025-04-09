@@ -30,7 +30,12 @@ function fetchParcelWFS(ejerlav, matrikel) {
     return geom[0]
   })
   .catch(err => {
-    console.error('Could not fetch matrikel Polygon from WFS', err)
+    console.info(err)
+    showToast({
+      message: err,
+      duration: 4000
+    })
+    return false
   })
 }
 
@@ -51,11 +56,6 @@ function fetchParcels(ids) {
     results.forEach((result) => {
       if (result) {
         parcels.push(result)
-      } else {
-        showToast({
-          message: 'Nogle matrikler kunne ikke indlæses',
-          duration: 4000
-        })
       }
     })
     return parcels

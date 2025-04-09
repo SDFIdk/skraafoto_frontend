@@ -14,19 +14,33 @@ class Geometry {
   }
 }
 
+// TODO: Should abort after a timeout and alert the user while continuing
 /**
  * Pulls geometry info from WFS
  * @param {string} url - WFS endpoint URL
  * @returns {string} GML data string
  */ 
 function wfsFetchGML(url) {
-  return fetch(url)
-  .then((response) => response.text())
-  .then((xml) => {
-    return xml
-  })
-  .catch(err => {
-    console.error('Could not fetch matrikel Polygon from WFS', err)
+  return new Promise((resolve, reject) => {
+    
+    const controller = new AbortController()
+    const timeout = setTimeout(() => {
+      controller.abort()
+      console.info('WFS service was too slow to respond')
+      reject('Server med data om matrikler var for langsom')
+    }, 4000)
+
+    fetch(url, { signal: controller.signal })
+    .then((response) => response.text())
+    .then((xml) => {
+      clearTimeout(timeout)
+      resolve(xml)
+    })
+    .catch(err => {
+      clearTimeout(timeout)
+      console.error(err)
+      reject('Matrikel kunne ikke hentes fra WFS server')
+    })
   })
 }
 
