@@ -14,7 +14,6 @@ class Geometry {
   }
 }
 
-// TODO: Should abort after a timeout and alert the user while continuing
 /**
  * Pulls geometry info from WFS
  * @param {string} url - WFS endpoint URL
