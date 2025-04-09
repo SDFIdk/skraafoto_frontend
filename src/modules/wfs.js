@@ -43,24 +43,7 @@ async function wfsExtractGeometries(gmlString) {
 
   let geometryData = []
 
-  // TODO: Extracting Point geometries
-  /* AI generated:
-  const points = xmlDoc.getElementsByTagName('gml:Point');
-  for (let point of points) {
-    const coordinates = point.getElementsByTagName('gml:coordinates')[0].textContent
-    geometryData.push(new Geometry('Point', coordinates.split(',').map(coord => parseFloat(coord.trim()))))
-  }
-  */
-
-  // TODO: Extracting LineString geometries
-  /* AI generated:
-  const lineStrings = xmlDoc.getElementsByTagName('gml:LineString')
-  for (let line of lineStrings) {
-    const coordinates = line.getElementsByTagName('gml:coordinates')[0].textContent
-    const coordsArray = coordinates.split(' ').map(pair => pair.split(',').map(coord => parseFloat(coord.trim())))
-    geometryData.push(new Geometry('LineString', [coordsArray]))
-  }
-  */
+  // TODO: Extract Point, LineString, and Multipolygon geometries
 
   // Extracting Polygon geometries
   const polygons = xmlDoc.getElementsByTagName('gml:Polygon')
@@ -75,15 +58,8 @@ async function wfsExtractGeometries(gmlString) {
     }
     geometryData.push(new Geometry('Polygon', [coordsArray])) // Outer boundary (could include inner boundaries for holes)
 
-    // TODO: You could also add logic for inner boundaries (holes), if present
-    /* AI generated:
-    const innerBoundaries = polygon.getElementsByTagName('gml:interior')
-    for (let hole of innerBoundaries) {
-      const holeCoordinates = hole.getElementsByTagName('gml:coordinates')[0].textContent
-      const holeCoordsArray = holeCoordinates.split(' ').map(pair => pair.split(',').map(coord => parseFloat(coord.trim())))
-      geometryData[geometryData.length - 1].features.push(holeCoordsArray)
-    }
-    */
+    // TODO: Add logic for inner polygon (holes), if present
+    
   } 
   return geometryData
 }
@@ -125,15 +101,24 @@ function wfsConvertGeometry(geometry, imageData) {
   return convertedGeom
 }
 
-/** TODO:
- * Draws a local geometry onto image
- * @param olMap OpenLayers map instance
+// TODO: Implement something like `renderParcel` and `drawParcel` from '../custom-plugins/plugin-parcel.js'
+/** 
+ * Draw a local geometry onto image in OpenLayers
+ * @param {string} options.title Title to identify layer
+ * @param {object} options.map OpenLayers map instance
+ * @param {object} options.image Image data from STAC API
+ * @param {array} options.geometries List of Geometry objects
+ * @param {object} [options.style] Optional style object ( `{fill, stroke, strokeWidth}` ) 
  * @returns ID of layer with the drawn geometry
  */
+function wfsDraw(options) {
+  
+}
 
 export {
   wfsFetchGML,
   wfsExtractGeometries,
   wfsConvertGeometry,
-  wfsImproveGeometryElevation
+  wfsImproveGeometryElevation,
+  wfsDraw
 }

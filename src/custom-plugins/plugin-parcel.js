@@ -138,7 +138,6 @@ function renderParcels(viewport, itemId) {
     return
   }
   state.updateTerrain()
-  //const localParcels = toJS(state.parcels) // Using `toJS` to clone array and avoid manipulating state object directly
   
   let localParcels = [] 
   state.parcels.forEach((parcel) => {
