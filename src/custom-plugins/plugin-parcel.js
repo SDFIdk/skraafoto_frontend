@@ -75,7 +75,7 @@ function fetchParcels(ids) {
         } else {
           showToast({
             message: 'Nogle matrikler kunne ikke indlæses',
-            duration: 10000
+            duration: 20000
           })
         }
       })
