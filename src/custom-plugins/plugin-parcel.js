@@ -69,16 +69,20 @@ function fetchParcels(ids) {
     })
 
     return Promise.all(promises).then((results) => {
+      let failCounter = 0
       results.forEach((result) => {
         if (result) {
           parcels.push(result)
         } else {
-          showToast({
-            message: 'Nogle matrikler kunne ikke indlæses',
-            duration: 20000
-          })
+          failCounter += 1
         }
       })
+      if (failCounter > 0) {
+        showToast({
+          message: `${failCounter} ${failCounter > 1 ? 'matrikler' : 'matrikel'} kunne ikke indlæses`,
+          duration: 20000
+        })
+      }
       return parcels
     })
 
