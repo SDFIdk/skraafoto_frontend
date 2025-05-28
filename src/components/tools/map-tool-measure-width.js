@@ -81,11 +81,14 @@ export class MeasureWidthTool extends HTMLElement {
   // Methods
 
   createDOM() {
-    this.innerHTML = `
-      <button id="length-btn" class="btn-width-measure secondary" title="Mål afstand" data-mode="measurewidth">
-        <svg><use href="${ svgSprites }#ruler-horizontal"/></svg>
-      </button>
-    `
+    this.button_element = document.createElement('button')
+    this.button_element.style.borderRadius = '0'
+    this.button_element.id = 'length-btn'
+    this.button_element.className = 'btn-width-measure quiet'
+    this.button_element.title = 'Mål afstand'
+    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#ruler-horizontal"/></svg>`
+    this.button_element.setAttribute('data-mode', 'measurewidth')
+    this.append(this.button_element)
   }
 
   pointerMoveHandler(event) {

@@ -26,7 +26,7 @@ export class SkraaFotoPrintTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
-    this.button_element.className = 'sf-print-tool secondary'
+    this.button_element.className = 'sf-print-tool quiet'
     this.button_element.title = 'Print billede til PDF'
     this.button_element.innerHTML = `<svg><use href="${ svgSprites }#print"/></svg>`
     this.append(this.button_element)

@@ -16,7 +16,7 @@ export class SkraaFotoInfoBox extends HTMLElement {
   btn_close_element
   
   template = `
-    <button class="sf-info-btn sf-slider-open secondary" title="Information om billede">
+    <button class="sf-info-btn sf-slider-open quiet" title="Information om billede">
       <svg><use href="${ svgSprites }#info"/></svg>
     </button>
     <section class="sf-slider-content">

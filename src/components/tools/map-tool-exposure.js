@@ -29,7 +29,7 @@ export class SkraaFotoExposureTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.innerHTML = `
-      <button class="exposure-btn secondary" title="Justér lysforholdet">
+      <button class="exposure-btn quiet" title="Justér lysforholdet">
         <svg><use href="${ svgSprites }#lightbulb"/></svg>
       </button
     `

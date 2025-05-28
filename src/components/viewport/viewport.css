@@ -108,7 +108,6 @@ skraafoto-viewport .sf-compass-arrows {
 /* Style last child in btn group */
 skraafoto-viewport .ds-button-group > *:last-child button {
   border-radius: 0 2.5rem 2.5rem 0;
-  width: 3.5rem !important;
 }
 
 @media screen and (max-width: 35rem) {

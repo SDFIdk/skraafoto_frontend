@@ -54,8 +54,8 @@ skraafoto-direction-picker .sf-slider-content h2 {
 
 skraafoto-direction-picker button.sf-direction-picker-btn,
 skraafoto-direction-picker button.sf-map-picker-btn {
-  height: auto;
-  width: auto;
+  height: auto !important;
+  width: auto !important;
   border: none;
   padding: 0;
   margin: 0;

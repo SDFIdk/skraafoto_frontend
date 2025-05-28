@@ -28,6 +28,10 @@ export class SkraaFotoDateSelector extends HTMLElement {
       pointer-events: all;
       align-items: center;
     }
+    skraafoto-date-selector .ds-button-group >.quiet+hr {
+      height: var(--button-base-height);
+      background-color: var(--card-border-color);
+    }
   `
 
   constructor() {
@@ -41,13 +45,13 @@ export class SkraaFotoDateSelector extends HTMLElement {
       </style>
       <nav class="ds-nav-tools">
         <div class="ds-button-group" data-theme="light">
-          <button class="button-down secondary" title="Skift billede">
+          <button class="button-down quiet" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-down"/></svg>
           </button>
           <hr>
           <select class="sf-date-selector" id="date" style="border: none; width: auto;"></select>
           <hr>
-          <button class="button-up secondary" title="Skift billede">
+          <button class="button-up quiet" title="Skift billede">
             <svg><use href="${ svgSprites }#arrow-single-up"/></svg>
           </button>
         </div>

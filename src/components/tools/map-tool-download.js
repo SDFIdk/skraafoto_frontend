@@ -25,7 +25,7 @@ export class SkraaFotoDownloadTool extends HTMLElement {
   createDOM() {
     // Add tool button to DOM
     this.button_element = document.createElement('button')
-    this.button_element.className = 'sf-download-tool secondary'
+    this.button_element.className = 'sf-download-tool quiet'
     this.button_element.title = 'Download billede'
     this.button_element.innerHTML = `<svg><use href="${ svgSprites }#download"/></svg>`
     this.append(this.button_element)
