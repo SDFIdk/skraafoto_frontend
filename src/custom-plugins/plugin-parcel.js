@@ -23,12 +23,12 @@ function fetchParcelWFS(ejerlav, matrikel) {
   return wfsFetchGML(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
   .then(async (gmlData) => {
     if (!gmlData) {
-      showMatrikelError('Nogle matrikler kunne ikke indlæses')
+      showMatrikelError(`Matrikel ${matrikel} kunne ikke indlæses`)
       return false
     }
     const geom = await wfsExtractGeometries(gmlData)
     if (geom.length === 0) {
-      showMatrikelError('Nogle matrikler kunne ikke indlæses')
+      showMatrikelError(`Matrikel ${matrikel} kunne ikke indlæses`)
       return false
     } else {
       return geom[0]
@@ -36,8 +36,7 @@ function fetchParcelWFS(ejerlav, matrikel) {
   })
   .catch(err => {
     console.error(err)
-    const danishErr = err === 'WFS service did not respond in time' ? 'Matrikel WFS server var for langsom' : 'Matrikel WFS kunne ikke indlæses'
-    showMatrikelError(danishErr)
+    showMatrikelError(`Matrikel ${matrikel} kunne ikke indlæses`)
     return false
   })
 }
@@ -45,7 +44,7 @@ function fetchParcelWFS(ejerlav, matrikel) {
 function showMatrikelError(err) {
   showToast({
     message: err,
-    duration: 4000
+    duration: 10000
   })
 }
 
@@ -63,11 +62,20 @@ function fetchParcels(ids) {
   })
 
   return Promise.all(promises).then((results) => {
+    let failCounter = 0
     results.forEach((result) => {
       if (result) {
         parcels.push(result)
+      } else {
+        failCounter += 1
       }
     })
+    if (failCounter > 0) {
+      showToast({
+        message: `${failCounter} ${failCounter > 1 ? 'matrikler' : 'matrikel'} kunne ikke indlæses`,
+        duration: 20000
+      })
+    }
     return parcels
   })
 }
