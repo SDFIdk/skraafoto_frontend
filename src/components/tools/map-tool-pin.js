@@ -53,7 +53,7 @@ export class PlacementPinTool extends HTMLElement {
   createDOM() {
     this.button_element = document.createElement('button')
     this.button_element.style.borderRadius = '0'
-    this.button_element.className = 'pin-btn secondary'
+    this.button_element.className = 'pin-btn quiet'
     
     if (configuration.ENABLE_CROSSHAIR_ICON) {
       this.button_element.title = 'Aktivér sigtekorn for at vælge en ny position'

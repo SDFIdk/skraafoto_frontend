@@ -1,0 +1,13 @@
+services:
+  vite:
+    build: .
+    ports:
+      - "5173:5173"  # Expose Vite dev server port
+    volumes:
+      - .:/app  # Mount current directory into the container
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+    command: npm run dev # Start Vite dev server
+    working_dir: /app  # Ensure the working directory is set properly

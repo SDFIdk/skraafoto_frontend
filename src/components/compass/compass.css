@@ -86,8 +86,12 @@ skraafoto-compass-arrows .button {
   color: white;
   border: none;
   border-radius: 4px;
-  width: 2.5rem;
+  width: 2.5rem !important;
+  height: auto !important;
   position: relative;
+}
+skraafoto-compass-arrows .button:hover {
+  background-color: transparent !important;
 }
 skraafoto-compass-arrows .button-container {
   position: absolute;

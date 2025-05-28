@@ -82,11 +82,14 @@ export class MeasureHeightTool extends HTMLElement {
   // Methods
 
   createDOM() {
-    this.innerHTML = `
-      <button id="height-btn" class="btn-height-measure secondary" title="Mål højde">
-        <svg><use href="${ svgSprites }#ruler-vertical"/></svg>
-      </button>
-    `
+    this.button_element = document.createElement('button')
+    this.button_element.style.borderRadius = '0'
+    this.button_element.id = 'height-btn'
+    this.button_element.className = 'btn-height-measure quiet'
+    this.button_element.title = 'Mål højde'
+    this.button_element.innerHTML = `<svg><use href="${ svgSprites }#ruler-vertical"/></svg>`
+    this.button_element.setAttribute('data-mode', 'measureheight')
+    this.append(this.button_element)
   }
 
   pointerMoveHandler(event) {
