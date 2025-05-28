@@ -151,19 +151,28 @@ function drawParcels({parcels, imageId, map}) {
  * Starts fetching the relevant data to draw the parcels on map
  */
 function renderParcels(viewport, itemId) {
-  if (state.parcels.length < 1 || !state.terrain.data) {
-    // No terrain data available or no parcels to draw
+  if (state.parcels.length < 1) {
+    // No parcels to draw
     return
   }
   state.updateTerrain()
-  
+
+  /* wfsImproveGeometryElevation currently breaks the polygons so we don't use it.
   let localParcels = [] 
-  state.parcels.forEach((parcel) => {
-    const improvedGeom = wfsImproveGeometryElevation(parcel, state.terrain.data)
-    localParcels.push(improvedGeom)
-  })
+  // If terrain data is available
+  if (state.terrain.data) {
+    state.parcels.forEach((parcel) => {
+      localParcels.push(wfsImproveGeometryElevation(parcel, state.terrain.data))
+    })
+  } else {
+    state.parcels.forEach((parcel) => {
+      localParcels.push(parcel)
+    })
+  }
+  */
+
   drawParcels({
-    parcels: localParcels,
+    parcels: state.parcels,
     imageId: itemId,
     map: viewport.map
   })

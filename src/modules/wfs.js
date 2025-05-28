@@ -76,6 +76,7 @@ async function wfsExtractGeometries(gmlString) {
 }
 
 /**
+ * NOTE: Currently doesn't work as it breaks the order of the points on skraafoto.
  * Returns a Geometry object with improved elevations for each feature coordinate
  * @param {Geometry} geometry Geometry object
  * @param {object} terrainData GeoTIFF terrain data
