@@ -137,7 +137,7 @@ export class SkraaFotoViewportMini extends HTMLElement {
           item: state.items[this.dataset.orientation], 
           view: {
             position: state.view.position,
-            zoom: state.view.zoom,
+            zoom: this.toImageZoom(state.view.zoom),
             kote: state.view.kote
           },
           marker: {
