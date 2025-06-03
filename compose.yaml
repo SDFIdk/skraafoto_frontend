@@ -11,3 +11,15 @@ services:
       - HOST=0.0.0.0
     command: npm run dev # Start Vite dev server
     working_dir: /app  # Ensure the working directory is set properly
+
+  playwright:
+    build: 
+      context: .
+      dockerfile: Dockerfile.playwright
+    ports:
+      - "8083:8083"  # Expose server port
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - BASEURL=http://vite:5173/
+    working_dir: /app  # Ensure the working directory is set properly

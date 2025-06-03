@@ -6,7 +6,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   server: {
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    allowedHosts: ['vite']
   },
   build: {
     rollupOptions: {

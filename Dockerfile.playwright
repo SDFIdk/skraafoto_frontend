@@ -1,5 +1,5 @@
 # Start with a base Docker image that includes Playwright and a specific browser version.
-FROM mcr.microsoft.com/playwright:v1.51.1-jammy
+FROM mcr.microsoft.com/playwright:v1.52.0-jammy
 
 # Set the working directory inside the container.
 WORKDIR /app
