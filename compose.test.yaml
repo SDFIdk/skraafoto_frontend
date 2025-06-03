@@ -1,0 +1,12 @@
+services:
+  playwright:
+    build: 
+      context: .
+      dockerfile: Dockerfile.test
+    ports:
+      - "8083:8083"  # Expose server port
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - BASEURL=https://test16.dataforsyningen.dk/
+    working_dir: /app  # Ensure the working directory is set properly
