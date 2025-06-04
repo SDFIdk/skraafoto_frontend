@@ -9,7 +9,6 @@ services:
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
-    command: npm run dev # Start Vite dev server
     working_dir: /app  # Ensure the working directory is set properly
 
   playwright:
