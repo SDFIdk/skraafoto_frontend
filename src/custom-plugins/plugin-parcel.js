@@ -3,8 +3,6 @@
 import { configuration } from '../modules/configuration.js'
 import { queryItem } from '../modules/api.js'
 import { state } from '../state/index.js'
-import { getImageXY, getElevation } from '@dataforsyningen/saul'
-import { toJS } from 'mobx'
 import VectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import Feature from 'ol/Feature'
@@ -13,18 +11,7 @@ import Style from 'ol/style/Style'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import { showToast } from '@dataforsyningen/designsystem/assets/designsystem.js'
-
-
-function fetchParcel(id) {
-  const idSplit = id.split('-')
-  return fetch(`https://api.dataforsyningen.dk/jordstykker/${ idSplit[0] }/${ idSplit[1] }?format=geojson&srid=25832&token=${ configuration.API_STAC_TOKEN }`)
-  .then(function(response) {
-    return response.json()
-  })
-  .then(data => {
-    return data
-  })
-}
+import { wfsFetchGML, wfsExtractGeometries, wfsConvertGeometry, wfsImproveGeometryElevation } from '../modules/wfs.js'
 
 /**
  * Requests MATRIKLEN WFS service and fetches "Jordstykker" filtered by Ejerlav and Matrikel.
@@ -33,23 +20,31 @@ function fetchParcel(id) {
  * @returns {Array} Polygon array consisting of coordinate pairs
  */
 function fetchParcelWFS(ejerlav, matrikel) {
-  return fetch(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
-  .then((response) => response.text())
-  .then((xml) => new DOMParser().parseFromString(xml, "text/xml"))
-  .then((data) => {
-    const gmlData = data.getElementsByTagName('gml:posList')[0]
+  return wfsFetchGML(`https://wfs.datafordeler.dk/MATRIKLEN2/MatGaeldendeOgForeloebigWFS/1.0.0/WFS?USERNAME=${ configuration.API_DHM_TOKENA }&PASSWORD=${ configuration.API_DHM_TOKENB }&SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mat:Jordstykke_Gaeldende&CQL_FILTER=ejerlavskode%3D${ ejerlav }%20AND%20matrikelnummer%3D'${ matrikel }'`)
+  .then(async (gmlData) => {
     if (!gmlData) {
+      showMatrikelError(`Matrikel ${matrikel} kunne ikke indlæses`)
       return false
     }
-    const polygonData = gmlData.childNodes[0].nodeValue.split(' ')
-    const polygon = []
-    for (let i = 0; i < polygonData.length; i = i + 3) {
-      polygon.push([Number(polygonData[i]), Number(polygonData[i + 1])])
+    const geom = await wfsExtractGeometries(gmlData)
+    if (geom.length === 0) {
+      showMatrikelError(`Matrikel ${matrikel} kunne ikke indlæses`)
+      return false
+    } else {
+      return geom[0]
     }
-    return polygon
   })
   .catch(err => {
-    console.error('Could not fetch matrikel Polygon from WFS', err)
+    console.error(err)
+    showMatrikelError(`Matrikel ${matrikel} kunne ikke indlæses`)
+    return false
+  })
+}
+
+function showMatrikelError(err) {
+  showToast({
+    message: err,
+    duration: 10000
   })
 }
 
@@ -57,84 +52,40 @@ function fetchParcels(ids) {
   if (!ids) {
     return Promise.resolve([])
   }
-
   const splitIds = ids.split(';')
   const promises = []
   const parcels = []
 
-  if (configuration.ENABLE_PARCEL_WFS) {
-    splitIds.forEach((id) => {
-      const [ejerlav, matrikel] = id.split('-')
-      promises.push(fetchParcelWFS(ejerlav, matrikel))
-    })
+  splitIds.forEach((id) => {
+    const [ejerlav, matrikel] = id.split('-')
+    promises.push(fetchParcelWFS(ejerlav, matrikel))
+  })
 
-    return Promise.all(promises).then((results) => {
-      let failCounter = 0
-      results.forEach((result) => {
-        if (result) {
-          parcels.push(result)
-        } else {
-          failCounter += 1
-        }
-      })
-      if (failCounter > 0) {
-        showToast({
-          message: `${failCounter} ${failCounter > 1 ? 'matrikler' : 'matrikel'} kunne ikke indlæses`,
-          duration: 20000
-        })
+  return Promise.all(promises).then((results) => {
+    let failCounter = 0
+    results.forEach((result) => {
+      if (result) {
+        parcels.push(result)
+      } else {
+        failCounter += 1
       }
-      return parcels
     })
-
-  } else {
-
-    splitIds.forEach((id) => {
-      promises.push(fetchParcel(id)
-        .then((parcel_data) => {
-          return parcel_data.geometry ? parcel_data.geometry.coordinates[0] : undefined
-        })
-      )
-    })
-
-    return Promise.all(promises)
-    .then((results) => {
-      results.forEach((result) => {
-        if (result) {
-          parcels.push(result)
-        }
+    if (failCounter > 0) {
+      showToast({
+        message: `${failCounter} ${failCounter > 1 ? 'matrikler' : 'matrikel'} kunne ikke indlæses`,
+        duration: 20000
       })
-      return parcels
-    })
-
-  }
-}
-
-function getPolygonElevations(coords, terrain) {
-
-  const promises = []
-  coords.forEach(function(coor) {
-    promises.push(getElevation(coor[0], coor[1], terrain))
-  })
-
-  return Promise.all(promises)
-  .then(function(values) {
-    const improved_polygon = coords.map(function(coor, idx) {
-      coor[2] = values[idx]
-      return coor
-    })
-    return improved_polygon
+    }
+    return parcels
   })
 }
 
-function generateFeature(polygon, image_id) {
+function generateFeature(geometry, image_id) {
   return queryItem(image_id)
   .then(function(image_data) {
-    const new_polygon = polygon.map(function(coor) {
-      // Convert every coordinate to image x,y
-      return getImageXY(image_data, coor[0], coor[1], coor[2])
-    })
+    const new_geometry = wfsConvertGeometry(geometry, image_data)
     return new Feature({
-      geometry: new Polygon([new_polygon])
+      geometry: new Polygon(new_geometry.features)
     })
   })
 }
@@ -168,19 +119,13 @@ function generateParcelVectorLayer() {
  * Fetches the parcel polygons based on the ids
  * and draws that polygon over an image in an OpenLayers map object
  */
-function drawParcels({parcels, imageId, map, elevationdata}) {
+function drawParcels({parcels, imageId, map}) {
   if (!parcels[0] || !imageId) {
     return
   }
   const promises = []
   parcels.forEach((parcel) => {
-    promises.push(getPolygonElevations(parcel, elevationdata)
-      .then((improved_polygon) => {
-        return generateFeature(improved_polygon, imageId)
-          .then(function(feature) {
-            return feature
-          })
-      }))
+    promises.push(generateFeature(parcel, imageId))
   })
 
   // generate a map layer for parcel polygons
@@ -205,17 +150,31 @@ function drawParcels({parcels, imageId, map, elevationdata}) {
 /**
  * Starts fetching the relevant data to draw the parcels on map
  */
-async function renderParcels(viewport, itemId) {
+function renderParcels(viewport, itemId) {
   if (state.parcels.length < 1) {
     // No parcels to draw
     return
   }
-  await state.updateTerrain()
+  state.updateTerrain()
+
+  /* wfsImproveGeometryElevation currently breaks the polygons so we don't use it.
+  let localParcels = [] 
+  // If terrain data is available
+  if (state.terrain.data) {
+    state.parcels.forEach((parcel) => {
+      localParcels.push(wfsImproveGeometryElevation(parcel, state.terrain.data))
+    })
+  } else {
+    state.parcels.forEach((parcel) => {
+      localParcels.push(parcel)
+    })
+  }
+  */
+
   drawParcels({
-    parcels: toJS(state.parcels), // Using `toJS` to clone array and avoid manipulating state object directly
+    parcels: state.parcels,
     imageId: itemId,
-    map: viewport.map,
-    elevationdata: state.terrain.data
+    map: viewport.map
   })
 }
 
