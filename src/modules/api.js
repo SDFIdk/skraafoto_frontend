@@ -97,7 +97,7 @@ async function fetchWithTimeout(url, options = {}) {
   const timer = setTimeout(() => controller.abort(), timeout)
   const response = await fetch(url, {
     ...options,
-    signal: controller.signal  
+    signal: controller.signal
   })
   clearTimeout(timer)
   return response
@@ -118,7 +118,7 @@ async function fetchWithRetry (url, retries = configuration.RETRY_ATTEMPTS, time
     if (retries > 0) {
       return fetchWithRetry(url, retries - 1)
     } else {
-      throw new Error(`All retries failed.`)
+      throw new Error(`All retries failed. Url: ${url}`)
     }
   }
 }
