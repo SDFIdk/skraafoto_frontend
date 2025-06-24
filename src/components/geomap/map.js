@@ -16,6 +16,7 @@ import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
 import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
+import TileState from 'ol/TileState.js'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
@@ -26,6 +27,10 @@ import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../../custom-
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../../custom-plugins/plugin-footprint.js'
 import { state, autorun } from '../../state/index.js'
 import pointerSvg from '@dataforsyningen/designsystem/assets/icons/pointer-position.svg'
+import { retryOptions, fetchWithRetry } from '@dataforsyningen/retry/index.js'
+
+// Set the default retry timeout
+retryOptions.timeout = 200
 
 /**
  * Web component that displays a map.
@@ -94,6 +99,22 @@ export class SkraaFotoMap extends HTMLElement {
         layer: 'topo_skaermkort_daempet',
         matrixSet: 'View1'
       })
+      // Add retry to tiles
+      options.tileLoadFunction = function (tile, src) {
+        fetchWithRetry(src)
+          .then(response => {
+            if (!response.ok) {
+              tile.setState(TileState.ERROR)
+            }
+            return response.blob()
+          })
+          .then(blob => {
+            tile.getImage().src = URL.createObjectURL(blob)
+          })
+          .catch((e) => {
+            tile.setState(TileState.ERROR)
+          })
+      }
 
       let controls
       if (this.advanced) {
