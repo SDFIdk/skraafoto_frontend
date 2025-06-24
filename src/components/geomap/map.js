@@ -16,11 +16,13 @@ import VectorLayer from 'ol/layer/Vector'
 import Feature from 'ol/Feature'
 import Polygon from 'ol/geom/Polygon'
 import Point from 'ol/geom/Point'
+import TileState from 'ol/TileState.js'
 import { Icon, Style } from 'ol/style'
 import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
 import { configuration } from '../../modules/configuration.js'
 import { getViewSyncMapListener } from '../../modules/sync-view'
+import { fetchWithRetry } from '../../modules/api.js'
 import { generateParcelVectorLayer } from '../../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../../custom-plugins/plugin-footprint.js'
@@ -34,6 +36,8 @@ export class SkraaFotoMap extends HTMLElement {
 
   // public properties
   api_stac_token = configuration.API_STAC_TOKEN
+  retry_attempts = configuration.RETRY_ATTEMPTS
+  retry_timeout = configuration.RETRY_TIMEOUT
   projection
   parser = new WMTSCapabilities()
   map = null
@@ -94,6 +98,22 @@ export class SkraaFotoMap extends HTMLElement {
         layer: 'topo_skaermkort_daempet',
         matrixSet: 'View1'
       })
+      // Add retry to tiles
+      options.tileLoadFunction = function (tile, src) {
+        fetchWithRetry(src)
+          .then(response => {
+            if (!response.ok) {
+              tile.setState(TileState.ERROR)
+            }
+            return response.blob()
+          })
+          .then(blob => {
+            tile.getImage().src = URL.createObjectURL(blob)
+          })
+          .catch((e) => {
+            tile.setState(TileState.ERROR)
+          })
+      }
 
       let controls
       if (this.advanced) {
