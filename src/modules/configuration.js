@@ -54,8 +54,9 @@ let configuration = {
   MAX_ZOOM: 10, // the maximum zoom for skraafotos.
   MIN_ZOOM: 1, // the minimum zoom for skraafotos.
 
-  RETRY_ATTEMPTS: 3, // The number of times the application should attempt to retry API calls.
-  RETRY_TIMEOUT: 1000, // The time the application should wait before attempting a retry.
+  RETRY_ATTEMPTS: 4, // The number of times the application should attempt to retry API calls.
+  RETRY_TIMEOUT: 500, // The time the application should wait before attempting a retry.
+  RETRY_GROWTH_FACTOR: 2, // The exponential growth factor which the timeout is multiplied by after each failed attempt.
 
   SITEIMPROVE_SCRIPT: '', // Enables web statistics. Values: `false` or string with SiteImprove Javascript URL
 

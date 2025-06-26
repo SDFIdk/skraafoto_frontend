@@ -86,7 +86,7 @@ function getTerrainData(item) {
 }
 
 /**
- * 
+ * Fetch with a max timeout.
  * @param {*} url - The endpoint URL for the HTTP GET request.
  * @param {*} options - Options (timeout)
  * @returns 
@@ -104,7 +104,7 @@ async function fetchWithTimeout(url, options = {}) {
 }
 
 /**
- * 
+ * Fetch with retry and a max timeout.
  * @param {String} url - The endpoint URL for the HTTP GET request.
  * @param {Integer} retries - The number of allowed retries before giving up.
  * @param {Integer} timeout - The time the application should wait before attempting a retry.
@@ -116,7 +116,7 @@ async function fetchWithRetry (url, retries = configuration.RETRY_ATTEMPTS, time
     return response
   } catch (error) {
     if (retries > 0) {
-      return fetchWithRetry(url, retries - 1)
+      return fetchWithRetry(url, retries - 1, timeout * configuration.RETRY_GROWTH_FACTOR)
     } else {
       throw new Error(`All retries failed. Url: ${url}`)
     }
