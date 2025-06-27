@@ -85,48 +85,9 @@ function getTerrainData(item) {
   })
 }
 
-/**
- * Fetch with a max timeout.
- * @param {*} url - The endpoint URL for the HTTP GET request.
- * @param {*} options - Options (timeout)
- * @returns 
- */
-async function fetchWithTimeout(url, options = {}) {
-  const { timeout = configuration.RETRY_TIMEOUT } = options
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeout)
-  const response = await fetch(url, {
-    ...options,
-    signal: controller.signal
-  })
-  clearTimeout(timer)
-  return response
-}
-
-/**
- * Fetch with retry and a max timeout.
- * @param {String} url - The endpoint URL for the HTTP GET request.
- * @param {Integer} retries - The number of allowed retries before giving up.
- * @param {Integer} timeout - The time the application should wait before attempting a retry.
- * @returns *
- */
-async function fetchWithRetry (url, retries = configuration.RETRY_ATTEMPTS, timeout = configuration.RETRY_TIMEOUT) {
-  try {
-    const response = await fetchWithTimeout(url, { timeout })
-    return response
-  } catch (error) {
-    if (retries > 0) {
-      return fetchWithRetry(url, retries - 1, timeout * configuration.RETRY_GROWTH_FACTOR)
-    } else {
-      throw new Error(`All retries failed. Url: ${url}`)
-    }
-  }
-}
-
 export {
   queryItem,
   queryItems,
   getCollections,
-  getTerrainData,
-  fetchWithRetry
+  getTerrainData
 }

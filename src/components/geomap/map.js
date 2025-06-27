@@ -22,12 +22,15 @@ import { defaults as defaultControls } from 'ol/control'
 import { defaults as defaultInteractions } from 'ol/interaction/defaults'
 import { configuration } from '../../modules/configuration.js'
 import { getViewSyncMapListener } from '../../modules/sync-view'
-import { fetchWithRetry } from '../../modules/api.js'
 import { generateParcelVectorLayer } from '../../custom-plugins/plugin-parcel'
 import { addPointerLayerToMap, getUpdateMapPointerFunction } from '../../custom-plugins/plugin-pointer'
 import { addFootprintLayerToMap, getUpdateMapFootprintFunction } from '../../custom-plugins/plugin-footprint.js'
 import { state, autorun } from '../../state/index.js'
 import pointerSvg from '@dataforsyningen/designsystem/assets/icons/pointer-position.svg'
+import { retryOptions, fetchWithRetry } from '@dataforsyningen/retry/index.js'
+
+// Set the default retry timeout
+retryOptions.timeout = 200
 
 /**
  * Web component that displays a map.
