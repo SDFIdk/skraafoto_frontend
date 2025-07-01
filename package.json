@@ -38,6 +38,7 @@
     "@dataforsyningen/designsystem": "^8.9.1",
     "@dataforsyningen/gsearch-ui": "^2.2.0",
     "@dataforsyningen/saul": "^4.2.0",
+    "@dataforsyningen/retry": "0.1.3",
     "jspdf": "^3.0.1",
     "mobx": "^6.13.7",
     "ol": "^10.5.0",
