@@ -59,7 +59,8 @@ export class SkraaFotoYearSelector extends HTMLElement {
   }
 
   selectionChangeHandler(event) {
-    queryItems(state.marker.position, state.items[this.dataset.itemkey].properties.direction, event.target.value, 1).then((data) => {
+    const direction = state.items[this.dataset.itemkey]?.properties.direction || 'north'
+    queryItems(state.marker.position, direction, event.target.value, 1).then((data) => {
       state.setItem(data.features[0], this.dataset.itemkey)
     })
   }
