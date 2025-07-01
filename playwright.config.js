@@ -1,5 +1,6 @@
 // @ts-check
 import { devices } from '@playwright/test'
+import { configuration } from './test/e2e/test-config.js'
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -36,6 +37,58 @@ export default {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    // Set a local storage variable to hide first visit popup.
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: 'https://test16.dataforsyningen.dk/',
+          localStorage: [
+            {
+              name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
+              value: 'false'
+            }
+          ]
+        },
+        {
+          origin: 'https://test11.dataforsyningen.dk/',
+          localStorage: [
+            {
+              name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
+              value: 'false'
+            }
+          ]
+        },
+        {
+          origin: 'https://test23.dataforsyningen.dk/',
+          localStorage: [
+            {
+              name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
+              value: 'false'
+            }
+          ]
+        },
+        {
+          origin: 'http://vite:5173/',
+          localStorage: [
+            {
+              name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
+              value: 'false'
+            }
+          ]
+        },
+        {
+          origin: 'http://localhost:5173/',
+          localStorage: [
+            {
+              name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
+              value: 'false'
+            }
+          ]
+        }
+      ]
+    }
   },
 
   /* Configure projects for major browsers */

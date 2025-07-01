@@ -1,10 +1,5 @@
 import { test, expect } from '@playwright/test'
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('button', { name: 'luk dialog' }).click()
-})
-
 test('Load viewer with URL params 1', async ({ page }) => {
   // Go to page and check that it renders in the correct position
   await page.goto('/?project=denmark&parcels=270554-15ax&address=Gartnervænget 3, 4160 Herlufmagle&ejendomsid=815465&x=674480.0132781528&y=6133107.9439362185&width=40&mode=4&year=2019', { waitUntil: 'networkidle' })
