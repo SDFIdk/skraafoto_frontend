@@ -237,11 +237,19 @@ class SkraafotoState {
   }
 }
 
+const url = new URL(window.location)
+
+// If a zoom parameter is provided, use it as the default zoom level
+const zoom = Number(url.searchParams.get('zoom'))
+if (zoom) {
+  configuration.DEFAULT_ZOOM = zoom
+}
+
 // Initialize state using URL search parameters
 const state = new SkraafotoState()
 getCollections().then((collections) => {
   state.setCollections = collections
-  sanitizeParams(new URL(window.location), collections).then((urlSearchParams) => {
+  sanitizeParams(url, collections).then((urlSearchParams) => {
     syncFromURL(urlSearchParams).then((newState) => {
       
       state.syncState(newState)
