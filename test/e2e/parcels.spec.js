@@ -33,6 +33,7 @@ test('Load viewer with URL params 5', async ({ page }) => {
 test('Load viewer with bad/missing parcels', async ({ page }) => {
   // Go to page and check that it informs user of missing parcels
   await page.goto('/?parcels=1410353-201;1410353-202&address=Mælkevejen 1, Sandersvig, 6100 Haderslev&ejendomsid=1141917&year=2019&x=540964.5914037265&y=6132649.853562239&width=40&mode=4&token=e74200f9b819b0c96a656dce7e0d8850')
+  // await expect(page.getByText('Matrikel WFS kunne ikke indlæses')).toBeVisible()
   await expect(page.getByText('1 matrikel kunne ikke indlæses')).toBeVisible()
 })
 
