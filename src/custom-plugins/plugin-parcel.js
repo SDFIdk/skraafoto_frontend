@@ -43,7 +43,7 @@ function fetchParcelWFS(ejerlav, matrikel) {
     }
     const polygonData = gmlData.childNodes[0].nodeValue.split(' ')
     const polygon = []
-    for (let i = 0; i < polygonData.length; i = i + 3) {
+    for (let i = 0; i < polygonData.length; i = i + 2) {
       polygon.push([Number(polygonData[i]), Number(polygonData[i + 1])])
     }
     return polygon
