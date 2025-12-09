@@ -14,13 +14,13 @@ test('Load viewer with center in WGS84 x/y format', async ({ page }) => {
 
 test('Load viewer with "center" url parameter (EPSG:25832)', async ({ page }) => {
   // Go to page and check that it renders in the correct position
-  await page.goto('/?center=726302,6096616', { waitUntil: 'networkidle' })
+  await page.goto('/?center=726302,6096616&year=2023', { waitUntil: 'networkidle' })
   await expect(page.locator('#viewport-1')).toContainText('Billede af området omkring koordinat 726302 Ø, 6096616 N set fra syd.')
 })
 
 test('Load viewer with center in EPSG:25832 x/y format', async ({ page }) => {
   // Go to page and check that it renders in the correct position
-  await page.goto('/?x=726302&y=6096616', { waitUntil: 'networkidle' })
+  await page.goto('/?x=726302&y=6096616&year=2023', { waitUntil: 'networkidle' })
   await expect(page.locator('#viewport-1')).toContainText('Billede af området omkring koordinat 726302 Ø, 6096616 N set fra syd.')
 })
 
