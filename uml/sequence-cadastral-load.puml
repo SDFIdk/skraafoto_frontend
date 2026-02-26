@@ -1,0 +1,107 @@
+@startuml Parcel_Loading_Sequence
+
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 5
+skinparam sequenceParticipantBorderColor #888888
+skinparam sequenceParticipantBackgroundColor #FFFFFF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+title Cadastral Parcel Loading Sequence
+
+participant "Browser / User" as browser
+participant "syncUrl.js" as syncurl
+participant "state/index.js\nSkraafotoState" as state
+participant "plugin-parcel.js" as parcel
+participant "viewport.js\n+ viewport-mixin.js" as viewport
+participant "api.js" as api
+participant "api.dataforsyningen.dk\n/jordstykker" as dawa
+participant "wfs.datafordeler.dk\nMATRIKLEN WFS" as wfs
+participant "api.dataforsyningen.dk\n/skraafoto_api" as stac
+participant "OpenLayers Map" as ol
+
+== Entry point A: parcels param present in URL on load ==
+
+browser -> syncurl          : syncFromURL(urlParams)
+syncurl -> syncurl          : urlParams.has('parcels')
+syncurl -> parcel           : fetchParcels(ids)
+
+== Entry point B: user activates parcel tool (future / not yet implemented) ==
+
+browser -> state            : state.setParcels = parcels
+note right
+  Entry point B is a placeholder.
+  No parcel tool UI currently exists.
+  Parcels are only loaded via URL param
+  at initialisation time.
+end note
+
+== fetchParcels: resolving polygon coordinates ==
+
+alt ENABLE_PARCEL_WFS = true
+  parcel -> wfs             : fetchParcelWFS(ejerlav, matrikel)\nGET WFS?USERNAME=...&PASSWORD=...\n&TYPENAMES=mat:Jordstykke_Gaeldende\n&CQL_FILTER=ejerlavskode AND matrikelnummer
+  note right #FFD0D0
+    Deprecated authentication.
+    See Migration 1 in REFACTOR.md
+  end note
+  wfs -> parcel             : XML response\n→ gml:posList parsed\n→ polygon coordinate array
+
+else ENABLE_PARCEL_WFS = false
+  parcel -> dawa            : fetchParcel(id)\nGET /jordstykker/{ejerlav}/{matrikel}\n?format=geojson&srid=25832
+  dawa -> parcel            : GeoJSON\n→ geometry.coordinates[0]\n→ polygon coordinate array
+end
+
+parcel -> parcel            : Promise.all(promises)\n→ parcels[]
+parcel -> syncurl           : return parcels[]
+
+== State update ==
+
+syncurl -> state            : newState.parcels = parcels\n→ state.syncState(newState)\n→ state.parcels = parcels
+
+note over state
+  MobX marks state.parcels as changed.
+  All autorun/reaction subscribers
+  are notified synchronously.
+end note
+
+== Viewport reacts to state.parcels ==
+
+state -> viewport           : reaction() fires:\nnewData.item + state.parcels changed\n→ updateViewport(newData, oldData, map)
+
+viewport -> viewport        : updateViewport()\n→ updatePlugins(self, item)\n  → renderParcels(viewport, item.id)
+
+== renderParcels ==
+
+viewport -> state           : state.updateTerrain()\n→ getTerrain(items, terrain)\n→ state.terrain.data updated
+note right
+  Terrain GeoTIFF is fetched only
+  if the current bbox is not already
+  cached in state.terrain
+end note
+
+viewport -> parcel          : renderParcels(viewport, itemId)
+
+parcel -> parcel            : state.parcels.length < 1?\n→ return early if no parcels
+
+loop for each parcel polygon
+  parcel -> parcel          : getPolygonElevations(coords, terrain)\n→ getElevation(x, y, terrain)\nper coordinate\n→ polygon with z values added
+  
+  parcel -> api             : generateFeature(polygon, imageId)\n→ queryItem(imageId)
+  api -> stac               : GET /search?ids={imageId}
+  stac -> api               : STAC item (image metadata)
+  api -> parcel             : image_data
+
+  parcel -> parcel          : polygon.map(coor =>\n  getImageXY(image_data, x, y, z))\n→ image coordinate polygon
+  parcel -> parcel          : new Feature({ geometry: new Polygon(...) })
+end
+
+== Draw on map ==
+
+parcel -> parcel            : Promise.all(features)\n→ generateParcelVectorLayer()\n→ layer.getSource().addFeature()\nper feature
+
+parcel -> ol                : map.removeLayer(oldParcelLayer)\nmap.addLayer(newParcelLayer)
+ol -> browser               : parcel polygons rendered\nover image in viewport
+
+@enduml

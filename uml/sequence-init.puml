@@ -1,0 +1,124 @@
+@startuml Initialisation_Sequence
+
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 5
+skinparam sequenceParticipantBorderColor #888888
+skinparam sequenceParticipantBackgroundColor #FFFFFF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+title Application Initialisation Sequence
+
+participant "Browser" as browser
+participant "index.html" as html
+participant "/public/config.js" as config
+participant "viewer.js" as viewer
+participant "state/index.js\nSkraafotoState" as state
+participant "api.js" as api
+participant "url-sanitize.js" as sanitize
+participant "syncUrl.js" as syncurl
+participant "api.dataforsyningen.dk" as stac
+participant "SkraaFotoViewport\nviewport.js" as viewport
+participant "SkraaFotoMap /\nSkraaFotoAdvancedMap" as map
+participant "SkraaFotoDirectionPicker" as dirpicker
+
+== Bootstrap ==
+
+browser -> html           : GET /
+html -> config            : <script src="/config.js">
+config -> browser         : window.config populated\n(API tokens, feature flags)
+html -> viewer            : <script type="module" src="viewer.js">
+
+== viewer.js module execution ==
+
+viewer -> viewer          : setupAnalytics()\napplyCustomStyles()
+viewer -> viewer          : registerComponents()\ncustomElements.define(...)
+note right
+  Registers all tags including
+  <skraafoto-viewport>
+  <skraafoto-advanced-map>
+  <skraafoto-direction-picker>
+  <skraafoto-map>
+end note
+
+== State initialisation (triggered by import of state/index.js) ==
+
+viewer -> state           : import triggers module execution\nnew SkraafotoState()
+state -> state            : makeAutoObservable(this)\ndefault property values set
+
+state -> api              : getCollections()
+api -> stac               : GET /collections
+stac -> api               : collections[]
+api -> state              : state.setCollections = collections
+
+state -> sanitize         : sanitizeParams(url, collections)
+sanitize -> stac          : queryItem(params.item)\nor queryItems(center, orientation, year)
+stac -> sanitize          : STAC item(s)
+sanitize -> state         : resolved urlSearchParams
+
+state -> syncurl          : syncFromURL(urlSearchParams)
+note right
+  Resolves center, kote, year,
+  item1, item2 (twinview),
+  parcels (if in URL),
+  nadir + all directions
+end note
+
+syncurl -> stac           : queryItem(item)\nor queryItems(center, direction, collection)
+stac -> syncurl           : STAC item(s)
+
+alt parcels param in URL
+  syncurl -> stac         : fetchParcels(ids)\n→ fetchParcel() or fetchParcelWFS()
+  stac -> syncurl         : parcel polygon data
+end
+
+syncurl -> state          : returns newState\n{ items, view, marker, parcels }
+
+state -> state            : state.syncState(newState)\napplies items, view,\nmarker, parcels to store
+
+state -> state            : state.updateTerrain()\n→ getTerrain(items, terrain)
+note right
+  Fetches GeoTIFF elevation data
+  covering the current bounding box
+end note
+
+state -> state            : autorun(() => syncToUrl(...))\nbegins keeping URL in sync\nwith state changes
+
+== Component upgrade and connectedCallback ==
+
+note over browser
+  customElements.define() has already run.
+  Browser now upgrades static tags in index.html:
+  <skraafoto-viewport id="viewport-1">
+  <skraafoto-advanced-map id="map-main" hidden>
+  <skraafoto-direction-picker>
+end note
+
+browser -> viewport       : connectedCallback()
+viewport -> viewport      : createDOM()\nstamps inner HTML template
+viewport -> state         : when(() => state.items[itemkey])\ngates map init until item is available
+
+browser -> map            : connectedCallback()\n(skraafoto-advanced-map)
+map -> map                : createDOM()
+map -> map                : createMap()\n→ fetch WMTS GetCapabilities\nfrom services.datafordeler.dk\n(username/password)
+note right #FFD0D0
+  Deprecated authentication.
+  See Migration 1 in REFACTOR.md
+end note
+
+browser -> dirpicker      : connectedCallback()
+dirpicker -> dirpicker    : createDOM()\nstamps <skraafoto-map>\nand <skraafoto-viewport-mini>\nper direction
+
+== State ready → components activate ==
+
+state -> viewport         : when() resolves:\nstate.items[itemkey] is set
+viewport -> viewport      : initializeMap(item)\n→ createMap(item)\n→ updateMapImage()\n→ updateMapView()\n→ updateCenter()\n→ setupTools()\n→ updateNonMap()\n→ setupListeners()
+
+viewport -> state         : reaction(items, view, marker, toolMode)\nsubscribes to future state changes
+viewport -> state         : autorun(pointerPosition)\nsubscribes to pointer updates
+
+viewer -> state           : autorun(() => toggleMap(state.mapVisible))\nshows viewport or advanced map
+
+@enduml

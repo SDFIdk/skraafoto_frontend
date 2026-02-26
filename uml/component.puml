@@ -1,0 +1,106 @@
+@startuml Component_Diagram
+
+skinparam component {
+    BackgroundColor<<frontend>> LightBlue
+    BackgroundColor<<state>> LightCoral
+    BackgroundColor<<plugin>> LightGreen
+    BackgroundColor<<module>> LightYellow
+    BackgroundColor<<external>> WhiteSmoke
+    BorderColor Black
+}
+
+skinparam node {
+    BackgroundColor LightGray
+    BorderColor Black
+}
+
+' ─── Infrastructure ──────────────────────────────────────────────────────────
+
+node "Nginx Proxy" as nginx
+
+' ─── External services ───────────────────────────────────────────────────────
+
+cloud "External Services" {
+    node "api.dataforsyningen.dk" as stac <<external>>
+    node "services.datafordeler.dk" as datafordeler <<external>>
+    node "wfs.datafordeler.dk" as wfs <<external>>
+}
+
+' ─── Bootstrap ───────────────────────────────────────────────────────────────
+
+node "Bootstrap" {
+    [index.html] as html
+    [/public/config.js\nwindow.config] as config
+    [src/views/viewer.js] as viewer
+}
+
+nginx --> html           : serves static SPA
+html ..> config          : <script src>
+html ..> viewer          : <script type="module">
+
+' ─── State ───────────────────────────────────────────────────────────────────
+
+package "State (src/state/)" <<state>> {
+    [SkraafotoState] as state
+}
+
+' ─── Modules ─────────────────────────────────────────────────────────────────
+
+package "Modules (src/modules/)" <<module>> {
+    [configuration.js] as configuration
+    [api.js] as api
+}
+
+' ─── Custom Plugins ──────────────────────────────────────────────────────────
+
+package "Custom Plugins (src/custom-plugins/)" <<plugin>> {
+    [plugin-parcel.js] as parcel
+}
+
+' ─── Components ──────────────────────────────────────────────────────────────
+
+package "Components (src/components/)" <<frontend>> {
+    [Viewport\nviewport.js / viewport-mixin.js] as viewport
+    [Map\nmap.js / advanced-map.js] as map
+    [SkraaFotoDirectionPicker] as dirpicker
+}
+
+' ─── Relations: Bootstrap → components ───────────────────────────────────────
+
+viewer --> state                     : import triggers\nSkraafotoState init
+viewer --> configuration             : applyCustomStyles()
+viewer ..> viewport                  : customElements.define()\n→ upgrades <skraafoto-viewport>\n+ <skraafoto-advanced-map>\nin index.html
+viewer ..> map                       : customElements.define()\n→ upgrades <skraafoto-map>\ninside <skraafoto-direction-picker>
+viewer ..> dirpicker                 : customElements.define()\n→ upgrades <skraafoto-direction-picker>\nin index.html
+
+' ─── Relations: State init ───────────────────────────────────────────────────
+
+state --> api                        : getCollections()\nsyncFromURL() → queryItems()
+api --> stac                         : STAC REST API
+configuration --> config             : reads window.config
+
+' ─── Relations: Viewport ─────────────────────────────────────────────────────
+
+viewport --> state                   : when(items) → initializeMap()\nreaction(items, view, marker)\n→ updateViewport()
+viewport --> parcel                  : updatePlugins()\n→ renderParcels()
+
+' ─── Relations: Map ──────────────────────────────────────────────────────────
+
+map --> state                        : autorun(marker)\nautorun(view)\nautorun(parcels)
+map --> datafordeler                 : generateMap()\nWMTS GetCapabilities\nusername/password
+map --> parcel                       : autorun(parcels)\n→ drawParcels()
+
+' ─── Relations: Plugins ──────────────────────────────────────────────────────
+
+parcel --> state                     : reads parcels\nreads terrain
+parcel --> api                       : queryItem()
+parcel --> wfs                       : fetchParcelWFS()\nUSERNAME/PASSWORD
+parcel --> stac                      : fetchParcel()
+
+' ─── Relations: Navigation ───────────────────────────────────────────────────
+
+dirpicker --> viewport               : contains\n<skraafoto-viewport-mini>
+dirpicker --> map                    : contains\n<skraafoto-map>
+dirpicker --> state                  : reads + updates items
+
+@enduml
