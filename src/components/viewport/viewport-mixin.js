@@ -208,7 +208,7 @@ function addResolutions(resolutions) {
 /** Calculate how much to rotate a nadir image to have it north upwards */
 function getAdjustedNadirRotation(item) {
   if (item.properties.direction === 'nadir') {
-    return ( item.properties['pers:kappa'] * Math.PI ) / 180
+    return (-item.properties['pers:kappa'] * Math.PI) / 180
   } else {
     return 0
   }
