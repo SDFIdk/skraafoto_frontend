@@ -3,7 +3,7 @@ import { Vector as VectorLayer } from 'ol/layer'
 import { Circle as CircleStyle, Stroke, Style } from 'ol/style'
 import Draw from 'ol/interaction/Draw'
 import Overlay from 'ol/Overlay'
-import { image2world, getImageXY, getWorldXYZ, getZ } from '@dataforsyningen/saul'
+import { image2world, getImageXY, getWorldXYZ } from '@dataforsyningen/saul'
 import { unByKey } from 'ol/Observable'
 import LineString from 'ol/geom/LineString'
 import { configuration } from "../../modules/configuration"
@@ -353,35 +353,16 @@ export class MeasureHeightTool extends HTMLElement {
   }
 
   async getBaseWorldPoint(baseImageCoord, imageItem) {
-    // Prefer API-based elevation for the base point and only fall back to GeoTIFF on failure.
     try {
-      const zGuess = state.view.kote ?? 0
-      const worldGuess = image2world(
-        imageItem,
-        baseImageCoord[0],
-        baseImageCoord[1],
-        zGuess
-      )
-      const apiZ = await getZ(worldGuess[0], worldGuess[1], configuration)
-      return image2world(
-        imageItem,
-        baseImageCoord[0],
-        baseImageCoord[1],
-        apiZ
-      )
-    } catch (error) {
-      // API failed; fall back to GeoTIFF terrain if available.
-      try {
-        if (state.terrain?.data) {
-          return await getWorldXYZ({
-            image: imageItem,
-            terrain: state.terrain.data,
-            xy: baseImageCoord
-          })
-        }
-      } catch (terrainError) {
-        // Final fallback below uses the current view elevation estimate.
+      if (state.terrain?.data) {
+        return await getWorldXYZ({
+          image: imageItem,
+          terrain: state.terrain.data,
+          xy: baseImageCoord
+        })
       }
+    } catch (error) {
+      // Fallback uses the current view elevation estimate.
     }
 
     return image2world(
