@@ -48,6 +48,10 @@ export default {
             {
               name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
               value: 'false'
+            },
+            {
+              name: configuration.COOKIE_CONSENT_KEY,
+              value: configuration.COOKIE_CONSENT_REJECTED
             }
           ]
         },
@@ -57,6 +61,10 @@ export default {
             {
               name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
               value: 'false'
+            },
+            {
+              name: configuration.COOKIE_CONSENT_KEY,
+              value: configuration.COOKIE_CONSENT_REJECTED
             }
           ]
         },
@@ -66,6 +74,10 @@ export default {
             {
               name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
               value: 'false'
+            },
+            {
+              name: configuration.COOKIE_CONSENT_KEY,
+              value: configuration.COOKIE_CONSENT_REJECTED
             }
           ]
         },
@@ -75,6 +87,10 @@ export default {
             {
               name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
               value: 'false'
+            },
+            {
+              name: configuration.COOKIE_CONSENT_KEY,
+              value: configuration.COOKIE_CONSENT_REJECTED
             }
           ]
         },
@@ -84,6 +100,23 @@ export default {
             {
               name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
               value: 'false'
+            },
+            {
+              name: configuration.COOKIE_CONSENT_KEY,
+              value: configuration.COOKIE_CONSENT_REJECTED
+            }
+          ]
+        },
+        {
+          origin: 'http://localhost:5174/',
+          localStorage: [
+            {
+              name: configuration.LOCAL_STORAGE_FIRST_TIME_VISITOR_KEY,
+              value: 'false'
+            },
+            {
+              name: configuration.COOKIE_CONSENT_KEY,
+              value: configuration.COOKIE_CONSENT_REJECTED
             }
           ]
         }

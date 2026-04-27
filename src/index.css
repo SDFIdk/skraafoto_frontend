@@ -25,6 +25,7 @@
 /* Various popups */
 @import "./components/alert/alert-splash.css";
 @import "./components/alert/first-time-visitor.css";
+@import "./components/cookie-banner.css";
 
 body {
   position: relative;

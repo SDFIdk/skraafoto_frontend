@@ -22,3 +22,4 @@ config.js
 .idea/markdown.xml
 .idea/modules.xml
 .idea/skraafoto_frontend.iml
+package-lock.json
