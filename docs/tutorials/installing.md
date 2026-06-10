@@ -11,7 +11,7 @@ Skraafoto expects to find a `config.js` file in the `public` folder when hosted.
 
 The contents of `config.js` should be a single Javascript object defined like so:
 ```
-const environment = {
+const config = {
   
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
