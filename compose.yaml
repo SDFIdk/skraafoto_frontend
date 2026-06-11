@@ -9,7 +9,6 @@ services:
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
-    working_dir: /app  # Ensure the working directory is set properly
 
   playwright:
     build: 
@@ -21,4 +20,3 @@ services:
       - NODE_ENV=development
       - HOST=0.0.0.0
       - BASEURL=http://vite:5173/
-    working_dir: /app  # Ensure the working directory is set properly
