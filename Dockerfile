@@ -1,4 +1,4 @@
-FROM node:23-alpine
+FROM node:26-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .    
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Expose the port the Vite dev server will run on
 EXPOSE 5173
