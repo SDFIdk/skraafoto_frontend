@@ -7,11 +7,15 @@
 
 const config = {
   
+  // API_STAC_BASEURL: "https://api.dataforsyningen.dk/rest/skraafoto_api/v2",
+  // API_STAC_BASEURL: "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v2",
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
 
-  // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
-  API_DHM_TOKENA: "[ INSERT USERNAME ]",
-  API_DHM_TOKENB: "[ INSERT PASSWORD ]"
+  // API_DHM_WCS_BASEURL: "https://wcs.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS",
+  // API_DHM_WMS_BASEURL: "https://wms.datafordeler.dk/DHMNedboer/dhm/1.0.0/WMS",
+  // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/dhm-wcs/
+  // and https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/dhm-wms/
+  API_DHM_KEY: "[ INSERT API KEY ]"
 
 }

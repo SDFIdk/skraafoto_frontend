@@ -16,9 +16,8 @@ const config = {
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
 
-  // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
-  API_DHM_TOKENA: "[ INSERT USERNAME-LIKE TOKEN ]",
-  API_DHM_TOKENB: "[ INSERT PASSWORD-LIKE TOKEN ]"
+  // Datafordeler authentication is described at https://confluence.kds.dk/pages/viewpage.action?pageId=187105503#Autentifikationsmetoderp%C3%A5DatafordelerAdministration-API-Key
+  API_DHM_KEY: "[ INSERT API KEY ]"
 
 }
 ```
