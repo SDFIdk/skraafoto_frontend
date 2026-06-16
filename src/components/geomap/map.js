@@ -89,7 +89,7 @@ export class SkraaFotoMap extends HTMLElement {
 
   generateMap(center, zoom) {
     // Switch to datafordeler might be preferable
-    return fetch(`https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${ configuration.API_DHM_TOKENA }&password=${ configuration.API_DHM_TOKENB }&service=WMTS&request=GetCapabilities`)
+    return fetch(`https://wmts.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?apikey=${ configuration.API_DHM_KEY }&service=WMTS&request=GetCapabilities`)
     .then((response) => {
       return response.text()
     })
