@@ -7,11 +7,13 @@
 
 const config = {
   
+  // API_STAC_BASEURL: "https://api.dataforsyningen.dk/rest/skraafoto_api_test/v2",
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
 
-  // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
-  API_DHM_TOKENA: "[ INSERT USERNAME ]",
-  API_DHM_TOKENB: "[ INSERT PASSWORD ]"
+  // API_DHM_WCS_BASEURL: "https://wcs.datafordeler.dk/DHMNedboer/dhm_wcs/1.0.0/WCS",
+  // API_DHM_WMS_BASEURL: "https://wms.datafordeler.dk/DHMNedboer/dhm/1.0.0/WMS",
+  // Datafordeler authentication is described at https://confluence.kds.dk/pages/viewpage.action?pageId=187105503#Autentifikationsmetoderp%C3%A5DatafordelerAdministration-API-Key
+  API_DHM_KEY: "[ INSERT API KEY ]"
 
 }
