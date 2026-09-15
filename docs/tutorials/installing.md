@@ -2,7 +2,7 @@
 
 To install and build `skraafoto_frontend` locally, run these commands:
 
-1. `git clone https://github.com/SDFIdk/skraafoto_frontend`
+1. `git clone https://github.com/Klimadatastyrelsen/skraafoto_frontend`
 2. `cd skraafoto_frontend`
 3. `npm install`
 

@@ -47,7 +47,7 @@ export class InformationDialog extends HTMLElement {
           <p>Tilgængelighed for dette website er deklareret i <a href="https://was.digst.dk/skraafoto-dataforsyningen-dk">Skråfotos tilgængelighedserklæring.</a></p>
           
           <h3>Open source</h3>
-          <p>Skråfoto webapplikationens kode er open source og stilles til rådighed under en <a href="https://github.com/SDFIdk/skraafoto_frontend/blob/main/LICENSE">MIT licens, som er beskrevet i kildekoden.</a></p>
+          <p>Skråfoto webapplikationens kode er open source og stilles til rådighed under en <a href="https://github.com/Klimadatastyrelsen/skraafoto_frontend/blob/main/LICENSE">MIT licens, som er beskrevet i kildekoden.</a></p>
 
           <h3>Vil du vide mere om skråfoto?</h3>
           <p>
