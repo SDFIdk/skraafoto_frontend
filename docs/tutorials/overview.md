@@ -8,7 +8,7 @@ This section provides an overview of Skraafoto and its internal architecture.
 Skraafoto itself is just a HTML/JS application that is downloaded to a browser. 
 From here, it fetches data and images from various sources to browse skråfotos. These sources are:
 
-- [Skråfoto STAC API](https://github.com/SDFIdk/skraafoto_stac_public/blob/main/dokumentation.md)
+- [Skråfoto STAC API](https://github.com/Klimadatastyrelsen/skraafoto_stac_public/blob/main/dokumentation.md)
   For searching through skråfoto metadata 
 - Skråfoto server 
   For fetching skråfoto images
