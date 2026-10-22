@@ -52,7 +52,7 @@ export class InformationDialog extends HTMLElement {
           <h3>Vil du vide mere om skråfoto?</h3>
           <p>
             Her finder du <a href="https://docs.dataforsyningen.dk/#skraafoto-stac-api-dokumentation">dokumentation på SkråfotoAPI.</a><br>
-            Her finder du <a href="https://confluence.sdfi.dk/x/MAHiCQ">vejledningen til Skråfotoløsningen.</a>
+            Her finder du <a href="https://confluence.kds.dk/x/MAHiCQ">vejledningen til Skråfotoløsningen.</a>
           </p>
           
         </div>
