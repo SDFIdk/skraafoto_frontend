@@ -1,6 +1,6 @@
 {
   "name": "skraafoto-frontend",
-  "version": "4.3.0",
+  "version": "5.0.0",
   "description": "Webapplikation, som gør det muligt at finde og vise skråfotos.",
   "main": "./public/index.html",
   "type": "module",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dataforsyningen/skraafoto_frontend.git"
+    "url": "git+https://github.com/Klimadatastyrelsen/skraafoto_frontend.git"
   },
   "keywords": [
     "skråfoto",
@@ -31,13 +31,13 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Dataforsyningen/skraafoto_frontend/issues"
+    "url": "https://github.com/Klimadatastyrelsen/skraafoto_frontend/issues"
   },
-  "homepage": "https://github.com/Dataforsyningen/skraafoto_frontend#readme",
+  "homepage": "https://github.com/Klimadatastyrelsen/skraafoto_frontend#readme",
   "dependencies": {
     "@dataforsyningen/designsystem": "^8.9.1",
     "@dataforsyningen/gsearch-ui": "^2.2.0",
-    "@dataforsyningen/saul": "^4.2.0",
+    "@dataforsyningen/saul": "^5.0.1",
     "@dataforsyningen/retry": "0.1.3",
     "jspdf": "^3.0.1",
     "mobx": "^6.13.7",

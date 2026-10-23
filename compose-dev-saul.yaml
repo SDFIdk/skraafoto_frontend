@@ -1,0 +1,30 @@
+services:
+  base:
+    build: .
+    deploy:
+      replicas: 0
+  with-saul:
+    build:
+      context: ../saul
+      additional_contexts:
+        base: service:base
+      dockerfile_inline: |
+        FROM base
+        COPY . /saul
+        RUN <<EOF
+          set -e -x
+          cd /saul
+          npm install
+          cd /app
+          npm link /saul
+        EOF
+    ports:
+      - "5173:5173"  # Expose Vite dev server port
+    volumes:
+      - .:/app  # Mount current directory into the container
+      - /app/node_modules  # Do not mount over node_modules
+      - ../saul:/saul  # Local source of Saul library
+      - /saul/node_modules  # Do not mount over node_modules
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0

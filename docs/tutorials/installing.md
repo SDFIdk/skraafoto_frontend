@@ -2,7 +2,7 @@
 
 To install and build `skraafoto_frontend` locally, run these commands:
 
-1. `git clone https://github.com/SDFIdk/skraafoto_frontend`
+1. `git clone https://github.com/Klimadatastyrelsen/skraafoto_frontend`
 2. `cd skraafoto_frontend`
 3. `npm install`
 
@@ -11,14 +11,13 @@ Skraafoto expects to find a `config.js` file in the `public` folder when hosted.
 
 The contents of `config.js` should be a single Javascript object defined like so:
 ```
-const environment = {
+const config = {
   
   // STAC TOKEN can be aquired from https://dataforsyningen.dk/
   API_STAC_TOKEN: "[ INSERT TOKEN ]",
 
-  // DHM URL and auth can be aquired from https://datafordeler.dk/dataoversigt/danmarks-hoejdemodel-dhm/koter/
-  API_DHM_TOKENA: "[ INSERT USERNAME-LIKE TOKEN ]",
-  API_DHM_TOKENB: "[ INSERT PASSWORD-LIKE TOKEN ]"
+  // Datafordeler authentication is described at https://confluence.kds.dk/pages/viewpage.action?pageId=187105503#Autentifikationsmetoderp%C3%A5DatafordelerAdministration-API-Key
+  API_DHM_KEY: "[ INSERT API KEY ]"
 
 }
 ```

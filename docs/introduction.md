@@ -1,19 +1,19 @@
 # Documentation
 
-These are the documentation pages for [skraafoto_frontend **(Skraafoto)**](https://github.com/SDFIdk/skraafoto_frontend) aimed at frontend developers and people who are interested in Skraafoto's architecture. 
+These are the documentation pages for [skraafoto_frontend **(Skraafoto)**](https://github.com/Klimadatastyrelsen/skraafoto_frontend) aimed at frontend developers and people who are interested in Skraafoto's architecture. 
 We hope that the documentation will make you enjoy developing Skraafoto and help you to keep the codebase in great shape.
 
 ## Overview
 
-[Start reading the system overview](https://sdfidk.github.io/skraafoto_frontend/tutorial-overview.html) to get a high level introduction to the inner workings of Skraafoto.
+[Start reading the system overview](https://Klimadatastyrelsen.github.io/skraafoto_frontend/tutorial-overview.html) to get a high level introduction to the inner workings of Skraafoto.
 
 ## Building the system
 
-Refer to the [install and build instuctions](https://sdfidk.github.io/skraafoto_frontend/tutorial-installing.html) for details on building Skraafoto, or running a local development server.
+Refer to the [install and build instuctions](https://Klimadatastyrelsen.github.io/skraafoto_frontend/tutorial-installing.html) for details on building Skraafoto, or running a local development server.
 
 ## Folder structure
 
-Here is a quick overview of the most important folders [in the skraafoto_frontend repository:](https://github.com/SDFIdk/skraafoto_frontend)
+Here is a quick overview of the most important folders [in the skraafoto_frontend repository:](https://github.com/Klimadatastyrelsen/skraafoto_frontend)
 
 `src/` - Javascript and CSS source
 
